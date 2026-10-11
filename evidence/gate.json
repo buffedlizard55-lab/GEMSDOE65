@@ -1,0 +1,291 @@
+{
+ "b_grid_predeclared": [
+  500,
+  1000,
+  2000,
+  4000,
+  8000,
+  16000,
+  32000,
+  64000,
+  100000,
+  160000
+ ],
+ "evidence_class": "HOLDOUT-DTI \u2014 evaluator: template metric.dti_exact (alpha 0.2, beta 0.8, R = 3 px triangular kernel), pooled over the whole footprint",
+ "instrument": "buffered whole-component hide-and-recover; draw seed 2026, hide_frac 0.2, 3 px feature collar, label-blind quadrant eligibility",
+ "withheld_positives": 11360,
+ "visible_catalogue_px": 48534,
+ "k_truth_used_in_emission": 11360.0,
+ "kappa": 1.0,
+ "propensity_terciles": {
+  "q1": 0.5093462467193604,
+  "q2": 0.5150327682495117,
+  "top_tercile_cells": 1705909,
+  "top_tercile_withheld_truth": 4245
+ },
+ "propensity_field_file": "propensity_field_holdout.npy",
+ "propensity_e_mean_inside_allowed": 0.5130054354667664,
+ "note_on_scale": "HOLDOUT-DTI on this instrument is a RELATIVE number: it scores only the withheld pixels, while the organiser scores against every fault.  It must not be compared with a leaderboard score, only between arms on the same draw.",
+ "arms": {
+  "nnpu": {
+   "n_dots": 76393,
+   "emission_rule": "price_curve_nms3 (budget from a predeclared price curve, >= 3 px separation between dots)",
+   "budget_curve": [
+    {
+     "budget": 500,
+     "T": 24.065500361202336,
+     "M": 30.747012820094824,
+     "surrogate_dti": 0.0026196126421531925
+    },
+    {
+     "budget": 1000,
+     "T": 43.44112016082135,
+     "M": 55.32072739675641,
+     "surrogate_dti": 0.004678319926945798
+    },
+    {
+     "budget": 2000,
+     "T": 78.52473886841834,
+     "M": 99.78800854086876,
+     "surrogate_dti": 0.00827992733283807
+    },
+    {
+     "budget": 4000,
+     "T": 141.71942001865906,
+     "M": 183.6820998750627,
+     "surrogate_dti": 0.014344640769853877
+    },
+    {
+     "budget": 8000,
+     "T": 258.1866375134208,
+     "M": 339.60783227160573,
+     "surrogate_dti": 0.02419354518940609
+    },
+    {
+     "budget": 16000,
+     "T": 471.73728140306406,
+     "M": 627.1450269669294,
+     "surrogate_dti": 0.03848742922564822
+    },
+    {
+     "budget": 32000,
+     "T": 857.0502561837975,
+     "M": 1143.8305536676198,
+     "surrogate_dti": 0.055542092701274956
+    },
+    {
+     "budget": 64000,
+     "T": 1532.7471575454415,
+     "M": 2057.8114429861307,
+     "surrogate_dti": 0.07036441547201638
+    }
+   ],
+   "surrogate_dti_under_p": 0.07036441547201638,
+   "overall": {
+    "tp": 1664.6264524129024,
+    "fp": 75539.8217622588,
+    "fn": 9695.373547587098,
+    "n_truth": 11360.0,
+    "n_emitted": 76393.0,
+    "dti": 0.06786391380306142,
+    "coverage": 0.14653401869831886
+   },
+   "top_propensity_tercile": {
+    "tp": 537.8599028706459,
+    "fp": 21047.16361350163,
+    "fn": 3707.140097129354,
+    "n_truth": 4245.0,
+    "n_emitted": 21326.0,
+    "dti": 0.06973415984594233,
+    "coverage": 0.1267043351874313
+   },
+   "lower_propensity_tiers": {
+    "tp": 1059.9524099356072,
+    "fp": 54514.100750766724,
+    "fn": 6055.047590064392,
+    "n_truth": 7115.0,
+    "n_emitted": 55067.0,
+    "dti": 0.06306683838685072,
+    "coverage": 0.14897433730648027
+   }
+  },
+  "sar": {
+   "n_dots": 75140,
+   "emission_rule": "price_curve_nms3 (budget from a predeclared price curve, >= 3 px separation between dots)",
+   "budget_curve": [
+    {
+     "budget": 500,
+     "T": 22.33617442569154,
+     "M": 29.505086485296488,
+     "surrogate_dti": 0.0024313953545480314
+    },
+    {
+     "budget": 1000,
+     "T": 42.80420404245126,
+     "M": 57.50697038695216,
+     "surrogate_dti": 0.004610008615240574
+    },
+    {
+     "budget": 2000,
+     "T": 81.70751144429305,
+     "M": 111.15052723884583,
+     "surrogate_dti": 0.008617016614201918
+    },
+    {
+     "budget": 4000,
+     "T": 154.47858105449615,
+     "M": 211.10975363478065,
+     "surrogate_dti": 0.01564074958052711
+    },
+    {
+     "budget": 8000,
+     "T": 280.3723415617544,
+     "M": 377.6804902292788,
+     "surrogate_dti": 0.026280295559807862
+    },
+    {
+     "budget": 16000,
+     "T": 493.000723849929,
+     "M": 656.3861012682319,
+     "surrogate_dti": 0.040227477226544434
+    },
+    {
+     "budget": 32000,
+     "T": 871.9674903121322,
+     "M": 1149.8123105484992,
+     "surrogate_dti": 0.056502276814373656
+    },
+    {
+     "budget": 64000,
+     "T": 1544.1755030767151,
+     "M": 2038.036072012037,
+     "surrogate_dti": 0.07086875731167085
+    }
+   ],
+   "surrogate_dti_under_p": 0.07086875731167085,
+   "overall": {
+    "tp": 1779.4144878630923,
+    "fp": 74255.22115365614,
+    "fn": 9580.585512136908,
+    "n_truth": 11360.0,
+    "n_emitted": 75140.0,
+    "dti": 0.07324222371468057,
+    "coverage": 0.15663859928372292
+   },
+   "top_propensity_tercile": {
+    "tp": 581.1443845960612,
+    "fp": 18077.295208673397,
+    "fn": 3663.855615403939,
+    "n_truth": 4245.0,
+    "n_emitted": 18372.0,
+    "dti": 0.0815333655497383,
+    "coverage": 0.13690091509918992
+   },
+   "lower_propensity_tiers": {
+    "tp": 1118.8834261347615,
+    "fp": 56204.48397431408,
+    "fn": 5996.116573865238,
+    "n_truth": 7115.0,
+    "n_emitted": 56768.0,
+    "dti": 0.0652156391175259,
+    "coverage": 0.1572569818882307
+   }
+  },
+  "scar": {
+   "n_dots": 75080,
+   "emission_rule": "price_curve_nms3 (budget from a predeclared price curve, >= 3 px separation between dots)",
+   "budget_curve": [
+    {
+     "budget": 500,
+     "T": 22.94723433558096,
+     "M": 30.100616972893476,
+     "surrogate_dti": 0.002497911192696129
+    },
+    {
+     "budget": 1000,
+     "T": 43.42578703424441,
+     "M": 57.9490127786994,
+     "surrogate_dti": 0.004676934955929782
+    },
+    {
+     "budget": 2000,
+     "T": 81.61010912023957,
+     "M": 109.92021480575204,
+     "surrogate_dti": 0.008606538735716535
+    },
+    {
+     "budget": 4000,
+     "T": 152.34856018816953,
+     "M": 204.4283130131662,
+     "surrogate_dti": 0.015423666295897918
+    },
+    {
+     "budget": 8000,
+     "T": 284.490014488884,
+     "M": 374.8781500272453,
+     "surrogate_dti": 0.026662800772726373
+    },
+    {
+     "budget": 16000,
+     "T": 524.9349697565244,
+     "M": 686.7569817118347,
+     "surrogate_dti": 0.04283212939677634
+    },
+    {
+     "budget": 32000,
+     "T": 959.3101405613421,
+     "M": 1256.6969374120235,
+     "surrogate_dti": 0.06217770572764175
+    },
+    {
+     "budget": 64000,
+     "T": 1726.9841765130689,
+     "M": 2280.822776639834,
+     "surrogate_dti": 0.07930228021221618
+    }
+   ],
+   "surrogate_dti_under_p": 0.07930228021221618,
+   "overall": {
+    "tp": 1396.5233116944667,
+    "fp": 74392.15741047764,
+    "fn": 9963.476688305533,
+    "n_truth": 11360.0,
+    "n_emitted": 75080.0,
+    "dti": 0.057598717703402746,
+    "coverage": 0.12293339011394953
+   },
+   "top_propensity_tercile": {
+    "tp": 445.6750571944524,
+    "fp": 15222.268086307364,
+    "fn": 3799.324942805548,
+    "n_truth": 4245.0,
+    "n_emitted": 15446.0,
+    "dti": 0.06825469145721032,
+    "coverage": 0.10498823491035392
+   },
+   "lower_propensity_tiers": {
+    "tp": 890.2931441066976,
+    "fp": 59191.3796220912,
+    "fn": 6224.706855893302,
+    "n_truth": 7115.0,
+    "n_emitted": 59634.0,
+    "dti": 0.050275374086143326,
+    "coverage": 0.1251290434443707
+   }
+  }
+ },
+ "scores_sha256": {
+  "nnpu": "ebc45b1a6da0c418f2a26b17cc6c919427ba60d0dde557730b59cbd9ca8408f8",
+  "sar": "b0017d782f035c604909a34abc2c5a4c9dc1bcee313ddb6bdd84b2171a87e2fa",
+  "scar": "dfbae90f4b939022f5364ba5a7c361a58693eb6c65e5335d8e0635c6e1dd9a9b"
+ },
+ "runtime_s": 305.5,
+ "gate": {
+  "rule": "PROMOTE iff SAR-propensity arm's pooled HOLDOUT-DTI is strictly higher than nnPU's AND its top-propensity-tercile DTI is not lower",
+  "delta_overall": 0.005378309911619153,
+  "delta_top_tercile": 0.011799205703795959,
+  "overall_pass": true,
+  "tercile_pass": true,
+  "verdict": "PROMOTE"
+ }
+}

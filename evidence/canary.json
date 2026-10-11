@@ -1,0 +1,153 @@
+{
+ "evidence_class": "HOLDOUT-DTI instrument / feature diagnostics (not a score)",
+ "definition": "max(AUC, 1-AUC) per feature alone, truth = withheld catalogue pixels inside a label-blind eroded quadrant",
+ "threshold": 0.9,
+ "worst_discriminative_auc": 0.5585880211108344,
+ "flag": false,
+ "features": [
+  {
+   "feature": "tc",
+   "auc": 0.4414119788891656,
+   "discriminative_auc": 0.5585880211108344,
+   "n_used": 60000
+  },
+  {
+   "feature": "local_relief",
+   "auc": 0.5560003232284332,
+   "discriminative_auc": 0.5560003232284332,
+   "n_used": 60000
+  },
+  {
+   "feature": "slope",
+   "auc": 0.5494537819536461,
+   "discriminative_auc": 0.5494537819536461,
+   "n_used": 60000
+  },
+  {
+   "feature": "det_elev_slope",
+   "auc": 0.5494537792389618,
+   "discriminative_auc": 0.5494537792389618,
+   "n_used": 60000
+  },
+  {
+   "feature": "geod_shearrate",
+   "auc": 0.5492650353705291,
+   "discriminative_auc": 0.5492650353705291,
+   "n_used": 60000
+  },
+  {
+   "feature": "iso_grav_anom",
+   "auc": 0.4555491716230773,
+   "discriminative_auc": 0.5444508283769227,
+   "n_used": 60000
+  },
+  {
+   "feature": "geod_2ndinv",
+   "auc": 0.5432670648686527,
+   "discriminative_auc": 0.5432670648686527,
+   "n_used": 60000
+  },
+  {
+   "feature": "iso_grav_anom_vg",
+   "auc": 0.5369075418278586,
+   "discriminative_auc": 0.5369075418278586,
+   "n_used": 60000
+  },
+  {
+   "feature": "depth_to_base_surf",
+   "auc": 0.5364125019183771,
+   "discriminative_auc": 0.5364125019183771,
+   "n_used": 60000
+  },
+  {
+   "feature": "basin_fill_proxy",
+   "auc": 0.5364125010134821,
+   "discriminative_auc": 0.5364125010134821,
+   "n_used": 60000
+  },
+  {
+   "feature": "lidar_coverage",
+   "auc": 0.5312989367123795,
+   "discriminative_auc": 0.5312989367123795,
+   "n_used": 60000
+  },
+  {
+   "feature": "ieq_n100a15",
+   "auc": 0.5286702905291535,
+   "discriminative_auc": 0.5286702905291535,
+   "n_used": 60000
+  },
+  {
+   "feature": "iso_grav_anom_slope",
+   "auc": 0.5281399235255282,
+   "discriminative_auc": 0.5281399235255282,
+   "n_used": 60000
+  },
+  {
+   "feature": "deq_n100a15",
+   "auc": 0.5260460593278007,
+   "discriminative_auc": 0.5260460593278007,
+   "n_used": 60000
+  },
+  {
+   "feature": "tmi_hg",
+   "auc": 0.5258847301531226,
+   "discriminative_auc": 0.5258847301531226,
+   "n_used": 60000
+  },
+  {
+   "feature": "tmi",
+   "auc": 0.4763331507858831,
+   "discriminative_auc": 0.5236668492141169,
+   "n_used": 60000
+  },
+  {
+   "feature": "mag_anom",
+   "auc": 0.47879096277914196,
+   "discriminative_auc": 0.521209037220858,
+   "n_used": 60000
+  },
+  {
+   "feature": "iso_grav_anom_hg",
+   "auc": 0.4788951532747058,
+   "discriminative_auc": 0.5211048467252942,
+   "n_used": 60000
+  },
+  {
+   "feature": "tmi_vg",
+   "auc": 0.4842276731679137,
+   "discriminative_auc": 0.5157723268320863,
+   "n_used": 60000
+  },
+  {
+   "feature": "dist_range_front",
+   "auc": 0.5152825796524625,
+   "discriminative_auc": 0.5152825796524625,
+   "n_used": 60000
+  },
+  {
+   "feature": "geod_dilaterate",
+   "auc": 0.5109196129439052,
+   "discriminative_auc": 0.5109196129439052,
+   "n_used": 60000
+  },
+  {
+   "feature": "rtp",
+   "auc": 0.5064985501775041,
+   "discriminative_auc": 0.5064985501775041,
+   "n_used": 60000
+  },
+  {
+   "feature": "cond_surf",
+   "auc": 0.49372455345249955,
+   "discriminative_auc": 0.5062754465475005,
+   "n_used": 60000
+  },
+  {
+   "feature": "det_elev",
+   "auc": 0.49827923389431983,
+   "discriminative_auc": 0.5017207661056802,
+   "n_used": 60000
+  }
+ ]
+}

@@ -1,0 +1,157 @@
+{
+ "evidence_class": "MEASURED (local instrument/draw, not a score)",
+ "holdout_draw": {
+  "draw_seed": 2026,
+  "hide_frac": 0.2,
+  "withheld_positives": 11360,
+  "visible_catalogue": 48534,
+  "folds": [
+   {
+    "fold": "NW",
+    "seed": 2026,
+    "held_components": 118,
+    "withheld_positive_pixels": 1941,
+    "eligible_components": 598,
+    "boundary_buffer_px": 12,
+    "feature_buffer_px": 3,
+    "nearest_visible_to_truth_px": 3.1622776601683795,
+    "split_version": "buffered-whole-components-loqo-v2",
+    "evaluation_region_label_blind": true
+   },
+   {
+    "fold": "NE",
+    "seed": 2026,
+    "held_components": 138,
+    "withheld_positive_pixels": 2374,
+    "eligible_components": 628,
+    "boundary_buffer_px": 12,
+    "feature_buffer_px": 3,
+    "nearest_visible_to_truth_px": 3.1622776601683795,
+    "split_version": "buffered-whole-components-loqo-v2",
+    "evaluation_region_label_blind": true
+   },
+   {
+    "fold": "SW",
+    "seed": 2026,
+    "held_components": 236,
+    "withheld_positive_pixels": 3793,
+    "eligible_components": 983,
+    "boundary_buffer_px": 12,
+    "feature_buffer_px": 3,
+    "nearest_visible_to_truth_px": 3.1622776601683795,
+    "split_version": "buffered-whole-components-loqo-v2",
+    "evaluation_region_label_blind": true
+   },
+   {
+    "fold": "SE",
+    "seed": 2026,
+    "held_components": 162,
+    "withheld_positive_pixels": 3252,
+    "eligible_components": 648,
+    "boundary_buffer_px": 12,
+    "feature_buffer_px": 3,
+    "nearest_visible_to_truth_px": 3.1622776601683795,
+    "split_version": "buffered-whole-components-loqo-v2",
+    "evaluation_region_label_blind": true
+   }
+  ]
+ },
+ "lidar": {
+  "present": true,
+  "path": "/home/user/GEMSDOE65/data/external/lidar_scarp_features_u8.tif",
+  "shape": [
+   3730,
+   3292
+  ],
+  "crs": "EPSG:32611",
+  "dtype": "uint8",
+  "count": 12,
+  "transform": [
+   100.0,
+   0.0,
+   243350.0,
+   0.0,
+   -100.0,
+   4508550.0
+  ],
+  "coverage_cells_raw": 3893184,
+  "coverage_fraction_of_raster": 0.31705621557174923,
+  "resampled_to_official_grid": false,
+  "coverage_cells_on_grid": 3893184,
+  "coverage_fraction_on_grid": 0.31705621557174923,
+  "sha256": "d580bb8bdcdb941e32fefb8b38044bc5bf04e199bf2e83498c3576e6fc465568",
+  "pin_sha256": "d580bb8bdcdb941e32fefb8b38044bc5bf04e199bf2e83498c3576e6fc465568",
+  "sha_match": true
+ },
+ "sample": {
+  "is_catalogue": "[ True  True  True ... False False False]",
+  "seed": 6565,
+  "n_catalogue": 60988,
+  "n_unlabelled": 200000
+ },
+ "complete_rows": 260771,
+ "covariate_stats": [
+  {
+   "mean": 97.86612701416016,
+   "sd": 91.31529235839844,
+   "median": 71.15731811523438,
+   "clip_z": 8.0,
+   "n_fit": 260771
+  },
+  {
+   "mean": 7.490299701690674,
+   "sd": 8.06845760345459,
+   "median": 4.223727703094482,
+   "clip_z": 8.0,
+   "n_fit": 260771
+  },
+  {
+   "mean": 521.4330444335938,
+   "sd": 666.9066772460938,
+   "median": 315.6048583984375,
+   "clip_z": 8.0,
+   "n_fit": 260771
+  },
+  {
+   "mean": 0.762588620185852,
+   "sd": 0.4254964292049408,
+   "median": 1.0,
+   "clip_z": 8.0,
+   "n_fit": 260771
+  },
+  {
+   "mean": 416.38494873046875,
+   "sd": 301.7056579589844,
+   "median": 359.089111328125,
+   "clip_z": 8.0,
+   "n_fit": 260771
+  }
+ ],
+ "design_columns": [
+  "mag_anom",
+  "rtp",
+  "tmi_hg",
+  "geod_2ndinv",
+  "iso_grav_anom_slope",
+  "tc",
+  "geod_shearrate",
+  "geod_dilaterate",
+  "tmi_vg",
+  "deq_n100a15",
+  "iso_grav_anom_vg",
+  "det_elev",
+  "iso_grav_anom",
+  "tmi",
+  "depth_to_base_surf",
+  "ieq_n100a15",
+  "cond_surf",
+  "iso_grav_anom_hg",
+  "det_elev_slope",
+  "local_relief",
+  "slope",
+  "basin_fill_proxy",
+  "lidar_coverage",
+  "dist_range_front"
+ ],
+ "runtime_s": 63.3
+}

@@ -1,0 +1,21 @@
+__pycache__/
+*.pyc
+.cache/
+.pytest_cache/
+.ruff_cache/
+.venv/
+out/
+.ipynb_checkpoints/
+
+# Large source rasters are restored by hash from the official competition
+# download, never committed.  See data/README.md for the exact command.
+data/training_features.tif
+data/external/*.tif
+data/*.partial
+*.download
+*.partial
+
+# The registry index is committed (small, and it is the audit's scope record);
+# the 655 cached registry rasters are not.
+registry/cache/
+registry/rasters_cache/

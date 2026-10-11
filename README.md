@@ -6,7 +6,7 @@ This README is the project's standing brief. **Read it before each project sessi
 
 ## Standing project brief
 
-Build an auditable, reproducible system for the DOE GEMS Prize Challenge (DrivenData competition 306). The competition predicts **geological faults that may indicate geothermal resources**; it does not directly predict geothermal vents. The goal is scientifically credible discovery of previously unmapped faults, a useful current information feed, and—only after evidence gates pass—a unique, valid, easy-to-download GeoTIFF. Never copy or relabel a prior submission as a new result.
+Build an auditable, reproducible system for the DOE GEMS Prize Challenge (DrivenData competition 306). The competition predicts **geological faults that may indicate geothermal resources**; it does not directly predict geothermal vents. The goal is scientifically credible discovery of previously unmapped faults, a site that links to official sources without copying or scraping their content, and—only after evidence gates pass—a unique, valid, easy-to-download GeoTIFF. Never copy or relabel a prior submission as a new result.
 
 ### This session's method lane (do not drift)
 
@@ -37,7 +37,7 @@ Only offer a TIF when every scientific, uniqueness, and format gate passes. It m
 
 - Use official, verified sources; preserve source links and separate verified facts, internal claims, projections, and unknowns.
 - Maintain ranked, testable hypotheses and record why a process could be mimicked by non-fault geology or surface processes.
-- Keep a current official-leaderboard feed, while clearly distinguishing an official leaderboard row from a receipt tying a score to a specific TIF.
+- Link to the official leaderboard without automatically fetching, monitoring, copying, or mirroring its contents. DrivenData's current Terms of Use prohibit automated access to monitor or copy site material and also prohibit manual monitoring/copying without prior written consent. Do not create or refresh a local leaderboard feed unless written authorization or an official permitted API is obtained. A leaderboard row is not a receipt tying a score to a specific TIF.
 - Make the homepage simple and readable. Put submission readiness and the download decision at the very top; if there is no approved file, show a prominent **do not submit** state.
 - Preserve data provenance and hashes. Do not commit large data, credentials, or copied submission artifacts unless explicitly required.
 
@@ -53,24 +53,28 @@ Only offer a TIF when every scientific, uniqueness, and format gate passes. It m
 - [ ] Read [`research and sources`](docs/research.html), [`ranked hypotheses`](docs/hypotheses.html), and [`irregularities`](docs/irregularities.html).
 - [ ] Run `python3 scripts/audit_lane_readiness.py` before modeling.
 - [ ] Confirm the cached data, exact shared holdout/writer tools, and prior-raster registry are present; do not silently replace them with sibling-repo code.
-- [ ] Refresh or inspect the [official leaderboard](https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/) and record when it was read.
+- [ ] Use the [official leaderboard](https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/) only through an authorized access method; this project does not fetch, monitor, or mirror its rows.
 - [ ] Do not build or offer a TIF if any required evidence gate is absent.
 
 ## Current verified checkout state
 
-The checked-out branch started from commit `90ca1cea667dc1427de27ef997634f3305a7c164`; at session start its tracked tree contained only this README. This change adds an evidence site, a leaderboard-feed parser, a presence-only readiness audit, and tests—not a model or submission pipeline. There is still no `data/`, required segment evaluator, shared writer, prior-raster registry, or TIF in this checkout. The upstream public `GEMSDOE` repository has related components, but its names and block/emission evaluation are not the required segment hide-and-recover evaluator; they are not silently substituted here. The official competition data tab requires access, and no authenticated competition files are present locally.
+The checked-out branch started from commit `90ca1cea667dc1427de27ef997634f3305a7c164`; at the start of this lane its tracked tree contained only this README. The integrated work provides an evidence site, a presence-only readiness audit, and tests—not a model or submission pipeline. A leaderboard scraper and scheduled fetch were removed after review of the [DrivenData Terms of Use](https://www.drivendata.org/termsofuse/), which prohibit automated monitoring/copying and manual monitoring/copying without prior written consent. There is still no `data/`, required segment evaluator, shared writer, prior-raster registry, or TIF in this checkout. The upstream public `GEMSDOE` repository has related components, but its names and block/emission evaluation are not the required segment hide-and-recover evaluator; they are not silently substituted here. The official competition data tab requires access, and no authenticated competition files are present locally.
 
-The current negative run, source audit, and historical-score correction are recorded in [`docs/`](docs/). No submission slot was spent. The Pages workflow is present, but the repository's live Pages setting is still legacy publishing from `main:/`; a repository admin must switch **Settings → Pages → Source** to **GitHub Actions** and rerun the workflow before the new site replaces the current README-only page.
+The current negative run, source audit, and score-provenance correction are recorded in [`docs/`](docs/). No submission slot was spent. The live Pages setting was last observed as legacy publishing from `main:/`, and this integration could not change it. This branch adds a root redirect as a legacy fallback; verify the public URL after merge. The Actions deployment workflow also has a guard and will require a repository admin to switch **Settings → Pages → Source** to **GitHub Actions** before Actions can publish the docs artifact.
 
 ## Project pages
 
-- [Status and leaderboard feed](docs/index.html)
+- [Status and authorized source links](docs/index.html)
 - [Executive summary and exact submission steps](docs/executive-summary.html)
 - [Ranked within-lane hypotheses](docs/hypotheses.html)
-- [Audit of the cited leaderboard score](docs/competitive-context.html)
+- [Score-provenance audit](docs/competitive-context.html)
 - [Research and verified sources](docs/research.html)
-- [Irregularities and blockers](docs/irregularities.html)
+- [Detailed research lane](docs/RESEARCH.md)
+- [Detailed hypothesis register](docs/HYPOTHESES.md)
+- [Source register](docs/SOURCES.md)
+- [Irregularities and blockers](docs/irregularities.html) and [detailed irregularity log](docs/IRREGULARITIES.md)
 - [Three-pass session review](docs/session-2026-10-11.md)
+- [Current status](docs/STATUS.md)
 - [Current run card (JSON)](docs/data/run-card.json)
 
 ## Run the lightweight checks

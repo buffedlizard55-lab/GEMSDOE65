@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Audit of the cited GEMSDOE32 TIF claim, official leaderboard observations, and what the distance-weighted Tversky score can and cannot tell us.">
-  <title>Competitive context · GEMSDOE65</title><link rel="stylesheet" href="assets/site.css">
+  <meta name="description" content="Audit of the cited GEMSDOE32 artifact and limits of public leaderboard score provenance.">
+  <title>Score provenance · GEMSDOE65</title><link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
 <header class="site-header"><div class="wrap nav-row">
@@ -11,31 +11,24 @@
   <nav aria-label="Main navigation"><a href="index.html">Status</a><a href="executive-summary.html">Submit guide</a><a href="hypotheses.html">Hypotheses</a><a aria-current="page" href="competitive-context.html">Score audit</a><a href="research.html">Research</a><a href="irregularities.html">Irregularities</a></nav>
 </div></header>
 <main class="wrap">
-  <div class="page-title"><div class="kicker">Competition results · evidence audit</div><h1>What the cited 0.2778 does—and does not—mean</h1>
-    <p class="lede">The named H33 TIFF cannot be treated as the source of a 0.2778 score. The public leaderboard and the project page are separate evidence sources, and no file-level receipt links them.</p>
+  <div class="page-title"><div class="kicker">Competition results · evidence audit</div><h1>What can be established about the cited score?</h1>
+    <p class="lede">A public leaderboard observation is not enough to identify the TIFF that produced it. The available project records do not include a receipt connecting the named H33 artifact to a submission score.</p>
   </div>
-  <div class="callout danger"><strong>Correction to the premise</strong><p>The GEMSDOE32 page labels its named H33 artifact “UNSCORED” and explicitly says that no organizer score exists for artifacts in that repository. The official public leaderboard snapshot read on 2026-10-11 UTC records the <code>PUBLIC-LEADERBOARD-OBSERVATION</code> value 0.2778 for participant <code>extradr19</code> at public rank 23; it does not expose the participant's submitted filename. There is no evidence that the H33 file generated that leaderboard row.</p></div>
+  <div class="callout danger"><strong>Correction to the premise</strong><p>The <a href="https://buffedlizard55-lab.github.io/GEMSDOE32/docs/index.html">GEMSDOE32 page for its named H33 artifact</a> labels it “UNSCORED.” Its <a href="https://github.com/buffedlizard55-lab/GEMSDOE32/blob/main/docs/downloads/submissions_manifest.json">submission manifest</a> has no receipt for that file, and the related <a href="https://github.com/buffedlizard55-lab/GEMSDOE32/pull/9">PR #9</a> describes a projected / owner-reported development value rather than an organizer-confirmed score. None of these records ties the H33 TIFF to an official submission receipt.</p></div>
 
-  <h2>Official leaderboard read</h2>
-  <div class="table-wrap"><table>
-    <thead><tr><th>Observed leaderboard item</th><th>Value</th><th>Evidence status</th></tr></thead>
-    <tbody>
-      <tr><td>Top displayed participant</td><td><code>xiaofanhu</code></td><td>Organizer public leaderboard snapshot read on 2026-10-11 UTC.</td></tr>
-      <tr><td>Top displayed public DTI</td><td class="score">0.4133</td><td>PUBLIC-LEADERBOARD-OBSERVATION (official board only; not copied from a submission-page receipt and not attributed to a particular TIFF).</td></tr>
-      <tr><td>Participant associated with the cited entry</td><td><code>DARD</code>, public rank 9</td><td>PUBLIC-LEADERBOARD-OBSERVATION value 0.3195; same snapshot, not the rank-1 entry or a receipt-linked score.</td></tr>
-      <tr><td>Participant associated with the 0.2778 entry</td><td><code>extradr19</code>, public rank 23</td><td>Same public leaderboard snapshot; no filename or H33 artifact attribution is shown.</td></tr>
-    </tbody>
-  </table></div>
-  <p class="small">Every numeric DTI displayed above is labelled as a public-board observation. None meets the project's stricter receipt requirement for attributing a score to a named file. See the <a href="data/leaderboard.json">machine-readable snapshot</a> and verify the <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">live official page</a> because leaderboard values change.</p>
+  <h2>What the public board can and cannot prove</h2>
+  <p>The official <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">DrivenData leaderboard</a> is participant-level context, not a file-level provenance record. It does not, by itself, identify an uploaded filename, raster hash, model, or the run behind a row. Accordingly, this repository no longer stores or displays leaderboard rows and does not run a recurring fetch.</p>
+  <p>The <a href="https://www.drivendata.org/termsofuse/">DrivenData Terms of Use</a> prohibit automated access for monitoring/copying and manual monitoring/copying without prior written consent. No written permission or officially authorized API has been established here. The project therefore links to the organizer's live page without mirroring its content. Do not treat a user-reported value or an unlinked public row as receipt-backed evidence.</p>
 
   <h2>Why the score cannot be explained from the H33 download</h2>
-  <p>The official leaderboard reports participant-level best public DTI, not artifact filenames, raster hashes, predicted-pixel counts, or model details. The GEMSDOE32 project page describes H33 as a candidate and says it is unscored. Therefore the available sources do not show that the score 0.2778 came from that raster, and they do not show why any particular model earned that public score. An explanation claiming otherwise would be invented.</p>
-  <p>What can be said from the official metric definition is that GEMS rewards predictions near expert-labelled faults with a triangular distance weight and sets the false-negative penalty higher than the false-positive penalty. Thus, in principle, a useful high-recall prediction field that puts confidence near withheld fault traces can outperform an overly sparse field; broad off-target confidence still incurs false-positive cost. This is a property of the metric—not evidence about the participant's method or the H33 TIF.</p>
+  <p>The available H33 records mark the named artifact as unscored and provide no submission receipt. A public leaderboard row that lacks file attribution cannot establish that this TIFF generated the row. Therefore the answer to “why did this file get that score?” is <strong>unknown; the file-to-score premise is not verified</strong>. Explaining an unverified result from its raster would be speculation.</p>
+  <p>The official metric definition says distance-weighted Tversky rewards predictions near expert-labelled faults using a triangular distance kernel and weights false negatives more heavily than false positives. That describes the metric, not the training method or performance of this artifact. It cannot explain an unverified score.</p>
 
   <h2>Can GEMSDOE65 exceed the cited value?</h2>
-  <p><strong>Possible in principle; not established here.</strong> This checkout has no experiment data, required shared hide-and-recover evaluator, submission writer, or registry; it has no HOLDOUT-DTI or CI and no new TIFF. The only defensible verdict is negative until the SAR candidate beats the current holdout best and matched nnPU baseline overall, passes the highest-propensity-tercile gate and the final raster passes uniqueness and format checks. A projection, a past site's score, or an unscored H33 candidate is not sufficient to answer “yes.”</p>
-  <p>The project lane's useful scientific angle is not to tune a past dot pattern. It is to model the probability that a fault gets catalogued, using a small, predeclared observability set and defensible uncertainty analysis. This can correct a known limitation in the training labels, but the hidden-fault objective makes independent validation and conservative submission selection essential.</p>
-  <div class="callout warning">Do not upload a TIF based on the score comparison on this page. The status page has the authoritative project gate; it currently says no approved file.</div>
+  <p><strong>Possible in principle; not established here.</strong> This checkout has no experiment data, required shared hide-and-recover evaluator, submission writer, or prior-raster registry; it has no HOLDOUT-DTI or CI and no new TIFF. The only defensible project verdict is negative until the SAR candidate beats both the current holdout best and matched nnPU baseline overall, passes the highest-propensity-tercile gate, and the exact raster passes uniqueness and format checks. If the current holdout best cannot be established, promotion is blocked.</p>
+  <p>The project lane's scientific question is whether an explicit catalogue-inclusion propensity model improves blocked recovery of withheld fault segments, not whether it can imitate a prior dot pattern. This can address a plausible limitation in the training labels; only independent validation can show whether the correction helps.</p>
+  <div class="callout warning">Do not upload a TIF based on any value discussed here. The status page is authoritative and currently says no approved file.</div>
+  <p><a href="RESEARCH.md">Read the detailed research and score-provenance notes</a> · <a href="SOURCES.md">Open the source register</a>.</p>
 </main>
-<footer class="footer"><div class="wrap"><a href="index.html">Status</a><a href="research.html">Sources</a><a href="irregularities.html">Irregularities</a></div></footer>
+<footer class="footer"><div class="wrap"><a href="index.html">Status</a><a href="research.html">Sources</a><a href="irregularities.html">Irregularities</a><a href="data/run-card.json">Current JSON run card</a></div></footer>
 </body></html>

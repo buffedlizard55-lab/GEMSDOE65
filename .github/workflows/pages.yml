@@ -1,14 +1,11 @@
-name: Refresh leaderboard and publish research site
+name: Publish research site
 
 on:
   push:
     branches: [main]
     paths:
       - "docs/**"
-      - "scripts/refresh_leaderboard.py"
       - ".github/workflows/pages.yml"
-  schedule:
-    - cron: "17 4 * * *"
   workflow_dispatch:
 
 permissions:
@@ -29,30 +26,6 @@ jobs:
     steps:
       - name: Check out the triggering branch
         uses: actions/checkout@v4
-      - name: Refresh public leaderboard feed
-        id: refresh
-        shell: bash
-        run: |
-          if python3 scripts/refresh_leaderboard.py --output docs/data/leaderboard.json; then
-            echo "state=refreshed" >> "$GITHUB_OUTPUT"
-          else
-            echo "state=stale" >> "$GITHUB_OUTPUT"
-            echo "::warning::Leaderboard refresh failed; publishing the last validated snapshot with a stale-data warning."
-          fi
-      - name: Mark retained snapshot as stale
-        if: steps.refresh.outputs.state == 'stale'
-        run: |
-          python3 - <<'PY'
-          import json
-          from pathlib import Path
-          path = Path("docs/data/leaderboard.json")
-          data = json.loads(path.read_text(encoding="utf-8"))
-          data["refresh_status"] = "stale"
-          data["refresh_warning"] = "The scheduled page fetch or validation failed; the prior verified snapshot was retained. Visit the official leaderboard for current values."
-          temporary = path.with_name(path.name + ".tmp")
-          temporary.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-          temporary.replace(path)
-          PY
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
       - name: Verify Pages uses workflow deployments

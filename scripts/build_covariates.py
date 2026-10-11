@@ -5,7 +5,7 @@ import json, sys, time
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import _bootstrap  # noqa: F401
-from gems65 import covariates as cov
+from gems65 import covariates_sar2inv as cov
 from gems65.paths import CACHE, COVARIATE_CACHE, EXTERNAL, FEATURES_TIF
 
 def main() -> None:

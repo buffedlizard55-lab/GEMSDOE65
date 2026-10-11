@@ -1,0 +1,102 @@
+{
+  "evidence_class": "REGISTRY-MEASUREMENT",
+  "question": "did two independent implementations of the same lane converge?",
+  "candidate": {
+    "file": "gemsdoe65-gems65-sar2inv-a2-38k-20261011T220214Z-296a58fcf2a6-zeros.tif",
+    "sha256": "9cd84cbe98fcc4eebfdabd497c2b69c79cc293563b91a353d45ecdffbc7e2582",
+    "dots": 38000
+  },
+  "comparators": "every other raster published under docs/downloads/ by the first lane-65 session (arena/1217c9a0-gemsdoe65)",
+  "limits": {
+    "rho": 0.9,
+    "forward_overlap": 0.7,
+    "jaccard": 0.5
+  },
+  "n_comparators": 6,
+  "worst_spearman": 0.01695506185648723,
+  "worst_spearman_on_dot_union": -0.9758157894736843,
+  "worst_forward_overlap": 0.2873421052631579,
+  "worst_jaccard": 0.012240114010202315,
+  "duplicate_by_any_limit": false,
+  "rows": [
+    {
+      "file": "gems65-h65-sarpu-em-a25-20261011T210925Z-ab265805d584-nan.tif",
+      "sha256": "7c1c42eab2b60563ba1ab2e859e533f7c44fac9d7800d83a52a28d0ac5ecd72d",
+      "their_dots": 38000,
+      "spearman_full_footprint": 0.01695506185648723,
+      "spearman_on_dot_union": -0.9758157894736843,
+      "n_dot_union": 75081,
+      "my_dots_within_3px_of_theirs": 0.2775526315789474,
+      "their_dots_within_3px_of_mine": 0.3630263157894737,
+      "jaccard_dot_sets": 0.012240114010202315,
+      "duplicate_by_rho": false,
+      "duplicate_by_overlap": false
+    },
+    {
+      "file": "gems65-h65-sarpu-em-a25-20261011T210925Z-ab265805d584-zeros.tif",
+      "sha256": "0d45d8bfae1fc498e094b8f235925733f5b8fe644a6ab43d9ce8c3fb2c125a91",
+      "their_dots": 38000,
+      "spearman_full_footprint": 0.01695506185648723,
+      "spearman_on_dot_union": -0.9758157894736843,
+      "n_dot_union": 75081,
+      "my_dots_within_3px_of_theirs": 0.2775526315789474,
+      "their_dots_within_3px_of_mine": 0.3630263157894737,
+      "jaccard_dot_sets": 0.012240114010202315,
+      "duplicate_by_rho": false,
+      "duplicate_by_overlap": false
+    },
+    {
+      "file": "gems65-h65-sarpu-nnpu-a25-20261011T210925Z-2c0eded4e49d-nan.tif",
+      "sha256": "95d81818738f3ad764f6ffbb45ae9f0449eac044bfe2da48d5ac5b18bc92cd94",
+      "their_dots": 38000,
+      "spearman_full_footprint": 0.012395213703506646,
+      "spearman_on_dot_union": -0.9803421052631579,
+      "n_dot_union": 75253,
+      "my_dots_within_3px_of_theirs": 0.2873421052631579,
+      "their_dots_within_3px_of_mine": 0.3823684210526316,
+      "jaccard_dot_sets": 0.009926514557559166,
+      "duplicate_by_rho": false,
+      "duplicate_by_overlap": false
+    },
+    {
+      "file": "gems65-h65-sarpu-nnpu-a25-20261011T210925Z-2c0eded4e49d-zeros.tif",
+      "sha256": "bf816f8eca196d1af16d48e4242ef3ddc7bf2843c9b9cbae8aaac9510499e7d3",
+      "their_dots": 38000,
+      "spearman_full_footprint": 0.012395213703506646,
+      "spearman_on_dot_union": -0.9803421052631579,
+      "n_dot_union": 75253,
+      "my_dots_within_3px_of_theirs": 0.2873421052631579,
+      "their_dots_within_3px_of_mine": 0.3823684210526316,
+      "jaccard_dot_sets": 0.009926514557559166,
+      "duplicate_by_rho": false,
+      "duplicate_by_overlap": false
+    },
+    {
+      "file": "gems65-h65-sarpu-sar-a25-20261011T210925Z-0b2fb70e136c-nan.tif",
+      "sha256": "95a40d855b74cc6b20ea24eb5de362a968a00dc9dae3f3d8dd818f8f877ff5d1",
+      "their_dots": 38000,
+      "spearman_full_footprint": 0.016398336209902404,
+      "spearman_on_dot_union": -0.9763684210526316,
+      "n_dot_union": 75102,
+      "my_dots_within_3px_of_theirs": 0.2708421052631579,
+      "their_dots_within_3px_of_mine": 0.3575263157894737,
+      "jaccard_dot_sets": 0.011957071715799846,
+      "duplicate_by_rho": false,
+      "duplicate_by_overlap": false
+    },
+    {
+      "file": "gems65-h65-sarpu-sar-a25-20261011T210925Z-0b2fb70e136c-zeros.tif",
+      "sha256": "12fd9595e631ddbb6e5624b73c8d5ae92a26f1e05528fc960967d20c6bfd37f4",
+      "their_dots": 38000,
+      "spearman_full_footprint": 0.016398336209902404,
+      "spearman_on_dot_union": -0.9763684210526316,
+      "n_dot_union": 75102,
+      "my_dots_within_3px_of_theirs": 0.2708421052631579,
+      "their_dots_within_3px_of_mine": 0.3575263157894737,
+      "jaccard_dot_sets": 0.011957071715799846,
+      "duplicate_by_rho": false,
+      "duplicate_by_overlap": false
+    }
+  ],
+  "reading": "a low rank-correlation and a low dot overlap between two sessions of the same lane means they placed mass in different places, i.e. the lane's answer is not reproducible across implementations -- which is itself the most important cross-session result and is reported as such, not hidden."
+}

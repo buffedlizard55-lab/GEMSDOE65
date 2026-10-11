@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Regenerate the RESULTS section of README.md from the committed receipts.
+"""Regenerate this session's RESULTS block in README.md from the committed receipts.
 
 The README's numbers are generated, not typed: this script reads
 ``evidence/e1b_px5.json`` (the gated experiment), ``evidence/e1_px5.json`` (the
@@ -143,10 +143,13 @@ variant kept: `{rf['kept']}` ({rf['variants'][rf['kept']]['pixels']:,} isoline p
 {rf['variants'][rf['kept']]['bias_auc_catalogue_vs_sgmc_offcat']:.4f}), byte-identical to the
 stored covariate.
 
-Full receipts: [`evidence/`](evidence/) · site:
-<https://buffedlizard55-lab.github.io/GEMSDOE65/> · irregularities:
-[`docs/irregularities.md`](docs/irregularities.md) · pass-3 re-check:
-[`docs/research/review-pass3.md`](docs/research/review-pass3.md)
+Full receipts: [`evidence/`](evidence/) · this session's pages:
+[`docs/lane65b/index.html`](docs/lane65b/index.html)
+(<https://buffedlizard55-lab.github.io/GEMSDOE65/docs/lane65b/>) · irregularities:
+[`docs/research/irregularities-lane65b.md`](docs/research/irregularities-lane65b.md) ·
+pass-3 re-check: [`docs/research/review-pass3.md`](docs/research/review-pass3.md) ·
+shared-template divergence: [`vendor/template60/PROVENANCE.md`](vendor/template60/PROVENANCE.md) ·
+cross-session drift: [`evidence/cross_session_drift.json`](evidence/cross_session_drift.json)
 {END}"""
 
 
@@ -159,7 +162,17 @@ def main() -> None:
     elif "<!--RESULTS-->" in s:
         s = s.replace("<!--RESULTS-->", block)
     else:
-        raise SystemExit("no RESULTS marker in README.md")
+        # the canonical README (from the first lane-65 session) has no marker:
+        # append this session's block instead of rewriting anything
+        s = s.rstrip("\n") + "\n\n---\n\n## Second independent lane-65 session " \
+            "(`arena/98cb5eb2-gemsdoe65`, 2026-10-11)\n\n" \
+            "Merged into the canonical repository without overwriting any of it: the first\n" \
+            "lane-65 session (`arena/1217c9a0-gemsdoe65`, PRs #7 and #9) keeps the canonical\n" \
+            "site, run card, guards and tests; this session's pages live under\n" \
+            "[`docs/lane65b/`](docs/lane65b/index.html) and its receipts are separately named.\n" \
+            "Both sessions reached a **negative** verdict by different routes, and the\n" \
+            "cross-session drift check shows the two fields are not duplicates.\n\n" \
+            + block + "\n"
     p.write_text(s)
     print(f"[readme] results block regenerated ({len(block):,} chars)")
 

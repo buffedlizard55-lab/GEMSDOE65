@@ -1,0 +1,55 @@
+{
+  "hypothesis": "Catalogue inclusion is Selected At Random conditional on a small set of observables; correcting this visibility/mapping propensity with SAR-EM and propensity-aware risk could improve recovery of withheld fault segments versus nnPU.",
+  "mechanism": "Relief, slope, verified DEM-source coverage (1 m GeoDAWN lidar versus coarser 3DEP where locally confirmed), a gravity-derived basin-fill proxy, and distance to an independently mapped range front may alter the probability that an actual fault is mapped and enters the catalogue. Estimate e(x) with SAR-EM; use the Bekker–Robberechts–Davis propensity-aware empirical risk with inverse-propensity weights clipped at 10; compare to nnPU on identical buffered spatial folds.",
+  "named_non_fault_process_that_could_mimic_it": "Landslide scarps and erosional drainage breaks can produce steep local relief and slope gradients that resemble fault scarps; lithologic contacts can also create linear topographic or gravity contrasts.",
+  "holdout_dti": {
+    "evidence_label": "HOLDOUT-DTI",
+    "status": "NOT COMPUTED — required shared evaluator, training data, labels, and segment-fold artifacts are absent from this checkout.",
+    "evaluator_version": null,
+    "withheld_positive_count": null,
+    "score": null,
+    "ci95": {
+      "status": "NOT COMPUTED",
+      "lower": null,
+      "upper": null
+    }
+  },
+  "model_comparison": {
+    "status": "NOT RUN",
+    "candidate": "SAR-EM propensity-aware empirical risk",
+    "baseline": "nnPU",
+    "current_holdout_best": "NOT ESTABLISHED",
+    "same_folds": null,
+    "overall_gate": "NOT TESTED — promotion requires beating both the current holdout best and matched nnPU",
+    "highest_propensity_tercile_gate": "NOT TESTED",
+    "single_feature_leakage_canaries": "NOT RUN"
+  },
+  "correlation_overlap_vs_registry": {
+    "status": "NOT COMPUTED — no candidate surface/dots or prior-raster registry is present.",
+    "rank_correlation": null,
+    "fraction_of_dots_within_3_pixels": null,
+    "checked_before_placement": false,
+    "checked_on_final_dots": false
+  },
+  "raster_sha256": null,
+  "validator_output": {
+    "status": "NOT RUN — no candidate TIFF exists.",
+    "no_nan_inside_footprint": null,
+    "values_in_0_1": null,
+    "crs_shape_transform_match": null,
+    "single_band_float32": null
+  },
+  "submission": {
+    "name": null,
+    "note": "No file: holdout, uniqueness, and format gates are not met; do not submit."
+  },
+  "verdict": "negative",
+  "negative_reason": "At session start, the starter checkout contained only the README. The integrated work adds documentation, a static research site, a presence-only readiness audit, and tests; it does not add the required competition data/cache, shared segment hide-and-recover evaluator/writer, or prior-raster registry. A previously merged scheduled leaderboard fetch and mirrored rows were removed after review of DrivenData's Terms of Use; the site now links to the official page without storing rows. No model was trained, no HOLDOUT-DTI was computed, no prior raster was copied, no submission was generated, and no weekly slot was spent.",
+  "sources": [
+    "https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/",
+    "https://proceedings.mlr.press/v94/bekker18a.html",
+    "https://arxiv.org/abs/1809.03207",
+    "https://pangea.stanford.edu/ERE/pdf/IGAstandard/SGW/2025/Giddens.pdf",
+    "https://www.drivendata.org/termsofuse/"
+  ]
+}

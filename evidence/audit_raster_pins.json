@@ -1,0 +1,29 @@
+[
+  {
+    "repo": "17GEMSDOE",
+    "path": "docs/downloads/17GEMSDOE_E-proba-multiscale_20260930T044527Z.tif",
+    "local_path": "data/registry_rasters/17GEMSDOE__17GEMSDOE_E-proba-multiscale_20260930T044527Z.tif",
+    "git_blob_sha": "374c88b1da2b803e2ed160de467fd71ae114010d",
+    "sha256": "ab0a0a62eecf066a82713b09dd49f0f638a91fa3dd81f54cc34ae89afa3872be",
+    "bytes": 25065181,
+    "tree_sha": "6fc71d19d49dca4960d5434bd81b6dd06fcc030a"
+  },
+  {
+    "repo": "GEMSDOE32",
+    "path": "docs/downloads/gemsdoe32-h33-h33-2-b2-20261004T220000Z-e5eb6e7e-zeros.tif",
+    "local_path": "data/registry_rasters/GEMSDOE32__gemsdoe32-h33-h33-2-b2-20261004T220000Z-e5eb6e7e-zeros.tif",
+    "git_blob_sha": "17a76895f68174cc93f3cb1597d25686f6d6bc67",
+    "sha256": "c55bafc470054e8271dcb89347a17e07fefe50de6af6e6ba6c4b169ef7ab6fa9",
+    "bytes": 219065,
+    "tree_sha": "b39e16ee85f83e3291951f56b615d657a071bb2b"
+  },
+  {
+    "repo": "GEMSDOE28",
+    "path": "docs/downloads/gems28-h27-4-r1-solo-d2-8-20261003-8acb75e1f2cc-nan.tif",
+    "local_path": "data/registry_rasters/GEMSDOE28__gems28-h27-4-r1-solo-d2-8-20261003-8acb75e1f2cc-nan.tif",
+    "git_blob_sha": "12b0a4ddf1cf76f2552621b8a8b1a1b88d783786",
+    "sha256": "ab02300152248fdda04e988e2cd2a0c13f35eec42fcf670a15e8b76b19e24a73",
+    "bytes": 1595850,
+    "tree_sha": "0075e226be920326d482340322c318e6a0c265a6"
+  }
+]

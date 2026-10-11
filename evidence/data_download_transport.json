@@ -1,0 +1,74 @@
+[
+  {
+    "repo": "GEMSDOE",
+    "path": "data/bridge/gems-geodawn-numerical-features.tif.part-000",
+    "git_blob_sha": "f34e5143d5e7c10014b5cfe01c85d01bcede4c0a",
+    "bytes": 94371840,
+    "expected_bytes": 94371840,
+    "exit_code": 0,
+    "error": ""
+  },
+  {
+    "repo": "GEMSDOE",
+    "path": "data/bridge/gems-geodawn-numerical-features.tif.part-001",
+    "git_blob_sha": "4bd98099ae505f63cc6c3733954f259974efd290",
+    "bytes": 94371840,
+    "expected_bytes": 94371840,
+    "exit_code": 0,
+    "error": ""
+  },
+  {
+    "repo": "GEMSDOE",
+    "path": "data/bridge/gems-geodawn-numerical-features.tif.part-002",
+    "git_blob_sha": "d6f883ba8822207ac2765445737ecd2ecdfd2914",
+    "bytes": 94371840,
+    "expected_bytes": 94371840,
+    "exit_code": 0,
+    "error": ""
+  },
+  {
+    "repo": "GEMSDOE",
+    "path": "data/bridge/gems-geodawn-numerical-features.tif.part-003",
+    "git_blob_sha": "976977b4ac84c4c9b6fec72495c4e512341de872",
+    "bytes": 94371840,
+    "expected_bytes": 94371840,
+    "exit_code": 0,
+    "error": ""
+  },
+  {
+    "repo": "GEMSDOE",
+    "path": "data/bridge/gems-geodawn-numerical-features.tif.part-004",
+    "git_blob_sha": "41a7bb7b7603c1e7669d8cc8405cfeb5efb5cf0c",
+    "bytes": 41425484,
+    "expected_bytes": 41425484,
+    "exit_code": 0,
+    "error": ""
+  },
+  {
+    "repo": "60GEMSDOE",
+    "path": "data/external/topo_10m_derived_100m_u8.tif",
+    "git_blob_sha": "5388687c1396d98ba4a2298af431361eabd213f1",
+    "bytes": 32523329,
+    "expected_bytes": 32523329,
+    "exit_code": 0,
+    "error": ""
+  },
+  {
+    "repo": "60GEMSDOE",
+    "path": "data/external/lidar_scarp_features_u8.tif",
+    "git_blob_sha": "da733b53147efad5c141ffdb96e469ec5b4da8b8",
+    "bytes": 36943606,
+    "expected_bytes": 36943606,
+    "exit_code": 0,
+    "error": ""
+  },
+  {
+    "repo": "57GEMSDOE",
+    "path": "data/bridge/sample_submission.tif",
+    "git_blob_sha": "7d865a9921a40ed2ea4c742a6a25b1fa2f357c5a",
+    "bytes": 1599597,
+    "expected_bytes": 1599597,
+    "exit_code": 0,
+    "error": ""
+  }
+]

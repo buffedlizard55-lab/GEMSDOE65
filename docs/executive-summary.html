@@ -1,123 +1,14 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>How to submit — GEMSDOE65</title><link rel="stylesheet" href="assets/site.css"></head>
-<body><header><div class="wrap"><h1>GEMSDOE65 — selection-bias-aware PU learning (SAR)
-for the DOE GEMS Prize</h1>
-<div class="mut"><a href="index.html">Submission & results</a> · <a href="executive-summary.html"><b>How to submit</b></a> · <a href="research/hypotheses.html">Hypotheses</a> ·
-<a href="research/why-02778.html">Why 0.2778</a> ·
-<a href="../README.md">README / standing brief</a> ·
-<a href="https://buffedlizard55-lab.github.io/GEMSDOE65">site root</a></div></div></header>
-<main>
-
-<div class="banner bad">
-<h2>DO NOT SUBMIT — research artefact only</h2>
-<p><b>Verdict:</b> <code>DO-NOT-SUBMIT</code> · <b>shipped arm:</b>
-<code>none</code> · <b>reason:</b> primary gate failed: A1_sar did not beat B_nnpu on I1</p>
-<p><b>Submission name:</b> <code>gems65-sar2inv-a2-38k</code><br>
-<b>Note field (≤140 chars):</b> <code>SAR-PU, propensity anchored on 2 public fault inventories; rank P(y|x)*(1-e(x)); 38k dots, 300m NMS, 300m peel</code> (110 characters)</p>
-<p><a class="btn dis" href="downloads/gemsdoe65-gems65-sar2inv-a2-38k-20261011T220214Z-296a58fcf2a6-zeros.tif">⬇ Download
-gemsdoe65-gems65-sar2inv-a2-38k-20261011T220214Z-296a58fcf2a6-zeros.tif</a>
-<a class="btn sec" href="downloads/gemsdoe65-gems65-sar2inv-a2-38k-20261011T220214Z-296a58fcf2a6-zeros.zip">ZIP</a>
-<a class="btn sec" href="downloads/gemsdoe65-gems65-sar2inv-a2-38k-20261011T220214Z-296a58fcf2a6-zeros.json">writer receipt</a>
-<a class="btn sec" href="downloads/gemsdoe65-gems65-sar2inv-a2-38k-20261011T220214Z-296a58fcf2a6-zeros-runcard.json">run card</a>
-<a class="btn sec" href="executive-summary.html">How to submit (step by step)</a></p>
-<p class="mut">sha256 <code>9cd84cbe98fcc4eebfdabd497c2b69c79cc293563b91a353d45ecdffbc7e2582</code> · 150,442 bytes ·
-38,000 positive pixels · float32 · EPSG:32611 ·
-3730×3292 ·
-local format checks: <b>ALL PASSED</b>
-(0 NaN, 0 inf, min 0.0, max 1.0).
-A local format check is not organizer acceptance.</p>
-</div>
-<h2>Executive summary</h2>
-<p><b>One-paragraph version.</b> This lane treats the competition's fault catalogue as
-<i>positives selected with a covariate-dependent probability</i> rather than a random sample
-of all faults. Two independent public inventories of the same ground (the USGS
-QFaults/INGENIOUS compilation that <i>is</i> the catalogue — 96.5&nbsp;%
-coverage at 0 px median distance — and a state geologic map fault layer that overlaps it by
-only 4.5&nbsp;%)
-make the selection bias measurable: the catalogue over-represents deep-basin-fill, low-relief
-ground, the state maps over-represent exposed high-relief ground. The propensity
-<code>e(x)</code> is anchored on that differential, the classifier is trained with a
-propensity-aware risk, and dots are placed where <code>P(fault|x)·(1 − e(x))</code> is
-largest — i.e. where a fault is likely <i>and</i> the catalogue is blind.</p>
-
-<h2>Exactly how to submit this file to DrivenData</h2>
-<ol>
-<li><b>Check the banner at the top of this page.</b> If it says
-<span style="color:var(--ok)"><b>OK TO DOWNLOAD AND SUBMIT</b></span>, the pre-registered
-ship rule passed and the file is cleared for a weekly slot. If it says
-<span style="color:var(--bad)"><b>DO NOT SUBMIT</b></span>, the artefact is for research only
-— download it, read the run card, and do not upload it. The verdict comes from
-<code>registry/preregistration.json</code> applied mechanically to
-<code>evidence/e1_px5.json</code>; no human judgement is involved.</li>
-<li><b>Download the file</b> with the blue button in the banner
-(<code>gemsdoe65-gems65-sar2inv-a2-38k-20261011T220214Z-296a58fcf2a6-zeros.tif</code>). The ZIP contains only this one TIFF, as the portal expects.</li>
-<li><b>Verify the bytes before uploading</b> (30 seconds, protects the slot):
-<pre><code>sha256sum gemsdoe65-gems65-sar2inv-a2-38k-20261011T220214Z-296a58fcf2a6-zeros.tif
-# must equal 9cd84cbe98fcc4eebfdabd497c2b69c79cc293563b91a353d45ecdffbc7e2582</code></pre>
-If it differs, the download was corrupted — re-download, do not upload.</li>
-<li><b>Log in</b> at <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/">
-the competition page</a> → <i>Submit</i> (the submission page shows how many of this week's
-slots remain; slots reset weekly and one submission is scored across both the Initial Prize
-Round and the Final Round).</li>
-<li><b>Upload the single-band GeoTIFF.</b> Accepted format, verified from the official page:
-EPSG:32611 (UTM zone 11N), 100 m pixels, 3730×3292,
-one band, <code>float32</code>, every value in <b>[0, 1]</b>, no NaN/inf anywhere in this
-artefact (mode <code>zeros</code>: outside the study footprint the value is exactly 0.0).
-The historical portal rejection <i>"Predicted values must be in range [0, 1]"</i> is caused by
-NaN or out-of-range values — this artefact cannot produce it, because
-<code>gems57.submission_writer.write_submission</code> refuses to write a field that is not
-already finite and in [0, 1], and <code>gems57.validate</code> re-reads the written file and
-asserts every check before this page is built.</li>
-<li><b>Fill in the name and note fields</b> exactly as below (both ≤ 140 characters):
-<table><tr><th>field</th><th>value</th><th>length</th></tr>
-<tr><td>name</td><td><code>gems65-sar2inv-a2-38k</code></td><td>21</td></tr>
-<tr><td>note</td><td><code>SAR-PU, propensity anchored on 2 public fault inventories; rank P(y|x)*(1-e(x)); 38k dots, 300m NMS, 300m peel</code></td><td>110</td></tr></table></li>
-<li><b>After submission, record the receipt.</b> Copy the score the submission page shows into
-<code>evidence/</code> as an <span class="tag">ORGANIZER-CONFIRMED</span> number, with the
-timestamp, the file sha256 and the remaining slot count. Until that exists, every number on
-this site stays labelled <span class="tag">HOLDOUT-DTI</span> or
-<span class="tag">MEASURED</span> — a projection is never written as a score.</li>
-<li><b>Known faults are masked out of scoring</b> (organizer staff answer in
-<a href="https://community.drivendata.org/t/scoring-clarification-are-known-usgs-ingenious-faults-masked-when-scoring-and-are-they-in-the-final-round-label-set/11516">
-community thread 11516</a>): dots on the catalogue cannot score. This artefact places
-<b>0 dots on catalogue pixels</b> and peels every dot at least
-3.0 px (300 m) away from a mapped pixel.</li>
-</ol>
-
-<h2>What the numbers on this site mean</h2>
-<table>
-<tr><th>label</th><th>meaning</th></tr>
-<tr><td><span class="tag">HOLDOUT-DTI</span></td><td>local measurement on a spatially blocked
-holdout with the shared evaluator <code>gems57-pooled-hide-v2</code>
-(official α=0.2, β=0.8, R=300 m triangular kernel), n = withheld positive pixels, 95% CI from
-a 20 km spatial-block paired bootstrap (1000 draws). Not a
-leaderboard score.</td></tr>
-<tr><td><span class="tag">ORGANIZER-CONFIRMED</span></td><td>copied from a submission-page
-receipt. <b>This site has none</b>: nothing was uploaded.</td></tr>
-<tr><td><span class="tag">MEASURED</span></td><td>a deterministic measurement of local,
-hash-pinned data (pixel counts, AUCs, distances). No model involved.</td></tr>
-<tr><td><span class="tag">OWNER-REPORT</span></td><td>a score reported by the repository owner
-without an organizer receipt (e.g. 0.2778 for <code>h33-h33-2-b2</code>).</td></tr>
-</table>
-
-<h2>Decision rule that produced the verdict (written before any result)</h2>
-<div class="card"><p><code>Ship A2_sar_1me if (i) the primary gate passes for A1_sar over B_nnpu, (ii) A2 does not lose to A1 on I1 by more than the width of its own 95% CI, and (iii) A2 beats A1 on I2. Otherwise ship A1_sar if the gate passes, and if the gate fails ship nothing: log the negative result and mark the artifact DO-NOT-SUBMIT.</code></p>
-<p>Applied: gate point estimate <b>False</b> · gate strict (paired CI
-excludes 0) <b>False</b> · secondary tercile gate
-<b>False</b> · A2 within its own CI width of A1 on I1
-<b>True</b> · A2 beats A1 on I2
-<b>True</b> → shipped arm <code>none</code>.</p></div>
-
-<h2>If the verdict is DO NOT SUBMIT</h2>
-<p>That is a deliverable, not a failure. The run card records the negative result, the exact
-rule that fired, and the numbers that would have to change. The recommended next step is in
-<a href="research/hypotheses.html">the ranked hypotheses</a>: H65-4 (en-echelon stepover /
-relay-ramp gaps) is the cheapest untested mechanism, and H65-2 (LiDAR-conditional
-detectability) changes the emission rule rather than the model.</p>
-</main>
-<footer>Built 2026-10-11 22:11 UTC from committed evidence
-receipts by <code>scripts/build_site.py</code>. Every number carries an evidence class.
-HOLDOUT-DTI is a local blocked-holdout measurement, never a leaderboard score.
-Core values: <b>Maximize P(Win)</b> · <b>Own the Outcome</b>.</footer>
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Submission guide · GEMSDOE65</title><meta name="description" content="Selection-bias-aware fault mapping research. Three sensitivity experiments, verified artifacts, and a fail-closed submission gate.">
+<link rel="stylesheet" href="assets/site.css"><link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<script src="assets/site.js" defer></script></head><body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar"><div class="nav"><a class="brand" href="index.html"><span class="mark" aria-hidden="true">G</span><span><strong>GEMSDOE<span style="color:#d9ad77">65</span></strong><small>Fault discovery lab</small></span></a><nav class="navlinks" aria-label="Main navigation"><a href="index.html">Overview</a><a href="executive-summary.html" aria-current="page">Submission guide</a><a href="research.html">Research</a><a href="sources.html">Sources</a><a href="audit.html">Audit</a><a href="lane65/index.html">Lane 65 run</a><a href="lane65b/index.html">Lane 65 · session B</a></nav><a class="repo-link" href="https://github.com/buffedlizard55-lab/GEMSDOE65">Repository ↗</a></div></header>
+<div class="status-strip"><div class="status-inner"><span><span class="status-dot" aria-hidden="true"></span><strong>NOT CLEARED FOR SUBMISSION</strong> · Negative research result</span><span>No weekly slot used · <a href="executive-summary.html">Read the submission gate →</a></span></div></div>
+<main class="container" id="main"><div class="page-intro"><p class="eyebrow">Executive summary / submission guide</p><h1>Know exactly when it is safe<br>to download and submit.</h1><p class="lead">This run is <strong>not cleared</strong>. A format-valid TIFF exists for audit, but its scientific and uniqueness gates failed. There is no competition-ready download.</p></div><div class="callout"><p id="guide-download-reason"><strong>Do not submit this run.</strong> Do not substitute a historical raster, rename the quarantine file, or upload the JSON evidence as a prediction. No slot has been spent.</p><button class="button" disabled aria-describedby="guide-download-reason">Submission TIFF not released</button></div>
+<div class="grid-2"><section class="panel"><h2>Two separate decisions</h2><div class="path-row"><span class="path-index">A</span><div><h3>Research promotion</h3><p>Requires a matched holdout win, no high-propensity loss, converged/valid fitting, leakage clearance, complete registry checks and format validation.</p></div></div><div class="path-row"><span class="path-index">B</span><div><h3>Real-slot selection</h3><p>A separate selector checks the current submission-page cap, rules and receipt-backed incumbent. Research promotion alone never authorizes an upload.</p></div></div><a href="data/run_card.json" download>Download the negative run card ↓</a></section><section class="panel"><h2>Required TIFF contract</h2><ul><li>One band, <code>float32</code>, <code>EPSG:32611</code>.</li><li>Shape <code>3730 × 3292</code>, 100 m cells.</li><li>Transform <code>(100, 0, 243350, 0, -100, 4508550)</code>.</li><li>Finite values in <code>[0,1]</code> inside the sample footprint.</li><li>NaN only outside the footprint; no negative sentinel inside.</li><li>If zipped, the archive contains exactly one TIFF.</li></ul><p class="compact">Verified against the hash-pinned owner-mirrored sample. Direct official provenance/acceptance is not established.</p><a href="data/validator_output.json">Inspect the on-disk validation receipt →</a></section></div>
+<section class="section panel"><p class="eyebrow">Future passing runs only</p><h2>The submission checklist</h2><div class="path-row"><span class="path-index">01</span><div><h3>Confirm a released candidate exists</h3><p>The top of this site must explicitly show research promotion and a TIFF download linked to a matching SHA256. This run does not. A static website cannot train or safely invent a prediction file in your browser.</p></div></div><div class="path-row"><span class="path-index">02</span><div><h3>Obtain separate selector clearance</h3><p>Read the live <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/">competition rules</a> and submission page. Verify the remaining weekly allowance there; it is unknown here. Log the selector’s decision.</p></div></div><div class="path-row"><span class="path-index">03</span><div><h3>Download only the approved TIFF or one-TIFF ZIP</h3><p>Do not upload this website, a JSON run card, an HTML report, the example raster, or an old submission. Preserve the unique filename and compare its SHA256 to the release receipt.</p></div></div><div class="path-row"><span class="path-index">04</span><div><h3>Run the local validator against the exact file</h3><p>Use <code>python scripts/validate_submission.py path/to/approved.tif</code>. A pass checks representation, not hidden-label performance or organizer acceptance. Any failure blocks upload.</p></div></div><div class="path-row"><span class="path-index">05</span><div><h3>Enter the competition’s “New submission” form</h3><p>After selector clearance, choose the approved TIFF (or single-TIFF ZIP) under “File to submit.” Use the release’s unique name and note of at most 140 characters. Review the current form; it was not accessed in this session.</p></div></div><div class="path-row"><span class="path-index">06</span><div><h3>Keep the actual organizer receipt</h3><p>Only the submission-page receipt can establish acceptance and an ORGANIZER-CONFIRMED score. Record receipt URL, name, file hash, note, date and displayed result. Never replace it with a local projection.</p></div></div></section>
+<section class="section grid-2"><div class="panel"><h2>About the range error</h2><p><code>Predicted values must be in range [0, 1]</code></p><p>The rejected file was not supplied, so its exact cause is unknown. Common causes include raw logits, unbounded rescaling and finite negative nodata sentinels.</p><p>Our pipeline uses sigmoid scores and explicit footprint handling. The writer rejects invalid values instead of silently clipping them. Tests exercise the failure cases.</p></div><div class="panel"><h2>Research identifier, not an upload recommendation</h2><p class="hash">gems65-sar-em-c050-oof-20261011-a40eda4bc662-RESEARCH-ONLY</p><p><strong>Recorded note:</strong></p><p class="compact">SAR-EM c=0.50; five mapping covariates; weights capped at 10; OOF continuous. NEGATIVE: DO NOT SUBMIT.</p><p class="tiny">102 characters. This identifier belongs to the quarantined negative artifact.</p><p><strong>SHA256:</strong></p><p class="hash">356b85a8f08e9b37ac990b1eeffaf5b8de92c424d4ed6f18d04f92011290e9a9</p></div></section></main>
+<footer class="footer"><div><strong>GEMSDOE65</strong> · Selection-bias-aware PU lane<br>Evidence before optimism. Negative results are deliverables.</div><div class="footer-nav"><a href="data/run_card.json" download>Run card JSON</a><a href="lane65/index.html">Lane 65 run card + rasters</a><a href="https://github.com/buffedlizard55-lab/GEMSDOE65/blob/main/README.md">Original brief</a><a href="https://github.com/buffedlizard55-lab/GEMSDOE65">Source code ↗</a><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">Official leaderboard ↗</a><a href="https://www.drivendata.org/termsofuse/">Access terms ↗</a></div></footer>
 </body></html>

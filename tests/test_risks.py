@@ -17,6 +17,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from gems65 import propensity as prop          # noqa: E402
 from gems65.risks import (W_CLIP, MLP, loss_l0, loss_l1, nnpu_risk, sar_risk,  # noqa: E402
                           sigmoid, train)
+from gems65 import common  # canonical pin: vendor/template58 (identical metric.py)
 from gems57 import metric                      # noqa: E402
 
 

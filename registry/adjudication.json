@@ -1,0 +1,54 @@
+{
+  "generated_utc": "2026-10-11T21:21:02Z",
+  "rule_text": "Adjudication rules -- the single source of truth for \"may this file be submitted?\".",
+  "gate_passed": false,
+  "gate_delta_overall": -0.005582694927564115,
+  "gate_delta_top_tercile": -0.013052072362227177,
+  "holdout_reference": {
+    "available": true,
+    "best_dti": 0.09974225408154563,
+    "best_raster": "g32-h32d-submodular-nan.tif",
+    "n_compared": 15,
+    "live_score_of_best": null,
+    "score_class_of_best": "UNSCORED"
+  },
+  "instrument_spearman_holdout_vs_live": -0.43558282208588955,
+  "instrument_note": "the blocked holdout is ANTI-correlated with owner-reported live scores because live scoring masks known-fault pixels while this holdout's truth IS catalogue pixels (IR-65-006); the reference bar of rule R4 is therefore a biased proxy bar, and it is applied as a refusal rule only.",
+  "arms": {
+    "sar": {
+      "holdout_dti": 0.06194993855956694,
+      "verdict": "NEGATIVE",
+      "ok_to_download_and_submit": false,
+      "reason": "pre-registered gate NOT met (higher pooled blocked-holdout DTI overall AND no loss in the highest-propensity tercile); logged as a negative result per protocol, so the experimental arm is never offered for submission",
+      "rules_applied": [
+        "R1:pass",
+        "R2:pass",
+        "R3:fail"
+      ]
+    },
+    "nnpu": {
+      "holdout_dti": 0.06753263348713105,
+      "verdict": "NOT-CLEARED-BELOW-HOLDOUT-BEST",
+      "ok_to_download_and_submit": false,
+      "reason": "blocked-holdout pooled DTI 0.06753263348713105 does not exceed the best registry artifact on the same cells (0.09974, g32-h32d-submodular-nan.tif); standing rule 'do not spend a slot on an idea that has not beaten the current holdout best' therefore refuses it",
+      "rules_applied": [
+        "R1:pass",
+        "R2:pass",
+        "R4:fail"
+      ],
+      "instrument_spearman_vs_live": -0.43558282208588955
+    },
+    "em": {
+      "holdout_dti": 0.06554779105151684,
+      "verdict": "NOT-CLEARED-BELOW-HOLDOUT-BEST",
+      "ok_to_download_and_submit": false,
+      "reason": "blocked-holdout pooled DTI 0.06554779105151684 does not exceed the best registry artifact on the same cells (0.09974, g32-h32d-submodular-nan.tif); standing rule 'do not spend a slot on an idea that has not beaten the current holdout best' therefore refuses it",
+      "rules_applied": [
+        "R1:pass",
+        "R2:pass",
+        "R4:fail"
+      ],
+      "instrument_spearman_vs_live": -0.43558282208588955
+    }
+  }
+}

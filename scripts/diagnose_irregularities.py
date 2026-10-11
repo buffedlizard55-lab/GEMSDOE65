@@ -32,7 +32,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import _bootstrap  # noqa: F401,E402
 
 from gems57.grid import load_grid  # noqa: E402
-from gems65.paths import COVARIATE_CACHE, EVIDENCE, EXTERNAL, ensure_dirs  # noqa: E402
+_bootstrap.assert_template60(load_grid)
+from gems65.paths import COVARIATE_CACHE, DATA, EVIDENCE, EXTERNAL, ensure_dirs  # noqa: E402
 
 TRACE_CSV = EXTERNAL / "trace_segments_utm11.csv"
 
@@ -185,7 +186,7 @@ def range_front_variants(grid, cov) -> dict:
 
 def main() -> None:
     ensure_dirs()
-    grid = load_grid()
+    grid = load_grid(DATA / "bridge")
     z = np.load(COVARIATE_CACHE)
     cov = {k: z[k] for k in z.files}
     a = catalogue_identity(grid, cov)

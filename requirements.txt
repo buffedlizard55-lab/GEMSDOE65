@@ -1,7 +1,14 @@
-numpy>=1.24
-scipy>=1.10
-scikit-learn>=1.2
-rasterio>=1.3
-pandas>=2.0
-shapely>=2.0
-pytest>=7.0
+numpy==2.4.6
+scipy==1.17.1
+scikit-learn==1.9.1
+rasterio==1.4.4
+scikit-image==0.26.0
+pytest==9.1.1
+requests==2.34.2
+markdown2==2.5.5
+pillow==12.3.0
+# --- lane65 additions ---
+pandas==2.3.3
+# --- lane65b additions (independent SAR-PU session 2026-10-11) ---
+shapely==2.2.0
+markdown==3.11

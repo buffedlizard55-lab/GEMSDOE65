@@ -28,6 +28,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import shutil
 import sys
 import time
 from pathlib import Path
@@ -39,10 +40,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import _bootstrap  # noqa: F401,E402
 
 from gems57 import submission_writer, uniqueness, validate  # noqa: E402
+_bootstrap.assert_template60(submission_writer, uniqueness, validate)
 from gems57.grid import load_grid  # noqa: E402
 from gems65 import lane  # noqa: E402
 from gems65.paths import (CACHE, COVARIATE_CACHE, DOWNLOADS, EVIDENCE, EXTERNAL,  # noqa: E402
-                          ROOT, SAMPLE_SUBMISSION, ensure_dirs)
+                          DATA, ROOT, SAMPLE_SUBMISSION, ensure_dirs)
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from run_lane import (BUDGET, EPOCHS, BATCH, HIDDEN, LR, N_UNL, EM_ITERS,  # noqa: E402
@@ -130,7 +132,7 @@ def main() -> None:
     ensure_dirs()
     t0 = time.time()
     stamp = args.stamp or time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
-    grid = load_grid()
+    grid = load_grid(DATA / "bridge")
     cov = load_cov()
     covariates = lane.PRIMARY_COVARIATES
     cat, fp = cov["catalogue"], cov["footprint"]
@@ -224,6 +226,15 @@ def main() -> None:
                                for a in e1["I2_sgmc_offcat"]["scores"]}}
     submission_writer.write_submission(out, pred, SAMPLE_SUBMISSION, fp, note=NOTE,
                                        name=NAME, catalogue=cat, metadata=meta)
+    # The repository publication guard (scripts/check_repository.py, IR-65-009 in the
+    # canonical lane-65 session) allowlists *.tif under docs/downloads only and
+    # forbids tracked *.zip anywhere, so the writer's companion ZIP is parked in the
+    # git-ignored cache and its path is recorded in the run card.
+    zip_src = out.with_suffix(".zip")
+    zip_dst = CACHE / "artifacts" / zip_src.name
+    zip_dst.parent.mkdir(parents=True, exist_ok=True)
+    if zip_src.exists():
+        shutil.move(str(zip_src), str(zip_dst))
     receipt = validate.validate(out, footprint=fp, catalogue=cat)
     validate.assert_submittable(receipt)
     print("[validate]", json.dumps({k: receipt[k] for k in
@@ -251,6 +262,9 @@ def main() -> None:
                     "%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
                 "name": NAME, "note": NOTE, "stamp": stamp,
                 "artifact": str(out), "artifact_sha256": receipt.get("sha256"),
+                "artifact_zip_not_published": str(zip_dst),
+                "artifact_zip_reason": "repository guard forbids tracked *.zip; the portal "
+                                       "accepts the single GeoTIFF directly",
                 "artifact_bytes": receipt.get("bytes"),
                 "verdict": decision["verdict"], "ship_decision": decision,
                 "validation": receipt, "emission_geometry": geom,

@@ -1,0 +1,313 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ranked geological hypotheses</title><link rel="stylesheet" href="assets/site.css"></head>
+<body><header><div class="wrap"><h1>GEMSDOE65 — selection-bias-aware PU learning (SAR)
+for the DOE GEMS Prize</h1>
+<div class="mut"><a href="index.html">Submission & results</a> · <a href="executive-summary.html">How to submit</a> · <a href="research/hypotheses.html">Hypotheses</a> ·
+<a href="research/why-02778.html">Why 0.2778</a> ·
+<a href="research/irregularities.html">Irregularities</a> ·
+<a href="../../README.md">README / standing brief</a> ·
+<a href="../index.html">canonical site</a> ·
+<a href="https://buffedlizard55-lab.github.io/GEMSDOE65/docs/lane65b/">site root</a></div></div></header>
+<main><p class="mut"><a href="../index.html">← back to the submission page</a> · source <code>docs/research/hypotheses-2026-10-11.md</code></p><h1 id="five-new-geological-hypotheses-for-the-doe-gems-prize-competition-306">Five new geological hypotheses for the DOE GEMS Prize (competition 306)</h1>
+<p>Date 2026-10-11 · lane <code>GEMSDOE65</code> (selection-bias-aware PU learning under SAR) ·
+author: autonomous agent run, no human input · budget: 3 experiments / 2 h.</p>
+<p>Every hypothesis below states the <strong>layer</strong> (what physical field is used), the
+<strong>signature/transform</strong> (how it becomes a score), <strong>why it catches faults that the
+USGS QFaults / INGENIOUS catalogue does not contain</strong>, <strong>how it differs from what
+the sibling repositories already did</strong>, the <strong>free official source</strong>, and whether
+that source is <strong>obtainable from this sandbox</strong>. They are ranked by expected DTI
+gain per unit of implementation cost.</p>
+<p>The decisive measurement behind all of them is the <strong>two-inventory differential</strong>
+(<code>evidence/mapping_bias_two_inventory.json</code>, MEASURED, this repo): comparing the
+competition catalogue against the mirrored state-geologic-map fault inventory
+(<code>sgmc_faults_100m.tif</code>, 59,012 pixels more than 300 m from any catalogue pixel)
+gives, as AUCs of a single covariate separating "in the catalogue" from "mapped by
+the state but absent from the catalogue":</p>
+<table>
+<thead>
+<tr>
+<th>covariate</th>
+<th>bias AUC (catalogue vs state-map-only)</th>
+<th>AUC vs state-map-only truth</th>
+<th>AUC vs catalogue</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>depth_to_base_surf</code></td>
+<td><strong>0.6935</strong></td>
+<td>0.3290</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>iso_grav_anom_slope</code></td>
+<td>0.6101</td>
+<td>0.4211</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>lidar_cover</code></td>
+<td>0.5778</td>
+<td>0.4419</td>
+<td>0.5205</td>
+</tr>
+<tr>
+<td><code>grav_basin_fill</code></td>
+<td>0.3446</td>
+<td>0.6175</td>
+<td>0.4593</td>
+</tr>
+<tr>
+<td><code>dist_range_front</code></td>
+<td>0.3391</td>
+<td>0.6440</td>
+<td>0.5064</td>
+</tr>
+<tr>
+<td><code>slope</code></td>
+<td>0.2546</td>
+<td>0.7617</td>
+<td>0.5577</td>
+</tr>
+<tr>
+<td><code>relief_local</code></td>
+<td>0.2464</td>
+<td><strong>0.7740</strong></td>
+<td>0.5633</td>
+</tr>
+<tr>
+<td><code>height_above_base</code></td>
+<td>0.2011</td>
+<td>0.7687</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>Read it as: <strong>the catalogue over-represents deep-basin-fill, low-relief,
+low-slope ground far from the range front; the state geologic maps over-represent
+exposed, high-relief, steep ground near the range front.</strong> Both are <em>fault</em> maps
+of the same terrain. That single differential is the observable form of selection
+bias, and it is what a SAR (selected-at-random <em>given covariates</em>) model is built
+to exploit. Note it is the <strong>inverse</strong> of the naive expectation ("steep scarps are
+easy to see, so they must be over-mapped") — the catalogue is a
+geophysics-informed compilation carrying many <em>Inferred</em> basin-margin faults,
+while state geologic maps are bedrock-exposure maps.</p>
+<hr />
+<h2 id="h65-1-two-inventory-propensity-implemented-top-candidate-rank-1">H65-1 — Two-inventory propensity (implemented; top candidate) — rank 1</h2>
+<ul>
+<li><strong>Layer:</strong> the five pinned covariates (local relief, slope, gravity-derived
+  basin-fill proxy, LiDAR coverage, distance to the range front) plus a <em>second
+  public fault inventory</em> used as the reference population.</li>
+<li><strong>Signature/transform:</strong> fit <code>q(x) = P(in catalogue | in catalogue ∪ state-map-only, x)</code>
+  by logistic regression on the two inventories' pixels, then invert
+  <code>q = e/(e + c(1-e))</code> to
+  <code>e(x; c) = c·q(x) / (1 − q(x) + c·q(x))</code>.
+  <code>c</code> is the completeness of the reference inventory — the single documented
+  sensitivity parameter. Rank the field by <code>P(y=1|x)·(1 − e(x))</code> and train with the
+  propensity-aware empirical risk of Bekker, Robberechts &amp; Davis (arXiv:1809.03207),
+  weights <code>w = min(1/e, 10)</code>, <code>v = min((1−e)/e, 10)</code>, normaliser <code>ρ = P(s=1)</code> from
+  population counts.</li>
+<li><strong>Why it catches catalogue-missing faults:</strong> <code>1 − e(x)</code> is large exactly where
+  the catalogue under-samples relative to an independent inventory of the <em>same</em>
+  physical objects — measured here as exposed, high-relief, steep, near-range-front
+  ground (bias AUCs 0.20–0.34). An expert panel working from 1 m LiDAR finds
+  scarps there; a geophysics-inferred compilation does not. The family's own
+  ladder says the prize is in <em>re-ranking the same mass</em>, not in adding mass
+  (<code>60GEMSDOE/docs/research/why-02778-and-what-beats-it-2026-10-11.md</code>,
+  OWNER-REPORT: mean credit 0.135/dot = 2.4× break-even at DTI 0.2778, so raising
+  credit/dot to 0.150 ≈ 0.30 and to 0.19 ≈ 0.36).</li>
+<li><strong>Differs from the repo family:</strong> no sibling lane used a <em>second inventory</em> as a
+  propensity reference. <code>60GEMSDOE</code> used distance-to-catalogue, trace morphology,
+  multiline corroboration and ring-peel geometry; <code>61GEMSDOE</code> used LiDAR scarp
+  descriptors. Those are all <em>positive-evidence</em> layers. This one is a
+  <em>selection-model</em> layer: it changes the risk functional and the ranking, not the
+  features.</li>
+<li><strong>Free official source:</strong> state geologic map fault traces via the mirrored
+  <code>sgmc_faults_100m.tif</code> already in this sandbox (public-repository derivative,
+  hash-pinned); QFaults/INGENIOUS via
+  <a href="https://www.usgs.gov/programs/earthquake-hazards/faults">https://www.usgs.gov/programs/earthquake-hazards/faults</a> and
+  <a href="https://gdr.openei.org/submissions/1391">https://gdr.openei.org/submissions/1391</a> (INGENIOUS, DOI 10.15121/1881483).</li>
+<li><strong>Obtainable here:</strong> yes — both inventories are local and hash-pinned. Verified
+  in this run: rasterising <code>trace_segments_utm11.csv</code> (1,126 QFaults/INGENIOUS
+  segment rows, all 84,331 rasterised) covers <strong>96.54 %</strong> of the
+  catalogue at median distance <strong>0 px</strong> (max 1 px), so the catalogue <em>is</em> the
+  QFaults/INGENIOUS compilation (<code>evidence/catalogue_identity.json</code>).</li>
+<li><strong>Cost:</strong> low (one logistic fit per fold). <strong>Expected gain:</strong> the whole lane.</li>
+</ul>
+<h2 id="h65-2-lidar-coverage-conditional-detectability-of-the-final-label-set-rank-2">H65-2 — LiDAR-coverage-conditional detectability of the <em>final</em> label set — rank 2</h2>
+<ul>
+<li><strong>Layer:</strong> <code>lidar_cover</code> from the official 19-band stack (12-band quantised
+  LiDAR scarp descriptors; 0 = no LiDAR). Measured: LiDAR is valid over 3,894,460
+  px = 31.72 % of the grid = <strong>75.37 % of the scored footprint</strong>.</li>
+<li><strong>Signature/transform:</strong> treat LiDAR presence as a <em>detectability</em> multiplier for
+  the panel that produces the private expert truth, not as a fault predictor
+  (measured AUC vs catalogue 0.5205 ≈ random, so it carries almost no direct
+  fault signal). Multiply the emitted field by a monotone function of coverage and
+  spend budget preferentially in covered ground; in uncovered ground emit only
+  where two independent lines of evidence agree.</li>
+<li><strong>Why it catches missing faults:</strong> the final-round label set is an expert panel's
+  map. In the 24.6 % of the footprint with no 1 m LiDAR the panel must fall back on
+  aerial imagery and geophysics, which is precisely where <em>both</em> public inventories
+  disagree with each other most (state-map-only pixels are slightly <strong>more</strong> likely
+  in uncovered ground: AUC 0.4419 &lt; 0.5). Disagreement between inventories is the
+  highest-yield place to put a dot.</li>
+<li><strong>Differs from the repo family:</strong> <code>61GEMSDOE</code> used LiDAR scarp <em>descriptors</em> as
+  positive evidence and documented 10 failed tiles of 716 and a 1–2 m datum offset.
+  This hypothesis uses coverage as an <em>uncertainty</em> variable in the emission rule.</li>
+<li><strong>Free official source:</strong> USGS 3DEP <a href="https://www.usgs.gov/3d-elevation-program">https://www.usgs.gov/3d-elevation-program</a>,
+  staged products at <code>s3://prd-tnm/StagedProducts/Elevation/1m/</code> (the family's OCR
+  of the official DEM-links PDF matched 722 tile/project pairs, dominated by
+  <code>NV_WestCentral_EarthMRI_2020_D20</code> (556), <code>NV_EastCentral_2021_D21</code> (115),
+  <code>CA_SierraNevada_B22</code> (22)).</li>
+<li><strong>Obtainable here:</strong> the quantised layer is local; the raw 1 m tiles are <strong>not</strong>
+  reachable from this sandbox (<code>usgs.gov</code> and the Dropbox mirrors return HTTP 000).
+  Reported as a limitation, not assumed away.</li>
+<li><strong>Cost:</strong> low. <strong>Expected gain:</strong> medium; it mostly re-allocates budget.</li>
+</ul>
+<h2 id="h65-3-range-front-structural-inheritance-done-properly-rank-3">H65-3 — Range-front structural inheritance, done properly — rank 3</h2>
+<ul>
+<li><strong>Layer:</strong> a real range-front / basin-margin trace, not a proxy. This run
+  compared four operationalizations (<code>evidence/range_front_variants.json</code>):
+  A = 50 m isoline of <code>det_elev</code> above a 5 km local minimum (160,275 px, bias AUC
+  <strong>0.6609</strong>), B = toe-of-front (87,865 px, 0.5962), C = 30–250 m + slope ≥ 0.08
+  (231,990 px, 0.6178), D = basin-edge (64,060 px, 0.6202). Variant A was kept
+  because it carries the two-inventory differential best, and it is documented as a
+  <strong>proxy of limited geomorphic fidelity</strong>.</li>
+<li><strong>Signature/transform:</strong> distance-to-front as a <em>covariate inside the propensity</em>
+  (already done) plus, in the upgrade, a front-parallel anisotropy term: emit along
+  strike, not across it, using <code>gems57.network.segments</code>.</li>
+<li><strong>Why it catches missing faults:</strong> basin-margin normal faults are the dominant
+  Quaternary structure in this extensional province; the catalogue's distance
+  distribution to the proxy front is shifted <em>farther</em> than the state maps'
+  (stored <code>dist_range_front</code> AUC vs state-map-only 0.6440 vs bias AUC 0.3391),
+  i.e. the catalogue systematically omits the front-proximal segment population.</li>
+<li><strong>Differs from the repo family:</strong> <code>60GEMSDOE</code> H70/H71 worked on
+  mapped-but-uncatalogued <em>structures</em>; nothing in the family built a range-front
+  surface.</li>
+<li><strong>Free official source:</strong> 10 m/1 m DEM (3DEP, above) + GSRM v2.1 strain rate
+  (already a band in the official stack) + GeoDAWN ScienceBase item
+  <code>657e1d85d34e23d3533209f7</code>.</li>
+<li><strong>Obtainable here:</strong> partially — DEM-derived bands are in the stack; raw 3DEP is not.</li>
+<li><strong>Cost:</strong> medium. <strong>Expected gain:</strong> medium.</li>
+</ul>
+<h2 id="h65-4-en-echelon-stepover-relay-ramp-gaps-rank-4">H65-4 — En-echelon stepover / relay-ramp gaps — rank 4</h2>
+<ul>
+<li><strong>Layer:</strong> catalogue trace geometry itself (segment endpoints, stepovers,
+  hard-linked vs soft-linked tips) via <code>gems57.network.segments</code>.</li>
+<li><strong>Signature/transform:</strong> score the <em>gap</em> between two mapped segment tips whose
+  azimuths are within ~20° and whose separation is 300–1500 m; emit one dot per
+  relay ramp.</li>
+<li><strong>Why it catches missing faults:</strong> Quaternary normal-fault systems in this
+  province grow by linkage; a relay ramp between two mapped segments is a real,
+  mappable fault that a compilation drawn from older 1:250,000 sheets routinely
+  leaves as two disjoint traces. The catalogue is 1-px-wide thin lines
+  (3×3 erosion leaves 24 of 60,988 px), 3,199 components, median 12 px, max 360 px
+  — i.e. it is <em>fragmented</em>, which is exactly the precondition for this hypothesis.</li>
+<li><strong>Differs from the repo family:</strong> <code>h19-4-multiline-corroborated</code> counted
+  corroborating lines; this scores <em>unmapped linkage geometry between</em> them.</li>
+<li><strong>Free official source:</strong> QFaults (above) + the family's rasterised
+  <code>trace_segments_utm11.csv</code> (local, verified).</li>
+<li><strong>Cost:</strong> medium. <strong>Expected gain:</strong> medium-high but narrow (few thousand pixels
+  of candidate space), so it cannot carry a full 38,000-dot budget alone.</li>
+</ul>
+<h2 id="h65-5-isostatic-residual-gradient-lineaments-buried-range-fronts-rank-5">H65-5 — Isostatic-residual gradient lineaments (buried range fronts) — rank 5</h2>
+<ul>
+<li><strong>Layer:</strong> <code>iso_grav_anom_slope</code> (isostatic residual gravity gradient, from
+  <code>mrdata.usgs.gov/gravity/isostatic/</code>).</li>
+<li><strong>Signature/transform:</strong> ridge/lineament extraction on the gradient magnitude,
+  restricted to basin fill (<code>grav_basin_fill</code> high, <code>depth_to_base_surf</code> high).</li>
+<li><strong>Why it catches missing faults:</strong> a buried range front has no surface expression
+  but a sharp basement-depth discontinuity. This is the <em>complement</em> of H65-1: the
+  catalogue over-represents exactly this environment (bias AUC 0.6935 for
+  <code>depth_to_base_surf</code>, 0.6101 for the gradient), so a panel with LiDAR will
+  <strong>not</strong> confirm many of them, while a panel with gravity will. High variance,
+  and it fights the H65-1 ranking, so it is ranked last despite being the
+  strongest single bias carrier.</li>
+<li><strong>Free official source:</strong> USGS isostatic gravity <a href="https://mrdata.usgs.gov/gravity/isostatic/">https://mrdata.usgs.gov/gravity/isostatic/</a>,
+  DOI 10.5066/P9MQRCBY / 10.5066/P9TWT2LU.</li>
+<li><strong>Obtainable here:</strong> as bands in the official stack; <code>mrdata.usgs.gov</code> unreachable
+  from the sandbox.</li>
+<li><strong>Cost:</strong> medium. <strong>Expected gain:</strong> low-medium, direction uncertain.</li>
+</ul>
+<hr />
+<h2 id="ranking-summary-expected-dti-gain-implementation-cost">Ranking summary (expected DTI gain ÷ implementation cost)</h2>
+<table>
+<thead>
+<tr>
+<th>rank</th>
+<th>hypothesis</th>
+<th>expected gain</th>
+<th>cost</th>
+<th>obtainable in-sandbox</th>
+<th>status in this run</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>H65-1 two-inventory propensity</td>
+<td>high (re-ranks all 38,000 dots)</td>
+<td>low</td>
+<td>yes, hash-pinned</td>
+<td><strong>implemented + gated</strong></td>
+</tr>
+<tr>
+<td>2</td>
+<td>H65-2 LiDAR-conditional detectability</td>
+<td>medium (budget re-allocation)</td>
+<td>low</td>
+<td>layer yes, raw tiles no</td>
+<td>covariate in the model; emission rule not implemented</td>
+</tr>
+<tr>
+<td>3</td>
+<td>H65-3 real range front</td>
+<td>medium</td>
+<td>medium</td>
+<td>partial</td>
+<td>proxy variant A implemented as a covariate</td>
+</tr>
+<tr>
+<td>4</td>
+<td>H65-4 stepover/relay gaps</td>
+<td>medium-high but narrow</td>
+<td>medium</td>
+<td>yes</td>
+<td>not implemented (budget cap)</td>
+</tr>
+<tr>
+<td>5</td>
+<td>H65-5 gravity lineaments</td>
+<td>low-medium, sign uncertain</td>
+<td>medium</td>
+<td>bands yes</td>
+<td>measured, deliberately not used for ranking</td>
+</tr>
+</tbody>
+</table>
+<h2 id="what-was-validated-before-any-submission-slot-was-touched">What was validated before any submission slot was touched</h2>
+<p>The top candidate was validated on <strong>two</strong> spatially-blocked instruments built with
+the shared, hash-pinned evaluator (<code>gems57.evaluate_holdout</code>, version
+<code>gems57-pooled-hide-v2</code>, official α=0.2, β=0.8, R=300 m):</p>
+<ul>
+<li><strong>I1 hide-and-recover</strong> — <code>gems57.holdout.buffered_component_draw(seed=20,
+  hide_frac=0.20, buffer_px=3)</code>: whole 8-connected catalogue components withheld,
+  3 px feature-context collar removed, nearest visible catalogue pixel 3.162 px
+  from withheld truth, 11,321 withheld positive pixels over 4 folds
+  (NW 1,923 / NE 2,367 / SW 3,781 / SE 3,250).</li>
+<li><strong>I2 state-map-only</strong> — truth = 59,012 mapped fault pixels more than 3 px from
+  the catalogue, scored leave-one-quadrant-out so the propensity anchor never sees
+  the pixels it is scored on.</li>
+</ul>
+<p>Leakage canary (<code>evidence/leakage_canary.json</code>, MEASURED): no single covariate
+reaches AUC 0.90 against withheld truth. Worst = <code>dist_to_visible_catalogue</code>
+0.7548 (the legitimate control signal), then <code>relief_local</code> 0.5665, <code>slope</code> 0.5636,
+<code>lidar_cover</code> 0.5329, <code>dist_range_front</code> 0.5064, <code>grav_basin_fill</code> 0.4593.</p>
+<p><strong>No submission slot was spent by this session</strong>; promotion is a separate selector
+step, per the standing instruction.</p></main>
+<footer>Built 2026-10-11 22:40 UTC from committed evidence
+receipts by <code>scripts/build_site.py</code>. Every number carries an evidence class.
+HOLDOUT-DTI is a local blocked-holdout measurement, never a leaderboard score.
+Core values: <b>Maximize P(Win)</b> · <b>Own the Outcome</b>.</footer>
+</body></html>

@@ -45,13 +45,15 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import _bootstrap  # noqa: F401,E402
 
 from gems57 import evaluate_holdout, metric  # noqa: E402
+_bootstrap.assert_template60(evaluate_holdout, metric)
 from gems57.grid import load_grid, read_geotiff  # noqa: E402
 from gems57.holdout import buffered_component_draw, quadrant_ids  # noqa: E402
 from gems65.anchor import AnchorFit, C_GRID, e_from_q  # noqa: E402
-from gems65 import covariates as covmod  # noqa: E402
+from gems65 import covariates_sar2inv as covmod  # noqa: E402
 from gems65 import lane  # noqa: E402
-from gems65.paths import (CACHE, COVARIATE_CACHE, DOWNLOADS, EVIDENCE, EXTERNAL,  # noqa: E402
-                          FEATURES_TIF, REGISTRY, SAMPLE_SUBMISSION, ensure_dirs)
+from gems65.paths import (CACHE, COVARIATE_CACHE, DATA, DOWNLOADS, EVIDENCE,  # noqa: E402
+                          EXTERNAL, FEATURES_TIF, REGISTRY, SAMPLE_SUBMISSION,
+                          ensure_dirs)
 
 HIDE_FRAC = 0.20
 BUFFER_PX = 3
@@ -496,7 +498,7 @@ def main() -> None:
     ap.add_argument("stage", choices=["bias", "canary", "e1", "e1b", "e2"])
     args = ap.parse_args()
     ensure_dirs()
-    grid = load_grid()
+    grid = load_grid(DATA / "bridge")
     cov = load_cov()
     print(f"[grid] footprint {int(cov['footprint'].sum())} catalogue "
           f"{int(cov['catalogue'].sum())} feat_ok {int(cov['feat_ok'].sum())}", flush=True)

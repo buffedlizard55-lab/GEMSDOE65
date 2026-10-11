@@ -1,9 +1,32 @@
-# Large inputs are fetched, never committed: 400 MB official feature stack,
-# 143 MB mirrored external layers, 46 MB registry raster corpus.
+.venv/
 .cache/
+__pycache__/
+.pytest_cache/
+*.py[cod]
+node_modules/
+data/raw/
+data/cache/
+data/external/
+data/registry_rasters/
+artifacts/
+!artifacts/.gitkeep
+*.egg-info/
+.env
+coverage/
+.DS_Store
+/data/
+/cache/
+/runs/
+/registry/rasters/
+.mypy_cache/
+*.tmp
+# --- lane65 additions (session 2026-10-11) ---
+*.tif.part-*
+*.pyc
+# --- lane65b additions (independent SAR-PU session 2026-10-11) ---
 data/external/*.tif
 *.part-[0-9][0-9][0-9]
-__pycache__/
-*.pyc
-.venv/
-.pytest_cache/
+# official grid rasters are restored by scripts/00_restore_data.py (canonical) or
+# scripts/_bootstrap.py; the repository guard forbids tracking *.tif outside the
+# docs/downloads allowlist
+data/bridge/*.tif

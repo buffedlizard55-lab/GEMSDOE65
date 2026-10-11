@@ -29,6 +29,73 @@ A **new model-derived research GeoTIFF was generated**, not copied from a prior 
 356b85a8f08e9b37ac990b1eeffaf5b8de92c424d4ed6f18d04f92011290e9a9
 ```
 
+## Lane 65 result — SAR propensity-aware PU (session 2026-10-11, merged from `arena/1217c9a0-gemsdoe65`)
+
+A second, independent implementation of the same lane, run to completion: propensity EM
+(Bekker & Davis 2018 Definition 2 risk, weights clipped at 10) against an nnPU baseline on
+**identical folds**, gated on 8 spatially blocked hide-and-recover cells, then built into three
+38,000-dot rasters, validated, duplicate-checked against the 15-raster registry corpus and
+adjudicated by one shared rule set (`src/gems65/adjudicate.py`, rules R1–R5).
+
+**Its verdict agrees with the canonical one above: NEGATIVE — NOT CLEARED FOR SUBMISSION.**
+
+| arm | HOLDOUT-DTI (8 blocked cells) | verdict | rule |
+|---|---|---|---|
+| `sar` — the lane's hypothesis | 0.06195 | **NEGATIVE** | R3 — gate not met: nnPU 0.06753, Δ -0.00558, CI95 [-0.01216, -0.00063], wins 2/8; top-propensity tercile Δ -0.01305 |
+| `nnpu` — baseline | 0.06753 | **NOT CLEARED** | R4 — below the current holdout best 0.09974 (`g32-h32d-submodular-nan.tif`) |
+| `em` — baseline | 0.06555 | **NOT CLEARED** | R4 — same bar |
+
+All six files are format-valid and unique (max registry rank-correlation 0.0187, max 3-px dot
+overlap 0.3642, zero mass on masked catalogue pixels, zero NaN inside the 5,167,373-px footprint,
+values in [0,1]). The negative result is *clean*: leakage canary max single-feature AUC
+0.5738 over 28 features, and the verdict holds across the whole propensity-anchor
+sweep ā ∈ {0.15, 0.25, 0.32, 0.50} (the scale is not identified from PU data alone).
+
+### The one finding this session adds to the canonical record
+
+**The blocked-holdout gate is measurably anti-correlated with the live metric**
+(`evidence/holdout_calibration.json`, `IR-65-006`): Spearman(holdout-DTI, owner-reported live) =
+**-0.436** over 10 registry rasters, and Spearman(dot count, live) = **-0.791**.
+The reason is the staff masking ruling: live scoring removes known-fault pixels, while this holdout's
+truth *is* catalogue pixels — so the artifacts that score best live (0.2778 → holdout 0.00452) score
+worst here, and they avoid the catalogue for exactly the reason this lane does. A second,
+oppositely-biased instrument (registry-anchored mirror, Spearman **+0.804** leave-one-out)
+also refuses: our best arm scores MIRROR-DTI 0.147, below 10/10 live-scored artifacts.
+**Consequence for the next session:** do not use catalogue-hidden holdout DTI as the promotion gate
+for an off-catalogue candidate. Either anchor truth in an independent compilation, stratify by
+estimated propensity and read the low-e stratum as primary, or spend one receipt.
+
+Two silent shared-tool bugs were found and fixed in the shared modules (never forked):
+`IR-65-002` (holdout eligibility dilation never reached the withheld truth → pooled DTI ≈ 0.0008 with
+no exception) and `IR-65-003` (duplicate-check Spearman ranked with `argsort(argsort(x))`, breaking
+ties by array position → ρ ≈ 0.97 for *independent* sparse rasters, which would have falsely declared
+lane drift and stopped the lane). Both have regression tests. `IR-65-004` (EM init) stays **open**: the
+EM still does not converge, so no EM-derived number here is presented as a maximum-likelihood estimate.
+
+### Lane 65 pages and artifacts
+
+* `docs/lane65/index.html` — the lane result, the gate, the adjudication rules, instrument quality.
+* `docs/lane65/executive-summary.html` — exactly how to make a submission (format contract, the
+  `[0,1]` range-error root cause, metric algebra, where to click).
+* `docs/lane65/{research,sources,irregularities,limitations,run-card}.html`
+* `RUN_CARD.json` — the lane-65 run card (protocol rule 5); `registry/adjudication.json` — the
+  rule-by-rule audit trail; `registry/irregularities.json` — IR-65-001 … IR-65-009.
+* `docs/research/hypotheses.md` — five ranked candidate hypotheses with falsification tests;
+  `docs/research/geothermal-vent-science.md` — reusable knowledge base (every line labelled V/M/I).
+* `docs/downloads/*.tif` — the six built rasters. **Publication policy change, flagged as
+  `IR-65-009`:** the standing user requirement is a click-to-download TIF with an obvious
+  submit/do-not-submit verdict, so these *uncleared evidence artifacts* are published with a loud
+  DO-NOT-SUBMIT banner. `scripts/check_repository.py` and `scripts/check_site.py` were amended with a
+  narrow allowlist that still fails closed: a raster may be tracked only while **no arm is cleared for
+  submission** and its sha256 matches `evidence/submission_build.json`. If any arm is ever cleared,
+  publication requires an organizer-confirmed receipt record. Reverse this by deleting the allowlist
+  block in those two scripts.
+* Reproduce: `python scripts/00_restore_data.py && python scripts/01_prepare_data.py && python
+  scripts/02_run_holdout.py --cells 8 --unlabeled 80000 --em-iters 6 --dots 40000 && python
+  scripts/03_build_submission.py --dots 38000 --a-bar 0.25 --min-dist 2.8 && python
+  scripts/05_holdout_calibration.py && python scripts/07_adjudicate.py && python
+  scripts/06_run_card.py && python scripts/build_site_lane65.py`
+
 ## Reproduce, audit, and serve
 
 Read this README, the original request below, `research/preregistration.md`, and the current run card **before every session**. Do not rerun a consumed holdout or reset the experiment budget to chase a positive result.

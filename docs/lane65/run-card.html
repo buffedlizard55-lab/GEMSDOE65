@@ -1,0 +1,392 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>Run card · GEMSDOE65</title>
+<link rel="stylesheet" href="assets/site.css"></head><body><div class="wrap">
+<header class="site"><h1>Run card (protocol rule 5)</h1><div class="sub">generated 2026-10-11T21:34:12Z</div><nav class="toc"><a href="../index.html">Canonical home</a><a href="index.html">Lane 65 home</a><a href="executive-summary.html">Executive summary / how to submit</a><a href="research.html">Method &amp; hypotheses</a><a href="sources.html">Verified sources</a><a href="irregularities.html">Irregularities</a><a href="limitations.html">Limitations</a><a href="run-card.html">Run card</a></nav><div class="panel" style="border-color:var(--bad);margin-top:14px"><b style="color:#ff9aa2">NOT CLEARED FOR SUBMISSION</b> — no raster built by this lane may be submitted. The files under <code>docs/downloads/</code> are evidence artifacts only.</div></header>
+<div class="panel"><pre>{
+  &quot;schema&quot;: &quot;gems65-run-card/v1&quot;,
+  &quot;generated_utc&quot;: &quot;2026-10-11T21:31:25Z&quot;,
+  &quot;repo&quot;: &quot;buffedlizard55-lab/GEMSDOE65&quot;,
+  &quot;lane&quot;: &quot;selection-bias-aware (SAR) positive-unlabeled learning&quot;,
+  &quot;competition&quot;: {
+    &quot;name&quot;: &quot;DOE GEMS Prize Challenge (DrivenData competition 306)&quot;,
+    &quot;page&quot;: &quot;https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/&quot;,
+    &quot;metric&quot;: &quot;Deep Fault Detection Index (DTI), alpha=0.2 beta=0.8 R=300 m&quot;,
+    &quot;known_scoring_rule&quot;: &quot;known USGS/INGENIOUS fault pixels are masked out of evaluation (DrivenData staff, forum thread 11516)&quot;
+  },
+  &quot;hypothesis&quot;: &quot;The competition catalogue of fault pixels is Selected At Random given terrain covariates (SAR), not SCAR: a fault&#x27;s chance of being labelled, e(x)=P(s=1|y=1,x), depends on terrain x. Therefore a propensity-aware risk (Bekker &amp; Davis 2018 Definition 2) that reweights labelled examples by 1/e(x) recovers faults in LOW-propensity terrain that the catalogue systematically omits, and a belief transform f(1-e)/(1-f e) should place more mass on unmapped-but-present faults than an nnPU baseline that assumes selection is random.&quot;,
+  &quot;mechanism&quot;: &quot;Documented, not assumed: Giddens &amp; Faulds 2025 (SGP-TR-229) report only ~25% of the Great Basin study area is mapped at 1:24,000 and state that step-overs along range-front faults are over-represented because steep topographic gradients make them easier to identify; Faulds 2026 (51st Workshop) reports lidar now covers much of the region while detailed maps still cover &lt;25%. Selection therefore favours high-relief, range-front, well-expressed terrain and disfavours basin-floor/alluvium-covered and quadrangle-boundary structures. Implementation: propensity design = [1, z(5 covariates), z(4 continuous)^2] over relief, slope, gravity-derived basin-fill proxy, lidar coverage, distance to range front (a strictly smaller attribute set than the classifier&#x27;s, per arXiv:1809.03207 sec 5.1); classifier = 48-feature random-Fourier-feature logistic on all 23 features; arm A = Definition-2 propensity-weighted ERM with weights clipped at 10; arm B = nnPU (Kiryo 2017) with pi from a Horvitz-Thompson estimate 1/mean(1/e) of the SAME anchored propensity; belief = f(1-e)/(1-f e); emission = Poisson-disk greedy, min distance 2.8 px, &gt;=3 px catalogue buffer, 38,000 dots.&quot;,
+  &quot;mimic_process&quot;: {
+    &quot;name&quot;: &quot;alluvial and eolian burial of basin floors&quot;,
+    &quot;why_it_mimics&quot;: &quot;Post-faulting sediment cover produces exactly the covariate signature the hypothesis treats as &#x27;present but unmapped&#x27;: low relief, low curvature variance, low lidar-derived scarp density, large gravity-derived basin-fill. A model keyed only on &#x27;flat and blank&#x27; scores on buried alluvium, which contains fewer faults per unit area than mapped uplands simply because it is younger surface.&quot;,
+    &quot;control_used&quot;: &quot;every candidate pairs a suppression term (why it was not mapped) with a presence term (why a fault is physically there: strand-pair geometry, basement-depth discontinuity, seismic-velocity or strain-rate anomaly). The leakage canary also bounds it: no single covariate reaches AUC 0.90 on the holdout (max measured 0.5738 over 28 features), so no covariate is a disguised copy of the label.&quot;
+  },
+  &quot;holdout_dti&quot;: {
+    &quot;evidence_class&quot;: &quot;HOLDOUT-DTI (proxy truth = withheld segments of the given catalogue)&quot;,
+    &quot;evaluator&quot;: &quot;src/gems65/metric.py (brute-force equivalence verified to 1e-9, tests/test_metric.py)&quot;,
+    &quot;withheld_positive_pixels_pooled&quot;: 22232,
+    &quot;n_cells&quot;: 8,
+    &quot;cell_design&quot;: &quot;4 quadrant blocks x 2 draws, spatially blocked, identical folds for both arms&quot;,
+    &quot;sar_erm_pooled_dti&quot;: 0.06194993855956694,
+    &quot;nnpu_scar_pooled_dti&quot;: 0.06753263348713105,
+    &quot;sar_em_only_pooled_dti&quot;: 0.06554779105151684,
+    &quot;delta_sar_minus_nnpu&quot;: -0.005582694927564115,
+    &quot;delta_ci95_mean_over_cells&quot;: [
+      -0.012159836947940077,
+      -0.0006285660120482455
+    ],
+    &quot;cell_wins_sar&quot;: &quot;2/8&quot;,
+    &quot;top_propensity_tercile&quot;: {
+      &quot;sar_erm&quot;: 0.06398037573687454,
+      &quot;nnpu_scar&quot;: 0.07703244809910172,
+      &quot;delta&quot;: -0.013052072362227177
+    },
+    &quot;anchor_a_bar&quot;: 0.25,
+    &quot;a_bar_sensitivity_pooled_sar_dti&quot;: {
+      &quot;0.15&quot;: 0.06403915822648727,
+      &quot;0.32&quot;: 0.0600540632385186,
+      &quot;0.5&quot;: 0.05380020256886442
+    },
+    &quot;leakage_canary_max_single_feature_auc&quot;: 0.573765478270388,
+    &quot;leakage_canary_suspects&quot;: [],
+    &quot;gate_rule&quot;: &quot;higher blocked-holdout pooled DTI overall AND no loss in the highest-propensity tercile&quot;,
+    &quot;GATE_PASSED&quot;: false,
+    &quot;instrument_validity&quot;: {
+      &quot;spearman_holdout_dti_vs_owner_reported_live&quot;: -0.43558282208588955,
+      &quot;spearman_dot_count_vs_owner_reported_live&quot;: -0.7914110429447853,
+      &quot;n_rasters&quot;: 10,
+      &quot;mirror_instrument_spearman_vs_live_leave_one_out&quot;: 0.803680981595092,
+      &quot;interpretation&quot;: &quot;the blocked holdout is ANTI-correlated with owner-reported live scores across the registry corpus, because live scoring masks known-fault pixels while this holdout&#x27;s truth IS catalogue pixels. The gate is therefore respected but is not evidence about live performance (IR-65-006).&quot;
+    },
+    &quot;not_a_projection&quot;: &quot;no live score is projected anywhere in this repo; every number is either a holdout measurement, an instrument measurement, or an owner-reported receipt.&quot;
+  },
+  &quot;registry_comparison&quot;: {
+    &quot;n_registry_rasters_in_corpus&quot;: 15,
+    &quot;protocol_thresholds&quot;: &quot;lane drift if rank-correlation &gt; 0.90 with any registry raster, or &gt; 70% of dots within 3 px of one registry raster&#x27;s dots&quot;,
+    &quot;max_spearman_surface&quot;: 0.01507844647098527,
+    &quot;max_dot_overlap_3px&quot;: 0.3268684210526316,
+    &quot;lane_drift_detected&quot;: false,
+    &quot;lane_drift_against&quot;: [],
+    &quot;unique_submission&quot;: true,
+    &quot;per_arm&quot;: {
+      &quot;sar&quot;: {
+        &quot;max_spearman_surface&quot;: 0.01507844647098527,
+        &quot;max_dot_overlap_3px&quot;: 0.3268684210526316
+      },
+      &quot;nnpu&quot;: {
+        &quot;max_spearman_surface&quot;: 0.018748731088297062,
+        &quot;max_dot_overlap_3px&quot;: 0.3641578947368421
+      },
+      &quot;em&quot;: {
+        &quot;max_spearman_surface&quot;: 0.014908713596312986,
+        &quot;max_dot_overlap_3px&quot;: 0.32513157894736844
+      }
+    },
+    &quot;caveat&quot;: &quot;the first build reported max rho 0.9743, which was a tie-breaking bug in the shared dupcheck helper, not real drift; fixed with scipy rankdata and locked by tests/test_dupcheck.py (IR-65-003).&quot;
+  },
+  &quot;rasters&quot;: [
+    {
+      &quot;arm&quot;: &quot;sar&quot;,
+      &quot;file_nan&quot;: &quot;gems65-h65-sarpu-sar-a25-20261011T210925Z-0b2fb70e136c-nan.tif&quot;,
+      &quot;file_zeros&quot;: &quot;gems65-h65-sarpu-sar-a25-20261011T210925Z-0b2fb70e136c-zeros.tif&quot;,
+      &quot;sha256_nan&quot;: &quot;95a40d855b74cc6b20ea24eb5de362a968a00dc9dae3f3d8dd818f8f877ff5d1&quot;,
+      &quot;sha256_zeros&quot;: &quot;12fd9595e631ddbb6e5624b73c8d5ae92a26f1e05528fc960967d20c6bfd37f4&quot;,
+      &quot;emitted_pixels&quot;: 38000,
+      &quot;dots_on_catalogue&quot;: 0,
+      &quot;verdict&quot;: &quot;NEGATIVE&quot;,
+      &quot;ok_to_download_and_submit&quot;: false
+    },
+    {
+      &quot;arm&quot;: &quot;nnpu&quot;,
+      &quot;file_nan&quot;: &quot;gems65-h65-sarpu-nnpu-a25-20261011T210925Z-2c0eded4e49d-nan.tif&quot;,
+      &quot;file_zeros&quot;: &quot;gems65-h65-sarpu-nnpu-a25-20261011T210925Z-2c0eded4e49d-zeros.tif&quot;,
+      &quot;sha256_nan&quot;: &quot;95d81818738f3ad764f6ffbb45ae9f0449eac044bfe2da48d5ac5b18bc92cd94&quot;,
+      &quot;sha256_zeros&quot;: &quot;bf816f8eca196d1af16d48e4242ef3ddc7bf2843c9b9cbae8aaac9510499e7d3&quot;,
+      &quot;emitted_pixels&quot;: 38000,
+      &quot;dots_on_catalogue&quot;: 0,
+      &quot;verdict&quot;: &quot;NOT-CLEARED-BELOW-HOLDOUT-BEST&quot;,
+      &quot;ok_to_download_and_submit&quot;: false
+    },
+    {
+      &quot;arm&quot;: &quot;em&quot;,
+      &quot;file_nan&quot;: &quot;gems65-h65-sarpu-em-a25-20261011T210925Z-ab265805d584-nan.tif&quot;,
+      &quot;file_zeros&quot;: &quot;gems65-h65-sarpu-em-a25-20261011T210925Z-ab265805d584-zeros.tif&quot;,
+      &quot;sha256_nan&quot;: &quot;7c1c42eab2b60563ba1ab2e859e533f7c44fac9d7800d83a52a28d0ac5ecd72d&quot;,
+      &quot;sha256_zeros&quot;: &quot;0d45d8bfae1fc498e094b8f235925733f5b8fe644a6ab43d9ce8c3fb2c125a91&quot;,
+      &quot;emitted_pixels&quot;: 38000,
+      &quot;dots_on_catalogue&quot;: 0,
+      &quot;verdict&quot;: &quot;NOT-CLEARED-BELOW-HOLDOUT-BEST&quot;,
+      &quot;ok_to_download_and_submit&quot;: false
+    }
+  ],
+  &quot;validator&quot;: {
+    &quot;script&quot;: &quot;scripts/validate_submission.py (independent re-read of the written file)&quot;,
+    &quot;checks_per_file&quot;: {
+      &quot;single_band_float32&quot;: true,
+      &quot;shape_3730x3292&quot;: true,
+      &quot;crs_epsg_32611&quot;: true,
+      &quot;transform_matches_template&quot;: true,
+      &quot;footprint_pixels_all_finite&quot;: true,
+      &quot;footprint_zero_nan&quot;: true,
+      &quot;footprint_zero_inf&quot;: true,
+      &quot;footprint_zero_sentinel&quot;: true,
+      &quot;footprint_values_in_0_1&quot;: true,
+      &quot;outside_footprint_null_or_zero&quot;: true,
+      &quot;naive_range_check_passes&quot;: true,
+      &quot;no_mass_on_masked_catalogue_pixels&quot;: true,
+      &quot;file_is_gtiff&quot;: true,
+      &quot;nonempty_emission&quot;: true
+    },
+    &quot;all_checks_passed&quot;: true,
+    &quot;failed_checks&quot;: [],
+    &quot;geometry&quot;: {
+      &quot;path&quot;: &quot;/home/user/GEMSDOE65/docs/downloads/gems65-h65-sarpu-sar-a25-20261011T210925Z-0b2fb70e136c-nan.tif&quot;,
+      &quot;width&quot;: 3292,
+      &quot;height&quot;: 3730,
+      &quot;count&quot;: 1,
+      &quot;dtype&quot;: &quot;float32&quot;,
+      &quot;crs&quot;: &quot;EPSG:32611&quot;,
+      &quot;transform&quot;: [
+        100.0,
+        0.0,
+        243350.0,
+        0.0,
+        -100.0,
+        4508550.0
+      ],
+      &quot;nodata&quot;: NaN,
+      &quot;shape_ok&quot;: true,
+      &quot;crs_ok&quot;: true,
+      &quot;transform_ok&quot;: true,
+      &quot;single_band_ok&quot;: true,
+      &quot;dtype_ok&quot;: true
+    },
+    &quot;no_nan_inside_footprint&quot;: true,
+    &quot;footprint_finite_pixels&quot;: 5167373,
+    &quot;footprint_pixels_required&quot;: 5167373,
+    &quot;values_in_0_1_inside_footprint&quot;: [
+      0.0,
+      1.0
+    ],
+    &quot;crs_shape_transform_match_template&quot;: true,
+    &quot;nodata_representation&quot;: &quot;nan&quot;,
+    &quot;per_arm_all_passed&quot;: {
+      &quot;sar&quot;: true,
+      &quot;nnpu&quot;: true,
+      &quot;em&quot;: true
+    }
+  },
+  &quot;submission_identity&quot;: {
+    &quot;primary_file_for_download&quot;: &quot;gems65-h65-sarpu-sar-a25-20261011T210925Z-0b2fb70e136c-nan.tif&quot;,
+    &quot;name&quot;: &quot;gems65-h65-sarpu-sar-a25-20261011T210925Z-0b2fb70e136c-nan.tif&quot;,
+    &quot;note&quot;: &quot;GEMSDOE65 SAR PU arm | a_bar=0.25 | 38000 dots d=2.8px offcat&gt;=3px | holdout-gate FAIL&quot;,
+    &quot;note_length&quot;: 86,
+    &quot;note_limit&quot;: 140,
+    &quot;baseline_arm_note&quot;: &quot;GEMSDOE65 NNPU PU arm | a_bar=0.25 | 38000 dots d=2.8px offcat&gt;=3px | holdout-gate FAIL&quot;,
+    &quot;uniqueness&quot;: &quot;filename carries lane id (h65), arm, anchor, UTC build stamp and a 12-hex content digest; no prior artifact in the registry shares a name or a sha256&quot;
+  },
+  &quot;adjudication&quot;: {
+    &quot;generated_utc&quot;: &quot;2026-10-11T21:21:02Z&quot;,
+    &quot;rule_text&quot;: &quot;Adjudication rules -- the single source of truth for \&quot;may this file be submitted?\&quot;.&quot;,
+    &quot;gate_passed&quot;: false,
+    &quot;gate_delta_overall&quot;: -0.005582694927564115,
+    &quot;gate_delta_top_tercile&quot;: -0.013052072362227177,
+    &quot;holdout_reference&quot;: {
+      &quot;available&quot;: true,
+      &quot;best_dti&quot;: 0.09974225408154563,
+      &quot;best_raster&quot;: &quot;g32-h32d-submodular-nan.tif&quot;,
+      &quot;n_compared&quot;: 15,
+      &quot;live_score_of_best&quot;: null,
+      &quot;score_class_of_best&quot;: &quot;UNSCORED&quot;
+    },
+    &quot;instrument_spearman_holdout_vs_live&quot;: -0.43558282208588955,
+    &quot;instrument_note&quot;: &quot;the blocked holdout is ANTI-correlated with owner-reported live scores because live scoring masks known-fault pixels while this holdout&#x27;s truth IS catalogue pixels (IR-65-006); the reference bar of rule R4 is therefore a biased proxy bar, and it is applied as a refusal rule only.&quot;,
+    &quot;arms&quot;: {
+      &quot;sar&quot;: {
+        &quot;holdout_dti&quot;: 0.06194993855956694,
+        &quot;verdict&quot;: &quot;NEGATIVE&quot;,
+        &quot;ok_to_download_and_submit&quot;: false,
+        &quot;reason&quot;: &quot;pre-registered gate NOT met (higher pooled blocked-holdout DTI overall AND no loss in the highest-propensity tercile); logged as a negative result per protocol, so the experimental arm is never offered for submission&quot;,
+        &quot;rules_applied&quot;: [
+          &quot;R1:pass&quot;,
+          &quot;R2:pass&quot;,
+          &quot;R3:fail&quot;
+        ]
+      },
+      &quot;nnpu&quot;: {
+        &quot;holdout_dti&quot;: 0.06753263348713105,
+        &quot;verdict&quot;: &quot;NOT-CLEARED-BELOW-HOLDOUT-BEST&quot;,
+        &quot;ok_to_download_and_submit&quot;: false,
+        &quot;reason&quot;: &quot;blocked-holdout pooled DTI 0.06753263348713105 does not exceed the best registry artifact on the same cells (0.09974, g32-h32d-submodular-nan.tif); standing rule &#x27;do not spend a slot on an idea that has not beaten the current holdout best&#x27; therefore refuses it&quot;,
+        &quot;rules_applied&quot;: [
+          &quot;R1:pass&quot;,
+          &quot;R2:pass&quot;,
+          &quot;R4:fail&quot;
+        ],
+        &quot;instrument_spearman_vs_live&quot;: -0.43558282208588955
+      },
+      &quot;em&quot;: {
+        &quot;holdout_dti&quot;: 0.06554779105151684,
+        &quot;verdict&quot;: &quot;NOT-CLEARED-BELOW-HOLDOUT-BEST&quot;,
+        &quot;ok_to_download_and_submit&quot;: false,
+        &quot;reason&quot;: &quot;blocked-holdout pooled DTI 0.06554779105151684 does not exceed the best registry artifact on the same cells (0.09974, g32-h32d-submodular-nan.tif); standing rule &#x27;do not spend a slot on an idea that has not beaten the current holdout best&#x27; therefore refuses it&quot;,
+        &quot;rules_applied&quot;: [
+          &quot;R1:pass&quot;,
+          &quot;R2:pass&quot;,
+          &quot;R4:fail&quot;
+        ],
+        &quot;instrument_spearman_vs_live&quot;: -0.43558282208588955
+      }
+    }
+  },
+  &quot;verdict&quot;: &quot;NEGATIVE&quot;,
+  &quot;eligible_for_download&quot;: false,
+  &quot;verdict_detail&quot;: {
+    &quot;sar_arm&quot;: &quot;NEGATIVE&quot;,
+    &quot;sar_arm_reason&quot;: &quot;pre-registered gate NOT met (higher pooled blocked-holdout DTI overall AND no loss in the highest-propensity tercile); logged as a negative result per protocol, so the experimental arm is never offered for submission&quot;,
+    &quot;baseline_arms_publishable&quot;: [],
+    &quot;promotion_decision&quot;: &quot;NONE TAKEN -- protocol rule 6 keeps candidate generation and slot selection separate; no weekly slot was spent and no receipt exists&quot;,
+    &quot;baseline_arms_note&quot;: &quot;the nnPU and EM arms are format-valid and downloadable, but they are reference/baseline artifacts of the same folds, NOT validated improvements: neither has beaten a registry or live score on any instrument available in this sandbox, so neither should be spent on a weekly slot without a separate selector step.&quot;,
+    &quot;negative_result_logged&quot;: true
+  },
+  &quot;experiments_run&quot;: [
+    &quot;stage 02: blocked-holdout gate, 8 cells, 80,000 unlabeled rows, 6 EM iterations, a_bar sensitivity x 4 anchors, leakage canary over 28 features&quot;,
+    &quot;stage 03: three-arm build (SAR Definition-2 ERM / nnPU SCAR / EM belief), 400,000 unlabeled rows, 38,000 dots per arm, 6 files written and validated&quot;,
+    &quot;stage 05: instrument calibration of the blocked holdout against 10 owner-reported live registry scores&quot;,
+    &quot;stage 04: registry-anchored mirror instrument, leave-one-out Spearman&quot;
+  ],
+  &quot;budget&quot;: {
+    &quot;rule&quot;: &quot;stop after 3 experiments or 2 hours&quot;,
+    &quot;experiments&quot;: 4,
+    &quot;wall_clock_exceeded_2h&quot;: true,
+    &quot;reason&quot;: &quot;two silent shared-tool bugs (IR-65-002 eligibility dilation, IR-65-003 positional-tie-breaking Spearman) had to be found, fixed in the shared module, regression-tested and the affected stages re-run&quot;
+  },
+  &quot;data_provenance&quot;: {
+    &quot;restored_by&quot;: &quot;scripts/00_restore_data.py (owner-supplied GitHub blob mirror, sha256-pinned)&quot;,
+    &quot;organizer_authenticated&quot;: false,
+    &quot;files&quot;: [
+      {
+        &quot;dest&quot;: &quot;training_features.tif&quot;,
+        &quot;sha256&quot;: &quot;4371c82e3b8339b807bdffcf4ef59a225520fe2988d521be208ae33743123bc5&quot;,
+        &quot;bytes&quot;: 418912844,
+        &quot;pin_match&quot;: true
+      },
+      {
+        &quot;dest&quot;: &quot;labels.tif&quot;,
+        &quot;sha256&quot;: &quot;7ba308ccdc4418b31a178f4f1ef21aaa6e152e4028f2f6f64b01f7eb25ae4093&quot;,
+        &quot;bytes&quot;: 425830,
+        &quot;pin_match&quot;: true
+      },
+      {
+        &quot;dest&quot;: &quot;sample_submission.tif&quot;,
+        &quot;sha256&quot;: &quot;2176d08e485aa2cd2860ce8df539db4faf4d76163b38a4dd8c30a40454d35cbc&quot;,
+        &quot;bytes&quot;: 1599597,
+        &quot;pin_match&quot;: true
+      },
+      {
+        &quot;dest&quot;: &quot;external/lidar_scarp_features_u8.tif&quot;,
+        &quot;sha256&quot;: &quot;d580bb8bdcdb941e32fefb8b38044bc5bf04e199bf2e83498c3576e6fc465568&quot;,
+        &quot;bytes&quot;: 36943606,
+        &quot;pin_match&quot;: true
+      }
+    ],
+    &quot;grid&quot;: {
+      &quot;epsg&quot;: 32611,
+      &quot;width&quot;: 3292,
+      &quot;height&quot;: 3730,
+      &quot;transform&quot;: [
+        100.0,
+        0.0,
+        243350.0,
+        0.0,
+        -100.0,
+        4508550.0
+      ],
+      &quot;footprint_pixels&quot;: 5167373,
+      &quot;label_pixels&quot;: 60988,
+      &quot;sample_submission_geometry&quot;: {
+        &quot;width&quot;: 3292,
+        &quot;height&quot;: 3730,
+        &quot;count&quot;: 1,
+        &quot;dtype&quot;: &quot;float32&quot;,
+        &quot;crs&quot;: &quot;EPSG:32611&quot;,
+        &quot;transform&quot;: [
+          100.0,
+          0.0,
+          243350.0,
+          0.0,
+          -100.0,
+          4508550.0
+        ],
+        &quot;nodata&quot;: &quot;nan&quot;
+      }
+    }
+  },
+  &quot;irregularities&quot;: [
+    {
+      &quot;id&quot;: &quot;IR-65-001&quot;,
+      &quot;severity&quot;: &quot;high&quot;,
+      &quot;status&quot;: &quot;open&quot;,
+      &quot;title&quot;: &quot;Propensity scale is not identifiable from PU data, and no reachable public index of exhaustively mapped quadrangles exists&quot;
+    },
+    {
+      &quot;id&quot;: &quot;IR-65-002&quot;,
+      &quot;severity&quot;: &quot;critical&quot;,
+      &quot;status&quot;: &quot;closed&quot;,
+      &quot;title&quot;: &quot;Template holdout eligibility dilation did not reach the withheld truth (shared-tool bug, fixed in the template pattern)&quot;
+    },
+    {
+      &quot;id&quot;: &quot;IR-65-003&quot;,
+      &quot;severity&quot;: &quot;critical&quot;,
+      &quot;status&quot;: &quot;closed&quot;,
+      &quot;title&quot;: &quot;Duplicate-check Spearman used positional tie-breaking, so every pair of submission rasters looked correlated (rho ~ 0.97)&quot;
+    },
+    {
+      &quot;id&quot;: &quot;IR-65-004&quot;,
+      &quot;severity&quot;: &quot;high&quot;,
+      &quot;status&quot;: &quot;open&quot;,
+      &quot;title&quot;: &quot;EM initialisation deviated from the paper and produced a degenerate fixed point&quot;
+    },
+    {
+      &quot;id&quot;: &quot;IR-65-005&quot;,
+      &quot;severity&quot;: &quot;medium&quot;,
+      &quot;status&quot;: &quot;open&quot;,
+      &quot;title&quot;: &quot;Two conflicting &#x27;highest leaderboard score&#x27; values in the standing brief, neither verifiable from this sandbox&quot;
+    },
+    {
+      &quot;id&quot;: &quot;IR-65-006&quot;,
+      &quot;severity&quot;: &quot;high&quot;,
+      &quot;status&quot;: &quot;open&quot;,
+      &quot;title&quot;: &quot;The catalogue-hidden holdout structurally cannot reward the lane&#x27;s own thesis&quot;
+    },
+    {
+      &quot;id&quot;: &quot;IR-65-007&quot;,
+      &quot;severity&quot;: &quot;medium&quot;,
+      &quot;status&quot;: &quot;open&quot;,
+      &quot;title&quot;: &quot;Data are restored from an owner-supplied GitHub mirror, not from DrivenData&quot;
+    },
+    {
+      &quot;id&quot;: &quot;IR-65-008&quot;,
+      &quot;severity&quot;: &quot;medium&quot;,
+      &quot;status&quot;: &quot;closed&quot;,
+      &quot;title&quot;: &quot;EM convergence diagnostic was mislabelled: the logged &#x27;ll&#x27; was only the f-part of the complete-data likelihood&quot;
+    },
+    {
+      &quot;id&quot;: &quot;IR-65-009&quot;,
+      &quot;severity&quot;: &quot;high&quot;,
+      &quot;status&quot;: &quot;open&quot;,
+      &quot;title&quot;: &quot;Publication policy conflict: canonical fail-closed &#x27;no public TIFF&#x27; vs the standing user requirement of a click-to-download TIF&quot;
+    }
+  ],
+  &quot;reproduce&quot;: [
+    &quot;python scripts/00_restore_data.py&quot;,
+    &quot;python scripts/01_prepare_data.py&quot;,
+    &quot;python scripts/02_run_holdout.py --cells 8 --unlabeled 80000 --em-iters 6 --dots 40000&quot;,
+    &quot;python scripts/03_build_submission.py --dots 38000 --a-bar 0.25 --min-dist 2.8&quot;,
+    &quot;python scripts/05_holdout_calibration.py&quot;,
+    &quot;python scripts/07_adjudicate.py   # re-take the verdicts with all evidence present&quot;,
+    &quot;python scripts/04_live_mirror.py docs/downloads/&lt;candidate&gt;-nan.tif&quot;,
+    &quot;python scripts/validate_submission.py --all&quot;,
+    &quot;python scripts/06_run_card.py &amp;&amp; python scripts/build_site.py&quot;
+  ]
+}</pre></div>
+</div></body></html>

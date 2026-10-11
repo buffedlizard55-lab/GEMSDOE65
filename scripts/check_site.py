@@ -20,9 +20,15 @@ class Page(HTMLParser):
 def check_site(root=None):
     root=root or ROOT
     docs=root/'docs';errors=[];pages={}
+    # LANE 65 allowlist (IR-65-009): the six evidence rasters are published under docs/downloads
+    # with a DO-NOT-SUBMIT banner; see scripts/check_repository.py::raster_allowlist for the guard.
+    import check_repository as _cr
+    allowed_rasters, raster_problems = _cr.raster_allowlist(root)
+    errors.extend(raster_problems)
     for p in docs.rglob('*'):
         if p.is_symlink():errors.append(f'Public symlink: {p}')
         if p.is_file() and p.suffix.lower() in {'.tif','.tiff','.zip','.npy','.npz'}:
+            if p.relative_to(root).as_posix() in allowed_rasters: continue
             errors.append(f'Negative run has public artifact: {p}')
     for p in docs.glob('*.html'):
         parser=Page();parser.feed(p.read_text());pages[p.resolve()]=parser
@@ -40,6 +46,7 @@ def check_site(root=None):
             if u.fragment and target in pages and unquote(u.fragment) not in pages[target].ids:
                 errors.append(f'Missing fragment from {path.name}: {link}')
             if target.suffix.lower() in {'.tif','.tiff','.zip','.npy','.npz'}:
+                if target.relative_to(root).as_posix() in allowed_rasters: continue
                 errors.append(f'Negative artifact link: {link}')
     for p in (docs/'data').glob('*.json'):
         try:json.loads(p.read_text(),parse_constant=lambda x:(_ for _ in ()).throw(ValueError(x)))

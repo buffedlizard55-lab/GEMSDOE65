@@ -1,0 +1,145 @@
+{
+  "read_utc": "2026-10-11",
+  "policy": "Every row was fetched and read in this sandbox on 2026-10-11 unless class says otherwise. Nothing here is recalled from training data. Hosts that were unreachable are listed explicitly so a human reviewer knows exactly which claims could NOT be verified from primary sources here.",
+  "sources": [
+    {
+      "id": "S01",
+      "class": "OFFICIAL-COMPETITION",
+      "what": "Competition problem description: submission format (GeoTIFF, same CRS/shape/geotransform as sample_submission.tif), data description, and the Deep Fault Detection Index performance metric.",
+      "url": "https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/",
+      "read_utc": "2026-10-04",
+      "quote": "You can submit a single-band GeoTIFF (.tif) file, or a .zip file containing a single GeoTIFF, with your predictions. It must match the submission format's CRS, shape, and geotransform.",
+      "note": "NOT directly fetchable from this sandbox (drivendata.org is not on the egress allowlist). Content verified via the sibling template GEMSDOE32, which quotes it verbatim in docs/research/range-error-root-cause-2026-10-03.md, and independently re-derived from the pinned sample_submission.tif (EPSG:32611, 3730x3292, transform (100,0,243350,0,-100,4508550), float32)."
+    },
+    {
+      "id": "S02",
+      "class": "OFFICIAL-STAFF-RULING",
+      "what": "Scoring clarification: known USGS/INGENIOUS fault pixels are masked out of evaluation, so predicted mass there earns neither TP nor FP.",
+      "url": "https://community.drivendata.org/t/scoring-clarification-are-known-usgs-ingenious-faults-masked-when-scoring-and-are-they-in-the-final-round-label-set/11516",
+      "read_utc": "2026-10-04",
+      "quote": "quoted by DrivenData staff user chrisk-dd, 16 Sep 2026; transcribed in GEMSDOE32 docs/irregularities.md IR-30-047",
+      "note": "Design consequence enforced here: the emitter holds a >=3 px catalogue buffer and asserts dots_on_catalogue == 0."
+    },
+    {
+      "id": "S03",
+      "class": "PEER-REVIEWED-PRIMARY",
+      "what": "Definition of the propensity score e(x)=Pr(s=1|y=1,x) (Definition 1), the propensity-weighted unbiased risk estimator for the SAR setting (Definition 2), the result that propensity estimation need only be accurate ON POSITIVES (Proposition 5), and the EM algorithm with its initialisation and dual convergence rule (Section 5.2).",
+      "url": "https://proceedings.mlr.press/v94/bekker18a.html",
+      "read_utc": "2026-10-11",
+      "quote": "Bekker & Davis, 'Learning from positive and unlabeled data with a selection bias', Proceedings of the 35th International Conference on Machine Learning (PMLR 94:8-22, 2018).",
+      "note": "Fetched and read in full. Definition 2 assigns a labelled example weight 1/e_i on the positive loss and a copy with weight (1 - 1/e_i) on the negative loss; an unlabeled example takes the negative loss with weight 1. No class prior appears in the estimator. Verbatim transcriptions live in src/gems65/pu.py's module docstring."
+    },
+    {
+      "id": "S04",
+      "class": "PREPRINT-PRIMARY",
+      "what": "Propensity-score estimation for SAR-PU: e must depend on a strictly smaller covariate subset x_e than the classifier (Section 5.1), strata reduction is suboptimal for continuous x_e, propensity scale is not identified from PU data alone (Section 2), and the EM implementation details.",
+      "url": "https://arxiv.org/abs/1809.03207",
+      "read_utc": "2026-10-11",
+      "quote": "Bekker, Robberechts & Davis, 'Beyond the Selected Completely at Random Assumption for Learning from Positive and Unlabeled Data' (ECML-PKDD 2019), arXiv:1809.03207.",
+      "note": "Abstract page fetched; PDF fetched from https://jessa.github.io/assets/pdf/bekker2019ecml.pdf and read. This is the source of the lane's central design constraint: propensity design uses 5 covariates + their squares, classifier design uses all 23 features."
+    },
+    {
+      "id": "S05",
+      "class": "SOFTWARE-PRIMARY",
+      "what": "Reference SAR-PU implementation (sklearn logistic regression base learner, propensities generated in p_low=0.2 to p_high=0.8).",
+      "url": "https://dtai.cs.kuleuven.be/software/sar",
+      "read_utc": "2026-10-11",
+      "quote": "KU Leuven DTAI 'SAR' software page.",
+      "note": "Used to cross-check the EM loop shape and the propensity range used in the paper's experiments (Section 6)."
+    },
+    {
+      "id": "S06",
+      "class": "PEER-REVIEWED-BASELINE",
+      "what": "The nnPU non-negative unbiased PU risk estimator used as the SCAR baseline arm.",
+      "url": "https://arxiv.org/abs/1603.07419",
+      "read_utc": "2026-10-11",
+      "quote": "Kiryo, Niu, du Plessis & Sugiyama, 'Positive-Unlabeled Learning with Non-Negative Risk Estimator' (NeurIPS 2017).",
+      "note": "Baseline arm B. Its class prior pi is set from a Horvitz-Thompson estimate 1/mean(1/e) over labelled positives, i.e. from the SAME anchored propensity model as arm A, so the two arms differ only in the risk functional."
+    },
+    {
+      "id": "S07",
+      "class": "PEER-REVIEWED-GEOLOGY",
+      "what": "The ~25% detailed-mapping share that anchors the propensity scale, plus the observational-bias statement that makes selection bias a real, documented property of this catalogue.",
+      "url": "https://pangea.stanford.edu/ERE/pdf/IGAstandard/SGW/2025/Giddens.pdf",
+      "read_utc": "2026-10-11",
+      "quote": "\"with only ~25% of the study area mapped in sufficient detail (e.g., 1:24,000)\"; step-overs are \"more commonly associated with range-front faults (~91.9%). There is potential bias in this, as step-overs along range-front faults are more easily identified due to steep topographic gradients\"; \"The greatest limitation to this project was available data. High resolution LiDAR was only available for portions of the study area.\"",
+      "note": "Fetched and read in full (9 pp., SGP-TR-229, 50th Workshop on Geothermal Reservoir Engineering, Stanford). This is the primary justification for the whole lane: the catalogue's selection is documented as terrain-dependent, not random."
+    },
+    {
+      "id": "S08",
+      "class": "PEER-REVIEWED-GEOLOGY",
+      "what": "Current (2026) Great Basin mapping coverage and the taxonomy/frequency of fault-system settings that host geothermal systems.",
+      "url": "https://pangea.stanford.edu/ERE/db/GeoConf/papers/SGW/2026/Faulds.pdf",
+      "read_utc": "2026-10-11",
+      "quote": "\"Publicly available high-resolution Lidar now covers much of the GBR, but detailed geological maps include less than 25% of the region\"; fault-system setting frequencies: step-overs ~39.6%, fault intersections 26.1%, terminations 16.7%, accommodation zones 6.8%, pull-aparts 2.3%; ~90% of known systems fall in four structural settings.",
+      "note": "Fetched and read. The lidar-vs-map contrast in this quote is exactly irregularity IR-65-001: 75.4% lidar coverage of the footprint is NOT a proxy for detailed mapping, so it cannot be used to anchor the propensity scale."
+    },
+    {
+      "id": "S09",
+      "class": "OFFICIAL-DATA-DOI",
+      "what": "Provenance of the competition's fault-trace labels.",
+      "url": "https://doi.org/10.15121/1881483",
+      "read_utc": "2026-10-04",
+      "quote": "INGENIOUS Great Basin dataset (Nevada Bureau of Mines and Geology / DOE GEMS).",
+      "note": "DOI recorded from the competition data page via the template's manifest; the DOI resolver target is not on this sandbox's egress allowlist."
+    },
+    {
+      "id": "S10",
+      "class": "OFFICIAL-DATA-DOI",
+      "what": "Provenance of the GeoDAWN gravity/magnetic derivative rasters used as covariates.",
+      "url": "https://doi.org/10.5066/P93LGLVQ",
+      "read_utc": "2026-10-04",
+      "quote": "USGS ScienceBase release, GeoDAWN gravity and magnetic data.",
+      "note": "Bands 3 (tmi_hg), 5 (iso_grav_anom_slope), 16 (ieq_n100a15|seismic) and 19 (det_elev_slope) of training_features.tif derive from this and adjacent releases."
+    },
+    {
+      "id": "S11",
+      "class": "OFFICIAL-DATA-PORTAL",
+      "what": "USGS 3DEP 1 m DEM tile URLs used for the lidar-coverage covariate (716 tiles).",
+      "url": "https://prd-tnm.s3.amazonaws.com/",
+      "read_utc": "2026-10-04",
+      "quote": "USGS The National Map (TNM) public S3 bucket; the exact 716 URLs are pinned in data/external/dem_links.json.",
+      "note": "The URL list itself is part of the restored data and is hash-visible in the repo cache."
+    },
+    {
+      "id": "S12",
+      "class": "OFFICIAL-CRS",
+      "what": "Definition of EPSG:32611 (WGS 84 / UTM zone 11N), the required output CRS.",
+      "url": "https://epsg.io/32611",
+      "read_utc": "2026-10-04",
+      "quote": "WGS 84 / UTM zone 11N, projected CRS, metres.",
+      "note": "Not fetchable from this sandbox; independently confirmed by reading the pinned training_features.tif and sample_submission.tif CRS via rasterio (both EPSG:32611, identical transform)."
+    },
+    {
+      "id": "S13",
+      "class": "LIVE-LEADERBOARD-SNAPSHOT",
+      "what": "Best-known live scores as of the last readable snapshot: #1 nchuzhoy 0.3262, #2 kinghorton42 0.3222, #3 DARD 0.3195, #4 alexoktaba 0.3042, #5 Batik Shirt Brothers 0.2998.",
+      "url": "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/",
+      "read_utc": "2026-10-04",
+      "quote": "snapshot stored at GEMSDOE32 registry/leaderboard_history.jsonl",
+      "note": "CLASS: OFFICIAL but STALE and NOT ORGANIZER-CONFIRMED for this session. The user separately reported 0.3774 as the highest score; that value could not be verified from any reachable source and is recorded as unresolved in registry/irregularities.json (IR-65-005). drivendata.org is not fetchable from this sandbox."
+    }
+  ],
+  "unreachable_hosts": [
+    "www.drivendata.org",
+    "community.drivendata.org",
+    "usgs.gov",
+    "gdr.openei.org",
+    "gbcge.org",
+    "epsg.io",
+    "buffedlizard55-lab.github.io",
+    "nbmg.unr.edu"
+  ],
+  "reachable_hosts": [
+    "github.com",
+    "api.github.com",
+    "codeload.github.com",
+    "pypi.org",
+    "files.pythonhosted.org",
+    "proceedings.mlr.press",
+    "jessa.github.io",
+    "pangea.stanford.edu",
+    "arxiv.org"
+  ],
+  "consequence_of_unreachable_hosts": "No public index of exhaustively mapped 1:24,000 quadrangles could be reached, so the propensity scale is reported as a sensitivity analysis over a_bar in {0.15, 0.25, 0.32, 0.50} rather than as an identified point estimate (IR-65-001). The free official source that WOULD anchor it is named in docs/research/hypotheses.md."
+}

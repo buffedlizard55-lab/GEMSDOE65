@@ -1,0 +1,48 @@
+{
+  "generated_utc": "2026-10-11T21:11:41Z",
+  "config": {
+    "dots": 38000,
+    "a_bar": 0.25,
+    "min_dist_px": 2.8,
+    "catalogue_buffer_px": 3,
+    "graded": false,
+    "n_rff": 48,
+    "n_unlabeled": 400000,
+    "em_iters": 8,
+    "weight_clip": 10.0,
+    "seed": 20261011
+  },
+  "gate_passed": false,
+  "arms": {
+    "sar": {
+      "files": {
+        "nan": "/home/user/GEMSDOE65/docs/downloads/gems65-h65-sarpu-sar-a25-20261011T210925Z-0b2fb70e136c-nan.tif",
+        "zeros": "/home/user/GEMSDOE65/docs/downloads/gems65-h65-sarpu-sar-a25-20261011T210925Z-0b2fb70e136c-zeros.tif"
+      },
+      "emitted_pixels": 38000,
+      "verdict": "NEGATIVE",
+      "OK_TO_DOWNLOAD_AND_SUBMIT": false,
+      "submission_note": "GEMSDOE65 SAR PU arm | a_bar=0.25 | 38000 dots d=2.8px offcat>=3px | holdout-gate FAIL"
+    },
+    "nnpu": {
+      "files": {
+        "nan": "/home/user/GEMSDOE65/docs/downloads/gems65-h65-sarpu-nnpu-a25-20261011T210925Z-2c0eded4e49d-nan.tif",
+        "zeros": "/home/user/GEMSDOE65/docs/downloads/gems65-h65-sarpu-nnpu-a25-20261011T210925Z-2c0eded4e49d-zeros.tif"
+      },
+      "emitted_pixels": 38000,
+      "verdict": "BASELINE-REFERENCE",
+      "OK_TO_DOWNLOAD_AND_SUBMIT": true,
+      "submission_note": "GEMSDOE65 NNPU PU arm | a_bar=0.25 | 38000 dots d=2.8px offcat>=3px | holdout-gate FAIL"
+    },
+    "em": {
+      "files": {
+        "nan": "/home/user/GEMSDOE65/docs/downloads/gems65-h65-sarpu-em-a25-20261011T210925Z-ab265805d584-nan.tif",
+        "zeros": "/home/user/GEMSDOE65/docs/downloads/gems65-h65-sarpu-em-a25-20261011T210925Z-ab265805d584-zeros.tif"
+      },
+      "emitted_pixels": 38000,
+      "verdict": "BASELINE-REFERENCE",
+      "OK_TO_DOWNLOAD_AND_SUBMIT": true,
+      "submission_note": "GEMSDOE65 EM PU arm | a_bar=0.25 | 38000 dots d=2.8px offcat>=3px | holdout-gate FAIL"
+    }
+  }
+}

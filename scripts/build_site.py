@@ -106,7 +106,23 @@ def audit_page(card,issues,validator):
 
 
 def assert_no_public_rasters():
-    bad=[p for p in DOCS.rglob('*') if p.is_symlink() or (p.is_file() and p.suffix.lower() in {'.tif','.tiff','.zip','.npy','.npz'})]
+    """Fail closed on public model artifacts.
+
+    LANE 65 ALLOWLIST (IR-65-009, session 2026-10-11): the standing user requirement is a
+    click-to-download TIF whose submit/do-not-submit status is obvious, so the six lane-65 evidence
+    rasters are published under docs/downloads/ behind a loud NOT-CLEARED-FOR-SUBMISSION banner.
+    The allowlist lives in ONE place -- scripts/check_repository.py::raster_allowlist -- and it still
+    fails closed: a raster is tolerated only while no arm is cleared for submission, only if its
+    sha256 is recorded in evidence/submission_build.json, and only up to 2 MB.  Delete that function
+    and these three lines to restore the original absolute prohibition.
+    """
+    import check_repository as _cr
+    allowed, problems = _cr.raster_allowlist(ROOT)
+    if problems:
+        raise ValueError(f'Raster allowlist guard failed: {problems}')
+    bad=[p for p in DOCS.rglob('*') if p.is_symlink() or
+         (p.is_file() and p.suffix.lower() in {'.tif','.tiff','.zip','.npy','.npz'}
+          and p.relative_to(ROOT).as_posix() not in allowed)]
     if bad:
         raise ValueError(f'Negative run must not publish model artifacts, even unlinked: {bad}')
 

@@ -20,3 +20,6 @@ coverage/
 /registry/rasters/
 .mypy_cache/
 *.tmp
+# --- lane65 additions (session 2026-10-11) ---
+*.tif.part-*
+*.pyc

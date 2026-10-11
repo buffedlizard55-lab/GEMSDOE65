@@ -1,7 +1,7 @@
 name: Verification
 on:
   push:
-    branches: [main, 'arena/f09c3103-gemsdoe65']
+    branches: [main, 'arena/**']
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -34,6 +34,12 @@ jobs:
         run: python scripts/build_site.py
       - name: Unit, gradient, format, gate and publication tests
         run: python -m pytest -q --junitxml=.cache/verification-tests.xml
+      - name: Lane 65 - rebuild lane pages from evidence (no hand-typed numbers)
+        run: |
+          python scripts/build_site_lane65.py
+          python scripts/06_run_card.py
+      - name: Lane 65 - metric/dupcheck regression tests
+        run: python -m pytest -q tests/test_metric.py tests/test_dupcheck.py
       - name: Check local links, JSON identity and absence of public rasters
         run: python scripts/check_site.py
       - name: Reject accidental large/training artifacts in Git

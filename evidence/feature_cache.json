@@ -1,0 +1,104 @@
+{
+  "evidence_class": "DATA-MEASUREMENT",
+  "shape": [
+    3730,
+    3292
+  ],
+  "crs": "EPSG:32611",
+  "transform": [
+    100.0,
+    0.0,
+    243350.0,
+    0.0,
+    -100.0,
+    4508550.0
+  ],
+  "footprint_pixels": 5167373,
+  "catalogue_pixels": 60988,
+  "feature_bank_sha256": "3cda5fa955e233b5544aa1ba3c16f1a6a90fba6101a44301e48d44ba3d427024",
+  "footprint_sha256": "c446094771775c00802862e9ec58846fd1b278b4e608303e68811a2404dfd246",
+  "catalogue_sha256": "d77fa88ad58d0a268b736b3c1d6a8939fd237d5955369944bd2b299194b2555d",
+  "source_stack_sha256": "4371c82e3b8339b807bdffcf4ef59a225520fe2988d521be208ae33743123bc5",
+  "independent_mapping_anchor": null,
+  "propensity_scale_identifiable": false,
+  "features": [
+    {
+      "name": "local_relief",
+      "propensity": true,
+      "catalogue_derived": false,
+      "missing_in_footprint": 0
+    },
+    {
+      "name": "slope",
+      "propensity": true,
+      "catalogue_derived": false,
+      "missing_in_footprint": 0
+    },
+    {
+      "name": "gravity_basin_proxy",
+      "propensity": true,
+      "catalogue_derived": false,
+      "missing_in_footprint": 3061
+    },
+    {
+      "name": "lidar_coverage",
+      "propensity": true,
+      "catalogue_derived": false,
+      "missing_in_footprint": 0
+    },
+    {
+      "name": "distance_to_terrain_front",
+      "propensity": true,
+      "catalogue_derived": false,
+      "missing_in_footprint": 0
+    },
+    {
+      "name": "magnetic_horizontal_gradient",
+      "propensity": false,
+      "catalogue_derived": false,
+      "missing_in_footprint": 3061
+    },
+    {
+      "name": "gravity_horizontal_gradient",
+      "propensity": false,
+      "catalogue_derived": false,
+      "missing_in_footprint": 3061
+    },
+    {
+      "name": "gravity_vertical_gradient",
+      "propensity": false,
+      "catalogue_derived": false,
+      "missing_in_footprint": 3061
+    },
+    {
+      "name": "detrended_elevation",
+      "propensity": false,
+      "catalogue_derived": false,
+      "missing_in_footprint": 3061
+    },
+    {
+      "name": "detrended_slope",
+      "propensity": false,
+      "catalogue_derived": false,
+      "missing_in_footprint": 3061
+    },
+    {
+      "name": "basement_surface",
+      "propensity": false,
+      "catalogue_derived": false,
+      "missing_in_footprint": 3061
+    },
+    {
+      "name": "conductivity",
+      "propensity": false,
+      "catalogue_derived": false,
+      "missing_in_footprint": 3061
+    }
+  ],
+  "caveats": [
+    "Negative isostatic gravity is only a basin-fill proxy, not an inversion.",
+    "Terrain-front distance is derived from independent slope/relief thresholds, not verified range-front faults.",
+    "Lidar coverage is validity in the cached derivative, not an official complete acquisition index.",
+    "Hash consistency does not prove official provenance."
+  ]
+}

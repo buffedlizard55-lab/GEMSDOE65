@@ -13,12 +13,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 DATA_ALIASES = {
-    "feature_stack": ("data/training_features.tif", "data/numeric_features.tif", "data/gems-geodawn-numerical-features.tif"),
-    "labels": ("data/labels.tif", "data/existing_faults.tif", "data/faults.tif"),
-    "sample_template": ("data/sample_submission.tif", "data/example_submission.tif"),
+    "feature_stack": ("data/raw/training_features.tif", "data/training_features.tif", "data/numeric_features.tif", "data/gems-geodawn-numerical-features.tif"),
+    "labels": ("data/raw/existing_faults.tif", "data/labels.tif", "data/existing_faults.tif", "data/faults.tif"),
+    "sample_template": ("data/raw/sample_submission.tif", "data/sample_submission.tif", "data/example_submission.tif"),
 }
 SHARED_TOOLS = ("evaluate_holdout.py", "submission_writer.py")
 RASTER_REGISTRY_CANDIDATES = (
+    "registry/prior_rasters.json",
     "registry/rasters.json",
     "registry/rasters.jsonl",
     "data/evidence/rasters.json",
@@ -31,8 +32,11 @@ def _present_alias(root: Path, choices: tuple[str, ...]) -> dict:
 
 
 def _find_named_tool(root: Path, filename: str) -> str | None:
+    pinned = root / "vendor" / "template58" / "gems57" / filename
+    if pinned.is_file():
+        return pinned.relative_to(root).as_posix()
     for path in root.rglob(filename):
-        if ".git" in path.parts or path.is_dir():
+        if any(p in path.parts for p in (".git", ".venv", ".cache", "node_modules")) or path.is_dir():
             continue
         return path.relative_to(root).as_posix()
     return None

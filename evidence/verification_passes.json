@@ -1,0 +1,53 @@
+{
+  "checked_at": "2026-10-11T21:07:18.761413+00:00",
+  "status": "Three local review passes complete; negative scientific verdict is unchanged",
+  "passes": [
+    {
+      "pass": 1,
+      "status": "complete",
+      "verified": [
+        "Pinned data restored and grid inspected",
+        "Primary literature and 62 source sites reviewed with evidence classes separated",
+        "Three fixed scale-sensitivity experiments completed",
+        "New research TIFF generated, validated and quarantined",
+        "Pre-placement duplicate stop honored"
+      ]
+    },
+    {
+      "pass": 2,
+      "status": "complete",
+      "verified": [
+        "Analytic gradients and PU posterior/risk identities tested",
+        "Whole-component exclusion, buffering and pooled CI consistency tested",
+        "144 expanded basis canaries passed without refitting",
+        "Validator summary requires explicit named checks; cache identities verified",
+        "Source feed revision comparison repaired",
+        "Desktop/mobile checks passed for all eight routes; bundled-browser proxy CA limitation and separately TLS-verified anonymous GitHub endpoint documented"
+      ]
+    },
+    {
+      "pass": 3,
+      "status": "complete",
+      "verified": [
+        "78 local tests passed after concurrent-main integration",
+        "Five site pages plus three legacy redirects: links/fragments, JSON identity and negative publication checks passed",
+        "Original prompt archived in README; agent read-first agreement added",
+        "Shared template source hashes remain unchanged",
+        "All scope limits and unperformed checks disclosed; no leaderboard promise or slot spent",
+        "Retained prior planning/history, no-leaderboard policy and readiness tests; updated obsolete preflight-card assertions to the actual completed run"
+      ]
+    }
+  ],
+  "unit_tests": {
+    "tests": 78,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "browser_receipt": "browser_checks.json",
+  "geological_experiments": 3,
+  "organizer_uploads": 0,
+  "submission_ready": false,
+  "github_ci": "See pull-request checks; local review record is not a remote-CI receipt.",
+  "browser_feed_unit_cases": 8
+}

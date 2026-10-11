@@ -1,14 +1,22 @@
-# Keep local competition inputs, caches, runs, artifacts, and raster registry out of Git.
+.venv/
+.cache/
+__pycache__/
+.pytest_cache/
+*.py[cod]
+node_modules/
+data/raw/
+data/cache/
+data/external/
+data/registry_rasters/
+artifacts/
+!artifacts/.gitkeep
+*.egg-info/
+.env
+coverage/
+.DS_Store
 /data/
 /cache/
 /runs/
-/artifacts/
 /registry/rasters/
-
-# Local Python environments, bytecode, caches, and atomic-write scratch files.
-.venv/
-__pycache__/
-*.py[cod]
-.pytest_cache/
 .mypy_cache/
 *.tmp

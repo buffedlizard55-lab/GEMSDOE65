@@ -60,7 +60,7 @@ Only offer a TIF when every scientific, uniqueness, and format gate passes. It m
 
 The checked-out branch started from commit `90ca1cea667dc1427de27ef997634f3305a7c164`; at session start its tracked tree contained only this README. This change adds an evidence site, a leaderboard-feed parser, a presence-only readiness audit, and tests—not a model or submission pipeline. There is still no `data/`, required segment evaluator, shared writer, prior-raster registry, or TIF in this checkout. The upstream public `GEMSDOE` repository has related components, but its names and block/emission evaluation are not the required segment hide-and-recover evaluator; they are not silently substituted here. The official competition data tab requires access, and no authenticated competition files are present locally.
 
-The current negative run, source audit, and historical-score correction are recorded in [`docs/`](docs/). No submission slot was spent.
+The current negative run, source audit, and historical-score correction are recorded in [`docs/`](docs/). No submission slot was spent. The Pages workflow is present, but the repository's live Pages setting is still legacy publishing from `main:/`; a repository admin must switch **Settings → Pages → Source** to **GitHub Actions** and rerun the workflow before the new site replaces the current README-only page.
 
 ## Project pages
 

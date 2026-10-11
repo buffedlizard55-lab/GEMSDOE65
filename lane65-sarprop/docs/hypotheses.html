@@ -1,0 +1,151 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hypotheses — GEMSDOE65</title><style>
+:root{--bg:#0f1216;--card:#171b21;--line:#252b34;--ink:#e8ecf1;--mut:#9aa5b1;
+--ok:#2fbf71;--bad:#e5484d;--warn:#f5a524;--acc:#4c8dff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+font:16px/1.62 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+a{color:var(--acc)} a:hover{text-decoration:underline}
+.wrap{max-width:1000px;margin:0 auto;padding:0 20px 80px}
+header.top{border-bottom:1px solid var(--line);background:#12161b;position:sticky;top:0;z-index:5}
+header.top .wrap{padding:12px 20px;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.brand{font-weight:700;letter-spacing:.2px}
+nav a{color:var(--mut);text-decoration:none;font-size:14px;padding:4px 2px}
+nav a:hover{color:var(--ink)} nav a.on{color:var(--ink);border-bottom:2px solid var(--acc)}
+h1{font-size:30px;line-height:1.25;margin:28px 0 6px}
+h2{font-size:21px;margin:34px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+h3{font-size:17px;margin:22px 0 6px}
+p,li{color:#dbe2ea}
+small,.mut{color:var(--mut)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:16px 0}
+.hero{border-radius:14px;padding:22px;margin:20px 0;border:2px solid var(--line);background:var(--card)}
+.hero.ok{border-color:var(--ok);background:linear-gradient(180deg,rgba(47,191,113,.10),rgba(47,191,113,.02))}
+.hero.bad{border-color:var(--bad);background:linear-gradient(180deg,rgba(229,72,77,.12),rgba(229,72,77,.02))}
+.hero.warn{border-color:var(--warn);background:linear-gradient(180deg,rgba(245,165,36,.10),rgba(245,165,36,.02))}
+.hero h2{border:0;margin:0 0 6px;font-size:20px}
+.chip{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.4px;
+padding:2px 8px;border-radius:999px;vertical-align:middle}
+.chip.ok{background:rgba(47,191,113,.18);color:#6ee7a8;border:1px solid rgba(47,191,113,.5)}
+.chip.bad{background:rgba(229,72,77,.18);color:#ff9ea1;border:1px solid rgba(229,72,77,.5)}
+.chip.warn{background:rgba(245,165,36,.16);color:#ffd08a;border:1px solid rgba(245,165,36,.5)}
+.btn{display:inline-block;background:var(--ok);color:#04220f;font-weight:800;text-decoration:none;
+padding:14px 22px;border-radius:10px;font-size:17px;margin:6px 10px 6px 0}
+.btn:hover{filter:brightness(1.08);text-decoration:none}
+.btn.off{background:#3a4049;color:#aab3bf;pointer-events:none}
+.btn.alt{background:transparent;color:var(--ink);border:1px solid var(--line)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--mut);font-weight:600;white-space:nowrap}
+.tw{overflow-x:auto;margin:10px 0}
+code,kbd{background:#0b0e12;border:1px solid var(--line);border-radius:6px;padding:1px 6px;
+font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;word-break:break-all}
+pre{background:#0b0e12;border:1px solid var(--line);border-radius:10px;padding:14px;overflow-x:auto;
+font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}}
+.kv{font-size:14px}.kv b{color:var(--mut);font-weight:600}
+.warnbox{border-left:3px solid var(--warn);background:rgba(245,165,36,.08);padding:10px 12px;border-radius:6px;margin:10px 0}
+ul.tight{margin:8px 0} ul.tight li{margin:4px 0}
+.feed{list-style:none;padding:0;margin:0}
+.feed li{border-left:3px solid var(--line);padding:6px 0 6px 12px;margin:8px 0;font-size:14px}
+.feed li.ok{border-color:var(--ok)} .feed li.bad{border-color:var(--bad)} .feed li.warn{border-color:var(--warn)}
+footer{border-top:1px solid var(--line);margin-top:40px;padding-top:16px;color:var(--mut);font-size:13px}
+</style></head><body>
+<header class="top"><div class="wrap"><span class="brand">GEMSDOE65 — selection-bias-aware fault prediction</span>
+<nav><a href="index.html">Executive Summary</a> <a href="method.html">Method</a> <a href="evidence.html">Evidence</a> <a href="analysis-02778.html">Score 0.2778</a> <a href="hypotheses.html" class="on">Hypotheses</a> <a href="verification.html">Verification &amp; duplicates</a> <a href="limitations.html">Limitations &amp; next work</a></nav></div></header>
+<div class="wrap">
+<h1>Candidate hypotheses, ranked</h1>
+<p>expected DTI gain per unit of implementation risk, subject to the hard rule that a hypothesis whose data cannot be fetched in the working environment cannot be validated and therefore cannot be promoted</p>
+<p class="mut">Generated from <code>evidence/hypotheses.json</code>. This register exists because
+the protocol forbids promoting an unvalidated layer into a submission, so the ranking is written
+to be acted on in order, not read as a wish list.</p>
+
+<h2>Summary</h2>
+<div class="tw"><table><thead><tr><th>Rank</th><th>Hypothesis and layers</th><th>Expected gain</th><th>Cost</th><th>Status here</th></tr></thead><tbody><tr><td>#1</td><td><b>QFaults-B transfer: the organisers&#x27; own second inventory as a new-fault prior</b><br><span class='mut'>USGS Quaternary Fault and Fold Database polylines (attributes SLIPRT2023, REC2023, SLIPSENSE, MAPSCALE, FTYPE) minus the pixels already covered by the training catalogue; features = distance to the nearest uncovered trace, recency-weighted and slip-rate-weighted</span></td><td>high (the only hypothesis that targets the scored inventory directly rather than a physical proxy for it)</td><td>medium: one fetch from a documented public service, polyline rasterisation, complement mask, distance transform, then the same gated arm comparison used here</td><td><span class="chip warn">NOT YET RUN</span></td></tr><tr><td>#2</td><td><b>Thermal-fluid pathway layer (hot springs, well temperatures, geothermometry)</b><br><span class='mut'>GDR &#x27;Well and Spring Temperature and Chemistry&#x27; table: measured temperature, quartz/chalcedony/cat geothermometer temperatures, thermal class, at 12,570 distinct grid cells; kernel density at a ~400 m scale</span></td><td>medium in principle, but measured NEGATIVE below</td><td>low: local CSV, kernel density, one blended emission sweep</td><td><span class="chip bad">REJECTED</span></td></tr><tr><td>#3</td><td><b>Drainage response: chi (chi) transformation and knickpoint density on the provided detrended-elevation band</b><br><span class='mut'>detrended elevation (official band 6) and its slope (band 7), plus the competition lidar scarps for valley identification; optional 3DEP 1/3 arc-second DEM as a coarse anchor</span></td><td>medium</td><td>high: flow routing over 12.3M cells plus network statistics; needs either pysheds/richdem from PyPI or a hand-rolled D8</td><td><span class="chip warn">NOT YET RUN</span></td></tr><tr><td>#4</td><td><b>Radiometric alteration ratios (K, eTh, eU) over the GeoDAWN survey</b><br><span class='mut'>GeoDAWN airborne radiometrics: potassium, equivalent thorium and uranium channels, as ratios (K/eTh, eU/eTh) and as a K-enrichment anomaly</span></td><td>medium</td><td>low-medium: the survey is already published as a GeoTIFF archive; the work is ratioing, resampling to 100 m and the standard gate</td><td><span class="chip warn">NOT YET RUN</span></td></tr><tr><td>#5</td><td><b>Seismicity geometry: depth-banded hypocentre density and focal-mechanism strike</b><br><span class='mut'>ANSS Comprehensive Catalog hypocentres (depth, magnitude) and focal mechanism solutions, projected to the grid; the official band 19 carries only 2-D earthquake density</span></td><td>low-medium: the footprint&#x27;s seismicity is sparse and clustered, so the field is noisy at 100 m</td><td>medium: API paging with a footprint envelope query, declustering (Gardner-Knopoff or Reasenberg), then the standard gate</td><td><span class="chip warn">NOT YET RUN</span></td></tr></tbody></table></div>
+
+<h2>Measured prior for the top-ranked hypothesis</h2>
+<p>The rules state the scored labels come from the <b>USGS Quaternary Fault and Fold Database</b>
+plus expert-identified new faults, while the training labels came from the <b>INGENIOUS</b> Great
+Basin compilation. Measuring the USGS side against the training catalogue, using the clipped trace
+table already on disk (376 traces with a centroid inside the footprint):</p>
+<div class="tw"><table><thead><tr><th>Distance of the trace centroid from the nearest catalogue pixel</th><th>Traces</th><th>Share</th></tr></thead><tbody><tr><td>more than 1 px (100 m)</td><td>235</td><td>62.5%</td></tr><tr><td>more than 2 px (200 m)</td><td>199</td><td>52.9%</td></tr><tr><td>more than 3 px (300 m) — the metric's own kernel radius</td><td>168</td><td>44.7%</td></tr><tr><td>more than 5 px (500 m)</td><td>122</td><td>32.4%</td></tr><tr><td>more than 10 px (1 km)</td><td>72</td><td>19.1%</td></tr></tbody></table></div>
+<p class="mut">Stated caveat: a centroid is a summary point of a clipped trace, so a long trace can
+still touch the catalogue at one end. This is an upper bound on the opportunity, not an estimate
+of it.</p>
+
+<h2>The locally runnable candidate was tested and rejected</h2>
+<p>The thermal-fluid pathway layer (hot springs, well temperatures and geothermometry) was blended into the emission ranking at predeclared weights, holding the fitted model and the propensity field completely fixed, so only the order the emission rule walks changes:</p><div class="tw"><table><thead><tr><th>Blend weight lambda</th><th>Dots</th><th>HOLDOUT-DTI</th><th>TP_w</th></tr></thead><tbody><tr><td>0.0</td><td>72,218</td><td>0.072048</td><td>1708</td></tr><tr><td>0.25</td><td>72,395</td><td>0.071053</td><td>1687</td></tr><tr><td>0.5</td><td>72,498</td><td>0.069619</td><td>1654</td></tr><tr><td>1.0</td><td>72,930</td><td>0.067694</td><td>1614</td></tr><tr><td><b>decision</b></td><td><b>not supported</b></td><td><b>baseline 0.072048</b></td><td></td></tr></tbody></table></div><p class='mut'>Every weight above zero makes the file worse, so the layer is <b>not</b> promoted and no submission slot is spent on it. The layer alone is informative — hot sites carry 0.242% withheld truth against a 0.222% base rate — but it is redundant with the existing design at the margin that decides the score. A negative result, kept as a deliverable.</p>
+
+<h2>The candidates in full</h2>
+<h3>#1 — QFaults-B transfer: the organisers&#x27; own second inventory as a new-fault prior <span class="chip warn">NOT YET RUN</span></h3>
+<div class="kv">
+<p><b>Layers</b> USGS Quaternary Fault and Fold Database polylines (attributes SLIPRT2023, REC2023, SLIPSENSE, MAPSCALE, FTYPE) minus the pixels already covered by the training catalogue; features = distance to the nearest uncovered trace, recency-weighted and slip-rate-weighted</p>
+<p><b>Physical signature</b> An independent, seismic-hazard-grade compilation of Quaternary surface rupture. Traces present in QFaults but absent from the training catalogue are, by definition, fault geometry the organiser&#x27;s own label source contains and the training labels do not.</p>
+<p><b>Why it catches a fault missing from the catalogue</b> The rules state the scored labels come from the USGS Quaternary Fault and Fold Database plus expert-identified new faults, while the training labels came from the INGENIOUS Great Basin compilation. Any QFault trace outside the training catalogue is therefore a direct member of the scored population rather than a proxy for it -- the strongest available prior on the final-round reward.</p>
+<p><b>How it differs from what this repo family has already done</b> Sibling lanes rasterised the QFaults service only as a cross-catalogue transfer surrogate (fetch_qfaults.py) and used it to audit proxy-catalogue policy, not as a feature in a submission model. No lane restricted it to the complement of the training catalogue, and none weighted it by REC2023/SLIPRT2023.</p>
+<p><b>Expected DTI gain</b> high (the only hypothesis that targets the scored inventory directly rather than a physical proxy for it) &nbsp;&nbsp;
+   <b>Implementation cost</b> medium: one fetch from a documented public service, polyline rasterisation, complement mask, distance transform, then the same gated arm comparison used here</p>
+<p><b>External source</b> USGS Quaternary Fault and Fold Database of the United States (2020 release) — <a href="https://doi.org/10.5066/P9BCVRCK">https://doi.org/10.5066/P9BCVRCK</a></p>
+<p><b>Obtainable?</b> VERIFIED OBTAINABLE — a sibling lane&#x27;s fetch_qfaults.py records the live response (14,482 features intersecting the footprint envelope, queried 2026-09-18, service currentVersion 11.5) and the downloaded attribute table (23,386 rows: NAME, SLIPRT2023, REC2023, SLIPSENSE, MAPSCALE, FTYPE_) is present in a sibling checkout. NOT re-fetched in this sandbox: outbound access here is limited to GitHub and PyPI, so the service host is unreachable from this environment.</p>
+<p><b>Validated here?</b> Not runnable in this sandbox (no route to the USGS service). Its prior was measured instead, from the clipped trace table already on disk.</p>
+</div><h3>#2 — Thermal-fluid pathway layer (hot springs, well temperatures, geothermometry) <span class="chip bad">REJECTED</span></h3>
+<div class="kv">
+<p><b>Layers</b> GDR &#x27;Well and Spring Temperature and Chemistry&#x27; table: measured temperature, quartz/chalcedony/cat geothermometer temperatures, thermal class, at 12,570 distinct grid cells; kernel density at a ~400 m scale</p>
+<p><b>Physical signature</b> Fluid upflow and discharge. In the Basin and Range, hot springs sit on fault intersections and relay zones, so hot-site density is a map of permeable structure rather than of topography.</p>
+<p><b>Why it catches a fault missing from the catalogue</b> Surface-rupture mapping requires a scarp; fluid pathways do not. Springs mark blind, buried and small-displacement structures that a surface-rupture catalogue under-maps, which is the same population the organisers&#x27; expert round adds.</p>
+<p><b>How it differs from what this repo family has already done</b> No lane in this family carries the spring/well temperature table as a model feature; it appears only as background knowledge in a research note.</p>
+<p><b>Expected DTI gain</b> medium in principle, but measured NEGATIVE below &nbsp;&nbsp;
+   <b>Implementation cost</b> low: local CSV, kernel density, one blended emission sweep</p>
+<p><b>External source</b> GDR geothermal well and spring temperature/chemistry compilation — <a href="https://gdr.openei.org/submissions/1391">https://gdr.openei.org/submissions/1391</a></p>
+<p><b>Obtainable?</b> already downloaded in a sibling checkout (27,092 rows, 12,570 distinct grid cells)</p>
+<p><b>Validated here?</b> REJECTED on the blocked holdout at the emission level: every blend weight above zero lowers HOLDOUT-DTI. See evidence/hypothesis_thermal_pathway.json.</p>
+</div><h3>#3 — Drainage response: chi (chi) transformation and knickpoint density on the provided detrended-elevation band <span class="chip warn">NOT YET RUN</span></h3>
+<div class="kv">
+<p><b>Layers</b> detrended elevation (official band 6) and its slope (band 7), plus the competition lidar scarps for valley identification; optional 3DEP 1/3 arc-second DEM as a coarse anchor</p>
+<p><b>Physical signature</b> A channel crossing an active or recently active fault steps down; along-stream chi plots show a break, and knickpoint density anomalies trace the structure responsible even where no scarp was mapped.</p>
+<p><b>Why it catches a fault missing from the catalogue</b> Fluvial networks integrate vertical motion over 10^4-10^5 yr, so they respond to structures that have insufficient surface expression to be mapped as a scarp but are nonetheless deforming the landscape.</p>
+<p><b>How it differs from what this repo family has already done</b> Sibling lanes used elevation edges, curvature, Euler depth, tensor/strain and scarp morphology; none computed a stream network relative metric (chi, ksn, knickpoint density), which is a different observable from gradient products.</p>
+<p><b>Expected DTI gain</b> medium &nbsp;&nbsp;
+   <b>Implementation cost</b> high: flow routing over 12.3M cells plus network statistics; needs either pysheds/richdem from PyPI or a hand-rolled D8</p>
+<p><b>External source</b> USGS 3DEP (only if a coarse anchor is wanted) — <a href="https://apps.nationalmap.gov/downloader/">https://apps.nationalmap.gov/downloader/</a></p>
+<p><b>Obtainable?</b> the organisers ship a 1 m DEM link list; the 100 m detrended elevation band is already local, so this hypothesis needs no new download to start</p>
+<p><b>Validated here?</b> queued; not run in this session</p>
+</div><h3>#4 — Radiometric alteration ratios (K, eTh, eU) over the GeoDAWN survey <span class="chip warn">NOT YET RUN</span></h3>
+<div class="kv">
+<p><b>Layers</b> GeoDAWN airborne radiometrics: potassium, equivalent thorium and uranium channels, as ratios (K/eTh, eU/eTh) and as a K-enrichment anomaly</p>
+<p><b>Physical signature</b> Hydrothermal alteration: K metasomatism along fluid pathways, potassic clay alteration, and uranium enrichment in fracture damage zones produce a distinctive K-high / Th-low ratio.</p>
+<p><b>Why it catches a fault missing from the catalogue</b> Alteration halos record where fluids moved in the past, which persists after the topographic scarp has been erased or buried -- so it can mark the location of a structure with no modern surface expression.</p>
+<p><b>How it differs from what this repo family has already done</b> One sibling lane used a radiometric edge-coherence diagnostic; no lane has used the K/Th/U ratio (alteration index) as a model feature.</p>
+<p><b>Expected DTI gain</b> medium &nbsp;&nbsp;
+   <b>Implementation cost</b> low-medium: the survey is already published as a GeoTIFF archive; the work is ratioing, resampling to 100 m and the standard gate</p>
+<p><b>External source</b> GeoDAWN airborne magnetic and radiometric surveys, northwestern Great Basin (Glen &amp; Earney, 2024) — <a href="https://doi.org/10.5066/P93LGLVQ">https://doi.org/10.5066/P93LGLVQ</a></p>
+<p><b>Obtainable?</b> VERIFIED OBTAINABLE — the official 19-band feature stack already carries five bands derived from this survey, and a sibling lane shipped a radiometric-derived diagnostic raster, so the archive has been downloaded successfully in this family before</p>
+<p><b>Validated here?</b> queued; needs the radiometric bands</p>
+</div><h3>#5 — Seismicity geometry: depth-banded hypocentre density and focal-mechanism strike <span class="chip warn">NOT YET RUN</span></h3>
+<div class="kv">
+<p><b>Layers</b> ANSS Comprehensive Catalog hypocentres (depth, magnitude) and focal mechanism solutions, projected to the grid; the official band 19 carries only 2-D earthquake density</p>
+<p><b>Physical signature</b> Active structures concentrate seismicity on planes. A depth band (3-10 km) isolates crustal faults from quarry blasts and deep events, and mechanism nodal planes give the strike to correlate.</p>
+<p><b>Why it catches a fault missing from the catalogue</b> Seismicity locates active structures regardless of surface expression, so a lineament defined by hypocentres is evidence of a fault the surface catalogue does not contain.</p>
+<p><b>How it differs from what this repo family has already done</b> The family used the provided 2-D density band; no lane has used depths, magnitudes or mechanisms to build a 3-D/structural feature.</p>
+<p><b>Expected DTI gain</b> low-medium: the footprint&#x27;s seismicity is sparse and clustered, so the field is noisy at 100 m &nbsp;&nbsp;
+   <b>Implementation cost</b> medium: API paging with a footprint envelope query, declustering (Gardner-Knopoff or Reasenberg), then the standard gate</p>
+<p><b>External source</b> ANSS Comprehensive Earthquake Catalog (ComCat) web service — <a href="https://earthquake.usgs.gov/fdsnws/event/1/">https://earthquake.usgs.gov/fdsnws/event/1/</a></p>
+<p><b>Obtainable?</b> documented public service, no key; not re-verified from this sandbox because outbound access here is limited to GitHub and PyPI. The organisers already ship a 2-D density product derived from the same network, which is independent evidence that the catalogue is obtainable</p>
+<p><b>Validated here?</b> queued; not run in this session</p>
+</div>
+
+<h2>What happens next, in order</h2>
+<p>Fetch QFaults polylines, rasterise, subtract the training catalogue, and run the same gated arm comparison on the blocked holdout. Promote only if it beats the current arm on the identical draw, and only after the multi-seed repeat.</p>
+<p class="mut">Nothing above may be promoted into a submission before it beats the current arm on
+the same blocked draw — which is why the multi-seed repeat is the first item of remaining work.</p>
+
+<footer><p><b>Evidence policy.</b> Numbers on this site are either
+<span class="chip ok">HOLDOUT-DTI</span> (measured here with the frozen template
+evaluator on a blocked hide-and-recover draw) or <span class="chip warn">ORGANIZER</span>
+(copied from a competition source). A projection is never written as a score.</p>
+<p>Built from <code>evidence/*.json</code> by <code>src/gems65_sarprop/site.py</code>
+(the build is deterministic: the stamp below is the newest evidence timestamp, not the wall
+clock, so CI can assert that a rebuild is byte-identical). No number on this site is typed by
+hand.</p>
+<p>Newest evidence artifact: <code>2026-10-11T22:57:11+00:00</code>.</p></footer></div></body></html>

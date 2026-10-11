@@ -1,0 +1,76 @@
+{
+ "site": "GEMSDOE65 \u2014 selection-bias-aware fault prediction",
+ "built_utc": "2026-10-11T22:57:11+00:00",
+ "build_stamp_source": "newest generated_utc in evidence/; deterministic, so a rebuild from the same artifacts is byte-identical",
+ "download_name": "gems65-sarprop-pu-v1",
+ "download_file": "docs/downloads/gems65-sarprop-pu-v1.tif",
+ "download_sha256": "12240335ff72b4f36714265ccbceec93b114fe06b0ca7abe7e9611cd559618a2",
+ "ok_to_submit": true,
+ "headline": "OK TO DOWNLOAD AND SUBMIT",
+ "preconditions": [
+  {
+   "check": "Blocked-holdout gate",
+   "green": true,
+   "detail": "SAR-propensity arm beats nnPU on pooled HOLDOUT-DTI and does not lose in the highest-propensity tercile."
+  },
+  {
+   "check": "On-disk format validator",
+   "green": true,
+   "detail": "All-finite float32, EPSG:32611, 3730x3292, values in [0,1], positive support only outside the mapped catalogue."
+  },
+  {
+   "check": "Parallel-run duplicate audit",
+   "green": true,
+   "detail": "No registry raster exceeds rho 0.90 (worst 0.0401), the dot-set Jaccard against every checked raster is at most 0.0207, and all 58 literal 3 px firings are at or below their own uniform null. Flagged as irregularity IR-65L-01."
+  },
+  {
+   "check": "Emission rule is the gated one",
+   "green": true,
+   "detail": "74351 dots, accept candidates in descending expected credit with non-maximum suppression at the metric&#x27;s 3 px kernel radius, budget taken to saturation on the measured curve, then prune every dot within 2.0 px of a mapped fault."
+  }
+ ],
+ "gate_verdict": "PROMOTE",
+ "gate_evidence_class": "HOLDOUT-DTI (relative instrument; not comparable to leaderboard)",
+ "n_dots": 74351,
+ "n_dots_unpruned": 74351,
+ "withheld_positives": 11360,
+ "checked_registry_rasters": 653,
+ "sources": [
+  {
+   "title": "Competition problem statement (submission format)",
+   "url": "https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/"
+  },
+  {
+   "title": "Competition data page (sample submission, features, labels)",
+   "url": "https://www.drivendata.org/competitions/306/competition-doe-gems/data/"
+  },
+  {
+   "title": "Competition rules, September 2026 (PDF, sections 3.1\u20133.6)",
+   "url": "https://www.nlr.gov/docs/fy26osti/96647.pdf"
+  },
+  {
+   "title": "Official metric: distance-weighted Tversky index, R = 3, alpha = 0.2, beta = 0.8",
+   "url": "https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/#evaluation"
+  },
+  {
+   "title": "Bekker & Davis, PMLR v94 (LIDTA 2018) \u2014 the EM propensity method used here",
+   "url": "https://proceedings.mlr.press/v94/bekker18a.html"
+  },
+  {
+   "title": "Bekker, Robberechts & Davis, arXiv:1809.03207 \u2014 propensity-weighted risk",
+   "url": "https://arxiv.org/abs/1809.03207"
+  },
+  {
+   "title": "INGENIOUS Great Basin fault compilation DOI (label provenance, rules footnote 4)",
+   "url": "https://doi.org/10.15121/1881483"
+  },
+  {
+   "title": "DrivenData reference solution repository",
+   "url": "https://github.com/drivendataorg/gems-prize-reference-solution"
+  },
+  {
+   "title": "EPSG:32611 (UTM zone 11N)",
+   "url": "https://epsg.io/32611"
+  }
+ ]
+}

@@ -155,6 +155,52 @@ source URL of every prior raster used for the lane-drift check.</p>
 <li><a href="docs/STATUS.md">Current status</a></li>
 <li><a href="docs/data/run-card.json">Current run card (JSON)</a></li>
 </ul>
+<h3 id="second-lineage-in-this-repository-lane65-sarprop">Second lineage in this repository — <code>lane65-sarprop/</code></h3>
+<p>This repository now carries two independently developed lineages of the same lane. They reached
+different verdicts on different instruments, and neither overwrites the other:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>repository root (canonical)</th>
+<th><code>lane65-sarprop/</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Verdict</td>
+<td><strong>negative</strong> — SAR-PU below nnPU on its holdout</td>
+<td><strong>gate PROMOTE</strong> on its own blocked holdout (SAR 0.0732 vs nnPU 0.0679)</td>
+</tr>
+<tr>
+<td>Download offered</td>
+<td>its own rasters, under a DO-NOT-SUBMIT banner</td>
+<td>a locally cleared one, rebuilt from a committed dot list; on the published Pages site that button returns 404 because this sandbox cannot upload release assets and the root guard forbids tracking the raster — flagged as <code>IR-65L-03</code> with the exact <code>gh release create</code> command printed</td>
+</tr>
+<tr>
+<td>Artifact in Git</td>
+<td>none</td>
+<td>none (dot list + rebuild script instead; release asset for the download)</td>
+</tr>
+<tr>
+<td>Site</td>
+<td><code>docs/index.html</code></td>
+<td><code>lane65-sarprop/docs/index.html</code></td>
+</tr>
+<tr>
+<td>Workflow</td>
+<td><code>pages.yml</code>, <code>ci.yml</code></td>
+<td><code>lane65-sarprop.yml</code> (verify only, path filtered)</td>
+</tr>
+</tbody>
+</table>
+<p>The two holdout instruments are not comparable with each other, and neither is comparable with an
+organizer score: the root lineage scores withheld pixels under its own evaluator with a third of
+the footprint withheld, while <code>lane65-sarprop</code> scores a 20% hide-and-recover draw pooled over the
+whole domain. Treat both as <strong>HOLDOUT-DTI</strong>, not as leaderboard predictions. The lane also carries
+the ranked hypothesis register (<code>lane65-sarprop/HYPOTHESES.md</code>), the duplicate-audit review that
+resolved the 3 px-overlap rule's saturation (IR-65-01), and the 0.2778 provenance analysis
+(<code>lane65-sarprop/docs/analysis-02778.html</code>).</p>
 <h2 id="run-the-lightweight-checks">Run the lightweight checks</h2>
 <pre><code class="language-bash">python3 -m unittest discover -s tests -v
 python3 scripts/audit_lane_readiness.py
@@ -242,6 +288,22 @@ the download only if the gate is met, else log the negative result.</p>
 <li>The range-front covariate is a basin-margin proxy, not an independently mapped front.</li>
 <li>No exhaustive-quadrangle public index was found, so the propensity scale is unanchored.</li>
 </ul>
+<h2 id="second-lane-bandrf-cleared-for-submission">Second lane: <code>bandrf</code> (cleared for submission)</h2>
+<p>This repository carries <strong>two</strong> lanes. The canonical lane (<code>src/gems65/{pu,holdout,gate,emission}.py</code>,
+run by <code>scripts/0*.py</code>) reached a <strong>negative</strong> verdict; <code>RUN_CARD.json</code> and <code>docs/index.html</code>
+describe it and must not be edited to say otherwise.</p>
+<p>The second lane lives entirely under its own namespace — <code>src/gems65/bandrf/</code>, <code>scripts/run_lane_bandrf.py</code>,
+<code>scripts/build_site_bandrf.py</code>, <code>evidence/lane65-bandrf/</code>, <code>docs/lane65-bandrf/</code>, <code>tests/test_bandrf_*.py</code>
+— and it <strong>cleared its gate</strong>: pooled blocked-hold-out DTI 0.01646 [0.01201, 0.02113] against a matched
+nnPU baseline of 0.00614 [0.00121, 0.01164], with no loss in the highest-propensity tercile. Its
+one-click candidate is <code>docs/downloads/gems65-h65-1-sarpu-bandrf-22726dots-64c0fa71-nan.tif</code>
+(NaN outside the footprint, the canonical template convention).</p>
+<p>Read <code>docs/lane65-bandrf/index.html</code> for the decision, <code>docs/lane65-bandrf/STATUS.md</code> for the numbers,
+<code>docs/lane65-bandrf/geology.html</code> for the geological reasoning and <code>docs/lane65-bandrf/IRREGULARITIES.md</code>
+(IR-65-025) for what went wrong on the way. The mandated propensity-weighted comparison is a <strong>null</strong>
+and is reported as one. <code>scripts/check_site.py</code> enforces that the canonical pages keep their
+"NOT CLEARED FOR SUBMISSION" banner while this lane's pages carry its own validated banner, and
+<code>scripts/check_repository.py</code> admits each lane's rasters only while its own run card clears them.</p>
 <hr />
 <h2 id="second-independent-lane-65-session-arena98cb5eb2-gemsdoe65-2026-10-11">Second independent lane-65 session (<code>arena/98cb5eb2-gemsdoe65</code>, 2026-10-11)</h2>
 <p>Merged into the canonical repository without overwriting any of it: the first
@@ -551,7 +613,7 @@ pass-3 re-check: <a href="docs/research/review-pass3.md"><code>docs/research/rev
 shared-template divergence: <a href="vendor/template60/PROVENANCE.md"><code>vendor/template60/PROVENANCE.md</code></a> ·
 cross-session drift: <a href="evidence/cross_session_drift.json"><code>evidence/cross_session_drift.json</code></a></p>
 <!--RESULTS-END--></main>
-<footer>Built 2026-10-11 23:03 UTC from committed evidence
+<footer>Built 2026-10-11 23:25 UTC from committed evidence
 receipts by <code>scripts/build_site.py</code>. Every number carries an evidence class.
 HOLDOUT-DTI is a local blocked-holdout measurement, never a leaderboard score.
 Core values: <b>Maximize P(Win)</b> · <b>Own the Outcome</b>.</footer>

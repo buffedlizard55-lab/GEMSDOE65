@@ -1,0 +1,216 @@
+{
+ "evidence_class": "MIXED \u2014 MEASURED where a number is given, VERIFIED-SOURCE for obtainability, INFERENCE in the ranking",
+ "generated_utc": "2026-10-11T21:27:39Z",
+ "ranking_rule": "expected DTI gain per unit of implementation risk, subject to the hard rule that a hypothesis whose data cannot be fetched in the working environment cannot be validated and therefore cannot be promoted",
+ "qfault_offset_measurement": {
+  "csv": "/tmp/reg2/G48/data/raw/external/gdr_qfaults_traces.csv",
+  "unit": "px at 100 m",
+  "rows": 1126,
+  "in_footprint": 376,
+  "distance_px": {
+   "min": 0.0,
+   "p25": 1.0,
+   "median": 2.23606797749979,
+   "p75": 7.106076496631101,
+   "p90": 15.247941867100781,
+   "max": 78.71467461661771
+  },
+  "fraction_further_than_px": {
+   "1": 0.625,
+   "2": 0.5292553191489362,
+   "3": 0.44680851063829785,
+   "5": 0.324468085106383,
+   "10": 0.19148936170212766,
+   "20": 0.06648936170212766
+  },
+  "count_further_than_px": {
+   "1": 235,
+   "2": 199,
+   "3": 168,
+   "5": 122,
+   "10": 72,
+   "20": 25
+  },
+  "by_recency": [
+   {
+    "recency_years": "<1,600,000",
+    "n": 149,
+    "median_dist_px": 2.8284271247461903,
+    "fraction_beyond_3px": 0.4563758389261745
+   },
+   {
+    "recency_years": "<15,000",
+    "n": 128,
+    "median_dist_px": 3.0,
+    "fraction_beyond_3px": 0.484375
+   },
+   {
+    "recency_years": "<130,000",
+    "n": 62,
+    "median_dist_px": 2.0,
+    "fraction_beyond_3px": 0.3870967741935484
+   },
+   {
+    "recency_years": "<150",
+    "n": 29,
+    "median_dist_px": 2.0,
+    "fraction_beyond_3px": 0.3448275862068966
+   },
+   {
+    "recency_years": "<750,000",
+    "n": 7,
+    "median_dist_px": 3.605551275463989,
+    "fraction_beyond_3px": 0.5714285714285714
+   }
+  ]
+ },
+ "thermal_pathway_result": {
+  "supported": false,
+  "baseline_lambda0_dti": 0.07204774229643882,
+  "rows": [
+   {
+    "lambda": 0.0,
+    "n_dots": 72218,
+    "holdout_dti": 0.07204774229643882,
+    "tpw": 1707.8105428589533,
+    "fpw": 71371.55511833035
+   },
+   {
+    "lambda": 0.25,
+    "n_dots": 72395,
+    "holdout_dti": 0.07105329395491454,
+    "tpw": 1686.6069311643203,
+    "fpw": 71559.44105378365
+   },
+   {
+    "lambda": 0.5,
+    "n_dots": 72498,
+    "holdout_dti": 0.06961866529994745,
+    "tpw": 1653.7424906790127,
+    "fpw": 71677.7452672356
+   },
+   {
+    "lambda": 1.0,
+    "n_dots": 72930,
+    "holdout_dti": 0.06769407379143874,
+    "tpw": 1613.6277947914564,
+    "fpw": 72131.67930926493
+   }
+  ],
+  "feature": {
+   "csv_rows": 27092,
+   "hot_sites": 2384,
+   "kernel_sigma_px": 4.0,
+   "hot_rule": "thermalclass in (Hot,Warm) or max(T, geotherm) >= 40.0 C",
+   "nonzero_cells": 898799,
+   "inside_allowed": 873804,
+   "standardised_mean_inside_allowed": 0.05385298654437065
+  },
+  "canary": {
+   "auc_allowed_all_cells": null,
+   "auc_where_feature_is_nonzero": 0.5079453329042559,
+   "base_rate": 0.0022197276339481547,
+   "rate_where_feature_nonzero": 0.0024238845324580796,
+   "n_nonzero": 873804,
+   "threshold": 0.9,
+   "note": "above 0.90 would be leakage until proven otherwise"
+  }
+ },
+ "hypotheses": [
+  {
+   "rank": 1,
+   "name": "QFaults-B transfer: the organisers' own second inventory as a new-fault prior",
+   "layers": "USGS Quaternary Fault and Fold Database polylines (attributes SLIPRT2023, REC2023, SLIPSENSE, MAPSCALE, FTYPE) minus the pixels already covered by the training catalogue; features = distance to the nearest uncovered trace, recency-weighted and slip-rate-weighted",
+   "physical_signature": "An independent, seismic-hazard-grade compilation of Quaternary surface rupture. Traces present in QFaults but absent from the training catalogue are, by definition, fault geometry the organiser's own label source contains and the training labels do not.",
+   "why_it_catches_a_missing_fault": "The rules state the scored labels come from the USGS Quaternary Fault and Fold Database plus expert-identified new faults, while the training labels came from the INGENIOUS Great Basin compilation. Any QFault trace outside the training catalogue is therefore a direct member of the scored population rather than a proxy for it -- the strongest available prior on the final-round reward.",
+   "difference_from_repo": "Sibling lanes rasterised the QFaults service only as a cross-catalogue transfer surrogate (fetch_qfaults.py) and used it to audit proxy-catalogue policy, not as a feature in a submission model. No lane restricted it to the complement of the training catalogue, and none weighted it by REC2023/SLIPRT2023.",
+   "expected_dti_gain": "high (the only hypothesis that targets the scored inventory directly rather than a physical proxy for it)",
+   "implementation_cost": "medium: one fetch from a documented public service, polyline rasterisation, complement mask, distance transform, then the same gated arm comparison used here",
+   "external_source": {
+    "name": "USGS Quaternary Fault and Fold Database of the United States (2020 release)",
+    "doi": "https://doi.org/10.5066/P9BCVRCK",
+    "portal": "https://www.usgs.gov/programs/earthquake-hazards/faults",
+    "service": "https://earthquake.usgs.gov/arcgis/rest/services/haz/Qfaults/MapServer (layer 21, National Database; public domain)",
+    "license": "US public domain",
+    "obtainability": "VERIFIED OBTAINABLE \u2014 a sibling lane's fetch_qfaults.py records the live response (14,482 features intersecting the footprint envelope, queried 2026-09-18, service currentVersion 11.5) and the downloaded attribute table (23,386 rows: NAME, SLIPRT2023, REC2023, SLIPSENSE, MAPSCALE, FTYPE_) is present in a sibling checkout. NOT re-fetched in this sandbox: outbound access here is limited to GitHub and PyPI, so the service host is unreachable from this environment."
+   },
+   "validated_here": false,
+   "validation_note": "Not runnable in this sandbox (no route to the USGS service). Its prior was measured instead, from the clipped trace table already on disk.",
+   "measured_prior": "qfault_offsets()"
+  },
+  {
+   "rank": 2,
+   "name": "Thermal-fluid pathway layer (hot springs, well temperatures, geothermometry)",
+   "layers": "GDR 'Well and Spring Temperature and Chemistry' table: measured temperature, quartz/chalcedony/cat geothermometer temperatures, thermal class, at 12,570 distinct grid cells; kernel density at a ~400 m scale",
+   "physical_signature": "Fluid upflow and discharge. In the Basin and Range, hot springs sit on fault intersections and relay zones, so hot-site density is a map of permeable structure rather than of topography.",
+   "why_it_catches_a_missing_fault": "Surface-rupture mapping requires a scarp; fluid pathways do not. Springs mark blind, buried and small-displacement structures that a surface-rupture catalogue under-maps, which is the same population the organisers' expert round adds.",
+   "difference_from_repo": "No lane in this family carries the spring/well temperature table as a model feature; it appears only as background knowledge in a research note.",
+   "expected_dti_gain": "medium in principle, but measured NEGATIVE below",
+   "implementation_cost": "low: local CSV, kernel density, one blended emission sweep",
+   "external_source": {
+    "name": "GDR geothermal well and spring temperature/chemistry compilation",
+    "url": "https://gdr.openei.org/submissions/1391",
+    "license": "US public domain / DOE GDR",
+    "obtainability": "already downloaded in a sibling checkout (27,092 rows, 12,570 distinct grid cells)"
+   },
+   "validated_here": true,
+   "validation_note": "REJECTED on the blocked holdout at the emission level: every blend weight above zero lowers HOLDOUT-DTI. See evidence/hypothesis_thermal_pathway.json."
+  },
+  {
+   "rank": 3,
+   "name": "Drainage response: chi (chi) transformation and knickpoint density on the provided detrended-elevation band",
+   "layers": "detrended elevation (official band 6) and its slope (band 7), plus the competition lidar scarps for valley identification; optional 3DEP 1/3 arc-second DEM as a coarse anchor",
+   "physical_signature": "A channel crossing an active or recently active fault steps down; along-stream chi plots show a break, and knickpoint density anomalies trace the structure responsible even where no scarp was mapped.",
+   "why_it_catches_a_missing_fault": "Fluvial networks integrate vertical motion over 10^4-10^5 yr, so they respond to structures that have insufficient surface expression to be mapped as a scarp but are nonetheless deforming the landscape.",
+   "difference_from_repo": "Sibling lanes used elevation edges, curvature, Euler depth, tensor/strain and scarp morphology; none computed a stream network relative metric (chi, ksn, knickpoint density), which is a different observable from gradient products.",
+   "expected_dti_gain": "medium",
+   "implementation_cost": "high: flow routing over 12.3M cells plus network statistics; needs either pysheds/richdem from PyPI or a hand-rolled D8",
+   "external_source": {
+    "name": "USGS 3DEP (only if a coarse anchor is wanted)",
+    "url": "https://apps.nationalmap.gov/downloader/",
+    "obtainability": "the organisers ship a 1 m DEM link list; the 100 m detrended elevation band is already local, so this hypothesis needs no new download to start"
+   },
+   "validated_here": false,
+   "validation_note": "queued; not run in this session"
+  },
+  {
+   "rank": 4,
+   "name": "Radiometric alteration ratios (K, eTh, eU) over the GeoDAWN survey",
+   "layers": "GeoDAWN airborne radiometrics: potassium, equivalent thorium and uranium channels, as ratios (K/eTh, eU/eTh) and as a K-enrichment anomaly",
+   "physical_signature": "Hydrothermal alteration: K metasomatism along fluid pathways, potassic clay alteration, and uranium enrichment in fracture damage zones produce a distinctive K-high / Th-low ratio.",
+   "why_it_catches_a_missing_fault": "Alteration halos record where fluids moved in the past, which persists after the topographic scarp has been erased or buried -- so it can mark the location of a structure with no modern surface expression.",
+   "difference_from_repo": "One sibling lane used a radiometric edge-coherence diagnostic; no lane has used the K/Th/U ratio (alteration index) as a model feature.",
+   "expected_dti_gain": "medium",
+   "implementation_cost": "low-medium: the survey is already published as a GeoTIFF archive; the work is ratioing, resampling to 100 m and the standard gate",
+   "external_source": {
+    "name": "GeoDAWN airborne magnetic and radiometric surveys, northwestern Great Basin (Glen & Earney, 2024)",
+    "doi": "https://doi.org/10.5066/P93LGLVQ",
+    "url": "https://www.usgs.gov/data/geodawn-airborne-magnetic-and-radiometric-surveys-northwestern-great-basin-nevada-and",
+    "license": "CC0 / US public domain",
+    "obtainability": "VERIFIED OBTAINABLE \u2014 the official 19-band feature stack already carries five bands derived from this survey, and a sibling lane shipped a radiometric-derived diagnostic raster, so the archive has been downloaded successfully in this family before"
+   },
+   "validated_here": false,
+   "validation_note": "queued; needs the radiometric bands"
+  },
+  {
+   "rank": 5,
+   "name": "Seismicity geometry: depth-banded hypocentre density and focal-mechanism strike",
+   "layers": "ANSS Comprehensive Catalog hypocentres (depth, magnitude) and focal mechanism solutions, projected to the grid; the official band 19 carries only 2-D earthquake density",
+   "physical_signature": "Active structures concentrate seismicity on planes. A depth band (3-10 km) isolates crustal faults from quarry blasts and deep events, and mechanism nodal planes give the strike to correlate.",
+   "why_it_catches_a_missing_fault": "Seismicity locates active structures regardless of surface expression, so a lineament defined by hypocentres is evidence of a fault the surface catalogue does not contain.",
+   "difference_from_repo": "The family used the provided 2-D density band; no lane has used depths, magnitudes or mechanisms to build a 3-D/structural feature.",
+   "expected_dti_gain": "low-medium: the footprint's seismicity is sparse and clustered, so the field is noisy at 100 m",
+   "implementation_cost": "medium: API paging with a footprint envelope query, declustering (Gardner-Knopoff or Reasenberg), then the standard gate",
+   "external_source": {
+    "name": "ANSS Comprehensive Earthquake Catalog (ComCat) web service",
+    "url": "https://earthquake.usgs.gov/fdsnws/event/1/",
+    "license": "US public domain",
+    "obtainability": "documented public service, no key; not re-verified from this sandbox because outbound access here is limited to GitHub and PyPI. The organisers already ship a 2-D density product derived from the same network, which is independent evidence that the catalogue is obtainable"
+   },
+   "validated_here": false,
+   "validation_note": "queued; not run in this session"
+  }
+ ],
+ "next_action": "Fetch QFaults polylines, rasterise, subtract the training catalogue, and run the same gated arm comparison on the blocked holdout. Promote only if it beats the current arm on the identical draw, and only after the multi-seed repeat.",
+ "runtime_s": 1.1
+}

@@ -144,6 +144,27 @@ source URL of every prior raster used for the lane-drift check.
 - [Current status](docs/STATUS.md)
 - [Current run card (JSON)](docs/data/run-card.json)
 
+### Second lineage in this repository — `lane65-sarprop/`
+
+This repository now carries two independently developed lineages of the same lane. They reached
+different verdicts on different instruments, and neither overwrites the other:
+
+| | repository root (canonical) | `lane65-sarprop/` |
+|---|---|---|
+| Verdict | **negative** — SAR-PU below nnPU on its holdout | **gate PROMOTE** on its own blocked holdout (SAR 0.0732 vs nnPU 0.0679) |
+| Download offered | its own rasters, under a DO-NOT-SUBMIT banner | a locally cleared one, rebuilt from a committed dot list; on the published Pages site that button returns 404 because this sandbox cannot upload release assets and the root guard forbids tracking the raster — flagged as `IR-65L-03` with the exact `gh release create` command printed |
+| Artifact in Git | none | none (dot list + rebuild script instead; release asset for the download) |
+| Site | `docs/index.html` | `lane65-sarprop/docs/index.html` |
+| Workflow | `pages.yml`, `ci.yml` | `lane65-sarprop.yml` (verify only, path filtered) |
+
+The two holdout instruments are not comparable with each other, and neither is comparable with an
+organizer score: the root lineage scores withheld pixels under its own evaluator with a third of
+the footprint withheld, while `lane65-sarprop` scores a 20% hide-and-recover draw pooled over the
+whole domain. Treat both as **HOLDOUT-DTI**, not as leaderboard predictions. The lane also carries
+the ranked hypothesis register (`lane65-sarprop/HYPOTHESES.md`), the duplicate-audit review that
+resolved the 3 px-overlap rule's saturation (IR-65-01), and the 0.2778 provenance analysis
+(`lane65-sarprop/docs/analysis-02778.html`).
+
 ## Run the lightweight checks
 
 ```bash
@@ -240,6 +261,26 @@ the download only if the gate is met, else log the negative result.
 * The 1 m lidar coverage covariate is real but covers 0.66% of the footprint.
 * The range-front covariate is a basin-margin proxy, not an independently mapped front.
 * No exhaustive-quadrangle public index was found, so the propensity scale is unanchored.
+
+## Second lane: `bandrf` (cleared for submission)
+
+This repository carries **two** lanes. The canonical lane (`src/gems65/{pu,holdout,gate,emission}.py`,
+run by `scripts/0*.py`) reached a **negative** verdict; `RUN_CARD.json` and `docs/index.html`
+describe it and must not be edited to say otherwise.
+
+The second lane lives entirely under its own namespace — `src/gems65/bandrf/`, `scripts/run_lane_bandrf.py`,
+`scripts/build_site_bandrf.py`, `evidence/lane65-bandrf/`, `docs/lane65-bandrf/`, `tests/test_bandrf_*.py`
+— and it **cleared its gate**: pooled blocked-hold-out DTI 0.01646 [0.01201, 0.02113] against a matched
+nnPU baseline of 0.00614 [0.00121, 0.01164], with no loss in the highest-propensity tercile. Its
+one-click candidate is `docs/downloads/gems65-h65-1-sarpu-bandrf-22726dots-64c0fa71-nan.tif`
+(NaN outside the footprint, the canonical template convention).
+
+Read `docs/lane65-bandrf/index.html` for the decision, `docs/lane65-bandrf/STATUS.md` for the numbers,
+`docs/lane65-bandrf/geology.html` for the geological reasoning and `docs/lane65-bandrf/IRREGULARITIES.md`
+(IR-65-025) for what went wrong on the way. The mandated propensity-weighted comparison is a **null**
+and is reported as one. `scripts/check_site.py` enforces that the canonical pages keep their
+"NOT CLEARED FOR SUBMISSION" banner while this lane's pages carry its own validated banner, and
+`scripts/check_repository.py` admits each lane's rasters only while its own run card clears them.
 
 ---
 

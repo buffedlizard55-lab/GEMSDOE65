@@ -1,0 +1,140 @@
+{
+ "evidence_class": "HOLDOUT-DTI (relative instrument; NOT comparable to leaderboard DTI because the leaderboard scores against the full truth set, this scores against withheld pixels only)",
+ "question": "is the 3 px halo of KNOWN faults worth emitting into?",
+ "halo_px_predeclared": [
+  0,
+  2,
+  3,
+  4
+ ],
+ "budget_rule": "price_curve_nms3, b_grid predeclared",
+ "results": {
+  "nnpu": {
+   "0": {
+    "allowed_cells": 5117745,
+    "n_dots": 64000,
+    "budget": 64000,
+    "surrogate_dti": 0.07036441547201638,
+    "holdout_dti": 0.06331829539007178,
+    "tpw": 1394.5234151872341,
+    "fpw": 63285.577465315415,
+    "fnw": 9965.476584812766
+   },
+   "2": {
+    "allowed_cells": 4833245,
+    "n_dots": 64000,
+    "budget": 64000,
+    "surrogate_dti": 0.07389791682642043,
+    "holdout_dti": 0.05761640818600281,
+    "tpw": 1268.5813239821841,
+    "fpw": 63379.96497057581,
+    "fnw": 10091.418676017816
+   },
+   "3": {
+    "allowed_cells": 4694059,
+    "n_dots": 64000,
+    "budget": 64000,
+    "surrogate_dti": 0.075763577763306,
+    "holdout_dti": 0.05278860795442945,
+    "tpw": 1161.6684663495419,
+    "fpw": 63428.55503872651,
+    "fnw": 10198.331533650458
+   },
+   "4": {
+    "allowed_cells": 4557393,
+    "n_dots": 64000,
+    "budget": 64000,
+    "surrogate_dti": 0.07772021098616341,
+    "holdout_dti": 0.04863447024886794,
+    "tpw": 1069.7979741108697,
+    "fpw": 63473.714608281385,
+    "fnw": 10290.20202588913
+   }
+  },
+  "sar": {
+   "0": {
+    "allowed_cells": 5117745,
+    "n_dots": 64000,
+    "budget": 64000,
+    "surrogate_dti": 0.07086875731167085,
+    "holdout_dti": 0.06847945140360505,
+    "tpw": 1509.3271111288477,
+    "fpw": 63253.59363316542,
+    "fnw": 9850.672888871151
+   },
+   "2": {
+    "allowed_cells": 4833245,
+    "n_dots": 64000,
+    "budget": 64000,
+    "surrogate_dti": 0.07455625778442887,
+    "holdout_dti": 0.06153497735941742,
+    "tpw": 1355.5762176334001,
+    "fpw": 63351.22774685529,
+    "fnw": 10004.4237823666
+   },
+   "3": {
+    "allowed_cells": 4694059,
+    "n_dots": 64000,
+    "budget": 64000,
+    "surrogate_dti": 0.0764983416822955,
+    "holdout_dti": 0.055395595594751816,
+    "tpw": 1219.5945831854474,
+    "fpw": 63420.870306787845,
+    "fnw": 10140.405416814552
+   },
+   "4": {
+    "allowed_cells": 4557393,
+    "n_dots": 64000,
+    "budget": 64000,
+    "surrogate_dti": 0.07850649946446178,
+    "holdout_dti": 0.05036161357801933,
+    "tpw": 1108.150401124039,
+    "fpw": 63471.19989305504,
+    "fnw": 10251.84959887596
+   }
+  },
+  "scar": {
+   "0": {
+    "allowed_cells": 5117745,
+    "n_dots": 64000,
+    "budget": 64000,
+    "surrogate_dti": 0.07930228021221618,
+    "holdout_dti": 0.056011364759482846,
+    "tpw": 1232.9957411306727,
+    "fpw": 63393.57257275101,
+    "fnw": 10127.004258869327
+   },
+   "2": {
+    "allowed_cells": 4833245,
+    "n_dots": 64000,
+    "budget": 64000,
+    "surrogate_dti": 0.08329568004614385,
+    "holdout_dti": 0.05119192124277757,
+    "tpw": 1126.5250578458326,
+    "fpw": 63463.04899381849,
+    "fnw": 10233.474942154167
+   },
+   "3": {
+    "allowed_cells": 4694059,
+    "n_dots": 64000,
+    "budget": 64000,
+    "surrogate_dti": 0.08535370776379453,
+    "holdout_dti": 0.04743618086854242,
+    "tpw": 1043.4771446576578,
+    "fpw": 63503.99713677691,
+    "fnw": 10316.522855342342
+   },
+   "4": {
+    "allowed_cells": 4557393,
+    "n_dots": 64000,
+    "budget": 64000,
+    "surrogate_dti": 0.0874939340024287,
+    "holdout_dti": 0.042926978806123416,
+    "tpw": 943.8674550720367,
+    "fpw": 63554.85655051726,
+    "fnw": 10416.132544927963
+   }
+  }
+ },
+ "runtime_s": 66.6
+}

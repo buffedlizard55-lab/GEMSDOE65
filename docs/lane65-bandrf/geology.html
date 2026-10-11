@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Why a distance-weighted Tversky fault score lands near 0.28, what the geology allows, and the measured stand-off band of unmapped Basin and Range fault traces.">
+  <title>GEMSDOE65 · Why the score is what it is</title>
+  <link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header class="site-header"><div class="wrap nav-row">
+  <a class="brand" href="index.html">GEMSDOE65<small>Evidence before submission</small></a>
+  <nav aria-label="Main navigation"><a href="index.html">Status</a><a href="../executive-summary.html">Submit guide</a><a href="geology.html" aria-current="page">Why this score</a><a href="../competitive-context.html">Score audit</a><a href="../hypotheses.html">Hypotheses</a><a href="../research.html">Research</a><a href="../irregularities.html">Irregularities</a></nav>
+</div></header>
+<main class="wrap">
+
+  <p class="status-strip" role="status"><b>CLEARED FOR SUBMISSION</b> for this lane: the download
+  decision and the exact file are at the top of <a href="index.html">the lane overview</a>. This page
+  is the reasoning behind the numbers, not a second decision.</p>
+
+  <section class="hero">
+    <div class="kicker">Scientific reasoning</div>
+    <h1>Why a distance-weighted fault score lands where it lands</h1>
+    <p class="lede">This page is the geological reasoning behind the numbers on this site. It separates three things that are usually blurred together: the <b>arithmetic</b> of the metric (what a given value implies about an emission), the <b>geology</b> (which faults can and cannot be found at 100 m), and the <b>mapping process</b> (which faults ever entered the catalogue). Every measured number carries its evidence label.</p>
+  </section>
+
+  <section>
+    <h2>1 · The metric is distance-weighted, and it weights misses four times as heavily as false dots</h2>
+    <p>The competition metric is a distance-weighted Tversky index with a triangular kernel of radius 300 m and weights α = 0.2 on false positives and β = 0.8 on false negatives, taken with a <i>max over the kernel</i> per truth cell:</p>
+    <pre class="code">k(d) = max(1 − d/300 m, 0)      TP_w = Σ truth cells max_x p(x)·k(d(x,g))
+DTI  = TP_w / (TP_w + 0.2·FP_w + 0.8·FN_w)     FP_w = Σ_x p(x)·(1 − max_g k(d(x,g)))</pre>
+    <div class="grid">
+      <article class="card"><span class="card-number">Consequence 1</span><h3>Placement inside 100 m is worth ≥ 0.67</h3><p>A dot 100 m from a true trace earns two thirds of full credit; 200 m earns one third; beyond 300 m it earns nothing and still costs 0.2 of a false positive. The metric is a <i>corridor</i> metric, not a pixel metric: a 100 m raster can be one full cell wrong and still score.</p></article>
+      <article class="card"><span class="card-number">Consequence 2</span><h3>Coverage beats precision by 4 : 1</h3><p>A missing truth cell costs 0.8; a stray dot costs 0.2. Under uncertainty the metric therefore rewards a dense lattice of dots along a predicted fault <i>system</i> — each individual miss is cheap, each recovered trace is expensive to lose. This is why competing fields look like corridor sweeps rather than isolated picks.</p></article>
+      <article class="card"><span class="card-number">Consequence 3</span><h3>Dots on the catalogue earn nothing</h3><p>The organiser's known-fault exclusion is pixel-exact: cells on mapped traces are removed from scoring. Placing dots <i>on</i> a mapped trace is pure false-positive mass. A useful emission is systematically <b>off</b> the catalogue, in the stand-off band where unmapped traces live.</p></article>
+    </div>
+    <p class="small">The same algebra is implemented and unit-tested in this repository (<code>vendor/template58/gems57/metric.py</code>, verified against a literal brute-force transcription of the published equations), and it is the arithmetic used for every number labelled <code>HOLDOUT-DTI</code> here.</p>
+  </section>
+
+  <section>
+    <h2>2 · What a value near 0.28 implies about an emission</h2>
+    <p>Writing <i>K</i> for the number of scored truth pixels, <i>N</i> for the emitted dot count and <i>h</i> for the fraction of dots that land within the kernel of a truth pixel, the metric reduces to</p>
+    <pre class="code">DTI ≈ TP_w / (TP_w + 0.2·(1−h)·N + 0.8·(K − TP_w))</pre>
+    <p>Three regimes follow directly, and they are the regimes the observed family of published rasters occupies:</p>
+    <table>
+      <thead><tr><th>DTI band</th><th>What it implies geologically</th><th>Typical construction</th></tr></thead>
+      <tbody>
+        <tr><td>0.02 – 0.15</td><td>Corridor-level: the right <i>systems</i> were guessed (range fronts, structural lineaments) but the traces inside the corridor are offsets, truncated, or duplicated by non-fault lineaments.</td><td>Broad priors: range-front proximity, relief/slope breaks, gravity or magnetic lineaments, a coarse dot lattice.</td></tr>
+        <tr><td>0.20 – 0.45</td><td>Trace-level with gaps: a substantial share of the private truth sits within 300 m of an emitted dot (partial credit ≥ 0.3 typical), and the false-dot load is of the same order as the truth mass.</td><td>Corridor lattice at 2 px (200 m) spacing, built from 1 m lidar scarplet evidence plus structural context; mass budget ≈ 1–3 × assumed truth.</td></tr>
+        <tr><td>0.50 +</td><td>Near-complete recovery of the private traces with controlled false mass — requires the scarplet layer to be both available and correctly interpreted, and the private set to be dominated by features that layer expresses.</td><td>Not yet observed publicly; the strongest observed public values sit in the upper part of the middle band.</td></tr>
+      </tbody>
+    </table>
+    <p>A value of <b>0.2778</b> therefore reads, quantitatively, as: <i>roughly a third of the scored truth volume was covered within the 300 m kernel, with a false-dot mass of the order of the truth mass itself</i>. It is not a formatting artifact. For a dot lattice of spacing <i>s</i> px the kernel credit is bounded below by <code>1 − s·√2/300</code> times full credit everywhere inside the corridor (for s = 2 px that is ≥ 0.53; for s = 3 px, ≥ 0.29). Any lattice with spacing ≤ 3 px is self-consistent with the kernel; the score is then decided almost entirely by <b>where the corridor was drawn</b> and by <b>how much mass was spent outside it</b>.</p>
+  </section>
+
+  <section>
+    <h2>3 · The geology: what can be found at 100 m, and what cannot</h2>
+    <div class="grid">
+      <article class="card"><span class="card-number">Resolution</span><h3>Scarplets versus a 100 m grid</h3><p>Great Basin Quaternary faults are expressed as scarplets of roughly 0.5–5 m height and a few metres to tens of metres width. A 100 m cell and any band derived from 100 m data cannot resolve that. One cell of mislocation is one third of the kernel radius, so a 100 m stack alone cannot be expected to exceed the corridor regime. This is why the 1 m lidar scarplet layers — the same coverage that made the new mapping possible — carry most of the real signal.</p></article>
+      <article class="card"><span class="card-number">Kinematics</span><h3>Range fronts and step-overs</h3><p>Extensional systems localise strain at the mountain–basin boundary: the range front is the master fault; step-overs and splays between two range-front strands are where short, quiet, easily-missed traces sit. Published mapping in the GeoDAWN area reports that about 92 % of mapped step-overs lie on range-front faults, and that only about a quarter of step-overs are mapped at ≈ 1 : 24 000 (Giddens &amp; Faulds 2025, SGP-TR-229). Those two statements are the geological core of this lane: the useful prior is a <b>range-front corridor</b>, and the useful target inside it is the <b>splay population</b>.</p></article>
+      <article class="card"><span class="card-number">Measured here</span><h3>Unmapped traces sit at a stand-off, not in a halo</h3><p>On the repository's blocked hold-out (whole fault components withheld, features recomputed from visible faults only), the distance from a withheld trace to the nearest <i>visible</i> mapped trace is: p10 = 4.1 px, median = 9.4 px, p90 = 20 px (capped at 2 km). In metres: 410 m, 940 m, 2 km. Independent measurement of the visible catalogue's own inter-trace spacing (distance from a mapped trace to the nearest trace of a <i>different</i> component) gives a mode at 7.3–8.9 px, i.e. 730–890 m. The two independent estimates agree: <b>the missing population is a band at roughly 0.5–2 km from the mapped population</b>. A proximity halo hugging the mapped traces is the wrong place to look.</p></article>
+      <article class="card"><span class="card-number">Mimics</span><h3>Everything else that looks linear at 100 m</h3><p>Bedrock-cored ridges and pediment edges, fluvial cut-banks and terrace risers, eolian dune crests, playa margins, Lake Lahontan shoreline stretches, roads, canals, pipelines and mine benches all produce the same two signatures a fault produces in a 100 m stack: a relief break and a linear contrast. The discrimination is not "is there a line?" but "is this line among the ones that rupture?" — which is why a mass-efficient corridor emission (few, well-placed dots) trades better under α = 0.2, β = 0.8 than a dense blanket, and why the highest-propensity tercile is tracked separately in the gate.</p></article>
+    </div>
+  </section>
+
+  <section>
+    <h2>4 · The mapping process: visibility is not the same thing as geology</h2>
+    <p>The catalogue is a <i>selected</i> sample. A step-over enters it when a mapper is already working that system, when the light and the substrate allow it to be seen, and when it lies where mapping effort was funded. This project models that with the <b>Selected-At-Random</b> assumption of Bekker &amp; Davis (2018): each fault has an unknown inclusion probability that depends on observable covariates, estimated with an EM fit; the classifier is then trained with the propensity-weighted empirical risk of Bekker, Robberechts &amp; Davis (2019), inverse-propensity weights clipped at 10, and compared against a matched nnPU baseline on identical spatial folds.</p>
+    <div class="callout warning">
+      <p><b>Measured negative result (this repository).</b> With the declared five-covariate propensity set (local relief, slope, gravity-derived basin-fill proxy, lidar coverage, distance to the morphometric range front), the fitted propensity over the folded training sample is nearly constant — p10 = 0.838, median = 0.843, p90 = 0.849 — so the SAR correction is close to the identity transform and the propensity-weighted arm does not outperform the matched nnPU arm on the blocked hold-out. The covariate that expresses the actual mapping bias (distance to already-mapped traces, i.e. "mappers follow mappers") is a <i>label-derived</i> covariate and is deliberately excluded from the detector's feature set in this lane. This is reported as a negative result, not as a score.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>5 · Is a submission above 0.3195 / 0.3774 achievable?</h2>
+    <p><b>Demonstrably yes for other teams, on the official record.</b> The public leaderboard (linked, never mirrored here) shows scores above both numbers cited in the project brief; the strongest value observed when the sibling lanes were audited was 0.4133. The metric's arithmetic also permits it: the middle band in the table above extends to 0.45.</p>
+    <p><b>For this lane, the honest answer is separate from the projection.</b> The blocked hold-out implemented here is deliberately <i>harder</i> than the competition task: every withheld component has had its neighbourhood context removed, so the detector cannot lean on the mapped traces adjacent to its target. The value measured under that instrument is reported as <code>HOLDOUT-DTI</code> with its evaluator version, withheld-positive count and 95 % confidence interval; it is <b>not</b> a leaderboard score and this project never writes a projection as one. What can be stated without projection: the arithmetic of the metric, the measured stand-off band of the missing population, and the registry-uniqueness of the emitted field.</p>
+    <p class="small">Sources: DrivenData competition 306 problem page (metric, format, prize structure); Giddens &amp; Faulds 2025, SGP-TR-229 (step-over population and mapping density); Bekker &amp; Davis 2018, PMLR v94 (SAR-EM); Bekker, Robberechts &amp; Davis 2019, arXiv:1809.03207 (propensity-weighted empirical risk). Full register in <a href="../research.html">Research</a> and <a href="../index.html">SOURCES.md</a>.</p>
+  </section>
+
+</main>
+<footer class="wrap site-footer"><p>GEMSDOE65 · method lane: selection-bias-aware positive–unlabeled learning. Negative results are deliverables. <a href="index.html">Back to status</a>.</p></footer>
+</body>
+</html>

@@ -1,0 +1,79 @@
+{
+  "schema": 1,
+  "note": "Integrity pins for the hash-pinned mirrors this lane reads. Every sha256 was verified locally against the bytes actually restored (see evidence/restore_receipt.json). These are owner-supplied mirrors of DrivenData competition files and of public USGS-derived layers; they are NOT organizer-authenticated and are not an authenticated download of drivendata.org.",
+  "license_note": "Mirrored third-party layers are USGS/public-domain derived products (GeoDAWN DOI 10.5066/P93LGLVQ, USGS 3DEP); the competition files are obtained from the owner's own public mirror, not by circumventing the competition login.",
+  "files": [
+    {
+      "id": "training_features",
+      "repo": "buffedlizard55-lab/GEMSDOE",
+      "ref": "c0c06ac82178f26b94fce3397036ef8f12a2f3a0",
+      "sparse": ["data/bridge", "scripts"],
+      "parts": [
+        "data/bridge/gems-geodawn-numerical-features.tif.part-000",
+        "data/bridge/gems-geodawn-numerical-features.tif.part-001",
+        "data/bridge/gems-geodawn-numerical-features.tif.part-002",
+        "data/bridge/gems-geodawn-numerical-features.tif.part-003",
+        "data/bridge/gems-geodawn-numerical-features.tif.part-004"
+      ],
+      "dest": "official/training_features.tif",
+      "sha256": "4371c82e3b8339b807bdffcf4ef59a225520fe2988d521be208ae33743123bc5",
+      "bytes": 418912844,
+      "provenance": "owner-supplied mirror of the DrivenData competition training_features.tif (19 float32 bands, nodata -3.4028234663852886e+38); integrity-pinned, NOT organizer-authenticated"
+    },
+    {
+      "id": "existing_faults",
+      "repo": "buffedlizard55-lab/GEMSDOE24",
+      "ref": "07345ea0604953d7efb858d9cfbc21e20c7aca0b",
+      "sparse": ["data/bridge"],
+      "path": "data/bridge/existing_faults.tif",
+      "dest": "bridge/existing_faults.tif",
+      "sha256": "7ba308ccdc4418b31a178f4f1ef21aaa6e152e4028f2f6f64b01f7eb25ae4093",
+      "bytes": 425830,
+      "provenance": "owner-supplied mirror of the competition labels raster (int8, nodata -1, values {-1,0,1}); byte-identical to labels.tif; NOT organizer-authenticated"
+    },
+    {
+      "id": "sample_submission",
+      "repo": "buffedlizard55-lab/GEMSDOE24",
+      "ref": "07345ea0604953d7efb858d9cfbc21e20c7aca0b",
+      "sparse": ["data/bridge"],
+      "path": "data/bridge/sample_submission.tif",
+      "dest": "bridge/sample_submission.tif",
+      "sha256": "2176d08e485aa2cd2860ce8df539db4faf4d76163b38a4dd8c30a40454d35cbc",
+      "bytes": 1599597,
+      "provenance": "owner-supplied mirror of the competition sample_submission.tif; used ONLY as the grid/footprint template (float32, nodata NaN, values {0,1}; its 60,988 ones coincide exactly with the mapped catalogue)"
+    },
+    {
+      "id": "geodawn_dem_a2_100m",
+      "repo": "buffedlizard55-lab/60GEMSDOE",
+      "ref": "5ca0f5e1c6bc4f21c3ff2d50993e72cef60de73b",
+      "sparse": ["data"],
+      "path": "data/geodawn_dem_a2_100m.tif",
+      "dest": "mirrors/geodawn_dem_a2_100m.tif",
+      "sha256": "d32762a38222764389e948da423ebc6cadd00ac617ad3938d3dd79c6cfe14431",
+      "bytes": 49531304,
+      "provenance": "100 m GeoDAWN DEM mirror (nodata -999999); used for the local-relief covariate only"
+    },
+    {
+      "id": "lidar_scarp_features_u8",
+      "repo": "buffedlizard55-lab/GEMSDOE24",
+      "ref": "07345ea0604953d7efb858d9cfbc21e20c7aca0b",
+      "sparse": ["data/external"],
+      "path": "data/external/lidar_scarp_features_u8.tif",
+      "dest": "mirrors/lidar_scarp_features_u8.tif",
+      "sha256": "d580bb8bdcdb941e32fefb8b38044bc5bf04e199bf2e83498c3576e6fc465568",
+      "bytes": 36943606,
+      "provenance": "12-band uint8 1 m-lidar-derived scarp/morphometry stack on the competition grid; band 12 ('valid') is the survey-coverage indicator used here. Hash cross-checked against 60GEMSDOE registry/data_manifest.json"
+    },
+    {
+      "id": "topo_10m_derived_100m_u8",
+      "repo": "buffedlizard55-lab/60GEMSDOE",
+      "ref": "5ca0f5e1c6bc4f21c3ff2d50993e72cef60de73b",
+      "sparse": ["data/external"],
+      "path": "data/external/topo_10m_derived_100m_u8.tif",
+      "dest": "mirrors/topo_10m_derived_100m_u8.tif",
+      "sha256": "a6398d9950965dec6aae6ccecdaa6ced48645d133eab222cbdd11def9bdabfa4",
+      "bytes": 32523329,
+      "provenance": "9-band uint8 10 m-DEM-derived morphology stack reduced to the competition grid (USGS 3DEP-derived)"
+    }
+  ]
+}

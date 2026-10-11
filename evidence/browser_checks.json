@@ -1,0 +1,83 @@
+{
+  "checked_at": "2026-10-11T20:55:07.567Z",
+  "engine": "Chromium via Playwright",
+  "viewports": [
+    {
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "results": [
+    {
+      "path": "index.html",
+      "status": 200,
+      "desktopOverflow": false,
+      "tifLinks": 0,
+      "h1Count": 1,
+      "disabledDownload": true
+    },
+    {
+      "path": "executive-summary.html",
+      "status": 200,
+      "desktopOverflow": false,
+      "tifLinks": 0,
+      "h1Count": 1,
+      "disabledDownload": true
+    },
+    {
+      "path": "research.html",
+      "status": 200,
+      "desktopOverflow": false,
+      "tifLinks": 0,
+      "h1Count": 1,
+      "disabledDownload": true
+    },
+    {
+      "path": "sources.html",
+      "status": 200,
+      "desktopOverflow": false,
+      "tifLinks": 0,
+      "h1Count": 1,
+      "disabledDownload": true
+    },
+    {
+      "path": "audit.html",
+      "status": 200,
+      "desktopOverflow": false,
+      "tifLinks": 0,
+      "h1Count": 1,
+      "disabledDownload": true
+    },
+    {
+      "sourceFilterVisibleRows": 1,
+      "filterStatus": "1 of 62 sources shown",
+      "feed": "METADATA SNAPSHOT · 2026-10-11 20:35:39 UTC · 62 repositories checked · 1 changed since scientific review · 0 unavailable. No leaderboard or score verification."
+    },
+    {
+      "path": "index.html",
+      "mobileOverflow": false
+    },
+    {
+      "path": "executive-summary.html",
+      "mobileOverflow": false
+    },
+    {
+      "path": "research.html",
+      "mobileOverflow": false
+    },
+    {
+      "path": "sources.html",
+      "mobileOverflow": false
+    },
+    {
+      "path": "audit.html",
+      "mobileOverflow": false
+    }
+  ],
+  "errors": [],
+  "passed": true
+}

@@ -1,0 +1,16 @@
+.venv/
+.cache/
+__pycache__/
+.pytest_cache/
+*.py[cod]
+node_modules/
+data/raw/
+data/cache/
+data/external/
+data/registry_rasters/
+artifacts/
+!artifacts/.gitkeep
+*.egg-info/
+.env
+coverage/
+.DS_Store

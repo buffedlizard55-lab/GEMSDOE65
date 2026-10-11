@@ -1,0 +1,19 @@
+# Browser QA
+
+Checks all five pages at desktop and mobile sizes, JS errors, source filtering,
+feed display, and absence of TIFF/ZIP links. Writes a JSON receipt, with a nonzero
+exit status for failure. Browser URLs here are test-only, not application endpoints.
+
+```bash
+npm install --prefix .cache/browser --no-audit --no-fund playwright@1.64.0 @sparticuz/chromium@153.0.0
+# Start the docs preview with the process tools, or another managed server, on port 8000.
+node tests/browser/check.cjs
+```
+
+In minimal Linux sandboxes, Chromium may lack NSPR/NSS libraries. The npm package
+contains these in `bin/al2023.tar.br`. The tested sandbox unpacked that bundled
+archive into `.cache/browser/libs` and ran with
+`LD_LIBRARY_PATH="$PWD/.cache/browser/libs/lib"`. No OS packages or browser assets
+were fetched from an unapproved host. Ordinary Linux desktop/CI images with these
+libraries already installed do not need this step. Screenshots are ignored scratch
+files, not new scientific evidence or a submission.

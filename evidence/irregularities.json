@@ -1,0 +1,110 @@
+{
+  "checked_at": "2026-10-11T20:31:38.490184+00:00",
+  "items": [
+    {
+      "id": "I01",
+      "severity": "critical",
+      "title": "No passing submission",
+      "finding": "The primary and both sensitivity scenarios lose to nnPU overall and in the highest-propensity stratum.",
+      "disposition": "Closed negatively; no slot used."
+    },
+    {
+      "id": "I02",
+      "severity": "critical",
+      "title": "Literal overlap rule is saturated",
+      "finding": "A registered continuous prior is positive across the footprint; all nonempty candidates fail the inherited forward-overlap gate.",
+      "disposition": "Verified witness; stopped before placement. Protocol change belongs to selector/owner."
+    },
+    {
+      "id": "I03",
+      "severity": "high",
+      "title": "EM did not converge",
+      "finding": "Inner optimizers succeeded, but all fold/scenario EM fits reached the preregistered cap.",
+      "disposition": "Finite-iteration results only; optimization gate blocked. Do not rerun/tune this consumed holdout."
+    },
+    {
+      "id": "I04",
+      "severity": "high",
+      "title": "No identified propensity scale",
+      "finding": "No independently verified exhaustive mapping anchor exists; PU factorization alone does not identify e and f.",
+      "disposition": "Three assumed reference-point propensities reported as sensitivities, not measured completeness."
+    },
+    {
+      "id": "I05",
+      "severity": "high",
+      "title": "No organizer-confirmed score",
+      "finding": "The prompt\u2019s reported best/leader targets differ; sibling projection/UNSCORED language conflicts with some owner-reported results.",
+      "disposition": "No leaderboard value represented as ORGANIZER-CONFIRMED."
+    },
+    {
+      "id": "I06",
+      "severity": "high",
+      "title": "Registry scan stopped / incomplete",
+      "finding": "Only three prior rasters compared before the mandated stop. Prediction-like path inventory is not all historical/private/release artifacts.",
+      "disposition": "No all-prior uniqueness claim; no download."
+    },
+    {
+      "id": "I07",
+      "severity": "high",
+      "title": "Mirror provenance is not official authentication",
+      "finding": "Hashes match the public owner bridge. Original official downloads and external-data terms were not directly verified.",
+      "disposition": "Provenance labels and manual official source links supplied."
+    },
+    {
+      "id": "I08",
+      "severity": "medium",
+      "title": "Range-error cause not attributable",
+      "finding": "The rejected TIFF itself was not supplied. A negative sentinel, raw logits, or out-of-footprint values are possible causes, not a diagnosis.",
+      "disposition": "New writer rejects invalid ranges and masks; generated research TIFF passes local validation."
+    },
+    {
+      "id": "I09",
+      "severity": "medium",
+      "title": "Template optional-argument issue already known upstream",
+      "finding": "gems57 evaluate_holdout uses dict.get(masked_known, fold[visible]), whose fallback is eagerly evaluated. This runner supplies visible in every fold, so the issue does not affect these results. The sibling gems61 implementation already has a lazy lookup fix.",
+      "disposition": "Unmodified template retained; no private fork. Document upstream repair rather than claim to have fixed it locally."
+    },
+    {
+      "id": "I10",
+      "severity": "medium",
+      "title": "Claimed previous-session state absent",
+      "finding": "Initial repo contained only an 11-byte README; no pipeline or cache.",
+      "disposition": "Built missing tools and restored usable mirrored data; CPU experiment completed."
+    },
+    {
+      "id": "I11",
+      "severity": "medium",
+      "title": "Future-looking submission identifier",
+      "finding": "The archived prompt includes a 20261012 identifier although this session is dated 2026-10-11 UTC.",
+      "disposition": "Identifier is not treated as proof of generation/submission date."
+    },
+    {
+      "id": "I12",
+      "severity": "medium",
+      "title": "No comparable incumbent receipt",
+      "finding": "Older translated-truth/live-mirror numbers are not a same-fold benchmark.",
+      "disposition": "Incumbent gate remains blocked."
+    },
+    {
+      "id": "I13",
+      "severity": "low",
+      "title": "GitHub administration permission limited",
+      "finding": "Read of Actions repository-permission settings returned 403 Resource not accessible by integration.",
+      "disposition": "This is a settings permission limitation, not proof Actions or Pages cannot run. Native Pages was already configured."
+    },
+    {
+      "id": "I14",
+      "severity": "low",
+      "title": "Metadata revision comparison repaired during review",
+      "finding": "The tree-query revision in this API environment matched the commit ID, not the nested root-tree ID. The first local feed overcounted changes.",
+      "disposition": "Compare the reviewed revision with both actual commit and root-tree IDs. Rebuilt feed before publication; records retain both identities."
+    },
+    {
+      "id": "I15",
+      "severity": "medium",
+      "title": "Preregistration detail gap",
+      "finding": "The mechanism/scenarios/gates were written before fitting, but the prose did not spell out every solver/sample setting. The numeric 25-iteration cap was fixed in execution code.",
+      "disposition": "Executed settings and original source hashes recorded separately. Do not call the numerical configuration fully preregistered or the EM result converged."
+    }
+  ]
+}

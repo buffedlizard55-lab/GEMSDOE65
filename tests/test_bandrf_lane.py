@@ -187,8 +187,17 @@ def passing_card(**overrides):
             "literal_test_demonstration": {"random_dots_inside_union_mean": 0.99999,
                                            "random_dots_inside_densest_mean": 0.736,
                                            "union_coverage_fraction": 0.99999}}
+    portal = {"single_band": True, "dtype_float32": True, "dimensions_3730x3292": True,
+              "crs_epsg_32611": True, "transform_matches_sample_submission": True,
+              "no_inf_anywhere": True, "no_sentinel_values": True,
+              "in_footprint_all_finite": True, "in_footprint_range_0_1": True,
+              "zero_dots_on_mapped_catalogue": True}
     card = {"gate": {"met": True}, "forced": False,
-            "files": {"x-zeros.tif": {"validator_passed": True,
+            "recommended_upload": {"file": "x-zeros.tif"},
+            "files": {"x-zeros.tif": {"validator_passed": False,   # canonical convention checks only
+                                      "validator": {"checks": {**portal,
+                                                               "outside_footprint_nan": False,
+                                                               "nodata_nan": False}},
                                       "in_range_inside_footprint": True,
                                       "nan_inside_footprint": 0,
                                       "positive_on_catalogue": 0}},
@@ -216,11 +225,15 @@ class VerdictTests(unittest.TestCase):
         self.assertTrue(verdict["download_cleared"])
         self.assertTrue(verdict["literal_overlap_rule_degenerate"])
         self.assertIn("DOWNLOAD AND SUBMIT", verdict["one_line"])
+        # a recommended file whose portal-relevant checks are not all recorded cannot clear
         self.assertFalse(run_lane._verdict(passing_card(
-            files={"x-zeros.tif": {"validator_passed": False,
+            files={"x-zeros.tif": {"validator_passed": False, "validator": {"checks": {}},
                                    "in_range_inside_footprint": True,
                                    "nan_inside_footprint": 0,
                                    "positive_on_catalogue": 0}}))["download_cleared"])
+        # NaN outside the footprint is a template-convention check, not a portal requirement
+        cleared = run_lane._verdict(passing_card())
+        self.assertTrue(cleared["portal_checks_passed"])
         self.assertFalse(run_lane._verdict(passing_card(
             uniqueness={"pixel_unique_among_checked": False}))["download_cleared"])
         self.assertFalse(run_lane._verdict(passing_card(

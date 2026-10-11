@@ -57,9 +57,13 @@ pinned template at `vendor/template58/gems57` for every local import.
 (`gems65.common` puts `vendor/template58` on `sys.path`; `tests/conftest.py` verifies the pin), and
 every measurement was re-run on it: the leakage canary (top single-channel AUC 0.5786, nothing above
 0.90), the four blocked folds, and the emission. The re-measured numbers are identical to those
-previously reported, and the recommended upload is now the canonical **NaN-outside** encoding
-(`…-nan.tif`), with the zeros-outside file kept only as a labelled, validator-failing diagnostic.
-This entry exists because a shadowed fork is exactly the failure the standing instruction forbids.
+previously reported. Both encodings are published from that one prediction: the pinned template's
+NaN-outside form (`…-nan.tif`, which passes every canonical check) and an all-finite zeros-outside
+form. The **recommended upload is the all-finite file**, because the portal evidence recorded in this
+repository — a rejection reading *"Predicted values must be in range [0, 1]"* — is consistent with a
+range test that compares NaNs, while a file whose every cell is finite and in [0, 1] cannot fail that
+test; the card records both preferences instead of hiding the disagreement. This entry exists because
+a shadowed fork is exactly the failure the standing instruction forbids.
 
 ## IR-65-025d — the SAR-EM class prior is not identified by PU data alone
 

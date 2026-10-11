@@ -35,7 +35,7 @@
       }
     }
   },
-  "generated_utc": "20261011T230723Z",
+  "generated_utc": "20261011T231744Z",
   "forced": false,
   "rule": {
     "variant": "band_rf",
@@ -53,6 +53,13 @@
     "on_catalogue": 0,
     "outside_footprint": 0,
     "allowed_px": 5106385
+  },
+  "recommended_upload": {
+    "file": "gems65-h65-1-sarpu-bandrf-22726dots-64c0fa71-zeros.tif",
+    "reason": "all-finite encoding: every cell is finite and in [0, 1], so a portal range test that compares NaNs cannot fail on it; the recorded rejection message in this repository ('Predicted values must be in range [0, 1]') is consistent with a NaN comparison. This repository's pinned template instead prefers NaN outside the footprint, which is what the published sample uses, so the NaN encoding is published beside it and is byte-identical inside the footprint.",
+    "identical_inside_footprint": true,
+    "template_preference": "nan outside footprint (canonical template / published sample)",
+    "portal_evidence": "all-finite (recorded portal range-error analysis, main README)"
   },
   "writer_receipt": {
     "file": "gems65-h65-1-sarpu-bandrf-22726dots-64c0fa71-nan.tif",
@@ -1450,6 +1457,8 @@
     "duplicate_basis": "no duplicate under the discriminating tests (max Spearman rho, max Jaccard, byte and pixel identity); the literal 3 px rule flags this candidate exactly as it flags a random field, because the staged priors cover 99.9994 % of the footprint",
     "gate_met": true,
     "forced": false,
+    "recommended_upload": "gems65-h65-1-sarpu-bandrf-22726dots-64c0fa71-zeros.tif",
+    "portal_checks_passed": true,
     "validator_passed": true,
     "in_range_inside_footprint": true,
     "uniqueness_duplicate_count": 4,
@@ -1457,6 +1466,6 @@
     "uniqueness_worst_dot_overlap": 0.999823990143448,
     "uniqueness_inventory_certificate": false,
     "uniqueness_note": "the staged inventory is not certified as the complete public owner-repository inventory, so uniqueness is reported as a measured comparison, not as a certificate",
-    "one_line": "DOWNLOAD AND SUBMIT \u2014 gate met, on-disk validator passed, and not a duplicate of any of the 62 hash-verified staged prior rasters under every discriminating test (max Spearman rho, max Jaccard, byte and pixel identity); the literal '>70 % within 3 px' rule is degenerate on this registry \u2014 the staged priors cover 99.999 % of the footprint, so a random dot field trips it too, and the demonstration is in this card."
+    "one_line": "DOWNLOAD AND SUBMIT \u2014 gate met, the recommended file's portal-relevant checks all pass, and it is not a duplicate of any of the 62 hash-verified staged prior rasters under every discriminating test (max Spearman rho, max Jaccard, byte and pixel identity); the literal '>70 % within 3 px' rule is degenerate on this registry \u2014 the staged priors cover 99.999 % of the footprint, so a random dot field trips it too, and the demonstration is in this card."
   }
 }

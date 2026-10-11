@@ -152,7 +152,7 @@ different verdicts on different instruments, and neither overwrites the other:
 | | repository root (canonical) | `lane65-sarprop/` |
 |---|---|---|
 | Verdict | **negative** — SAR-PU below nnPU on its holdout | **gate PROMOTE** on its own blocked holdout (SAR 0.0732 vs nnPU 0.0679) |
-| Download offered | none, by policy | one, and the site says exactly why |
+| Download offered | its own rasters, under a DO-NOT-SUBMIT banner | a locally cleared one; the file is rebuilt from a committed dot list because this sandbox cannot upload release assets (`uploads.github.com` unreachable) |
 | Artifact in Git | none | none (dot list + rebuild script instead; release asset for the download) |
 | Site | `docs/index.html` | `lane65-sarprop/docs/index.html` |
 | Workflow | `pages.yml`, `ci.yml` | `lane65-sarprop.yml` (verify only, path filtered) |

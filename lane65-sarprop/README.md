@@ -22,8 +22,7 @@ root lineage's `IR-65-0xx` series.
 first, with the one-click submission download and the exact steps to enter it in the competition.
 It is also served live at
 `https://buffedlizard55-lab.github.io/GEMSDOE65/lane65-sarprop/docs/index.html` (repository-root
-publishing), and the durable copy of the artifact is the release asset
-`https://github.com/buffedlizard55-lab/GEMSDOE65/releases/download/lane65-sarprop-pu-v1/gems65-sarprop-pu-v1.tif`.
+publishing), and the durable copy of the artifact is the release asset, which must be created once from a machine with normal network access: this sandbox cannot reach `uploads.github.com`. The exact command is on the site's download card and in `docs/downloads/RELEASE_NOTES.md`.
 
 **Competition:** DrivenData 306, *DOE GEMS* (GeoDAWN geothermal exploration). Closes
 2026-12-03; the final round re-scores one chosen file against an expert-expanded label set, so

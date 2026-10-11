@@ -267,20 +267,26 @@ def _download_card(rep: dict, dec: dict, root: str = "") -> str:
 <code>{esc(rep.get('transform'))}</code></p>
 </div>
 <div class="card">
-<h3>If the button above is empty in your checkout</h3>
-<p>The model artifact is deliberately <b>not</b> tracked in Git (the repository's publication
-guard rejects tracked TIFFs and ZIPs), so a fresh clone has an empty <code>downloads/</code>
-directory. There are two ways to get the exact file, and both are verified:</p>
-<ol>
-<li><b>Durable copy</b> — the release asset attached to this lane's tag:
-<a href="https://github.com/buffedlizard55-lab/GEMSDOE65/releases/download/lane65-sarprop-pu-v1/gems65-sarprop-pu-v1.tif">gems65-sarprop-pu-v1.tif</a>
-(and the <a href="https://github.com/buffedlizard55-lab/GEMSDOE65/releases/download/lane65-sarprop-pu-v1/gems65-sarprop-pu-v1.zip">ZIP</a>).
-Check it against the sha256 above before submitting anything.</li>
-<li><b>Rebuild it</b> — byte-identical from the committed dot list, through the frozen template
-writer: <code>python scripts/reconstruct_submission.py</code> (needs the public bridge rasters;
-<code>--direct</code> rebuilds the identical pixel field without them and says so).</li>
-</ol>
-</div></div>"""
+<h3>Where the file actually is</h3>
+<p>The model artifact is deliberately <b>not</b> tracked in Git. Two consequences, stated plainly
+rather than discovered later:</p>
+<ul>
+<li>In a checkout where <code>docs/downloads/</code> is empty, the button above 404s. Rebuild the
+file byte-for-byte from the committed dot list instead — ten seconds, no network, no competition
+data: <code>python scripts/reconstruct_submission.py --check</code> to verify, then without
+<code>--check</code> to write it. It refuses to publish a rebuild whose sha256 is not the one above.
+The <code>--direct</code> fallback works without the public bridge rasters and produces the
+identical pixel field through rasterio, with a different container (and says so).</li>
+<li>A durable public copy needs one command from a machine with normal network access, because this
+project's sandbox cannot reach <code>uploads.github.com</code> (GitHub only accepts release-asset
+uploads from outside; the repository root lineage's publication guard also refuses tracked TIFFs
+outside its own allowlist, which is a decision for its owner, not for this lane):
+<pre><code>gh release create lane65-sarprop-pu-v1 \
+  lane65-sarprop/docs/downloads/gems65-sarprop-pu-v1.tif \
+  lane65-sarprop/docs/downloads/gems65-sarprop-pu-v1.zip \
+  --title "lane65-sarprop submission artifact v1" --notes-file lane65-sarprop/docs/downloads/RELEASE_NOTES.md</code></pre></li>
+</ul>
+</div></div></div>"""
 
 
 # --------------------------------------------------------------------------

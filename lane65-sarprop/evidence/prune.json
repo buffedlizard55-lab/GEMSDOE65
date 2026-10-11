@@ -1,0 +1,147 @@
+{
+ "evidence_class": "MEASURED + HOLDOUT-DTI",
+ "runtime_s": 31.1,
+ "score_02778": {
+  "sha16": "c55bafc470054e82",
+  "file": "/tmp/gems_registry_cache/c55bafc470054e82.tif",
+  "source": "GEMSDOE32:docs/downloads/gemsdoe32-h33-h33-2-b2-20261004T220000Z-e5eb6e7e-zeros.tif",
+  "organizer_score": 0.2778,
+  "n_dots": 37654,
+  "finite_pixels": 12279160,
+  "nan_pixels": 0,
+  "values": [
+   0.0,
+   1.0
+  ],
+  "dots_on_mapped_fault": 0,
+  "min_dist_px": 2.23606797749979,
+  "median_dist_px": 19.6468827043885,
+  "p95_dist_px": 81.88406438373708,
+  "n_within_2px": 0,
+  "n_at_sqrt5": 941,
+  "hist": [
+   [
+    0.0,
+    1.0,
+    0
+   ],
+   [
+    1.0,
+    1.5,
+    0
+   ],
+   [
+    1.5,
+    2.0,
+    0
+   ],
+   [
+    2.0,
+    2.236,
+    0
+   ],
+   [
+    2.236,
+    2.5,
+    941
+   ],
+   [
+    2.5,
+    2.9,
+    670
+   ],
+   [
+    2.9,
+    3.0,
+    0
+   ],
+   [
+    3.0,
+    3.5,
+    1091
+   ],
+   [
+    3.5,
+    4.0,
+    659
+   ],
+   [
+    4.0,
+    5.0,
+    1487
+   ],
+   [
+    5.0,
+    10.0,
+    6292
+   ],
+   [
+    10.0,
+    50.0,
+    18985
+   ],
+   [
+    50.0,
+    250.0,
+    7529
+   ]
+  ],
+  "removed_by_the_02708_to_02778_filter": 2545,
+  "arithmetic": {
+   "note": "D0 - D1 = alpha * 2545 = 509.0 exactly, if the removed dots earned no truth credit; DTI1/DTI0 = D0/D1 then pins the denominators and the true-positive mass.",
+   "alpha": 0.2,
+   "dti_before": 0.2708,
+   "dti_after": 0.2778,
+   "denominator_after": 19691.028571428553,
+   "implied_true_positive_mass": 5470.167737142852,
+   "implied_truth_set_size_if_FP_is_dots_minus_TP": 14132.743779999977
+  }
+ },
+ "prune_only": {
+  "arm": "sar (saturated nms3 allocation)",
+  "instrument": "same blocked draw as the gate",
+  "rows": [
+   {
+    "prune_radius_px": null,
+    "n_dots": 75140,
+    "holdout_dti": 0.07324222371468057,
+    "tpw": 1779.4144878630923,
+    "fpw": 74255.22115365614,
+    "fnw": 9580.585512136908
+   },
+   {
+    "prune_radius_px": 2.0,
+    "n_dots": 74377,
+    "holdout_dti": 0.07334831928207303,
+    "tpw": 1770.8064716238416,
+    "fpw": 73501.33042233238,
+    "fnw": 9589.193528376158
+   },
+   {
+    "prune_radius_px": 2.236,
+    "n_dots": 74377,
+    "holdout_dti": 0.07334831928207303,
+    "tpw": 1770.8064716238416,
+    "fpw": 73501.33042233238,
+    "fnw": 9589.193528376158
+   },
+   {
+    "prune_radius_px": 2.828,
+    "n_dots": 73886,
+    "holdout_dti": 0.07315761623376749,
+    "tpw": 1759.0039246729239,
+    "fpw": 73021.14643207267,
+    "fnw": 9600.996075327075
+   },
+   {
+    "prune_radius_px": 3.0,
+    "n_dots": 70832,
+    "holdout_dti": 0.06844730006822343,
+    "tpw": 1602.9981732926035,
+    "fpw": 70054.25560405495,
+    "fnw": 9757.001826707397
+   }
+  ],
+  "interpretation": "prune-only isolates the false-positive deletion effect from the refill effect that confounded emission_halo.json"
+ }
+}

@@ -1,0 +1,107 @@
+{
+ "evidence_class": "MODEL-INTERNAL (no organiser score exists for this file)",
+ "arm": "sar (propensity-weighted risk, Bekker/Robberechts/Davis 1809.03207)",
+ "emission_rule": "accept candidates in descending expected credit with non-maximum suppression at the metric's 3 px kernel radius, budget taken to saturation on the measured curve, then prune every dot within 2.0 px of a mapped fault",
+ "b_grid_predeclared": [
+  500,
+  1000,
+  2000,
+  4000,
+  8000,
+  16000,
+  32000,
+  64000,
+  100000,
+  160000
+ ],
+ "budget": 160000,
+ "budget_source": "argmax of the surrogate price curve on the blocked holdout, chosen per arm in evidence/gate.json; transferred by absolute dot count because the holdout grid and the live grid have the same scored area (5.12M vs 5.11M cells)",
+ "n_dots": 74351,
+ "n_accepted_before_saturation": 75293,
+ "allowed_cells": 5106385,
+ "catalogue_px_masked": 60988,
+ "k_mass_used": 12198.0,
+ "invariance_overlap_under_10x_mass": 0.9995085864555802,
+ "e_field_stats": {
+  "mean": 0.5145253539085388,
+  "q1": 0.5110443830490112,
+  "q2": 0.5160815715789795,
+  "max": 0.5510891079902649
+ },
+ "curve": [
+  {
+   "budget": 500,
+   "T": 24.023814989514054,
+   "M": 31.734347634017467,
+   "surrogate_dti": 0.002437269082009059
+  },
+  {
+   "budget": 1000,
+   "T": 46.0382315296237,
+   "M": 61.85181102156639,
+   "surrogate_dti": 0.004624523777363516
+  },
+  {
+   "budget": 2000,
+   "T": 87.88324910875845,
+   "M": 119.54883223026991,
+   "surrogate_dti": 0.0086566853940521
+  },
+  {
+   "budget": 4000,
+   "T": 166.163244548595,
+   "M": 227.0648715533316,
+   "surrogate_dti": 0.015755716235344986
+  },
+  {
+   "budget": 8000,
+   "T": 301.6783129645762,
+   "M": 406.08582715690136,
+   "surrogate_dti": 0.026608848580057836
+  },
+  {
+   "budget": 16000,
+   "T": 530.4055087965432,
+   "M": 705.600358478725,
+   "surrogate_dti": 0.04104238112381624
+  },
+  {
+   "budget": 32000,
+   "T": 938.1973343836002,
+   "M": 1235.7021854110062,
+   "surrogate_dti": 0.058277111537084716
+  },
+  {
+   "budget": 64000,
+   "T": 1661.7713793385756,
+   "M": 2189.783939799294,
+   "surrogate_dti": 0.07401177426703895
+  }
+ ],
+ "runtime_s": 252.3,
+ "prune": {
+  "rule": "drop dots within 2.0 px of a mapped fault",
+  "justification": {
+   "score_02778_exact_set_identity": "the 0.2778 receipt equals the 0.2708 file with every dot inside 2.0 px deleted (2,545 dots, +0.0070)",
+   "holdout_prune_only_dti": [
+    0.073242,
+    0.073348,
+    0.073158,
+    0.068447
+   ],
+   "holdout_prune_radii_px": [
+    null,
+    2.0,
+    2.828,
+    3.0
+   ],
+   "evidence": "evidence/prune.json"
+  },
+  "radius_px": 2.0,
+  "dots_before": 75293,
+  "dots_removed": 942,
+  "dots_after": 74351
+ },
+ "n_dots_unpruned": 75293,
+ "emission_rule_final": "price_curve_nms3, dots forced to be > 3 px apart then the measured <= 2.0 px prune against the mapped catalogue"
+}

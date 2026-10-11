@@ -1,0 +1,143 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Method — GEMSDOE65</title><style>
+:root{--bg:#0f1216;--card:#171b21;--line:#252b34;--ink:#e8ecf1;--mut:#9aa5b1;
+--ok:#2fbf71;--bad:#e5484d;--warn:#f5a524;--acc:#4c8dff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+font:16px/1.62 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+a{color:var(--acc)} a:hover{text-decoration:underline}
+.wrap{max-width:1000px;margin:0 auto;padding:0 20px 80px}
+header.top{border-bottom:1px solid var(--line);background:#12161b;position:sticky;top:0;z-index:5}
+header.top .wrap{padding:12px 20px;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.brand{font-weight:700;letter-spacing:.2px}
+nav a{color:var(--mut);text-decoration:none;font-size:14px;padding:4px 2px}
+nav a:hover{color:var(--ink)} nav a.on{color:var(--ink);border-bottom:2px solid var(--acc)}
+h1{font-size:30px;line-height:1.25;margin:28px 0 6px}
+h2{font-size:21px;margin:34px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+h3{font-size:17px;margin:22px 0 6px}
+p,li{color:#dbe2ea}
+small,.mut{color:var(--mut)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:16px 0}
+.hero{border-radius:14px;padding:22px;margin:20px 0;border:2px solid var(--line);background:var(--card)}
+.hero.ok{border-color:var(--ok);background:linear-gradient(180deg,rgba(47,191,113,.10),rgba(47,191,113,.02))}
+.hero.bad{border-color:var(--bad);background:linear-gradient(180deg,rgba(229,72,77,.12),rgba(229,72,77,.02))}
+.hero.warn{border-color:var(--warn);background:linear-gradient(180deg,rgba(245,165,36,.10),rgba(245,165,36,.02))}
+.hero h2{border:0;margin:0 0 6px;font-size:20px}
+.chip{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.4px;
+padding:2px 8px;border-radius:999px;vertical-align:middle}
+.chip.ok{background:rgba(47,191,113,.18);color:#6ee7a8;border:1px solid rgba(47,191,113,.5)}
+.chip.bad{background:rgba(229,72,77,.18);color:#ff9ea1;border:1px solid rgba(229,72,77,.5)}
+.chip.warn{background:rgba(245,165,36,.16);color:#ffd08a;border:1px solid rgba(245,165,36,.5)}
+.btn{display:inline-block;background:var(--ok);color:#04220f;font-weight:800;text-decoration:none;
+padding:14px 22px;border-radius:10px;font-size:17px;margin:6px 10px 6px 0}
+.btn:hover{filter:brightness(1.08);text-decoration:none}
+.btn.off{background:#3a4049;color:#aab3bf;pointer-events:none}
+.btn.alt{background:transparent;color:var(--ink);border:1px solid var(--line)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--mut);font-weight:600;white-space:nowrap}
+.tw{overflow-x:auto;margin:10px 0}
+code,kbd{background:#0b0e12;border:1px solid var(--line);border-radius:6px;padding:1px 6px;
+font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;word-break:break-all}
+pre{background:#0b0e12;border:1px solid var(--line);border-radius:10px;padding:14px;overflow-x:auto;
+font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}}
+.kv{font-size:14px}.kv b{color:var(--mut);font-weight:600}
+ul.tight{margin:8px 0} ul.tight li{margin:4px 0}
+.feed{list-style:none;padding:0;margin:0}
+.feed li{border-left:3px solid var(--line);padding:6px 0 6px 12px;margin:8px 0;font-size:14px}
+.feed li.ok{border-color:var(--ok)} .feed li.bad{border-color:var(--bad)} .feed li.warn{border-color:var(--warn)}
+footer{border-top:1px solid var(--line);margin-top:40px;padding-top:16px;color:var(--mut);font-size:13px}
+</style></head><body>
+<header class="top"><div class="wrap"><span class="brand">GEMSDOE65 — selection-bias-aware fault prediction</span>
+<nav><a href="index.html">Executive Summary</a> <a href="method.html" class="on">Method</a> <a href="evidence.html">Evidence</a> <a href="analysis-02778.html">Score 0.2778</a> <a href="hypotheses.html">Hypotheses</a> <a href="verification.html">Verification &amp; duplicates</a> <a href="limitations.html">Limitations &amp; next work</a></nav></div></header>
+<div class="wrap">
+<h1>Method</h1>
+<p>A fault map is built from a catalogue that was assembled by people looking at evidence
+sufficient to convince a reviewer. That catalogue is therefore <i>biased</i>, and the bias is
+spatially structured: catalogued regions are mapped at greater density than the rest. A model
+that ignores this learns where mappers looked. This lane models the bias explicitly.</p>
+
+<h2>1. The label model (SAR, not SCAR)</h2>
+<p>With <code>y</code> the true fault indicator and <code>s</code> the catalogued indicator, the
+propensity is</p>
+<pre>e(x) = P(s = 1 | y = 1, x)</pre>
+<p>using only a small, predeclared attribute subset (local relief, slope, gravity-derived
+basin-fill proxy, lidar coverage, distance to range front) rather than all 19 classifier bands.
+That restriction is required by the method, not a convenience: the propensity model must be
+identifiable from fewer attributes than the classifier fits
+(<a href="https://proceedings.mlr.press/v94/bekker18a.html">Bekker &amp; Davis, PMLR v94</a>,
+Algorithm 1 and its surrounding text). A constant propensity is the SCAR model; it is
+implemented here as a third arm precisely because SCAR is the null hypothesis this lane
+exists to reject.</p>
+
+<h2>2. Estimation by EM</h2>
+<p>Initialisation: a balanced classifier that treats unlabelled cells as negatives, with the
+propensity model initialised from the positive probabilities it produces. E-step: posterior
+positive probability for each cell. M-step: fit the classifier on the propensity-weighted
+empirical risk, and refit the propensity model on the catalogued cells only. The loop stops on
+<i>both</i> stopping conditions — the log-likelihood and the propensity field must each settle
+(<code>tol = 1e-3</code>) — because the M-step here is the weighted ERM of
+<a href="https://arxiv.org/abs/1809.03207">Bekker, Robberechts &amp; Davis</a>, not the exact
+posterior maximiser, so a strictly-increasing log-likelihood test never terminates (it
+oscillates about 0.3%). That reversal is recorded in the repo history as a bug that was fixed
+rather than as a tuning choice.</p>
+<p>The scale of <code>e</code> is not identifiable from labels alone, so the run is repeated for
+<code>kappa</code> in {0.5, 1, 2} and the reported arm uses the predeclared default
+<code>kappa = 1</code>. Weights are clipped at 10 as specified.</p>
+
+<h2>3. Risk and baseline</h2>
+<p>The classifier minimises the propensity-weighted empirical risk; the baseline minimises
+nnPU (non-negative PU) risk on <i>identical folds</i> — same draw, same design matrix, same
+emission rule, same budget grid. Nothing but the risk function changes between the two, which
+is what makes the comparison evidence rather than anecdote.</p>
+
+<h2>4. The holdout instrument</h2>
+<p>Hide-and-recover: whole catalogued components are withheld with a 3 px collar, all
+catalogue-derived features are recomputed from the visible faults only, visible faults are
+masked pixel-exactly, and the score is the pooled distance-weighted Tversky index
+(alpha 0.2, beta 0.8, R = 3 px triangular kernel) computed with the frozen template
+evaluator. This run: seed 2026,
+hide fraction 0.2,
+<b>11360 withheld positives</b>, visible catalogue
+48534 px.</p>
+<p><b>Why these numbers are relative.</b> The instrument scores the withheld pixels only. The
+organizer scores against every fault, including the ones already in the catalogue. The two are
+different denominators, so a holdout DTI of 0.068 and a leaderboard score of 0.28 are not in
+the same units — the holdout is a <i>ranking device</i>, and it is used only that way.</p>
+
+<h2>5. The gate, stated before the number was read</h2>
+<p>promote if and only if the SAR-propensity arm's pooled HOLDOUT-DTI is strictly greater than
+nnPU's <b>and</b> its DTI inside the highest-propensity tercile is not lower. One comparison,
+one draw, no selection over arms after the fact. Verdict on this run:
+<b>PROMOTE</b>
+(overall delta 0.005378, tercile delta
+0.011799).</p>
+
+<h2>6. Emission rule, and why it is not a free choice</h2>
+<p>The metric is <code>TP_w = sum over truth pixels of max over predictions of
+p * k(distance)</code>. Two dots standing on the same truth pixel therefore earn the credit of
+one. A first attempt that simply drained the highest-scoring cells in order produced 19,688 dots
+of which 1,195 sat within 300 m of withheld truth — a 92x enrichment — and still scored
+0.000000, because those dots covered very few <i>distinct</i> truth pixels. Non-maximum
+suppression at the kernel radius fixes exactly that failure, and it is the rule this file uses:
+scan candidates in descending expected credit, accept only if no accepted dot lies within 3 px.</p>
+<p>The budget is not hand-tuned. A predeclared grid of budgets {500 … 160000} is scored on the
+holdout, and the emission self-truncates when no candidate survives suppression. See
+<a href="evidence.html">Evidence</a> for the curve and for the two hypotheses this lane
+tested and rejected.</p>
+
+<h2>Sources</h2>
+<div class="tw"><table><thead><tr><th>Official / primary source</th><th>URL</th></tr></thead><tbody><tr><td><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/">Competition problem statement (submission format)</a></td><td><code>www.drivendata.org/competitions/306/competit</code></td></tr><tr><td><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/data/">Competition data page (sample submission, features, labels)</a></td><td><code>www.drivendata.org/competitions/306/competit</code></td></tr><tr><td><a href="https://www.nlr.gov/docs/fy26osti/96647.pdf">Competition rules, September 2026 (PDF, sections 3.1–3.6)</a></td><td><code>www.nlr.gov/docs/fy26osti/96647.pdf</code></td></tr><tr><td><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/#evaluation">Official metric: distance-weighted Tversky index, R = 3, alpha = 0.2, beta = 0.8</a></td><td><code>www.drivendata.org/competitions/306/competit</code></td></tr><tr><td><a href="https://proceedings.mlr.press/v94/bekker18a.html">Bekker &amp; Davis, PMLR v94 (LIDTA 2018) — the EM propensity method used here</a></td><td><code>proceedings.mlr.press/v94/bekker18a.html</code></td></tr><tr><td><a href="https://arxiv.org/abs/1809.03207">Bekker, Robberechts &amp; Davis, arXiv:1809.03207 — propensity-weighted risk</a></td><td><code>arxiv.org/abs/1809.03207</code></td></tr><tr><td><a href="https://doi.org/10.15121/1881483">INGENIOUS Great Basin fault compilation DOI (label provenance, rules footnote 4)</a></td><td><code>doi.org/10.15121/1881483</code></td></tr><tr><td><a href="https://github.com/drivendataorg/gems-prize-reference-solution">DrivenData reference solution repository</a></td><td><code>github.com/drivendataorg/gems-prize-referenc</code></td></tr><tr><td><a href="https://epsg.io/32611">EPSG:32611 (UTM zone 11N)</a></td><td><code>epsg.io/32611</code></td></tr></tbody></table></div>
+
+<footer><p><b>Evidence policy.</b> Numbers on this site are either
+<span class="chip ok">HOLDOUT-DTI</span> (measured here with the frozen template
+evaluator on a blocked hide-and-recover draw) or <span class="chip warn">ORGANIZER</span>
+(copied from a competition source). A projection is never written as a score.</p>
+<p>Built from <code>evidence/*.json</code> by <code>src/gems65_sarprop/site.py</code>
+(the build is deterministic: the stamp below is the newest evidence timestamp, not the wall
+clock, so CI can assert that a rebuild is byte-identical). No number on this site is typed by
+hand.</p>
+<p>Newest evidence artifact: <code>2026-10-11T21:29:41+00:00</code>.</p></footer></div></body></html>

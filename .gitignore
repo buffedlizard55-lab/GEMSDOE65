@@ -16,3 +16,18 @@ work/
 .venv/
 __pycache__/
 *.pyc
+
+# ---------------------------------------------------------------------------
+# lane65-sarprop: the second, independently developed lineage of this lane.
+# Its large inputs and its model artifacts stay out of Git by design; the small
+# text evidence and the dot list that rebuilds the submission do not.
+# ---------------------------------------------------------------------------
+lane65-sarprop/data/bridge/*.tif
+lane65-sarprop/data/*.tif
+lane65-sarprop/data/external/
+lane65-sarprop/data/*.partial
+lane65-sarprop/docs/downloads/*.tif
+lane65-sarprop/docs/downloads/*.zip
+lane65-sarprop/registry/cache/
+lane65-sarprop/registry/rasters_cache/
+lane65-sarprop/.pytest_cache/

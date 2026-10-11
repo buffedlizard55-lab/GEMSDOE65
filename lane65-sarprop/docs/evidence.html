@@ -1,0 +1,132 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Evidence — GEMSDOE65</title><style>
+:root{--bg:#0f1216;--card:#171b21;--line:#252b34;--ink:#e8ecf1;--mut:#9aa5b1;
+--ok:#2fbf71;--bad:#e5484d;--warn:#f5a524;--acc:#4c8dff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+font:16px/1.62 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+a{color:var(--acc)} a:hover{text-decoration:underline}
+.wrap{max-width:1000px;margin:0 auto;padding:0 20px 80px}
+header.top{border-bottom:1px solid var(--line);background:#12161b;position:sticky;top:0;z-index:5}
+header.top .wrap{padding:12px 20px;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.brand{font-weight:700;letter-spacing:.2px}
+nav a{color:var(--mut);text-decoration:none;font-size:14px;padding:4px 2px}
+nav a:hover{color:var(--ink)} nav a.on{color:var(--ink);border-bottom:2px solid var(--acc)}
+h1{font-size:30px;line-height:1.25;margin:28px 0 6px}
+h2{font-size:21px;margin:34px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+h3{font-size:17px;margin:22px 0 6px}
+p,li{color:#dbe2ea}
+small,.mut{color:var(--mut)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:16px 0}
+.hero{border-radius:14px;padding:22px;margin:20px 0;border:2px solid var(--line);background:var(--card)}
+.hero.ok{border-color:var(--ok);background:linear-gradient(180deg,rgba(47,191,113,.10),rgba(47,191,113,.02))}
+.hero.bad{border-color:var(--bad);background:linear-gradient(180deg,rgba(229,72,77,.12),rgba(229,72,77,.02))}
+.hero.warn{border-color:var(--warn);background:linear-gradient(180deg,rgba(245,165,36,.10),rgba(245,165,36,.02))}
+.hero h2{border:0;margin:0 0 6px;font-size:20px}
+.chip{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.4px;
+padding:2px 8px;border-radius:999px;vertical-align:middle}
+.chip.ok{background:rgba(47,191,113,.18);color:#6ee7a8;border:1px solid rgba(47,191,113,.5)}
+.chip.bad{background:rgba(229,72,77,.18);color:#ff9ea1;border:1px solid rgba(229,72,77,.5)}
+.chip.warn{background:rgba(245,165,36,.16);color:#ffd08a;border:1px solid rgba(245,165,36,.5)}
+.btn{display:inline-block;background:var(--ok);color:#04220f;font-weight:800;text-decoration:none;
+padding:14px 22px;border-radius:10px;font-size:17px;margin:6px 10px 6px 0}
+.btn:hover{filter:brightness(1.08);text-decoration:none}
+.btn.off{background:#3a4049;color:#aab3bf;pointer-events:none}
+.btn.alt{background:transparent;color:var(--ink);border:1px solid var(--line)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--mut);font-weight:600;white-space:nowrap}
+.tw{overflow-x:auto;margin:10px 0}
+code,kbd{background:#0b0e12;border:1px solid var(--line);border-radius:6px;padding:1px 6px;
+font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;word-break:break-all}
+pre{background:#0b0e12;border:1px solid var(--line);border-radius:10px;padding:14px;overflow-x:auto;
+font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}}
+.kv{font-size:14px}.kv b{color:var(--mut);font-weight:600}
+ul.tight{margin:8px 0} ul.tight li{margin:4px 0}
+.feed{list-style:none;padding:0;margin:0}
+.feed li{border-left:3px solid var(--line);padding:6px 0 6px 12px;margin:8px 0;font-size:14px}
+.feed li.ok{border-color:var(--ok)} .feed li.bad{border-color:var(--bad)} .feed li.warn{border-color:var(--warn)}
+footer{border-top:1px solid var(--line);margin-top:40px;padding-top:16px;color:var(--mut);font-size:13px}
+</style></head><body>
+<header class="top"><div class="wrap"><span class="brand">GEMSDOE65 — selection-bias-aware fault prediction</span>
+<nav><a href="index.html">Executive Summary</a> <a href="method.html">Method</a> <a href="evidence.html" class="on">Evidence</a> <a href="analysis-02778.html">Score 0.2778</a> <a href="hypotheses.html">Hypotheses</a> <a href="verification.html">Verification &amp; duplicates</a> <a href="limitations.html">Limitations &amp; next work</a></nav></div></header>
+<div class="wrap">
+<h1>Evidence</h1>
+<p>Every row below is regenerated from <code>evidence/*.json</code> at build time. The files are
+committed, so each number can be recomputed from the repo rather than trusted.</p>
+
+<h2>Gate: the four-arm comparison on the blocked holdout</h2>
+<div class="tw"><table><thead><tr><th>Arm</th><th>Dots</th><th>HOLDOUT-DTI pooled</th><th>HOLDOUT-DTI top tercile</th><th>TP_w</th><th>FP_w</th><th>FN_w</th></tr></thead><tbody><tr><td>nnpu</td><td>76393</td><td>0.067864</td><td>0.069734</td><td>1664.6</td><td>75540</td><td>9695</td></tr><tr><td>sar</td><td>75140</td><td>0.073242</td><td>0.081533</td><td>1779.4</td><td>74255</td><td>9581</td></tr><tr><td>scar</td><td>75080</td><td>0.057599</td><td>0.068255</td><td>1396.5</td><td>74392</td><td>9963</td></tr></tbody></table></div>
+<p class="mut">Evaluator: frozen <code>template.metric.dti_exact</code>. Withheld positives
+11360. Gate verdict:
+<b>PROMOTE</b> at overall delta
+&mdash; and tercile delta &mdash;.</p>
+
+<h2>Emission rule: what the first attempt got wrong</h2>
+<div class="tw"><table><thead><tr><th>Rule</th><th>Arm</th><th>Dots</th><th>HOLDOUT-DTI</th><th>TP_w</th></tr></thead><tbody><tr><td>bar_only</td><td>nnpu</td><td>9,900</td><td>0.001479</td><td>16.4</td></tr><tr><td>bar_only</td><td>sar</td><td>19,688</td><td>0.000000</td><td>0.0</td></tr><tr><td>bar_only</td><td>scar</td><td>16,038</td><td>0.000000</td><td>0.0</td></tr><tr><td>price_curve</td><td>nnpu</td><td>160,000</td><td>0.012656</td><td>517.9</td></tr><tr><td>price_curve</td><td>sar</td><td>160,000</td><td>0.008106</td><td>332.0</td></tr><tr><td>price_curve</td><td>scar</td><td>160,000</td><td>0.014264</td><td>583.3</td></tr><tr><td>price_curve_nms3</td><td>nnpu</td><td>64,000</td><td>0.063318</td><td>1394.5</td></tr><tr><td>price_curve_nms3</td><td>sar</td><td>64,000</td><td>0.068479</td><td>1509.3</td></tr><tr><td>price_curve_nms3</td><td>scar</td><td>64,000</td><td>0.056011</td><td>1233.0</td></tr></tbody></table></div>
+<p class="mut">The bar-budgeted rule spends thousands of dots on cells whose credit is already
+claimed by a neighbour; the same model with 3 px non-maximum suppression scores about an order of
+magnitude higher.</p>
+
+<h2>Budget: measured, not assumed</h2>
+<div class="tw"><table><thead><tr><th>Arm</th><th>Budget cap</th><th>Dots placed</th><th>HOLDOUT-DTI</th><th>TP_w</th></tr></thead><tbody><tr><td>sar</td><td>500</td><td>500</td><td>0.000000</td><td>0</td></tr><tr><td>sar</td><td>1,000</td><td>1,000</td><td>0.000000</td><td>0</td></tr><tr><td>sar</td><td>2,000</td><td>2,000</td><td>0.000000</td><td>0</td></tr><tr><td>sar</td><td>4,000</td><td>4,000</td><td>0.000052</td><td>1</td></tr><tr><td>sar</td><td>8,000</td><td>8,000</td><td>0.007669</td><td>82</td></tr><tr><td>sar</td><td>16,000</td><td>16,000</td><td>0.017246</td><td>212</td></tr><tr><td>sar</td><td>32,000</td><td>32,000</td><td>0.043415</td><td>675</td></tr><tr><td>sar</td><td>64,000</td><td>64,000</td><td>0.068479</td><td>1509</td></tr><tr><td>sar</td><td>100,000</td><td>75,140</td><td>0.073242</td><td>1779</td></tr><tr><td>sar</td><td>160,000</td><td>75,140</td><td>0.073242</td><td>1779</td></tr><tr><td>nnpu</td><td>500</td><td>500</td><td>0.000228</td><td>2</td></tr><tr><td>nnpu</td><td>1,000</td><td>1,000</td><td>0.000748</td><td>7</td></tr><tr><td>nnpu</td><td>2,000</td><td>2,000</td><td>0.001957</td><td>19</td></tr><tr><td>nnpu</td><td>4,000</td><td>4,000</td><td>0.004161</td><td>41</td></tr><tr><td>nnpu</td><td>8,000</td><td>8,000</td><td>0.010934</td><td>117</td></tr><tr><td>nnpu</td><td>16,000</td><td>16,000</td><td>0.024360</td><td>300</td></tr><tr><td>nnpu</td><td>32,000</td><td>32,000</td><td>0.043868</td><td>682</td></tr><tr><td>nnpu</td><td>64,000</td><td>64,000</td><td>0.063318</td><td>1395</td></tr><tr><td>nnpu</td><td>100,000</td><td>76,393</td><td>0.067864</td><td>1665</td></tr><tr><td>nnpu</td><td>160,000</td><td>76,393</td><td>0.067864</td><td>1665</td></tr></tbody></table></div>
+<p class="mut">Monotone to saturation; the emitted file takes the saturated set. The model's own
+surrogate price curve preferred 64,000; the measurement preferred more, so the measurement won
+and the surrogate is reported only as a diagnostic.</p>
+
+<h2>Rejected hypothesis: excluding the 3 px halo around known faults</h2>
+<p>The metric zeroes predictions on the catalogue and credits each dot only against
+non-catalogue truth, so a dot inside the halo is an expensive false positive. The hypothesis was
+that forbidding the halo would pay. It does not:</p>
+<div class="tw"><table><thead><tr><th>Arm</th><th>Halo excluded</th><th>Dots</th><th>HOLDOUT-DTI</th><th>TP_w</th></tr></thead><tbody><tr><td>nnpu</td><td>0 px</td><td>64,000</td><td>0.063318</td><td>1394.5</td></tr><tr><td>nnpu</td><td>2 px</td><td>64,000</td><td>0.057616</td><td>1268.6</td></tr><tr><td>nnpu</td><td>3 px</td><td>64,000</td><td>0.052789</td><td>1161.7</td></tr><tr><td>nnpu</td><td>4 px</td><td>64,000</td><td>0.048634</td><td>1069.8</td></tr><tr><td>sar</td><td>0 px</td><td>64,000</td><td>0.068479</td><td>1509.3</td></tr><tr><td>sar</td><td>2 px</td><td>64,000</td><td>0.061535</td><td>1355.6</td></tr><tr><td>sar</td><td>3 px</td><td>64,000</td><td>0.055396</td><td>1219.6</td></tr><tr><td>sar</td><td>4 px</td><td>64,000</td><td>0.050362</td><td>1108.2</td></tr><tr><td>scar</td><td>0 px</td><td>64,000</td><td>0.056011</td><td>1233.0</td></tr><tr><td>scar</td><td>2 px</td><td>64,000</td><td>0.051192</td><td>1126.5</td></tr><tr><td>scar</td><td>3 px</td><td>64,000</td><td>0.047436</td><td>1043.5</td></tr><tr><td>scar</td><td>4 px</td><td>64,000</td><td>0.042927</td><td>943.9</td></tr></tbody></table></div>
+<p class="mut">Removing the halo removes the best territory, because withheld segments are
+usually the continuation of a mapped fault. Negative result kept as a deliverable: it is the
+reason this lane does <i>not</i> thin its dots near the catalogue wholesale — which is exactly
+what the participant-level analysis on the <a href="analysis-02778.html">0.2778</a> page
+says a submission <i>should</i> do, and the two findings are reconciled there.</p>
+
+<h2>Leakage canary</h2>
+<p>Each feature alone, tested against the blocked holdout. The rule is that any single feature
+with AUC above 0.90 is leakage until proven otherwise. Worst observed:
+<b>0.5586</b>
+<span class="chip ok">CLEAN</span>.</p>
+<div class="tw"><table><thead><tr><th>Feature</th><th>AUC</th><th>Discriminative AUC</th></tr></thead><tbody><tr><td>tc</td><td>0.4414</td><td>0.5586</td></tr><tr><td>local_relief</td><td>0.5560</td><td>0.5560</td></tr><tr><td>slope</td><td>0.5495</td><td>0.5495</td></tr><tr><td>det_elev_slope</td><td>0.5495</td><td>0.5495</td></tr><tr><td>geod_shearrate</td><td>0.5493</td><td>0.5493</td></tr><tr><td>iso_grav_anom</td><td>0.4555</td><td>0.5445</td></tr><tr><td>geod_2ndinv</td><td>0.5433</td><td>0.5433</td></tr><tr><td>iso_grav_anom_vg</td><td>0.5369</td><td>0.5369</td></tr><tr><td>depth_to_base_surf</td><td>0.5364</td><td>0.5364</td></tr><tr><td>basin_fill_proxy</td><td>0.5364</td><td>0.5364</td></tr><tr><td>lidar_coverage</td><td>0.5313</td><td>0.5313</td></tr><tr><td>ieq_n100a15</td><td>0.5287</td><td>0.5287</td></tr></tbody></table></div>
+
+<h2>Reproduced instruments</h2>
+<div class="card"><div class="kv">
+<p><b>Grid</b> verified:
+[3730, 3292], EPSG:32611, transform
+<code>[100, 0, 243350, 0, -100, 4508550]</code>,
+100 m; sample submission byte-identical to the published catalogue raster.</p>
+<p><b>Holdout draw</b> seed 2026,
+hide fraction 0.2 &rarr;
+<b>60988</b>
+withheld positives, visible catalogue
+48534;
+receipt <code>buffered-whole-components-loqo-v2</code>.</p>
+<p><b>Lidar</b> sha256 pinned and matched
+<code>d580bb8bdcdb941e32fefb8b38044bc5&hellip;</code>.</p>
+</div></div>
+
+<h2>Artifact files</h2>
+<p>Every JSON artifact is committed under
+<a href="https://github.com/buffedlizard55-lab/GEMSDOE65/tree/main/evidence"><code>evidence/</code></a>
+in the repository: <code>grid_verification.json</code>, <code>ingest.json</code>,
+<code>gate.json</code>, <code>emission.json</code>, <code>budget_curve.json</code>,
+<code>emission_halo.json</code>, <code>prune.json</code>, <code>canary.json</code>,
+<code>emit.json</code>, <code>submission_receipt.json</code>, <code>uniqueness.json</code>,
+<code>run_card.json</code>. The submission's own writer receipt sits next to the raster at
+<a href="downloads/gems65-sarprop-pu-v1.json"><code>downloads/gems65-sarprop-pu-v1.json</code></a>.</p>
+
+<footer><p><b>Evidence policy.</b> Numbers on this site are either
+<span class="chip ok">HOLDOUT-DTI</span> (measured here with the frozen template
+evaluator on a blocked hide-and-recover draw) or <span class="chip warn">ORGANIZER</span>
+(copied from a competition source). A projection is never written as a score.</p>
+<p>Built from <code>evidence/*.json</code> by <code>src/gems65_sarprop/site.py</code>
+(the build is deterministic: the stamp below is the newest evidence timestamp, not the wall
+clock, so CI can assert that a rebuild is byte-identical). No number on this site is typed by
+hand.</p>
+<p>Newest evidence artifact: <code>2026-10-11T21:29:41+00:00</code>.</p></footer></div></body></html>

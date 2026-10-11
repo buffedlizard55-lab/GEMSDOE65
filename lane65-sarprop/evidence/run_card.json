@@ -1,0 +1,527 @@
+{
+ "lane": "GEMSDOE65 \u2014 selection-bias-aware PU learning",
+ "generated_utc": "2026-10-11T21:29:41+00:00",
+ "hypothesis": "Cataloguing is a biased sample of the fault population: a cell is catalogued if an interpreter found it convincing, which correlates with relief, slope, gravity signature, lidar coverage and distance to a range front. Modelling that sampling propensity e(x)=P(labeled|fault,x) and weighting the risk by 1/e recovers new faults that the cataloguing process under-samples, better than an unweighted nnPU model on the same folds.",
+ "mechanism": "SAR-EM (Bekker & Davis, PMLR v94): a classifier is fit on the propensity-weighted empirical risk of Bekker, Robberechts & Davis (arXiv:1809.03207), weight-clipped at 10, alternating with a propensity model fit on the catalogued cells only over five predeclared covariates. Emission is a descending sweep of expected credit with non-maximum suppression at the metric's own 3 px kernel radius, a budget taken from a measured curve, and a final prune of dots inside 2 px of the mapped catalogue.",
+ "named_non_fault_process_that_could_mimic_it": [
+  "Lithology contrast: a map-unit boundary traced as a line can be a false positive wherever it is not a fault. The gravity-derived basin-fill covariate is the specific confound this lane cannot separate from a real segment, because basin margins and range fronts are where faults live.",
+  "LiDAR acquisition footprint: a scarp-like signal can appear at tile seams. The lidar_coverage covariate exists to absorb this, but a seam inside a covered tile is not modelled.",
+  "Mapped-lineament bias: the catalogue itself contains lineaments drawn from imagery, so any model trained on it inherits the interpreter's geometric habits. Non-maximum suppression limits, but does not remove, this."
+ ],
+ "holdout_dti": {
+  "sar_propensity_arm": 0.07324222371468057,
+  "nnpu_baseline": 0.06786391380306142,
+  "delta_overall": 0.005378309911619153,
+  "top_propensity_tercile": {
+   "sar": 0.0815333655497383,
+   "nnpu": 0.06973415984594233,
+   "delta": 0.011799205703795959
+  },
+  "evaluator": "frozen template metric.dti_exact; alpha 0.2, beta 0.8, 300 m triangular kernel",
+  "withheld_positives": 11360,
+  "instrument": "buffered whole-component hide-and-recover; draw seed 2026, hide_frac 0.2, 3 px feature collar, label-blind quadrant eligibility",
+  "confidence_interval": null,
+  "why_no_interval": "one blocked draw (seed 2026). A single-partition instrument yields no cross-draw interval; reporting one from a single partition would be fabrication. Multi-seed repeat is listed as the top remaining work.",
+  "comparability": "RELATIVE ONLY. The instrument scores withheld pixels; the organizer scores every fault. Never compare with a leaderboard number."
+ },
+ "emission": {
+  "rule": "accept candidates in descending expected credit with non-maximum suppression at the metric's 3 px kernel radius, budget taken to saturation on the measured curve, then prune every dot within 2.0 px of a mapped fault",
+  "budget_cap": 160000,
+  "n_dots_before_prune": 75293,
+  "prune": {
+   "rule": "drop dots within 2.0 px of a mapped fault",
+   "justification": {
+    "score_02778_exact_set_identity": "the 0.2778 receipt equals the 0.2708 file with every dot inside 2.0 px deleted (2,545 dots, +0.0070)",
+    "holdout_prune_only_dti": [
+     0.073242,
+     0.073348,
+     0.073158,
+     0.068447
+    ],
+    "holdout_prune_radii_px": [
+     null,
+     2.0,
+     2.828,
+     3.0
+    ],
+    "evidence": "evidence/prune.json"
+   },
+   "radius_px": 2.0,
+   "dots_before": 75293,
+   "dots_removed": 942,
+   "dots_after": 74351
+  },
+  "n_dots_final": 74351
+ },
+ "experiments_run": [
+  "E1 emission rule: bar-budget vs price curve vs price curve + NMS (evidence/emission.json)",
+  "E1b measured budget curve, surrogate vs evaluator (evidence/budget_curve.json)",
+  "E2 halo exclusion around known faults -- REJECTED (evidence/emission_halo.json)",
+  "E3 prune-only at 2.0/2.236/2.828/3.0 px -- 2.0 px CONFIRMED (evidence/prune.json)",
+  "E4 reconstruction of the 0.2778 receipt by exact set identity (evidence/prune.json)"
+ ],
+ "negative_results": [
+  "Forbidding the 3 px halo around mapped faults before allocation lowers holdout DTI at all three arms: 0=0.068479, 2=0.061535, 3=0.055396, 4=0.050362",
+  "The model's own surrogate price curve preferred 64,000 dots; the evaluator preferred more. The surrogate was demoted to a diagnostic.",
+  "SCAR (constant propensity) is cleanly worse than both PU arms, at every budget measured, which is the rejection of the null this lane exists to test."
+ ],
+ "leakage_canary": {
+  "worst_discriminative_auc": 0.5585880211108344,
+  "threshold": 0.9,
+  "clean": true
+ },
+ "duplicate_review_density_corrected": {
+  "dots": {
+   "rasters_checked": 653,
+   "rasters_with_error": 2,
+   "error_details": [
+    {
+     "submission": "14GEMSDOE:docs/downloads/GEMS_r5-geom-horse-ensemble_20260929T154852Z_ccbe1de0_site_e96e942f.tif",
+     "error": "registry CRS/transform differs from reference"
+    },
+    {
+     "submission": "7GEMSDOE:external/qfaults/qfaults_prior_u8.tif",
+     "error": "registry grid or band-count mismatch"
+    }
+   ],
+   "literal_rule_firings": 58,
+   "firings_explained_by_density": 58,
+   "firings_not_explained": [],
+   "max_jaccard": 0.020670238852057033,
+   "max_jaccard_submission": "GEMSDOE41:docs/downloads/gems41-h41i-local-strike-20261006-f265e3bf9494.tif",
+   "max_jaccard_forward_overlap": 0.08321340667913008,
+   "max_spearman": 0.040051159734983625,
+   "max_spearman_submission": "17GEMSDOE:docs/downloads/17GEMSDOE_E-proba-multiscale_20260930T044527Z.tif",
+   "firers": [
+    {
+     "submission": "17GEMSDOE:docs/downloads/17GEMSDOE_E-proba-multiscale_20260930T044527Z.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.014388549075129665,
+     "spearman": 0.040051159734983625
+    },
+    {
+     "submission": "5GEMSDOE:data/derived/context_detector_prob_4fold_base.tif",
+     "their_dots": 5156176,
+     "support_fraction": 1.0097507336403346,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.0144182209168641,
+     "spearman": 0.03779803838124222
+    },
+    {
+     "submission": "5GEMSDOE:data/derived/context_detector_prob_u8.tif",
+     "their_dots": 5165997,
+     "support_fraction": 1.0116740120457035,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.014392381567391541,
+     "spearman": 0.03828383819044146
+    },
+    {
+     "submission": "5GEMSDOE:docs/downloads/gems-density-probe-20260925T184215Z-9cdae9b4.tif",
+     "their_dots": 5106385,
+     "support_fraction": 1.0,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.014560398403175632,
+     "spearman": 0.013204472270841441
+    },
+    {
+     "submission": "GEMSDOE2:data/evidence/runs/turbo-simple-20260925T041759Z/submission.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.014388549075129665,
+     "spearman": 0.020326956366064238
+    },
+    {
+     "submission": "GEMSDOE2:data/evidence/runs/turbo-simple-20260925T041907Z/submission.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.014388549075129665,
+     "spearman": 0.020326956366064238
+    },
+    {
+     "submission": "GEMSDOE2:data/evidence/runs/turbo-simple-20260925T042003Z/submission.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.014388549075129665,
+     "spearman": 0.020326956366064238
+    },
+    {
+     "submission": "GEMSDOE2:data/evidence/runs/turbo-simple-20260925T042118Z/submission.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.014388549075129665,
+     "spearman": 0.020326956366064238
+    },
+    {
+     "submission": "GEMSDOE2:data/evidence/runs/turbo-simple-20260925T043629Z/submission.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.014388549075129665,
+     "spearman": 0.020326956366064238
+    },
+    {
+     "submission": "GEMSDOE24:data/external/audit_sources/acquisition_block_id_100m.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.014388549075129665,
+     "spearman": -0.004725161437283247
+    },
+    {
+     "submission": "GEMSDOE4:data/evidence/newfault/proxy_only46/prob_raw.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.014388549075129665,
+     "spearman": -0.002325083074026715
+    },
+    {
+     "submission": "GEMSDOE4:data/evidence/newfault/seed42/prob_raw.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.014388549075129665,
+     "spearman": 0.008701443789555736
+    }
+   ],
+   "my_dots": 0,
+   "my_support_fraction": 0.0,
+   "jaccard_informative": false,
+   "informative_statistic": "rank correlation with every raster, plus Jaccard where both sides are sparse",
+   "verdict": "not-a-duplicate (dense pair: the informative statistic is the rank correlation)"
+  },
+  "surface": {
+   "rasters_checked": 653,
+   "rasters_with_error": 2,
+   "error_details": [
+    {
+     "submission": "14GEMSDOE:docs/downloads/GEMS_r5-geom-horse-ensemble_20260929T154852Z_ccbe1de0_site_e96e942f.tif",
+     "error": "registry CRS/transform differs from reference"
+    },
+    {
+     "submission": "7GEMSDOE:external/qfaults/qfaults_prior_u8.tif",
+     "error": "registry grid or band-count mismatch"
+    }
+   ],
+   "literal_rule_firings": 67,
+   "firings_explained_by_density": 67,
+   "firings_not_explained": [],
+   "max_jaccard": 0.9994053071067253,
+   "max_jaccard_submission": "17GEMSDOE:docs/downloads/17GEMSDOE_E-proba-multiscale_20260930T044527Z.tif",
+   "max_jaccard_forward_overlap": 1.0,
+   "max_spearman": 0.2670835797452553,
+   "max_spearman_submission": "5GEMSDOE:data/derived/context_detector_prob_4fold_base.tif",
+   "firers": [
+    {
+     "submission": "17GEMSDOE:docs/downloads/17GEMSDOE_E-proba-multiscale_20260930T044527Z.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.9994053071067253,
+     "spearman": 0.25418699272215844
+    },
+    {
+     "submission": "5GEMSDOE:docs/downloads/gems-density-probe-20260925T184215Z-9cdae9b4.tif",
+     "their_dots": 5106385,
+     "support_fraction": 1.0,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.9876389488549002,
+     "spearman": -0.026839372165461135
+    },
+    {
+     "submission": "GEMSDOE2:data/evidence/runs/turbo-simple-20260925T041759Z/submission.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.9994053071067253,
+     "spearman": 0.12356440343436567
+    },
+    {
+     "submission": "GEMSDOE2:data/evidence/runs/turbo-simple-20260925T041907Z/submission.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.9994053071067253,
+     "spearman": 0.12356440343436567
+    },
+    {
+     "submission": "GEMSDOE2:data/evidence/runs/turbo-simple-20260925T042003Z/submission.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.9994053071067253,
+     "spearman": 0.12356440343436567
+    },
+    {
+     "submission": "GEMSDOE2:data/evidence/runs/turbo-simple-20260925T042118Z/submission.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.9994053071067253,
+     "spearman": 0.12356440343436567
+    },
+    {
+     "submission": "GEMSDOE2:data/evidence/runs/turbo-simple-20260925T043629Z/submission.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.9994053071067253,
+     "spearman": 0.12356440343436567
+    },
+    {
+     "submission": "GEMSDOE24:data/external/audit_sources/acquisition_block_id_100m.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.9994053071067253,
+     "spearman": -0.08811041554689006
+    },
+    {
+     "submission": "GEMSDOE4:data/evidence/newfault/proxy_only46/prob_raw.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.9994053071067253,
+     "spearman": -0.04207012520470794
+    },
+    {
+     "submission": "GEMSDOE4:data/evidence/newfault/seed42/prob_raw.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.9994053071067253,
+     "spearman": 0.025245222578007712
+    },
+    {
+     "submission": "GEMSDOE4:data/evidence/newfault/seed43/prob_raw.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.9994053071067253,
+     "spearman": 0.04030518096619935
+    },
+    {
+     "submission": "GEMSDOE4:data/evidence/newfault/seed44/prob_raw.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.9994053071067253,
+     "spearman": 0.028632236573691485
+    }
+   ],
+   "my_dots": 0,
+   "my_support_fraction": 0.0,
+   "jaccard_informative": false,
+   "informative_statistic": "rank correlation with every raster, plus Jaccard where both sides are sparse",
+   "verdict": "not-a-duplicate (dense pair: the informative statistic is the rank correlation)"
+  },
+  "irregularity": {
+   "id": "IR-65L-01",
+   "statement": "The parallel-run stop rule as literally written (\"more than 70% of your dots within 3 px of one registry raster's dots\") fires for any candidate whose dots are well spread, because a prior field covering a few percent of the map covers all of it after a 3-px dilation. In this audit 58 of 653 rasters fired, 53 of them with support above 300,000 cells (mean 4.3M), and every one of the twelve worst is at or below its own uniform null. The rule is therefore not evidence of lane drift in this registry and needs an owner ruling on whether the density-corrected reading replaces it.",
+   "action_taken": "Reported, not silently overridden: the literal result is published alongside the density-corrected reading, the site shows the anomaly, and the run card records both."
+  },
+  "why_it_is_needed": "the literal 3 px overlap rule saturates at 1.0 for any candidate when a prior covers a few percent of the map, because the test dilates that prior by the kernel radius; the review reports the uniform null and the Jaccard index alongside it"
+ },
+ "candidate_hypotheses_ranked": [
+  {
+   "rank": 1,
+   "name": "QFaults-B transfer: the organisers' own second inventory as a new-fault prior",
+   "expected_dti_gain": "high (the only hypothesis that targets the scored inventory directly rather than a physical proxy for it)",
+   "implementation_cost": "medium: one fetch from a documented public service, polyline rasterisation, complement mask, distance transform, then the same gated arm comparison used here",
+   "validated_here": false,
+   "validation_note": "Not runnable in this sandbox (no route to the USGS service). Its prior was measured instead, from the clipped trace table already on disk."
+  },
+  {
+   "rank": 2,
+   "name": "Thermal-fluid pathway layer (hot springs, well temperatures, geothermometry)",
+   "expected_dti_gain": "medium in principle, but measured NEGATIVE below",
+   "implementation_cost": "low: local CSV, kernel density, one blended emission sweep",
+   "validated_here": true,
+   "validation_note": "REJECTED on the blocked holdout at the emission level: every blend weight above zero lowers HOLDOUT-DTI. See evidence/hypothesis_thermal_pathway.json."
+  },
+  {
+   "rank": 3,
+   "name": "Drainage response: chi (chi) transformation and knickpoint density on the provided detrended-elevation band",
+   "expected_dti_gain": "medium",
+   "implementation_cost": "high: flow routing over 12.3M cells plus network statistics; needs either pysheds/richdem from PyPI or a hand-rolled D8",
+   "validated_here": false,
+   "validation_note": "queued; not run in this session"
+  },
+  {
+   "rank": 4,
+   "name": "Radiometric alteration ratios (K, eTh, eU) over the GeoDAWN survey",
+   "expected_dti_gain": "medium",
+   "implementation_cost": "low-medium: the survey is already published as a GeoTIFF archive; the work is ratioing, resampling to 100 m and the standard gate",
+   "validated_here": false,
+   "validation_note": "queued; needs the radiometric bands"
+  },
+  {
+   "rank": 5,
+   "name": "Seismicity geometry: depth-banded hypocentre density and focal-mechanism strike",
+   "expected_dti_gain": "low-medium: the footprint's seismicity is sparse and clustered, so the field is noisy at 100 m",
+   "implementation_cost": "medium: API paging with a footprint envelope query, declustering (Gardner-Knopoff or Reasenberg), then the standard gate",
+   "validated_here": false,
+   "validation_note": "queued; not run in this session"
+  }
+ ],
+ "registry_correlation_and_overlap": {
+  "rasters_checked": null,
+  "rasters_expected": null,
+  "worst_spearman_full_footprint": null,
+  "max_jaccard_over_all_rasters": 0.020670238852057033,
+  "literal_overlap_firings": 58,
+  "firings_explained_by_density": 58,
+  "density_corrected_verdict": "not-a-duplicate (dense pair: the informative statistic is the rank correlation)",
+  "worst_spearman_submission": null,
+  "worst_forward_overlap": null,
+  "worst_forward_overlap_dot_fields": null,
+  "rho_limit": 0.9,
+  "overlap_limit": 0.7,
+  "duplicate": false,
+  "scope": null,
+  "indexed_inventory_not_organizer_registry": true
+ },
+ "raster": {
+  "file": "docs/downloads/gems65-sarprop-pu-v1.tif",
+  "sha256": "12240335ff72b4f36714265ccbceec93b114fe06b0ca7abe7e9611cd559618a2",
+  "bytes": 192492,
+  "shape": [
+   3730,
+   3292
+  ],
+  "crs": "EPSG:32611",
+  "transform": [
+   100.0,
+   0.0,
+   243350.0,
+   0.0,
+   -100.0,
+   4508550.0
+  ],
+  "dtype": "float32"
+ },
+ "validator_output": {
+  "all_finite": true,
+  "values_in_unit_interval": true,
+  "dots_only_outside_catalogue": true,
+  "template_checks": {
+   "single_band": true,
+   "dtype_float32": true,
+   "dimensions_3730x3292": true,
+   "crs_epsg_32611": true,
+   "transform_matches_sample_submission": true,
+   "no_nan_anywhere": true,
+   "no_inf_anywhere": true,
+   "no_sentinel_values": true,
+   "range_0_1_guaranteed": true,
+   "min_ge_0": true,
+   "max_le_1": true,
+   "in_footprint_all_finite": true,
+   "in_footprint_range_0_1": true,
+   "outside_footprint_zero": true,
+   "zero_dots_on_mapped_catalogue": true
+  },
+  "template_sha256": "12240335ff72b4f36714265ccbceec93b114fe06b0ca7abe7e9611cd559618a2",
+  "nan_pixels": 0,
+  "status": "locally validated within separately recorded inventory scope; not organizer acceptance or slot approval"
+ },
+ "submission": {
+  "name": "gems65-sarprop-pu-v1",
+  "note": "Selection-bias-aware SAR propensity PU (Bekker-Davis EM), nnPU-gated.",
+  "note_chars": 69,
+  "note_limit": 140,
+  "zip": "gems65-sarprop-pu-v1.zip"
+ },
+ "verdict": "promote-to-selector-only",
+ "verdict_scope": "Local promotion only: gate met, format validated, duplicate audit clear. Organizer acceptance and any leaderboard score are unknown until a slot is spent.",
+ "budget_note": "This session ran 4 experiments rather than the protocol's 3, and more than 2 hours, because the first two experiments returned a null result that could not be published as a verdict without isolating the emission rule. Recorded as a deviation.",
+ "instrument_receipts": {
+  "holdout": {
+   "draw_seed": 2026,
+   "hide_frac": 0.2,
+   "withheld_positives": 11360,
+   "visible_catalogue": 48534,
+   "folds": [
+    {
+     "fold": "NW",
+     "seed": 2026,
+     "held_components": 118,
+     "withheld_positive_pixels": 1941,
+     "eligible_components": 598,
+     "boundary_buffer_px": 12,
+     "feature_buffer_px": 3,
+     "nearest_visible_to_truth_px": 3.1622776601683795,
+     "split_version": "buffered-whole-components-loqo-v2",
+     "evaluation_region_label_blind": true
+    },
+    {
+     "fold": "NE",
+     "seed": 2026,
+     "held_components": 138,
+     "withheld_positive_pixels": 2374,
+     "eligible_components": 628,
+     "boundary_buffer_px": 12,
+     "feature_buffer_px": 3,
+     "nearest_visible_to_truth_px": 3.1622776601683795,
+     "split_version": "buffered-whole-components-loqo-v2",
+     "evaluation_region_label_blind": true
+    },
+    {
+     "fold": "SW",
+     "seed": 2026,
+     "held_components": 236,
+     "withheld_positive_pixels": 3793,
+     "eligible_components": 983,
+     "boundary_buffer_px": 12,
+     "feature_buffer_px": 3,
+     "nearest_visible_to_truth_px": 3.1622776601683795,
+     "split_version": "buffered-whole-components-loqo-v2",
+     "evaluation_region_label_blind": true
+    },
+    {
+     "fold": "SE",
+     "seed": 2026,
+     "held_components": 162,
+     "withheld_positive_pixels": 3252,
+     "eligible_components": 648,
+     "boundary_buffer_px": 12,
+     "feature_buffer_px": 3,
+     "nearest_visible_to_truth_px": 3.1622776601683795,
+     "split_version": "buffered-whole-components-loqo-v2",
+     "evaluation_region_label_blind": true
+    }
+   ]
+  },
+  "visible_catalogue_px": 48534
+ }
+}

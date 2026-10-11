@@ -144,6 +144,27 @@ source URL of every prior raster used for the lane-drift check.
 - [Current status](docs/STATUS.md)
 - [Current run card (JSON)](docs/data/run-card.json)
 
+### Second lineage in this repository — `lane65-sarprop/`
+
+This repository now carries two independently developed lineages of the same lane. They reached
+different verdicts on different instruments, and neither overwrites the other:
+
+| | repository root (canonical) | `lane65-sarprop/` |
+|---|---|---|
+| Verdict | **negative** — SAR-PU below nnPU on its holdout | **gate PROMOTE** on its own blocked holdout (SAR 0.0732 vs nnPU 0.0679) |
+| Download offered | its own rasters, under a DO-NOT-SUBMIT banner | a locally cleared one; the file is rebuilt from a committed dot list because this sandbox cannot upload release assets (`uploads.github.com` unreachable) |
+| Artifact in Git | none | none (dot list + rebuild script instead; release asset for the download) |
+| Site | `docs/index.html` | `lane65-sarprop/docs/index.html` |
+| Workflow | `pages.yml`, `ci.yml` | `lane65-sarprop.yml` (verify only, path filtered) |
+
+The two holdout instruments are not comparable with each other, and neither is comparable with an
+organizer score: the root lineage scores withheld pixels under its own evaluator with a third of
+the footprint withheld, while `lane65-sarprop` scores a 20% hide-and-recover draw pooled over the
+whole domain. Treat both as **HOLDOUT-DTI**, not as leaderboard predictions. The lane also carries
+the ranked hypothesis register (`lane65-sarprop/HYPOTHESES.md`), the duplicate-audit review that
+resolved the 3 px-overlap rule's saturation (IR-65-01), and the 0.2778 provenance analysis
+(`lane65-sarprop/docs/analysis-02778.html`).
+
 ## Run the lightweight checks
 
 ```bash

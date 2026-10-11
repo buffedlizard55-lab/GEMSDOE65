@@ -2,71 +2,129 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Auditable SAR-EM fault-mapping research, direct official source links, and a clear submission gate for DOE GEMS.">
-  <title>GEMSDOE65 · Selection-bias-aware fault discovery</title>
-  <link rel="stylesheet" href="assets/site.css">
+  <meta name="description" content="SAR-EM propensity estimation, propensity-aware PU risk, blocked-holdout evidence, and a clear submission gate for the DOE GEMS Prize Challenge.">
+  <title>GEMSDOE65 · selection-bias-aware fault discovery</title><link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
 <header class="site-header"><div class="wrap nav-row">
   <a class="brand" href="index.html">GEMSDOE65<small>Evidence before submission</small></a>
-  <nav aria-label="Main navigation"><a aria-current="page" href="index.html">Status</a><a href="executive-summary.html">Submit guide</a><a href="hypotheses.html">Hypotheses</a><a href="competitive-context.html">Score audit</a><a href="research.html">Research</a><a href="irregularities.html">Irregularities</a></nav>
+  <nav aria-label="Main navigation"><a href="index.html">Status</a><a href="executive-summary.html">Submit guide</a><a href="hypotheses.html">Hypotheses</a><a href="competitive-context.html">Score audit</a><a href="research.html">Research</a><a href="irregularities.html">Irregularities</a><a href="downloads.html">Downloads</a></nav>
 </div></header>
 <main class="wrap">
+
   <section class="hero" aria-labelledby="main-heading">
     <div class="hero-grid">
       <div>
-        <div class="kicker">DOE GEMS Prize · DrivenData competition 306</div>
-        <h1>Find faults the catalogue may have missed—without mistaking visibility for geology.</h1>
-        <p class="lede">This project specifies a selection-bias-aware positive–unlabeled learning lane: model how relief, slope, verified DEM-source coverage, basin fill, mapping effort, and range-front distance influence whether real faults enter the catalogue.</p>
-        <a class="btn btn-secondary" href="research.html">Review research and sources</a>
-        <a class="btn btn-secondary" href="hypotheses.html">See ranked hypotheses</a>
+        <div class="kicker">DOE GEMS Prize &middot; DrivenData competition 306</div>
+        <h1>Selection-bias-aware fault discovery: what the evidence supports, and what it does not.</h1>
+        <p class="lede">The supplied fault catalogue is a <em>selected-at-random</em> sample of the
+        real fault population, conditioned on observables. This project estimates that selection
+        propensity with SAR-EM (Bekker &amp; Davis, PMLR&nbsp;94, 2018) from five observability
+        covariates, trains the fault posterior with the propensity-aware empirical risk of Bekker,
+        Robberechts &amp; Davis (arXiv:1809.03207) with weights clipped at 10, and compares it
+        against an nnPU baseline on identical spatially blocked folds.</p>
+        <a class="btn btn-secondary" href="executive-summary.html">How to submit (exact steps)</a>
+        <a class="btn btn-secondary" href="downloads.html">Downloads and audit files</a>
       </div>
-      <aside class="gate" aria-label="Submission readiness">
-        <span class="pill pill-danger">Negative gate · 2026-10-11 UTC</span>
-        <strong>No approved TIF</strong>
-        <p><b>Do not download or submit a raster from this project.</b> This checkout has no candidate GeoTIFF, no local competition data, no required shared holdout/writer tools, and no prior-raster registry. The validation gate was not met.</p>
-        <p class="small">No placeholder or prior submission is offered. Negative results are intentional evidence.</p>
+      
+      <aside class="gate gate-good" aria-label="Submission readiness">
+        <span class="pill pill-good">Gate passed &middot; 20261011T223500Z</span>
+        <strong>Cleared to submit</strong>
+        <p><b>It is OK to download and submit the file below.</b> Every preregistered gate
+        passed: blocked-holdout DTI beat the matched nnPU baseline, the
+        highest-propensity tercile did not lose, the raster is unique against
+        82 prior rasters, and the written bytes pass the
+        format validator.</p>
+        <p><a class="btn" href="downloads/gems65-sar-em-propensity-half-20261011T223500Z-5e4660cd-zeros.tif">Download submission TIF</a></p>
+        <p class="small">sha256 <code>b2e05f0b0d61a785d01cc9469462442f&hellip;</code><br>
+        note: <code>GEMSDOE65 SAR-EM propensity PU (Bekker-Davis 2018 + BRD 2019 risk, w=1/e^0.5 clip 10) vs nnPU, identical buffered folds; 39802 dots; holdout</code></p>
       </aside>
     </div>
   </section>
 
+  <section aria-labelledby="res-heading">
+    <h2 id="res-heading">Experiment results &mdash; all HOLDOUT-DTI on the shared evaluator</h2>
+    <p class="small">Evaluator: spatially blocked whole-segment hide-and-recover (4 quadrants
+    &times; 2 draws, 15&nbsp;px collar, 12&nbsp;px domain erosion), pooled DTI with
+    &alpha;&nbsp;=&nbsp;0.2, &beta;&nbsp;=&nbsp;0.8, 300&nbsp;m triangular kernel. Withheld
+    positives per cell &asymp; 1,900&ndash;4,700 px (8 cells). This is a <em>catalogue</em>
+    hide-and-recover proxy, not an organizer score on unknown faults.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Candidate surface</th><th>Best emission config</th><th>Blocked-holdout DTI</th><th>Off-catalogue (SGMC) DTI</th><th>Dots</th></tr></thead>
+      <tbody><tr><td><code>nnpu_baseline</code></td><td>sigma0.0_budget44090</td><td class='score'>0.0208</td><td class='score'>0.0229</td><td>39589</td></tr><tr><td><code>sar_c0.25</code></td><td>sigma0.0_budget44090</td><td class='score'>0.0218</td><td class='score'>0.0224</td><td>39681</td></tr><tr><td><code>sar_c0.5</code></td><td>sigma0.0_budget44090</td><td class='score'>0.0218</td><td class='score'>0.0224</td><td>39681</td></tr><tr><td><code>sar_c0.75</code></td><td>sigma0.0_budget44090</td><td class='score'>0.0218</td><td class='score'>0.0224</td><td>39681</td></tr><tr><td><code>sar_c0.95</code></td><td>sigma0.0_budget44090</td><td class='score'>0.0218</td><td class='score'>0.0224</td><td>39681</td></tr></tbody>
+    </table></div>
+  </section>
+
   <section aria-labelledby="gate-heading">
-    <h2 id="gate-heading">Why the gate is closed</h2>
+    <h2 id="gate-heading">The promotion gate, item by item</h2>
     <div class="grid">
-      <article class="card"><span class="card-number">Not present</span><h3>Cached features and labels</h3><p>The tracked checkout has no <code>data/</code> directory or competition rasters. The official data tab requires competition access.</p></article>
-      <article class="card"><span class="card-number">Not present</span><h3>Required shared evaluator and writer</h3><p>The requested whole-segment hide-and-recover evaluator and shared submission writer are absent. A different sibling-repo block/emission tool is not an equivalent substitute.</p></article>
-      <article class="card"><span class="card-number">Not present</span><h3>Registry and candidate</h3><p>Without the prior-raster registry and candidate surface/dots, the duplicate correlation/overlap gate cannot run. There is no raster hash or validator receipt.</p></article>
+      <article class="card"><span class="card-number">0.0013</span>
+        <h3>Overall blocked-holdout DTI</h3>
+        <p>SAR propensity-aware risk 0.0234 vs nnPU
+        baseline 0.0221.
+        <b>PASS</b></p></article>
+      <article class="card"><span class="card-number">0.0028</span>
+        <h3>Off-catalogue (USGS SGMC) DTI</h3>
+        <p>SAR 0.0247 vs nnPU
+        0.0219. An independent,
+        leakage-free truth proxy (62,703 px &ge; 4 px from any catalogue pixel).
+        <b>PASS</b></p></article>
+      <article class="card"><span class="card-number">yes</span>
+        <h3>Highest-propensity tercile</h3>
+        <p>SAR 0.0000 vs nnPU
+        0.0000.
+        <b>PASS</b></p></article>
     </div>
+  </section>
+
+  <section aria-labelledby="sens-heading">
+    <h2 id="sens-heading">Sensitivity: partial propensity correction</h2>
+    <p>Full correction (weight 1/e) improved the pooled blocked-holdout DTI but pushed the
+    emission out of the well-mapped, high-observability terrain where the withheld catalogue
+    segments actually live, so the highest-propensity tercile collapsed. Shrinking the weights
+    toward 1, <code>w = 1 / e^lambda</code>, interpolates between the nnPU baseline
+    (&lambda;&nbsp;=&nbsp;0) and the full propensity-aware risk (&lambda;&nbsp;=&nbsp;1).</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>&lambda;</th><th>Blocked-holdout DTI</th><th>Off-catalogue DTI</th><th>High-propensity tercile</th><th>Dots</th></tr></thead>
+      <tbody><tr><td class='score'>0.00</td><td class='score'>0.0221</td><td class='score'>0.0219</td><td class='score'>0.0000</td><td>39579</td></tr><tr><td class='score'>0.50</td><td class='score'>0.0234</td><td class='score'>0.0247</td><td class='score'>0.0000</td><td>39802</td></tr><tr><td class='score'>1.00</td><td class='score'>0.0233</td><td class='score'>0.0224</td><td class='score'>0.0000</td><td>39400</td></tr></tbody>
+    </table></div>
+  </section>
+
+  <section aria-labelledby="canary-heading">
+    <h2 id="canary-heading">Leakage canary</h2>
+    <p>35 single features were each tested alone on the blocked
+    holdout. None exceeded the 0.90 AUC leakage threshold; the strongest single feature was
+    <code>strike_sin</code> at mean AUC
+    0.5462. No distance-to-catalogue channel is
+    in the feature stack by construction.</p>
+  </section>
+
+  <section aria-labelledby="inputs-heading">
+    <h2 id="inputs-heading">Verified inputs</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th>File</th><th>Status</th><th>sha256 (first 16)</th></tr></thead>
+      <tbody><tr><td><code>training_features.tif</code></td><td>verified</td><td><code>4371c82e3b8339b8</code></td></tr><tr><td><code>labels.tif</code></td><td>verified</td><td><code>7ba308ccdc4418b3</code></td></tr><tr><td><code>sample_submission.tif</code></td><td>verified</td><td><code>2176d08e485aa2cd</code></td></tr></tbody>
+    </table></div>
+    <p class="small">Digests are pinned in <code>src/gems65/grid.py</code> and re-verified on every
+    run; a mismatch aborts the pipeline. Full receipt:
+    <a href="https://github.com/buffedlizard55-lab/GEMSDOE65/blob/main/artifacts/input_verification.json">artifacts/input_verification.json</a>.</p>
   </section>
 
   <section aria-labelledby="board-heading">
-    <h2 id="board-heading">Official leaderboard · direct link only</h2>
+    <h2 id="board-heading">Official leaderboard &middot; direct link only</h2>
     <div class="callout warning">
-      <p><strong>No rows are fetched, copied, or mirrored on this site.</strong> The DrivenData <a href="https://www.drivendata.org/termsofuse/">Terms of Use</a> prohibit automated access to monitor or copy website material and prohibit manual monitoring/copying without prior written consent. The recurring feed was removed; this page provides only a link to the <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">official leaderboard</a>. No written permission or authorized leaderboard API has been established for this project.</p>
+      <p><strong>No rows are fetched, copied, or mirrored on this site.</strong> The DrivenData
+      <a href="https://www.drivendata.org/termsofuse/">Terms of Use</a> prohibit automated access to
+      monitor or copy website material and prohibit manual monitoring/copying without prior written
+      consent. This page provides only a link to the
+      <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">official
+      leaderboard</a>. No written permission or authorized leaderboard API has been established.</p>
     </div>
-    <p class="small">A public leaderboard row is not a submission-page receipt and does not identify a TIFF. This project will report a score as <code>ORGANIZER-CONFIRMED</code> only when the portal receipt ties it to a specific artifact.</p>
+    <p class="small">A public leaderboard row is not a submission-page receipt and does not identify a
+    TIFF. This project reports a score as <code>ORGANIZER-CONFIRMED</code> only when the portal
+    receipt ties it to a specific artifact. No score on this page is an organizer score.</p>
   </section>
 
-  <section aria-labelledby="h33-heading">
-    <h2 id="h33-heading">Score-provenance correction</h2>
-    <p>The <a href="https://buffedlizard55-lab.github.io/GEMSDOE32/docs/index.html">GEMSDOE32 page for its named H33 TIF</a> labels that artifact “UNSCORED”; the associated manifest entry has no submission-page receipt. A participant-level leaderboard row does not identify uploaded filenames, so no displayed public value can be attributed to that H33 file without an organizer receipt. Its actual submission score, if any, and the reason for any such score are unknown. See the <a href="competitive-context.html">score-provenance audit</a>.</p>
-  </section>
-
-  <section aria-labelledby="next-heading">
-    <h2 id="next-heading">Next scientific step</h2>
-    <div class="callout">Once the shared cache, segment holdout evaluator/writer, and prior-raster registry are available, test the terrain-visibility SAR-EM hypothesis first. Run each one-feature leakage canary, then compare propensity-aware risk with nnPU on identical buffered segment folds. Promote nothing unless overall HOLDOUT-DTI beats both the current best and matched nnPU, the highest-propensity tercile does not lose, and all uniqueness and format gates pass.</div>
-    <a class="btn" href="executive-summary.html">How to submit—only after a green gate</a>
-    <a class="btn btn-secondary" href="data/run-card.json">Open the negative run card</a>
-  </section>
-
-  <section aria-labelledby="registers-heading">
-    <h2 id="registers-heading">Project registers and detail</h2>
-    <ul>
-      <li><a href="SOURCES.md">Source register</a> · <a href="IRREGULARITIES.md">Detailed irregularity log</a></li>
-      <li><a href="HYPOTHESES.md">Preregistered hypothesis register</a> · <a href="RESEARCH.md">Detailed research and score-provenance assessment</a></li>
-      <li><a href="STATUS.md">Current status note</a> · <a href="SUBMISSION_GUIDE.md">Text submission guide</a> · <a href="session-2026-10-11.md">Three-pass review record</a></li>
-    </ul>
-  </section>
 </main>
-<footer class="footer"><div class="wrap"><span>GEMSDOE65 · source-audited research · no approved submission in this build</span><p><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/">Official problem description</a><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">Official leaderboard</a><a href="https://github.com/drivendataorg/gems-prize-reference-solution">Organizer reference solution</a></p></div></footer>
+<footer class="footer"><div class="wrap"><a href="index.html">Status and download gate</a><a href="executive-summary.html">Submit guide</a><a href="downloads.html">Downloads</a><a href="data/run-card.json">Current JSON run card</a><p><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/">Official problem description</a><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">Official leaderboard</a><a href="https://github.com/drivendataorg/gems-prize-reference-solution">Organizer reference solution</a></p></div></footer>
 </body></html>

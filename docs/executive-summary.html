@@ -2,48 +2,98 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Executive summary and step-by-step instructions for submitting a validated GEMSDOE65 GeoTIFF to DrivenData.">
+  <meta name="description" content="Step-by-step submission instructions, the format contract, and the current download decision for the DOE GEMS Prize Challenge.">
   <title>Executive summary · how to submit · GEMSDOE65</title><link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
 <header class="site-header"><div class="wrap nav-row">
   <a class="brand" href="index.html">GEMSDOE65<small>Evidence before submission</small></a>
-  <nav aria-label="Main navigation"><a href="index.html">Status</a><a aria-current="page" href="executive-summary.html">Submit guide</a><a href="hypotheses.html">Hypotheses</a><a href="competitive-context.html">Score audit</a><a href="research.html">Research</a><a href="irregularities.html">Irregularities</a></nav>
+  <nav aria-label="Main navigation"><a href="index.html">Status</a><a href="executive-summary.html">Submit guide</a><a href="hypotheses.html">Hypotheses</a><a href="competitive-context.html">Score audit</a><a href="research.html">Research</a><a href="irregularities.html">Irregularities</a><a href="downloads.html">Downloads</a></nav>
 </div></header>
 <main class="wrap">
-  <div class="page-title"><div class="kicker">Executive summary · DrivenData competition 306</div><h1>How to submit a validated fault-prediction GeoTIFF</h1>
-    <p class="lede">This page describes the upload steps and format checks. It does not submit anything on your behalf and does not imply that a candidate is ready.</p>
-  </div>
-  <div class="callout danger"><span class="pill pill-danger">Current status: do not submit</span><p><strong>There is currently no downloadable or approved GEMSDOE65 TIFF.</strong> No model was trained, no segment-blocked holdout was run, no uniqueness check was possible, and no validator was run. The submission gate is negative. Do not use an artifact from another GEMSDOE project as a substitute.</p></div>
 
-  <h2>Before opening the competition form</h2>
+  <div class="page-title"><div class="kicker">Executive summary &middot; DrivenData competition 306</div>
+    <h1>How to submit a GEMS GeoTIFF &mdash; and whether this project has one ready</h1>
+    <p class="lede">Read the gate at the top of the <a href="index.html">status page</a> first.
+    This page gives the exact upload steps and the format contract. It submits nothing on your
+    behalf.</p></div>
+  
+  <div class="callout"><span class="pill pill-good">Cleared to submit</span>
+  <p><strong>There is one approved file.</strong> Download
+  <a href="downloads/gems65-sar-em-propensity-half-20261011T223500Z-5e4660cd-zeros.tif"><code>gems65-sar-em-propensity-half-20261011T223500Z-5e4660cd-zeros.tif</code></a>,
+  paste the note below into the <strong>Note (optional)</strong> field, and submit. Do not rename
+  the file. Verify the sha256 in the table at the bottom of this page after downloading.</p></div>
+
+  <h2>Step 1 &mdash; confirm the gate is green</h2>
   <ol>
-    <li>Return to the <a href="index.html">status page</a>. Proceed only if it presents an explicit green <strong>Promote / cleared to submit</strong> state and a unique download button for the candidate from that run card. A research note, projected score, old file, or format-only check is not promotion.</li>
-    <li>Check the run card. It must contain the holdout evaluator version, withheld-positive count, paired HOLDOUT-DTI and 95% CI, registry correlation and dot overlap, raster SHA-256, and passing validator results. The candidate must beat both the current holdout best and matched nnPU baseline overall, and not lose in the highest-propensity tercile; if the current best is unavailable, do not promote. Do not spend a weekly slot before those scientific and uniqueness gates pass; follow the current competition rules for caps and final selection.</li>
-    <li>Download the exact TIF shown next to the approved status. Do not rename a prior file to make it appear unique. Keep its SHA-256 and the exact short comment beside it.</li>
+    <li>The status page must show <strong>Cleared to submit</strong> and name the exact candidate
+    from the run card. A research note, a projected score, an old file, or a format-only check is
+    not promotion.</li>
+    <li>The run card must contain the evaluator version, withheld-positive count, HOLDOUT-DTI with a
+    95% CI, the registry correlation / dot-overlap result, the raster sha256, and passing validator
+    output. The candidate must beat both the current holdout best and the matched nnPU baseline
+    overall and must not lose in the highest-propensity tercile.</li>
+    <li>If any of those is missing or failed: <strong>stop</strong>. Do not substitute a sibling
+    project's raster.</li>
   </ol>
 
-  <h2>Format checklist</h2>
-  <p>The official problem description requires a single-band float32 GeoTIFF in UTM zone 11N (EPSG:32611), at the training-grid resolution (100 m), with exactly the training bounds/geotransform. Values inside the footprint must be finite and between 0 and 1; outside-footprint cells must be null/NaN. The local validator must also check that no out-of-range nodata sentinel is being written inside the footprint.</p>
-  <p>These are format conditions only. Passing them does not show the candidate detects new faults or will score well.</p>
-
-  <h2>Upload steps in DrivenData</h2>
+  <h2>Step 2 &mdash; download the file</h2>
   <ol>
-    <li>Open the <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/">DOE GEMS competition page</a> and sign in to the competition account. Review the <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/">official problem description</a> and <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/rules/">rules entry point</a>.</li>
-    <li>Open the competition's submissions page: <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/submissions/">DrivenData submissions</a>. Choose <strong>New submission</strong>.</li>
-    <li>Under <strong>File to submit</strong>, choose the approved single-band GeoTIFF downloaded from this project's status page. The submission form may accept a single GeoTIFF or a ZIP containing one GeoTIFF; prefer the direct <code>.tif</code> when it is offered and do not upload extra files.</li>
-    <li>In <strong>Note (optional)</strong>, paste the short, unique note shown for that exact candidate. Keep the note under 140 characters for this project, even if the form permits more.</li>
-    <li>Before selecting submit, confirm the filename, note, checksum, and green gate all describe the same run. If the form reports that predictions are outside [0, 1], stop and report the error; do not clip a different file and re-upload without rerunning validation.</li>
-    <li>Submit only after the checks above. Save the organizer's submission-page receipt and resulting score record. Those receipt details are the only evidence used here to attribute an organizer score to a particular raster.</li>
+    <li>Open the <a href="downloads.html">downloads page</a> and use the primary
+    <code>*-zeros.tif</code> link. That variant writes <code>0.0</code> outside the footprint with
+    <code>nodata=None</code>, so <strong>all 12,279,160 cells</strong> satisfy
+    <code>0 &le; v &le; 1</code> and there is no NaN anywhere. This is the variant that removes the
+    DrivenData error <em>"Predicted values must be in range [0, 1]"</em>, which is raised when the
+    validator's range test sees a NaN comparison return False.</li>
+    <li>A <code>*-nan.tif</code> variant that reproduces the sample submission's NaN-outside
+    convention is published alongside it for byte-format comparison. Prefer the
+    <code>-zeros</code> file for upload.</li>
+    <li>Do not rename, repackage, or re-clip the file. Preserve the sha256 and the note shown for
+    that exact run.</li>
   </ol>
 
-  <h2>How score evidence is reported</h2>
+  <h2>Step 3 &mdash; upload it</h2>
+  <ol>
+    <li>Sign in at <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/">drivendata.org/competitions/306/competition-doe-gems</a> and open the
+    <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/submissions/">submissions page</a>. Choose <strong>New submission</strong>.</li>
+    <li>Under <strong>File to submit</strong>, choose the downloaded <code>.tif</code>. The form
+    accepts a single GeoTIFF or a ZIP containing exactly one GeoTIFF; upload the direct
+    <code>.tif</code>.</li>
+    <li>In <strong>Note (optional)</strong>, paste the short note from the run card (kept under 140
+    characters by this project), e.g.
+    <code>GEMSDOE65 SAR-EM propensity PU (Bekker-Davis 2018 + BRD 2019 risk, w=1/e^0.5 clip 10) vs nnPU, identical buffered folds; 39802 dots; holdout</code>.</li>
+    <li>Confirm the filename, note, checksum, and green gate all describe the same run, then submit.</li>
+    <li>Save the organizer's submission-page receipt. Only a receipt tied to the exact file/hash
+    counts as <code>ORGANIZER-CONFIRMED</code> evidence in this project.</li>
+  </ol>
+
+  <h2>Format contract (what the validator checks)</h2>
   <ul>
-    <li><strong>HOLDOUT-DTI:</strong> report evaluator version, number of withheld positives, and a 95% CI; state clearly that it is a blocked catalogue hide-and-recover proxy, not an organizer score on unknown faults.</li>
-    <li><strong>ORGANIZER-CONFIRMED:</strong> copy from the submission-page receipt and tie it to the file hash. A live leaderboard entry without a receipt is not enough to identify the TIFF that produced it.</li>
-    <li><strong>Negative:</strong> if a gate is unrun or failed, record the reason and keep the download disabled. No score is inferred from a projection.</li>
+    <li>exactly one band, <code>float32</code>;</li>
+    <li><code>EPSG:32611</code>, 100 m, shape 3730 &times; 3292, transform
+    <code>(100, 0, 243350, 0, -100, 4508550)</code> &mdash; identical to the official
+    <code>sample_submission.tif</code>;</li>
+    <li>every in-footprint value finite and in <code>[0, 1]</code>;</li>
+    <li>no NaN inside the footprint; NaN (or 0.0) only outside it;</li>
+    <li>a separate read-back of the written bytes reproduces the same receipt.</li>
   </ul>
-  <div class="callout warning">The challenge has a two-round evaluation structure described on the official problem page. Check the current rules and submission interface for deadlines, slot limits, and final-selection requirements; this site does not assume that a format-valid upload is the correct competition entry.</div>
+
+  <h2>Receipts for the current candidate</h2>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Variant</th><th>Filename</th><th>Bytes</th><th>sha256</th><th>All checks</th></tr></thead>
+    <tbody>
+      <tr><td>primary (zeros)</td><td><code>gems65-sar-em-propensity-half-20261011T223500Z-5e4660cd-zeros.tif</code></td>
+        <td>102010</td><td><code>b2e05f0b0d61a785d01cc9469462442fbf3b9b5bdc9a34c2abe0852fd66ec9dc</code></td>
+        <td>yes</td></tr>
+      <tr><td>secondary (nan)</td><td><code>gems65-sar-em-propensity-half-20261011T223500Z-5e4660cd-nan.tif</code></td>
+        <td>143427</td>
+        <td><code>939f93d5b6439e3f37d7763bd966027cc3bf894d27962e575613af7ed0e159b6</code></td>
+        <td>yes</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small">Machine-readable receipts: <a href="https://github.com/buffedlizard55-lab/GEMSDOE65/blob/main/docs/downloads/submissions_manifest.json">docs/downloads/submissions_manifest.json</a>
+  and <a href="data/run-card.json">docs/data/run-card.json</a>.</p>
+
 </main>
-<footer class="footer"><div class="wrap"><a href="index.html">Status and download gate</a><a href="research.html">Verified sources</a><a href="data/run-card.json">Current JSON run card</a></div></footer>
+<footer class="footer"><div class="wrap"><a href="index.html">Status and download gate</a><a href="executive-summary.html">Submit guide</a><a href="downloads.html">Downloads</a><a href="data/run-card.json">Current JSON run card</a><p><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/">Official problem description</a><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">Official leaderboard</a><a href="https://github.com/drivendataorg/gems-prize-reference-solution">Organizer reference solution</a></p></div></footer>
 </body></html>

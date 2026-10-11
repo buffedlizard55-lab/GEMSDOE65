@@ -39,3 +39,29 @@ Do not replace outside-footprint NaNs with zero unless the official sample/valid
 ## Current blocker
 
 The official [data page](https://www.drivendata.org/competitions/306/competition-doe-gems/data/) returned the login page in this unauthenticated review. The repository also lacks the shared cached stack, `evaluate_holdout.py`, `submission_writer.py`, validator, and prior-raster registry. Use `python3 scripts/audit_lane_readiness.py` for a presence-only inventory; a passing inventory is not a scientific pass or TIF authorization. See [`IRREGULARITIES.md`](IRREGULARITIES.md). No fake file is offered in place of the missing prerequisites.
+
+## 2026-10-11 — the cleared submission
+
+1. Download **`gems65-sar-em-propensity-half-20261011T223500Z-5e4660cd-zeros.tif`** (sha256 `b2e05f0b0d61a785d01cc9469462442fbf3b9b5bdc9a34c2abe0852fd66ec9dc`) from the downloads page and confirm the
+   digest matches before uploading.
+2. Go to https://www.drivendata.org/competitions/306/competition-doe-gems/submissions/ and choose
+   Submit.
+3. Pick a submission slot, upload the file, and set the **Note (optional)** field to exactly:
+
+   > GEMSDOE65 SAR-EM propensity PU (Bekker-Davis 2018 + BRD 2019 risk, w=1/e^0.5 clip 10) vs nnPU, identical buffered folds; 39802 dots; holdout
+
+4. Save the receipt URL, then replace the provisional score with the organizer value and relabel
+   every derived number `ORGANIZER-CONFIRMED`.
+5. Do not download `gems65-sar-em-propensity-half-20261011T223500Z-5e4660cd-nan.tif` for submission; it is the format-control
+   variant kept only to prove that the `-zeros` encoding is what avoids the validator's
+   `Predicted values must be in range [0, 1]` error.
+
+### Why `-zeros` and not `-nan`
+
+The DrivenData range test evaluates a NaN comparison that returns `False` in numpy, so a NaN or a
+`-3.4e38` nodata sentinel anywhere the test looks raises
+`Predicted values must be in range [0, 1]`. The `-zeros` variant writes `0.0` outside the
+footprint with `nodata=None`, so all 12,279,160 cells are finite and inside `[0, 1]`, while the
+39,802 dots are unchanged and the metric is unaffected (no credit accrues outside the footprint).
+`src/gems65/submission.py` re-reads the written file and re-runs every validator check on the
+bytes that were actually written, so the receipt reflects the artifact and not the array.

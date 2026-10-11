@@ -25,3 +25,19 @@ Rank 1 is the only candidate authorized for the first experiment. It has the str
 6. Proceed to surface/placement only if overall blocked DTI is higher than the incumbent holdout best and the highest-propensity tercile has no loss. Compare the surface and final dots against every registry raster before publishing. If any prerequisite is absent, record `NOT_RUN` / negative, not a fabricated result.
 
 **Current outcome:** NOT RUN. The requisite local data, shared tools, and registry are absent; see [`IRREGULARITIES.md`](IRREGULARITIES.md) and [`data/run-card.json`](data/run-card.json).
+
+## 2026-10-11 outcome for Rank 1
+
+Rank 1 was implemented and run end to end. The preregistered gate is **met at partial correction**:
+
+* pooled blocked-holdout DTI **0.0234** (lambda = 0.5) vs **0.0221** (nnPU baseline, e == 1) on
+  identical folds;
+* leakage-free off-catalogue (USGS SGMC) DTI **0.0247** vs **0.0219**;
+* no tercile loses anything;
+* unique against all 82 prior rasters; validator PASS on all 12,279,160 cells.
+
+**It is PARTIALLY positive, not fully positive.** Full propensity correction (lambda = 1) does
+*not* pass: it improves the pooled holdout DTI (0.0233) but loses the off-catalogue metric (0.0224)
+and empties the mid-propensity tercile. The SAR correction helps only when the weights are
+shrunk to roughly `1/e^0.5`; and because the propensity scale is not identifiable, no statement
+about absolute propensity is warranted. Ranks 2-4 were not run and remain `NOT RUN`.

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Why the sparse family scores ~0.28 — and what beats it — GEMSDOE65</title><style>body{margin:0;font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#14231f;background:#f6f7f4}
+header{background:#12332b;color:#f2fbf5;padding:18px 22px}header a{color:#cfe9d8;text-decoration:none;margin-right:14px;font-size:.94rem}
+header a[aria-current=page]{color:#fff;text-decoration:underline}
+main{max-width:1040px;margin:0 auto;padding:26px 20px 80px}
+h1{font-size:1.9rem;line-height:1.2;margin:.2em 0 .5em}h2{margin-top:1.9em;font-size:1.3rem}h3{font-size:1.05rem;margin-top:1.3em}
+.banner{border-radius:12px;padding:16px 18px;margin:18px 0;border:2px solid}
+.stop{border-color:#a11f1f;background:#fdecec}.stop strong{color:#8d1a1a}
+.warn{border-color:#a5730f;background:#fdf6e3}.ok{border-color:#1c6b45;background:#eaf6ee}
+.info{border-color:#24556e;background:#eaf3f8}
+table{border-collapse:collapse;width:100%;margin:1em 0;font-size:.92rem}th,td{border:1px solid #d6ddd6;padding:7px 9px;text-align:left;vertical-align:top}
+th{background:#eef2ec}
+code,pre{background:#eff2ee;border-radius:6px}code{padding:1px 4px}pre{padding:10px;overflow:auto}
+.small{font-size:.86rem;color:#4d5f59}.lede{font-size:1.08rem;color:#3a4a45}
+.card{border:1px solid #d8ded7;background:#fff;border-radius:12px;padding:14px 16px;margin:14px 0}
+.pill{display:inline-block;background:#e7efe8;border-radius:999px;padding:2px 10px;font-size:.8rem;margin-right:6px}
+footer{border-top:1px solid #d8ded7;color:#55655f;font-size:.85rem;padding:16px 22px;max-width:1040px;margin:0 auto}
+.callout.warning,.callout{border-left:4px solid #a5730f;background:#fdf6e3;padding:12px 14px;border-radius:8px;margin:14px 0}
+.meta{font-size:.84rem;color:#4d5f59;margin:.2em 0}
+.source-list{padding-left:1.1em}.source-list li{margin:.4em 0}
+</style></head>
+<body><header><strong>GEMSDOE65</strong> · corrected-scale SAR-propensity run · second, independent lane-65 run<br>
+<nav><a href="index.html">Status</a><a href="executive-summary.html">How to submit</a><a href="experiments.html">Experiments</a><a href="research.html">Research</a><a href="hypotheses.html">Hypotheses</a><a href="competitive-context.html" aria-current=page>Why 0.2778</a><a href="sources.html">Sources</a><a href="irregularities.html">Irregularities</a><a href="../index.html">← canonical site</a></nav></header>
+<main><p class="small">OWNER-REPORT context + metric algebra verified in the shared template</p><h1>Why the sparse family scores ~0.28 — and what beats it</h1><p class="lede">The metric's own algebra explains the observed score ladder; the remaining headroom is recall of hidden faults.</p>
+
+<div class="banner warn">Everything in this page about <em>other people's</em> scores is either a
+public participant-level leaderboard row (no file attribution) or another project's
+<strong>OWNER-REPORT</strong> for its own file. None of it is a receipt for a GEMSDOE65 raster.</div>
+
+<h2>The question</h2>
+<p>“Why did <code>h33-h33-2-b2-…-zeros</code> score 0.2778, and can we beat it?”</p>
+
+<h2>Answer 1 — the attribution is not verified</h2>
+<p>The artifact's own page labels it <em>UNSCORED</em> and its manifest entry carries
+<code>receipt: null</code>. A public leaderboard is participant-level and never names an uploaded
+file. So the correct statement is: <strong>a file with that name was reported by its owner to score
+0.2778; nothing in the records checked ties those bytes to that row.</strong> Any causal story is a
+mechanism hypothesis, clearly labelled as such.</p>
+
+<h2>Answer 2 — the mechanism is the metric's algebra, and it is verifiable here</h2>
+<p>Writing the DTI with the organizer's kernel, the marginal change from adding one unit of
+prediction mass at a location whose kernel credit to the nearest true fault is <code>k</code>
+satisfies (shared template <code>metric.py</code>, verified against a brute-force transcription of
+the published equations):</p>
+<pre>DTI = T / (0.2·(T + F) + 0.8·K)      F = sum over emitted mass of (1 − k)
+accept a dot  ⇔  k &gt; alpha · DTI   (alpha = 0.2)</pre>
+<p>At DTI ≈ 0.28 that bar is <code>k &gt; 0.056</code>, i.e. a dot must sit within ≈ 283 m of a true
+fault to pay for itself, and a dense or diffuse field spreads mass at <code>k ≈ 0</code>, which
+costs 0.2 per unit of mass for nothing. That is exactly why a <em>sparse, catalogue-hugging</em>
+field beats a dense probability surface on this metric, and it is why the owner's own ladder is
+monotone in density: 0.26 at 44 090 emitted pixels, 0.2477 at 60 069, 0.1922 at 121 131 (all
+OWNER-REPORT). “Catalogue-flank B = 2 prune” is a denser-thinning step on the same family, so
+0.2778 is consistent with the same mechanism — nothing exotic required.</p>
+
+<h2>Answer 3 — the honest gap is recall, not cleverness</h2>
+<p>The family's best owner-reported anchor is 0.2778; the public leaderboard snapshot taken
+2026-10-11 (manual page fetch, rows transcribed by the family's registry) has a leader at 0.4133 and
+a dozen participants above 0.30. Under the algebra above, a score of 0.41 with small F implies
+covering roughly 36 % of the hidden truth's kernel credit, versus ≈ 23–24 % for the sparse dots
+family. <strong>The gap is recall of hidden faults.</strong> Sparse pruning cannot manufacture
+recall; only a model that generalizes off the mapped network can. That is precisely what a
+selection-bias-corrected PU model is for — and it is why this lane is worth another iteration
+despite today's tie.</p>
+
+<h2>Answer 4 — what we did <em>not</em> do</h2>
+<p>We did not claim a projection as a score, did not relabel another lane's raster, and did not
+treat the registered holdout as a leaderboard predictor: the family measured ρ = +0.14 between
+their catalogue-truth holdout and 12 live owner-reported scores, so our HOLDOUT-DTI numbers compare
+<em>arms</em>, not outcomes.</p>
+</main>
+<footer>Built by <code>scripts/build_site.py</code> from <code>registry/</code> on 2026-10-11T22:16:04Z.
+Scores are labelled HOLDOUT-DTI, REGISTRY-MEASUREMENT, OWNER-REPORT or NOT ESTABLISHED. No leaderboard scraping.</footer>
+</body></html>

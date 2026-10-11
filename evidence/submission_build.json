@@ -1336,6 +1336,28 @@
         "instrument_spearman_vs_live": -0.43558282208588955,
         "adjudicated_utc": "2026-10-11T21:21:02Z"
       }
+    },
+    "sarprop-em-v2-corrected-scale": {
+      "arm": "corrected-scale-sarprop (second, independent lane-65 run; see registry/run-card.json)",
+      "stem": "gems65-sarprop-em-v2-20261011-9b1c65d",
+      "files": {
+        "nan": "docs/downloads/gems65-sarprop-em-v2-20261011-9b1c65d-nan.tif",
+        "zeros": "docs/downloads/gems65-sarprop-em-v2-20261011-9b1c65d-zeros.tif"
+      },
+      "validator": {
+        "nan": {
+          "file": "gems65-sarprop-em-v2-20261011-9b1c65d-nan.tif",
+          "bytes": 1552926,
+          "sha256": "3f302785383ec30f5cfa2515d14089ed88357bed4506cd5813a1c0c9b940cb30"
+        },
+        "zeros": {
+          "file": "gems65-sarprop-em-v2-20261011-9b1c65d-zeros.tif",
+          "bytes": 790718,
+          "sha256": "5aee83cb2e55f0122432611ff46af6fdd1e5a9182f263888e03f667647315c37"
+        }
+      },
+      "OK_TO_DOWNLOAD_AND_SUBMIT": false
     }
-  }
+  },
+  "NOTE_corrected_scale_run": "Second, independent lane-65 run appended by the arena/832a5ec9-gemsdoe65 session: same publisher allowlist, verdict NEGATIVE, submittable=False."
 }

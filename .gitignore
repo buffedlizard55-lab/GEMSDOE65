@@ -20,6 +20,9 @@ coverage/
 /registry/rasters/
 .mypy_cache/
 *.tmp
+# Large, fully reproducible intermediate surfaces (a 3 s fit regenerates them).
+/registry/*.npy
 # --- lane65 additions (session 2026-10-11) ---
 *.tif.part-*
 *.pyc
+/registry/*.npz   # derived arm-term caches; the JSON arm files carry every number

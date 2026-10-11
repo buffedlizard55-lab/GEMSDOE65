@@ -25,3 +25,7 @@ Rank 1 is the only candidate authorized for the first experiment. It has the str
 6. Proceed to surface/placement only if overall blocked DTI is higher than the incumbent holdout best and the highest-propensity tercile has no loss. Compare the surface and final dots against every registry raster before publishing. If any prerequisite is absent, record `NOT_RUN` / negative, not a fabricated result.
 
 **Current outcome:** NOT RUN. The requisite local data, shared tools, and registry are absent; see [`IRREGULARITIES.md`](IRREGULARITIES.md) and [`data/run-card.json`](data/run-card.json).
+
+## Parked out-of-lane candidates (session 2, not run)
+
+Four candidates on other official layers (magnetic source depth, depth to conductive base, geodetic strain, earthquake density) are ranked and specified in [`session-2026-10-11-review-2.md`](session-2026-10-11-review-2.md) §3. They are outside the SAR propensity lane, so they are parked until the owner decides the lane question (IR-65-018). None has been validated; none may use a submission slot.

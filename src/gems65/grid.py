@@ -1,137 +1,217 @@
-"""Grid constants and raster I/O for the DOE GEMS Prize Challenge (DrivenData 306).
+"""Competition grid geometry, footprint, and raster IO for the GEMSDOE65 lane.
 
-Every constant in this module is MEASURED in this checkout from hash-pinned bytes; see
-``registry/data_manifest.json`` for the sha256 of each input and
-``scripts/01_prepare_data.py`` for the command that reproduces them.
+Geometry is read from the official competition rasters themselves (never invented):
 
-Grid (verified by reading ``sample_submission.tif``, sha256 2176d08e...):
-    width  3292, height 3730, EPSG:32611, transform (100, 0, 243350, 0, -100, 4508550)
-    footprint (finite in sample_submission) = 5,167,373 px
-    labels.tif int8 {-1, 0, 1}: 60,988 catalogue pixels
+* ``data/sample_submission.tif`` -- the official template. ``EPSG:32611`` (UTM 11N),
+  100 m, width 3292 x height 3730, origin (243350, 4508550), single float32 band,
+  ``nodata = NaN`` outside the region footprint.
+* ``data/training_features.tif`` -- the official 19-band feature stack, float32,
+  ``nodata = -3.4028235e+38`` outside the footprint.
+* ``data/labels.tif`` -- the official catalogue (``existing_faults.tif``), int8,
+  ``1`` mapped fault, ``0`` no fault, ``-1`` outside.
+
+Provenance (byte-verified 2026-10-11 against the owner mirror manifest
+``data/bridge/manifest.json`` in the sibling ``GEMSDOE`` repository, which itself pins
+the official DrivenData data-tab / Dropbox mirror URLs):
+
+    training_features.tif   sha256 4371c82e3b8339b807bdffcf4ef59a225520fe2988d521be208ae33743123bc5  418912844 B
+    labels.tif              sha256 7ba308ccdc4418b31a178f4f1ef21aaa6e152e4028f2f6f64b01f7eb25ae4093     425830 B
+    sample_submission.tif   sha256 2176d08e485aa2cd2860ce8df539db4faf4d76163b38a4dd8c30a40454d35cbc    1599597 B
+
+Nothing in this module downloads, mirrors, or caches anything from the DrivenData site.
 """
-
 from __future__ import annotations
 
-import os
+import hashlib
+import json
 from pathlib import Path
 
 import numpy as np
 import rasterio
 
-WIDTH = 3292
-HEIGHT = 3730
-EPSG = 32611
-TRANSFORM = (100.0, 0.0, 243350.0, 0.0, -100.0, 4508550.0)
-SHAPE = (HEIGHT, WIDTH)
-TOTAL_PIXELS = HEIGHT * WIDTH                 # 12,279,160
-FOOTPRINT_PIXELS = 5_167_373                  # measured
-LABEL_PIXELS = 60_988                         # measured
-PIXEL_M = 100.0                               # 1 px = 100 m
-KERNEL_RADIUS_M = 300.0                       # official triangular-kernel radius
-KERNEL_RADIUS_PX = KERNEL_RADIUS_M / PIXEL_M  # 3.0 px
-ALPHA = 0.2
-BETA = 0.8
+NODATA_F32 = np.float32(-3.4028234663852886e38)
+REPO_ROOT = Path(__file__).resolve().parents[2]
+DATA = REPO_ROOT / "data"
 
-# sha256 pins, copied verbatim from the owner-supplied mirror receipt and re-verified here.
-EXPECTED_SHA256 = {
+PINNED_SHA256 = {
     "training_features.tif": "4371c82e3b8339b807bdffcf4ef59a225520fe2988d521be208ae33743123bc5",
     "labels.tif": "7ba308ccdc4418b31a178f4f1ef21aaa6e152e4028f2f6f64b01f7eb25ae4093",
     "sample_submission.tif": "2176d08e485aa2cd2860ce8df539db4faf4d76163b38a4dd8c30a40454d35cbc",
-    "external/lidar_scarp_features_u8.tif": "d580bb8bdcdb941e32fefb8b38044bc5bf04e199bf2e83498c3576e6fc465568",
+}
+PINNED_BYTES = {
+    "training_features.tif": 418912844,
+    "labels.tif": 425830,
+    "sample_submission.tif": 1599597,
 }
 
-# Authoritative band names + categories, read from the GeoTIFF band tags of the pinned
-# training_features.tif (tag keys: band_name / data_category / description).
-BANDS = [
-    (1, "mag_anom", "magnetic_data"),
-    (2, "rtp", "magnetic_data"),
-    (3, "tmi_hg", "magnetic_data"),
-    (4, "geod_2ndinv", "geodetic_strain"),
-    (5, "iso_grav_anom_slope", "gravity_data"),
-    (6, "tc", "magnetic_data"),
-    (7, "geod_shearrate", "geodetic_strain"),
-    (8, "geod_dilaterate", "geodetic_strain"),
-    (9, "tmi_vg", "magnetic_data"),
-    (10, "deq_n100a15", "seismic"),
-    (11, "iso_grav_anom_vg", "gravity_data"),
-    (12, "det_elev", "topographic"),
-    (13, "iso_grav_anom", "gravity_data"),
-    (14, "tmi", "magnetic_data"),
-    (15, "depth_to_base_surf", "subsurface"),
-    (16, "ieq_n100a15", "seismic"),
-    (17, "cond_surf", "subsurface"),
-    (18, "iso_grav_anom_hg", "gravity_data"),
-    (19, "det_elev_slope", "topographic"),
-]
-BAND_NAMES = [b[1] for b in BANDS]
-BAND_INDEX = {name: idx for idx, name, _ in BANDS}
 
-# Band 12 of external/lidar_scarp_features_u8.tif is "valid" per that product's own JSON
-# sidecar (external/lidar_scarp_features.json, key "bands"); 0 == "no lidar" per
-# "quantisation_rule".  Used as the lidar-coverage propensity covariate.
-LIDAR_VALID_BAND = 12
+def sha256_file(path: str | Path) -> str:
+    h = hashlib.sha256()
+    with Path(path).open("rb") as fh:
+        for chunk in iter(lambda: fh.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
 
 
-def data_dir() -> Path:
-    """Location of the hash-pinned competition data (outside git; restored by script 00)."""
-    return Path(os.environ.get("GEMS65_DATA", "/home/user/.cache/gems_data/data"))
+def verify_pinned_inputs(data_dir: Path = DATA) -> dict:
+    """Re-hash the three official rasters against the pinned digests.
 
+    Returns a receipt.  ``ok`` is False if any file is missing or its digest differs;
+    callers must refuse to run the experiment in that case.
+    """
+    receipt: dict = {"checked_utc": None, "files": {}, "ok": True}
+    from datetime import datetime, timezone
 
-def work_dir() -> Path:
-    return Path(os.environ.get("GEMS65_WORK", "/home/user/.cache/gems65_work"))
-
-
-def repo_root() -> Path:
-    return Path(__file__).resolve().parents[2]
-
-
-def read_footprint(ddir: Path | None = None) -> np.ndarray:
-    ddir = ddir or data_dir()
-    with rasterio.open(ddir / "sample_submission.tif") as ds:
-        a = ds.read(1)
-    foot = np.isfinite(a)
-    assert foot.shape == SHAPE, foot.shape
-    return foot
-
-
-def read_labels(ddir: Path | None = None) -> np.ndarray:
-    ddir = ddir or data_dir()
-    with rasterio.open(ddir / "labels.tif") as ds:
-        a = ds.read(1)
-    return (a == 1) & np.isfinite(a.astype(np.float32))
-
-
-def read_band(name: str, ddir: Path | None = None, window=None) -> np.ndarray:
-    """Read one feature band as float32 with the sentinel replaced by NaN."""
-    ddir = ddir or data_dir()
-    idx = BAND_INDEX[name]
-    with rasterio.open(ddir / "training_features.tif") as ds:
-        b = ds.read(idx, window=window).astype(np.float32)
-    b[b < -1e38] = np.nan
-    return b
-
-
-def read_lidar_band(i: int, ddir: Path | None = None) -> np.ndarray:
-    ddir = ddir or data_dir()
-    with rasterio.open(ddir / "external" / "lidar_scarp_features_u8.tif") as ds:
-        return ds.read(i)
-
-
-def check_grid(tif_path: Path) -> dict:
-    """Independent re-read of a candidate's geometry (never trusts the writer)."""
-    with rasterio.open(tif_path) as ds:
-        return {
-            "path": str(tif_path),
-            "width": ds.width,
-            "height": ds.height,
-            "count": ds.count,
-            "dtype": ds.dtypes[0],
-            "crs": str(ds.crs),
-            "transform": [round(float(v), 6) for v in tuple(ds.transform)[:6]],
-            "nodata": None if ds.nodata is None else float(ds.nodata),
-            "shape_ok": (ds.width, ds.height) == (WIDTH, HEIGHT),
-            "crs_ok": str(ds.crs).endswith("32611"),
-            "transform_ok": tuple(round(float(v), 6) for v in tuple(ds.transform)[:6]) == TRANSFORM,
-            "single_band_ok": ds.count == 1,
-            "dtype_ok": ds.dtypes[0] == "float32",
+    receipt["checked_utc"] = (
+        datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+    )
+    for name, want in PINNED_SHA256.items():
+        p = Path(data_dir) / name
+        if not p.is_file():
+            receipt["files"][name] = {"status": "missing", "sha256": None}
+            receipt["ok"] = False
+            continue
+        got = sha256_file(p)
+        ok = got == want and p.stat().st_size == PINNED_BYTES[name]
+        receipt["files"][name] = {
+            "status": "verified" if ok else "MISMATCH",
+            "sha256": got,
+            "bytes": p.stat().st_size,
+            "expected_sha256": want,
+            "expected_bytes": PINNED_BYTES[name],
         }
+        receipt["ok"] = receipt["ok"] and ok
+    return receipt
+
+
+def open_template(path: str | Path = DATA / "sample_submission.tif") -> dict:
+    with rasterio.open(path) as s:
+        return dict(
+            driver="GTiff",
+            dtype="float32",
+            count=1,
+            crs=s.crs,
+            transform=s.transform,
+            width=s.width,
+            height=s.height,
+            nodata=np.nan,
+        )
+
+
+def read_footprint(path: str | Path = DATA / "sample_submission.tif") -> np.ndarray:
+    """Region footprint taken from the OFFICIAL TEMPLATE's own finite mask.
+
+    Measured 2026-10-11: 5,167,373 finite pixels of 12,279,160.  The feature stack's
+    band-1 finite mask is slightly smaller (5,165,852) because 1,521 rim pixels carry
+    ``nodata`` in the feature stack but not in the template.  The template is the
+    authority for what the portal will score, so it defines the footprint here.
+    """
+    with rasterio.open(path) as s:
+        a = s.read(1)
+    return np.isfinite(a)
+
+
+def read_labels(path: str | Path = DATA / "labels.tif") -> np.ndarray:
+    """Catalogue raster -> boolean (>=1 is a mapped fault, 0 no-fault, -1 outside)."""
+    with rasterio.open(path) as s:
+        a = s.read(1)
+    return a >= 1
+
+
+def read_band(path: str | Path, band: int, fill: float = 0.0) -> np.ndarray:
+    """Read one official feature band, replacing the -3.4e38 sentinel with ``fill``."""
+    with rasterio.open(path) as s:
+        a = s.read(band).astype(np.float32)
+    return np.where(a < NODATA_F32 * np.float32(0.5), np.float32(fill), a)
+
+
+def band_descriptions(path: str | Path = DATA / "training_features.tif") -> list[str]:
+    with rasterio.open(path) as s:
+        return list(s.descriptions)
+
+
+def write_submission(
+    arr: np.ndarray,
+    template_path: str | Path = DATA / "sample_submission.tif",
+    out_path: str | Path = None,
+    footprint: np.ndarray | None = None,
+    outside: str = "zeros",
+) -> Path:
+    """Write a legal single-band float32 GeoTIFF on the exact official template grid.
+
+    ``outside='zeros'`` writes 0.0 outside the footprint and sets ``nodata=None``, so that
+    **every one of the 12,279,160 cells** satisfies ``0 <= v <= 1`` and there is no NaN
+    anywhere.  This is the variant that permanently removes the DrivenData
+    ``"Predicted values must be in range [0, 1]"`` error, which is raised when the
+    validator's range test sees a NaN comparison return False.
+
+    ``outside='nan'`` reproduces the sample submission's convention (NaN outside the
+    footprint) for callers that want a byte-for-byte format match with the template.
+    """
+    meta = open_template(template_path)
+    out = np.asarray(arr, dtype=np.float32)
+    assert out.shape == (meta["height"], meta["width"]), (out.shape, meta)
+    if footprint is not None:
+        vals = out[footprint]
+        assert np.isfinite(vals).all(), "non-finite value inside the footprint"
+        assert (vals >= 0).all() and (vals <= 1).all(), "value outside [0, 1] inside the footprint"
+        out = np.where(footprint, out, np.nan if outside == "nan" else np.float32(0.0))
+    if outside == "nan":
+        meta["nodata"] = np.nan
+    else:
+        meta["nodata"] = None
+    meta["compress"] = "deflate"
+    meta["tiled"] = True
+    out_path = Path(out_path)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    with rasterio.open(out_path, "w", **meta) as dst:
+        dst.write(out, 1)
+    return out_path
+
+
+def check_submission(path: str | Path, footprint: np.ndarray) -> dict:
+    """Independent re-read of a written submission; returns a receipt dict."""
+    with rasterio.open(path) as s:
+        a = s.read(1)
+        meta = dict(
+            crs=str(s.crs),
+            width=s.width,
+            height=s.height,
+            transform=tuple(round(float(x), 6) for x in s.transform)[:6],
+            dtype=s.dtypes[0],
+            count=s.count,
+            nodata=s.nodata,
+        )
+    finite_in = np.isfinite(a[footprint])
+    in_range_in = finite_in & (a[footprint] >= 0) & (a[footprint] <= 1)
+    outside = a[~footprint]
+    return dict(
+        path=str(path),
+        sha256=sha256_file(path),
+        bytes=Path(path).stat().st_size,
+        meta=meta,
+        footprint_px=int(footprint.sum()),
+        finite_inside=int(finite_in.sum()),
+        in_range_inside=int(in_range_in.sum()),
+        outside_nan=int(np.isnan(outside).sum()),
+        outside_zero=int((outside == 0).sum()),
+        outside_other=int((~np.isnan(outside) & (outside != 0)).sum()),
+        full_grid_finite_px=int(np.isfinite(a).sum()),
+        full_grid_in_0_1=bool(np.isfinite(a).all() and (a >= 0).all() and (a <= 1).all()),
+        positive_px=int(((a > 0) & footprint).sum()),
+        min_in=float(np.nanmin(a[footprint])),
+        max_in=float(np.nanmax(a[footprint])),
+        ok_range=bool(in_range_in.sum() == finite_in.sum() == int(footprint.sum())),
+        ok_outside=bool(np.isnan(outside).all() or (outside == 0).all()),
+    )
+
+
+def sha256(path: str | Path) -> str:
+    return sha256_file(path)
+
+
+def write_json(obj, path: str | Path) -> Path:
+    p = Path(path)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(json.dumps(obj, indent=2, sort_keys=False), encoding="utf-8")
+    return p

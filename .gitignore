@@ -1,30 +1,27 @@
-.venv/
-.cache/
-__pycache__/
-.pytest_cache/
-*.py[cod]
-node_modules/
-data/raw/
-data/cache/
-data/external/
-data/registry_rasters/
-artifacts/
-!artifacts/.gitkeep
-*.egg-info/
-.env
-coverage/
-.DS_Store
+# Keep local competition inputs, caches, runs, artifacts, and raster registry out of Git.
 /data/
 /cache/
 /runs/
+/artifacts/
 /registry/rasters/
+
+# Local Python environments, bytecode, caches, and atomic-write scratch files.
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
 .mypy_cache/
 *.tmp
-# Large, fully reproducible intermediate surfaces (a 3 s fit regenerates them).
-/registry/*.npy
-# --- lane65 additions (session 2026-10-11) ---
-*.tif.part-*
+work/
+.venv/
+__pycache__/
 *.pyc
-<<<<<<< HEAD
-# --- lane65b additions (independent SAR-PU session 2026-10-11) ---
 
+# --- lane65b additions (independent SAR-PU session 2026-10-11) ---
+# this lane's derived caches and intermediate rasters are large and regenerable
+.cache/
+*.part-[0-9][0-9][0-9]
+# official grid rasters are restored by scripts/00_restore_data.py (canonical) or
+# scripts/_bootstrap.py; the repository guard forbids tracking *.tif outside the
+# docs/downloads allowlist
+data/bridge/*.tif

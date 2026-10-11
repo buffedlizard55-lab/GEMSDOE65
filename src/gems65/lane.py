@@ -41,7 +41,7 @@ from sklearn.metrics import roc_auc_score
 from gems57 import evaluate_holdout, metric
 from gems57.grid import Grid, load_grid
 from gems57.holdout import buffered_component_draw
-from . import propensity as prop
+from . import propensity_sar2inv as prop
 from .anchor import AnchorFit, fit_anchor
 from .risks import MLP, W_CLIP, sar_risk, nnpu_risk, sigmoid, train
 

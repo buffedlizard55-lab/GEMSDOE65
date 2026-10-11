@@ -63,7 +63,7 @@ from dataclasses import dataclass
 import numpy as np
 from sklearn.linear_model import LogisticRegression
 
-from .propensity import basis
+from .propensity_sar2inv import basis
 
 C_GRID = (0.25, 0.5, 1.0)     # reference-inventory completeness sensitivity
 

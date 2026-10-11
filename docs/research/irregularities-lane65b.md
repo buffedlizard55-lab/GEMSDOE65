@@ -19,7 +19,8 @@ fixed, and what remains open for the owner. Nothing here is silently waived.
 | IR-65-ACCESS-01 | No outbound access to the organizer, USGS, or the data mirrors | **open**; reported as a limitation |
 | IR-65B-TEMPLATE-01 | Two divergent pins of the shared `gems57` template now live in this repository | **contained + reported**; owner consolidation needed |
 | IR-65B-FORMAT-01 | The two pins contradict each other on the portal format (NaN vs zeros outside the footprint) | **flagged for the owner**; artefact written in zeros mode with the reason recorded |
-| IR-65B-PARALLEL-01 | A second session ran the same lane and merged first; both verdicts are negative | **resolved by integration**, not by overwriting |
+| IR-65B-PARALLEL-01 | Four sessions ran the same lane; three merged while this branch was open | **resolved by integration**, not by overwriting |
+| IR-65B-MAINREGRESSION-01 | `main` is red: later sessions replaced `pu.py` and `build_site.py` and dropped APIs their own earlier tests require | **measured, reported, not silently patched** |
 
 ---
 
@@ -254,8 +255,8 @@ two lanes' artefacts is reported below.
 
 **Cross-session drift check** (the protocol's duplicate test, applied to the two lanes' published
 rasters rather than to the registry at large; receipt `evidence/cross_session_drift.json`,
-script `scripts/cross_session_drift.py`): against all **6** rasters the sibling
-session published, worst Spearman ρ = **0.0170** (limit 0.9),
+script `scripts/cross_session_drift.py`): against all **10** rasters the three sibling
+sessions published, worst Spearman ρ = **0.0170** (limit 0.9),
 worst forward dot overlap = **0.2873** (limit
 0.7), worst Jaccard = **0.0122** (limit
 0.5) → `duplicate_by_any_limit = false`.
@@ -264,3 +265,49 @@ dots land within 300 m of the sibling lane's best-matching field — far above c
 38,000-dot fields on 5.17 M pixels, far below the duplicate threshold. Two independent
 implementations of the same lane agree on roughly a quarter of placements and disagree on the rest,
 which is consistent with both verdicts being negative for *different* reasons.
+
+
+---
+
+## IR-65B-MAINREGRESSION-01 — `main` was already red before this branch merged (reported, not patched)
+
+Measured on 2026-10-11 by extracting `origin/main` (`5166ef9`) to a clean directory and running the
+same interpreter and the same commands on both trees:
+
+| | `origin/main` | this branch after merging main |
+|---|---|---|
+| collection errors | 2 (`tests/test_pu.py`, `tests/test_canary.py`) | 2 — **identical** |
+| failures (those two modules ignored) | 12 | 12 — **identical set**, verified by `comm` on the sorted failure lists: zero main-only, zero branch-only |
+| passes (same invocation) | 93 | 114 (= 93 + this session's 21) |
+| `scripts/check_repository.py` | flags two published rasters whose sha256 is absent from `evidence/submission_build.json` | `ok: true`, 340 tracked files, no problems |
+
+Root causes, both cross-session clobbering rather than anything this lane did:
+
+1. `src/gems65/pu.py` was replaced (commit `469ba44`, PR #14) by a version that no longer defines
+   `Design`, `posterior`, `logistic_objective`, `propensity_risk`, `nnpu_risk`, `weighted_quantile`,
+   `fit_sar` or `predict`. `src/gems65/canary.py` still does `from .pu import Design`, and
+   `tests/test_pu.py` / `tests/test_metric.py` still import those names — hence the 2 collection
+   errors and 5 of the 12 failures.
+2. `scripts/build_site.py` was replaced by a version without `assert_no_public_rasters()`, which
+   `tests/test_publication.py` calls — hence the other 7 failures, including
+   `test_symlink_cannot_expose_quarantine` (`AttributeError: module 'build_site' has no attribute
+   'assert_no_public_rasters'`).
+
+What this session did about it: **nothing inside their modules.** Editing another session's `pu.py`
+or `build_site.py` to satisfy tests written against a superseded API would have been a guess about
+which of the two designs the owner wants; instead the two concrete, non-interpretive fixes were
+made and are recorded here:
+
+* the two rasters published by PR #14
+  (`gems65-sar-em-propensity-half-20261011T223500Z-5e4660cd-{nan,zeros}.tif`) now have their
+  sha256 recorded in `evidence/submission_build.json` under
+  `arms.lane65d_*` with `OK_TO_DOWNLOAD_AND_SUBMIT: false` and a note saying which session produced
+  them, so the publication guard can verify bytes it did not create — this is what turned
+  `check_repository.py` green;
+* one additive nav entry pointing at `docs/lane65b/` was added to their `NAV` template so this
+  session's pages are reachable from the canonical site and survive a rebuild.
+
+**Owner action requested:** decide which `pu.py` and which `build_site.py` API is canonical, then
+restore the matching tests — or delete the superseded ones. Until then `main`'s CI is red for
+reasons unrelated to any lane's science, and four sessions' artefacts sit in one `docs/downloads/`
+behind one allowlist.

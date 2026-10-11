@@ -1,166 +1,382 @@
-"""Evidence-driven static Pages site. A negative run can never publish a raster."""
-import _path  # noqa: F401
-from gems65.common import ROOT, write_json
-from html import escape as esc
-from pathlib import Path
+#!/usr/bin/env python3
+"""GEMSDOE65 -- generate the evidence site and the canonical run card from the artifacts.
+
+Every number rendered on the site comes from a file in ``artifacts/`` or
+``docs/downloads/submissions_manifest.json``; nothing is typed in by hand.  Re-run after
+any experiment:
+
+    python3 scripts/build_site.py
+"""
+from __future__ import annotations
+
 import json
-import shutil
-import re
-import markdown2
+import sys
+import time
+from pathlib import Path
 
-DOCS = ROOT/'docs'
-DATA = DOCS/'data'
-REPO = 'https://github.com/buffedlizard55-lab/GEMSDOE65'
-
-
-def load(path):
-    return json.loads((ROOT/path).read_text())
+REPO = Path(__file__).resolve().parents[1]
+ART = REPO / "artifacts"
+DOCS = REPO / "docs"
+DOWN = DOCS / "downloads"
 
 
-def badge(text,kind='neutral'):
-    return f'<span class="badge {kind}">{esc(text)}</span>'
+def load(p: Path, default=None):
+    if not p.is_file():
+        return default
+    try:
+        return json.loads(p.read_text())
+    except Exception:
+        return default
 
 
-def layout(title,active,body):
-    # Lane 65 (session 2026-10-11) is a second, independent implementation of the same lane; its
-    # pages live under docs/lane65/ so the canonical site stays canonical and both stay reachable.
-    nav=[('index.html','Overview'),('executive-summary.html','Submission guide'),('research.html','Research'),('sources.html','Sources'),('audit.html','Audit'),('lane65/index.html','Lane 65 run'),('lane65b/index.html','Lane 65 · session B')]
-    links=''.join(f'<a href="{p}"'+(' aria-current="page"' if p==active else '')+f'>{label}</a>' for p,label in nav)
-    return f'''<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{esc(title)} · GEMSDOE65</title><meta name="description" content="Selection-bias-aware fault mapping research. Three sensitivity experiments, verified artifacts, and a fail-closed submission gate.">
-<link rel="stylesheet" href="assets/site.css"><link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<script src="assets/site.js" defer></script></head><body>
-<a class="skip" href="#main">Skip to content</a>
-<header class="topbar"><div class="nav"><a class="brand" href="index.html"><span class="mark" aria-hidden="true">G</span><span><strong>GEMSDOE<span style="color:#d9ad77">65</span></strong><small>Fault discovery lab</small></span></a><nav class="navlinks" aria-label="Main navigation">{links}</nav><a class="repo-link" href="{REPO}">Repository ↗</a></div></header>
-<div class="status-strip"><div class="status-inner"><span><span class="status-dot" aria-hidden="true"></span><strong>NOT CLEARED FOR SUBMISSION</strong> · Negative research result</span><span>No weekly slot used · <a href="executive-summary.html">Read the submission gate →</a></span></div></div>
-<main class="container" id="main">{body}</main>
-<footer class="footer"><div><strong>GEMSDOE65</strong> · Selection-bias-aware PU lane<br>Evidence before optimism. Negative results are deliverables.</div><div class="footer-nav"><a href="data/run_card.json" download>Run card JSON</a><a href="lane65/index.html">Lane 65 run card + rasters</a><a href="{REPO}/blob/main/README.md">Original brief</a><a href="{REPO}">Source code ↗</a><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">Official leaderboard ↗</a><a href="https://www.drivendata.org/termsofuse/">Access terms ↗</a></div></footer>
-</body></html>'''
+def fmt(x, nd=4):
+    if x is None:
+        return "&mdash;"
+    if isinstance(x, float):
+        return f"{x:.{nd}f}"
+    return str(x)
 
 
-def stat(s):
-    return f"{s['dti']:.6f}<small>95% CI [{s['ci95'][0]:.6f}, {s['ci95'][1]:.6f}]</small>"
+def esc(s):
+    return (str(s).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+            .replace('"', "&quot;"))
 
 
-def results_table(experiments,stratum='overall'):
-    rows=[]
-    for x in experiments['scenarios']:
-        r=x[stratum];d=r['paired_differences']['nnpu'];n=r['scores']['sar']['withheld_positive_pixels']
-        rows.append(f'''<tr class="{'row-primary' if x['primary'] else ''}"><td><strong>e(z=0) = {x['reference_propensity']:.2f}</strong><small>{'Preregistered primary' if x['primary'] else 'Sensitivity only'} · assumption, not an estimate</small></td><td class="num">{stat(r['scores']['sar'])}</td><td class="num">{stat(r['scores']['nnpu'])}</td><td class="num bad">{d['delta']:+.6f}<small>95% CI [{d['ci95'][0]:.6f}, {d['ci95'][1]:.6f}]</small></td><td class="num">{n:,}</td></tr>''')
-    return '<div class="table-wrap"><table><caption>HOLDOUT-DTI · evaluator gems57-pooled-hide-v2 · pooled terms · conditional 95% CI from 1,000 paired 20 km spatial-block bootstrap draws. Finite-iteration models; not organizer scores.</caption><thead><tr><th scope="col">Propensity scale</th><th scope="col">SAR-PU</th><th scope="col">nnPU</th><th scope="col">Paired difference</th><th scope="col">Withheld positives</th></tr></thead><tbody>'+''.join(rows)+'</tbody></table></div>'
+NAV = """<header class="site-header"><div class="wrap nav-row">
+  <a class="brand" href="index.html">GEMSDOE65<small>Evidence before submission</small></a>
+  <nav aria-label="Main navigation"><a href="index.html">Status</a><a href="executive-summary.html">Submit guide</a><a href="hypotheses.html">Hypotheses</a><a href="competitive-context.html">Score audit</a><a href="research.html">Research</a><a href="irregularities.html">Irregularities</a><a href="downloads.html">Downloads</a><a href="lane65b/index.html">Lane 65 · session B</a></nav>
+</div></header>"""
+
+FOOT = """<footer class="footer"><div class="wrap"><a href="index.html">Status and download gate</a><a href="executive-summary.html">Submit guide</a><a href="downloads.html">Downloads</a><a href="data/run-card.json">Current JSON run card</a><p><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/">Official problem description</a><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">Official leaderboard</a><a href="https://github.com/drivendataorg/gems-prize-reference-solution">Organizer reference solution</a></p></div></footer>"""
 
 
-def overview(card,experiments,forensics):
-    h=card['holdout'];s=h['sar'];n=h['nnpu'];ci=s['ci95'];ni=n['ci95']
-    body=f'''<section class="hero"><div><p class="eyebrow">GEMS prize research / SAR-PU lane</p><h1>A new model.<br><em>An honest result.</em></h1><p class="lead">Can correcting mapping bias help uncover faults hidden beneath low-relief terrain? We tested the idea. This run did not beat its baseline.</p><div class="button-row"><a class="button" href="#evidence">Explore the evidence <span aria-hidden="true">↓</span></a><a class="button secondary" href="research.html">Read the methodology ↗</a></div></div>
-<aside class="decision" aria-labelledby="decision-heading">{badge('Negative · do not submit','fail')}<h2 id="decision-heading">No submission download.</h2><p>A new research TIFF was generated and passed format validation. It failed the holdout and literal uniqueness gates, so it remains quarantined.</p><button class="button" disabled aria-describedby="download-reason">Submission TIFF not released</button><p id="download-reason" class="tiny">Format-valid does not mean scientifically qualified. No old submission was copied.</p><a href="executive-summary.html">What must pass before submission? →</a></aside></section>
-<section class="metrics" aria-label="Run summary"><div class="metric"><div class="label">SAR-PU · HOLDOUT-DTI</div><div class="value">{s['dti']:.5f}</div><div class="sub">95% CI {ci[0]:.5f}–{ci[1]:.5f}</div></div><div class="metric"><div class="label">nnPU · HOLDOUT-DTI</div><div class="value">{n['dti']:.5f}</div><div class="sub">95% CI {ni[0]:.5f}–{ni[1]:.5f}</div></div><div class="metric"><div class="label">Local GeoTIFF validator</div><div class="value good">PASS</div><div class="sub">Finite [0,1] inside footprint</div></div><div class="metric"><div class="label">Experiment budget</div><div class="value">3 / 3</div><div class="sub">Complete · no slot used</div></div></section>
-<p class="compact">Both primary HOLDOUT-DTI values: <code>gems57-pooled-hide-v2</code>, {s['withheld_positive_pixels']:,} withheld positive pixels. Conditional confidence intervals. No ORGANIZER-CONFIRMED result is available.</p>
-<section class="section" id="evidence"><div class="section-head"><div><p class="eyebrow">01 / The decision</p><h2>Every gate is visible.</h2><p>Promote only when the evidence supports it. Never substitute a filename for novelty.</p></div><span class="section-tag">FAIL-CLOSED BY DESIGN</span></div><div class="grid-2"><div class="panel"><h3>Scientific qualification</h3><ul class="gate-list"><li><span><span class="gate-icon bad">×</span>Higher pooled holdout DTI</span>{badge('Failed','fail')}</li><li><span><span class="gate-icon bad">×</span>No loss in the highest-propensity tercile</span>{badge('Failed','fail')}</li><li><span><span class="gate-icon good">✓</span>Single-feature leakage canaries</span>{badge('Passed','pass')}</li><li><span><span class="gate-icon bad">×</span>EM convergence</span>{badge('Cap reached','fail')}</li><li><span><span class="gate-icon bad">×</span>Comparable incumbent holdout</span>{badge('Unavailable','fail')}</li></ul></div><div class="panel"><h3>Artifact qualification</h3><ul class="gate-list"><li><span><span class="gate-icon good">✓</span>Range, CRS, shape and transform</span>{badge('Passed','pass')}</li><li><span><span class="gate-icon good">✓</span>New model output; not a copied raster</span>{badge('Generated','pass')}</li><li><span><span class="gate-icon bad">×</span>Literal overlap against registry</span>{badge('Blocked','fail')}</li><li><span><span class="gate-icon bad">×</span>All-prior clearance / final-dot audit</span>{badge('Stopped','fail')}</li><li><span><span class="gate-icon">—</span>Selector approval / organizer acceptance</span>{badge('Not obtained')}</li></ul></div></div><div class="callout"><strong>A rule-level blocker, not proof of copied geology.</strong> A registered continuous raster is positive throughout the footprint. Under the inherited positive-pixel definition, every nonempty dot set overlaps it. We verified this witness and honored the stop; we did not silently change the rule.</div><div class="evidence-links"><a href="data/run_card.json" download>Download run card JSON ↓</a><a href="data/validator_output.json">Validator receipt</a><a href="data/uniqueness.json">Uniqueness audit</a></div></section>
-<section class="section"><div class="section-head"><div><p class="eyebrow">02 / Matched comparisons</p><h2>Three assumptions. The same negative result.</h2><p>Propensity is not identified from these data alone. Scale scenarios are disclosed, not optimized after seeing the holdout.</p></div></div>{results_table(experiments)}<p class="compact" style="margin-top:14px">All EM fits reached the iteration cap. These results reject this finite-iteration candidate for promotion; they do not prove SAR learning cannot work.</p></section>
-<section class="section grid-2"><figure class="panel figure"><img src="assets/research-surface.png" alt="Diagnostic map of the newly fitted out-of-fold research surface; no accepted fault or geothermal discovery is indicated." width="600" height="580" loading="lazy"><figcaption><strong>New research surface · not a submission.</strong><br>OOF predictions with mapped faults masked. Display stretch only; not calibrated fault probabilities. The validated TIFF remains quarantined.</figcaption></figure><div class="panel"><p class="eyebrow">03 / What the cited raster actually did</p><h2>Pruning, not a new discovery surface.</h2><p>The cited GEMSDOE32 raster is a strict subset of its predecessor. Our byte-and-pixel audit found <strong>{forensics['removed']:,} removed dots</strong> near mapped faults, leaving <strong>{forensics['candidate_positive_pixels']:,}</strong>.</p><p class="compact">RASTER-FORENSICS measurements, not scores. Reducing redundant false-positive mass can improve a Tversky ratio. That is a plausible mechanism—not proof of the hidden-label cause.</p><p class="compact">The prompt’s reported leaderboard result is unverified. No receipt was available, and we make no promise to surpass it.</p><a href="research.html#why-did-the-cited-gemsdoe32-artifact-do-well">Read the forensic analysis →</a></div></section>
-<section class="section"><p class="eyebrow">04 / The reproducible path</p><h2>From cached data to a decision.</h2><div class="method-flow"><div class="flow-step"><span class="index">01 — RESTORE</span><h3>Check the input bytes</h3><p>Pinned feature stack, topo and lidar derivatives. Owner mirror, not official authentication.</p></div><div class="flow-step"><span class="index">02 — LEARN</span><h3>Separate fault and selection</h3><p>Five propensity covariates, SAR-EM, clipped risk and a matched nnPU baseline.</p></div><div class="flow-step"><span class="index">03 — CHALLENGE</span><h3>Hide whole components</h3><p>Spatial buffer, canaries, pooled DTI, confidence intervals and high-propensity checks.</p></div><div class="flow-step"><span class="index">04 — RELEASE OR STOP</span><h3>Protect the weekly slots</h3><p>Validate and compare actual pixels. A failed gate means no public raster.</p></div></div></section>
-<section class="section panel"><div class="section-head"><div><p class="eyebrow">Next session</p><h2>Resolve the blockers before another fit.</h2></div><a href="audit.html">All irregularities →</a></div><div class="grid-3"><div><h3>01. Make the registry rule usable</h3><p class="compact">The selector must explicitly address mixed dense and dotted priors. No self-granted exemptions.</p></div><div><h3>02. Establish identification evidence</h3><p class="compact">Obtain complete-mapping evidence, official data provenance, comparable holdout results and real receipts.</p></div><div><h3>03. Preregister a fresh experiment</h3><p class="compact">Set a convergence budget before a new locked holdout. Do not retune the consumed three-scenario run.</p></div></div></section>'''
-    return layout('Overview','index.html',body)
+def page(title: str, desc: str, body: str, current: str = "") -> str:
+    cur = f'<a aria-current="page" href="{current}.html">{current.replace("-", " ")}</a>' if current else ""
+    nav = NAV.replace(f'<a href="{current}.html">{current.replace("-", " ")}</a>', cur) if current else NAV
+    return f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="{esc(desc)}">
+  <title>{esc(title)}</title><link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+{nav}
+<main class="wrap">
+{body}
+</main>
+{FOOT}
+</body></html>
+"""
 
 
-def guide(card):
-    body=f'''<div class="page-intro"><p class="eyebrow">Executive summary / submission guide</p><h1>Know exactly when it is safe<br>to download and submit.</h1><p class="lead">This run is <strong>not cleared</strong>. A format-valid TIFF exists for audit, but its scientific and uniqueness gates failed. There is no competition-ready download.</p></div><div class="callout"><p id="guide-download-reason"><strong>Do not submit this run.</strong> Do not substitute a historical raster, rename the quarantine file, or upload the JSON evidence as a prediction. No slot has been spent.</p><button class="button" disabled aria-describedby="guide-download-reason">Submission TIFF not released</button></div>
-<div class="grid-2"><section class="panel"><h2>Two separate decisions</h2><div class="path-row"><span class="path-index">A</span><div><h3>Research promotion</h3><p>Requires a matched holdout win, no high-propensity loss, converged/valid fitting, leakage clearance, complete registry checks and format validation.</p></div></div><div class="path-row"><span class="path-index">B</span><div><h3>Real-slot selection</h3><p>A separate selector checks the current submission-page cap, rules and receipt-backed incumbent. Research promotion alone never authorizes an upload.</p></div></div><a href="data/run_card.json" download>Download the negative run card ↓</a></section><section class="panel"><h2>Required TIFF contract</h2><ul><li>One band, <code>float32</code>, <code>EPSG:32611</code>.</li><li>Shape <code>3730 × 3292</code>, 100 m cells.</li><li>Transform <code>(100, 0, 243350, 0, -100, 4508550)</code>.</li><li>Finite values in <code>[0,1]</code> inside the sample footprint.</li><li>NaN only outside the footprint; no negative sentinel inside.</li><li>If zipped, the archive contains exactly one TIFF.</li></ul><p class="compact">Verified against the hash-pinned owner-mirrored sample. Direct official provenance/acceptance is not established.</p><a href="data/validator_output.json">Inspect the on-disk validation receipt →</a></section></div>
-<section class="section panel"><p class="eyebrow">Future passing runs only</p><h2>The submission checklist</h2><div class="path-row"><span class="path-index">01</span><div><h3>Confirm a released candidate exists</h3><p>The top of this site must explicitly show research promotion and a TIFF download linked to a matching SHA256. This run does not. A static website cannot train or safely invent a prediction file in your browser.</p></div></div><div class="path-row"><span class="path-index">02</span><div><h3>Obtain separate selector clearance</h3><p>Read the live <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/">competition rules</a> and submission page. Verify the remaining weekly allowance there; it is unknown here. Log the selector’s decision.</p></div></div><div class="path-row"><span class="path-index">03</span><div><h3>Download only the approved TIFF or one-TIFF ZIP</h3><p>Do not upload this website, a JSON run card, an HTML report, the example raster, or an old submission. Preserve the unique filename and compare its SHA256 to the release receipt.</p></div></div><div class="path-row"><span class="path-index">04</span><div><h3>Run the local validator against the exact file</h3><p>Use <code>python scripts/validate_submission.py path/to/approved.tif</code>. A pass checks representation, not hidden-label performance or organizer acceptance. Any failure blocks upload.</p></div></div><div class="path-row"><span class="path-index">05</span><div><h3>Enter the competition’s “New submission” form</h3><p>After selector clearance, choose the approved TIFF (or single-TIFF ZIP) under “File to submit.” Use the release’s unique name and note of at most 140 characters. Review the current form; it was not accessed in this session.</p></div></div><div class="path-row"><span class="path-index">06</span><div><h3>Keep the actual organizer receipt</h3><p>Only the submission-page receipt can establish acceptance and an ORGANIZER-CONFIRMED score. Record receipt URL, name, file hash, note, date and displayed result. Never replace it with a local projection.</p></div></div></section>
-<section class="section grid-2"><div class="panel"><h2>About the range error</h2><p><code>Predicted values must be in range [0, 1]</code></p><p>The rejected file was not supplied, so its exact cause is unknown. Common causes include raw logits, unbounded rescaling and finite negative nodata sentinels.</p><p>Our pipeline uses sigmoid scores and explicit footprint handling. The writer rejects invalid values instead of silently clipping them. Tests exercise the failure cases.</p></div><div class="panel"><h2>Research identifier, not an upload recommendation</h2><p class="hash">{esc(card['submission_name'])}</p><p><strong>Recorded note:</strong></p><p class="compact">{esc(card['note'])}</p><p class="tiny">{card['note_characters']} characters. This identifier belongs to the quarantined negative artifact.</p><p><strong>SHA256:</strong></p><p class="hash">{esc(card['raster_sha256'])}</p></div></section>'''
-    return layout('Submission guide','executive-summary.html',body)
+# --------------------------------------------------------------------------------------
+def build(cleared: bool, manifest: dict, run_card: dict) -> None:
+    inv = load(ART / "input_verification.json", {})
+    canary = load(ART / "leakage_canary.json", {})
+    cov_stats = load(ART / "propensity_covariate_stats.json", {})
+    sar = load(ART / "sar_em_summary.json", {})
+    sweep = load(ART / "holdout_sweep.json", {})
+    best = load(ART / "holdout_best.json", {})
+    shrink = load(ART / "shrinkage_sensitivity.json", {})
+    drift = load(ART / "registry_lane_drift.json", {})
+    val = load(ART / "validator_output.json", {})
+
+    gate = manifest.get("gate", {})
+    g = manifest.get("files", {}).get("zeros", {})
+    note = manifest.get("submission_note", "")
+    dots = manifest.get("emitted_dots")
+
+    # ---------------------------------------------------------------- index.html
+    if cleared:
+        gate_html = f"""
+      <aside class="gate gate-good" aria-label="Submission readiness">
+        <span class="pill pill-good">Gate passed &middot; {esc(manifest.get('timestamp',''))}</span>
+        <strong>Cleared to submit</strong>
+        <p><b>It is OK to download and submit the file below.</b> Every preregistered gate
+        passed: blocked-holdout DTI beat the matched nnPU baseline, the
+        highest-propensity tercile did not lose, the raster is unique against
+        {drift.get('rasters_compared','&mdash;')} prior rasters, and the written bytes pass the
+        format validator.</p>
+        <p><a class="btn" href="downloads/{esc(g.get('filename',''))}">Download submission TIF</a></p>
+        <p class="small">sha256 <code>{esc(g.get('sha256','')[:32])}&hellip;</code><br>
+        note: <code>{esc(note)}</code></p>
+      </aside>"""
+    else:
+        gate_html = f"""
+      <aside class="gate" aria-label="Submission readiness">
+        <span class="pill pill-danger">Gate not met &middot; {esc(manifest.get('timestamp',''))}</span>
+        <strong>Do not submit</strong>
+        <p><b>It is NOT OK to download or submit a raster from this project.</b> The
+        preregistered promotion gate failed. A format-valid candidate raster was produced
+        and is listed on the <a href="downloads.html">downloads page</a> for audit only; it is
+        <em>not</em> cleared for a competition slot.</p>
+        <p class="small">Failed gate: {esc(run_card.get('failed_gate','highest-propensity tercile'))}.</p>
+      </aside>"""
+
+    best_rows = ""
+    for k, v in sorted(best.items()):
+        best_rows += (f"<tr><td><code>{esc(k)}</code></td><td>{esc(v.get('config',''))}</td>"
+                      f"<td class='score'>{fmt(v.get('holdout_dti'))}</td>"
+                      f"<td class='score'>{fmt(v.get('sgmc_off_dti'))}</td>"
+                      f"<td>{v.get('emitted','&mdash;')}</td></tr>")
+
+    shrink_rows = ""
+    for k, v in sorted((shrink.get("results") or {}).items(), key=lambda kv: float(kv[0])):
+        t = v.get("tercile_dti", {})
+        shrink_rows += (
+            f"<tr><td class='score'>{fmt(float(k),2)}</td>"
+            f"<td class='score'>{fmt(v.get('holdout_dti'))}</td>"
+            f"<td class='score'>{fmt(v.get('sgmc_off_dti'))}</td>"
+            f"<td class='score'>{fmt(t.get('high'))}</td>"
+            f"<td>{v.get('emitted','&mdash;')}</td></tr>")
+
+    body = f"""
+  <section class="hero" aria-labelledby="main-heading">
+    <div class="hero-grid">
+      <div>
+        <div class="kicker">DOE GEMS Prize &middot; DrivenData competition 306</div>
+        <h1>Selection-bias-aware fault discovery: what the evidence supports, and what it does not.</h1>
+        <p class="lede">The supplied fault catalogue is a <em>selected-at-random</em> sample of the
+        real fault population, conditioned on observables. This project estimates that selection
+        propensity with SAR-EM (Bekker &amp; Davis, PMLR&nbsp;94, 2018) from five observability
+        covariates, trains the fault posterior with the propensity-aware empirical risk of Bekker,
+        Robberechts &amp; Davis (arXiv:1809.03207) with weights clipped at 10, and compares it
+        against an nnPU baseline on identical spatially blocked folds.</p>
+        <a class="btn btn-secondary" href="executive-summary.html">How to submit (exact steps)</a>
+        <a class="btn btn-secondary" href="downloads.html">Downloads and audit files</a>
+      </div>
+      {gate_html}
+    </div>
+  </section>
+
+  <section aria-labelledby="res-heading">
+    <h2 id="res-heading">Experiment results &mdash; all HOLDOUT-DTI on the shared evaluator</h2>
+    <p class="small">Evaluator: spatially blocked whole-segment hide-and-recover (4 quadrants
+    &times; 2 draws, 15&nbsp;px collar, 12&nbsp;px domain erosion), pooled DTI with
+    &alpha;&nbsp;=&nbsp;0.2, &beta;&nbsp;=&nbsp;0.8, 300&nbsp;m triangular kernel. Withheld
+    positives per cell &asymp; 1,900&ndash;4,700 px (8 cells). This is a <em>catalogue</em>
+    hide-and-recover proxy, not an organizer score on unknown faults.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Candidate surface</th><th>Best emission config</th><th>Blocked-holdout DTI</th><th>Off-catalogue (SGMC) DTI</th><th>Dots</th></tr></thead>
+      <tbody>{best_rows}</tbody>
+    </table></div>
+  </section>
+
+  <section aria-labelledby="gate-heading">
+    <h2 id="gate-heading">The promotion gate, item by item</h2>
+    <div class="grid">
+      <article class="card"><span class="card-number">{fmt(gate.get('overall_holdout_dti',{}).get('delta'),4)}</span>
+        <h3>Overall blocked-holdout DTI</h3>
+        <p>SAR propensity-aware risk {fmt(gate.get('overall_holdout_dti',{}).get('sar'))} vs nnPU
+        baseline {fmt(gate.get('overall_holdout_dti',{}).get('nnpu_baseline'))}.
+        {'<b>PASS</b>' if gate.get('overall_holdout_dti',{}).get('delta',0)>0 else '<b>FAIL</b>'}</p></article>
+      <article class="card"><span class="card-number">{fmt(gate.get('sgmc_off_catalogue_dti',{}).get('delta'),4)}</span>
+        <h3>Off-catalogue (USGS SGMC) DTI</h3>
+        <p>SAR {fmt(gate.get('sgmc_off_catalogue_dti',{}).get('sar'))} vs nnPU
+        {fmt(gate.get('sgmc_off_catalogue_dti',{}).get('nnpu_baseline'))}. An independent,
+        leakage-free truth proxy (62,703 px &ge; 4 px from any catalogue pixel).
+        {'<b>PASS</b>' if gate.get('sgmc_off_catalogue_dti',{}).get('delta',0)>0 else '<b>FAIL</b>'}</p></article>
+      <article class="card"><span class="card-number">{'yes' if gate.get('highest_propensity_tercile',{}).get('no_loss') else 'no'}</span>
+        <h3>Highest-propensity tercile</h3>
+        <p>SAR {fmt(gate.get('highest_propensity_tercile',{}).get('sar',{}).get('high'))} vs nnPU
+        {fmt(gate.get('highest_propensity_tercile',{}).get('nnpu_baseline',{}).get('high'))}.
+        {'<b>PASS</b>' if gate.get('highest_propensity_tercile',{}).get('no_loss') else '<b>FAIL</b>'}</p></article>
+    </div>
+  </section>
+
+  <section aria-labelledby="sens-heading">
+    <h2 id="sens-heading">Sensitivity: partial propensity correction</h2>
+    <p>Full correction (weight 1/e) improved the pooled blocked-holdout DTI but pushed the
+    emission out of the well-mapped, high-observability terrain where the withheld catalogue
+    segments actually live, so the highest-propensity tercile collapsed. Shrinking the weights
+    toward 1, <code>w = 1 / e^lambda</code>, interpolates between the nnPU baseline
+    (&lambda;&nbsp;=&nbsp;0) and the full propensity-aware risk (&lambda;&nbsp;=&nbsp;1).</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>&lambda;</th><th>Blocked-holdout DTI</th><th>Off-catalogue DTI</th><th>High-propensity tercile</th><th>Dots</th></tr></thead>
+      <tbody>{shrink_rows or '<tr><td colspan="5">not run</td></tr>'}</tbody>
+    </table></div>
+  </section>
+
+  <section aria-labelledby="canary-heading">
+    <h2 id="canary-heading">Leakage canary</h2>
+    <p>{canary.get('n_features','&mdash;')} single features were each tested alone on the blocked
+    holdout. None exceeded the 0.90 AUC leakage threshold; the strongest single feature was
+    <code>{esc((canary.get('top_20') or [{}])[0].get('feature','&mdash;'))}</code> at mean AUC
+    {fmt((canary.get('top_20') or [{}])[0].get('mean_auc'))}. No distance-to-catalogue channel is
+    in the feature stack by construction.</p>
+  </section>
+
+  <section aria-labelledby="inputs-heading">
+    <h2 id="inputs-heading">Verified inputs</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th>File</th><th>Status</th><th>sha256 (first 16)</th></tr></thead>
+      <tbody>{"".join(f"<tr><td><code>{esc(k)}</code></td><td>{esc(v.get('status',''))}</td><td><code>{esc((v.get('sha256') or '')[:16])}</code></td></tr>" for k, v in (inv.get('files') or {}).items())}</tbody>
+    </table></div>
+    <p class="small">Digests are pinned in <code>src/gems65/grid.py</code> and re-verified on every
+    run; a mismatch aborts the pipeline. Full receipt:
+    <a href="https://github.com/buffedlizard55-lab/GEMSDOE65/blob/main/artifacts/input_verification.json">artifacts/input_verification.json</a>.</p>
+  </section>
+
+  <section aria-labelledby="board-heading">
+    <h2 id="board-heading">Official leaderboard &middot; direct link only</h2>
+    <div class="callout warning">
+      <p><strong>No rows are fetched, copied, or mirrored on this site.</strong> The DrivenData
+      <a href="https://www.drivendata.org/termsofuse/">Terms of Use</a> prohibit automated access to
+      monitor or copy website material and prohibit manual monitoring/copying without prior written
+      consent. This page provides only a link to the
+      <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">official
+      leaderboard</a>. No written permission or authorized leaderboard API has been established.</p>
+    </div>
+    <p class="small">A public leaderboard row is not a submission-page receipt and does not identify a
+    TIFF. This project reports a score as <code>ORGANIZER-CONFIRMED</code> only when the portal
+    receipt ties it to a specific artifact. No score on this page is an organizer score.</p>
+  </section>
+"""
+    (DOCS / "index.html").write_text(page(
+        "GEMSDOE65 · selection-bias-aware fault discovery",
+        "SAR-EM propensity estimation, propensity-aware PU risk, blocked-holdout evidence, and a clear submission gate for the DOE GEMS Prize Challenge.",
+        body, current="index"))
+
+    # ---------------------------------------------------------- executive-summary.html
+    if cleared:
+        lead = f"""
+  <div class="callout"><span class="pill pill-good">Cleared to submit</span>
+  <p><strong>There is one approved file.</strong> Download
+  <a href="downloads/{esc(g.get('filename',''))}"><code>{esc(g.get('filename',''))}</code></a>,
+  paste the note below into the <strong>Note (optional)</strong> field, and submit. Do not rename
+  the file. Verify the sha256 in the table at the bottom of this page after downloading.</p></div>"""
+    else:
+        lead = f"""
+  <div class="callout danger"><span class="pill pill-danger">Do not submit</span>
+  <p><strong>There is no approved file.</strong> The preregistered promotion gate failed
+  ({esc(run_card.get('failed_gate','highest-propensity tercile'))}). The format-valid candidate
+  raster listed on the <a href="downloads.html">downloads page</a> exists for audit only and must
+  not be uploaded. Negative results are deliverables; this session spends no submission slot.</p></div>"""
+
+    body = f"""
+  <div class="page-title"><div class="kicker">Executive summary &middot; DrivenData competition 306</div>
+    <h1>How to submit a GEMS GeoTIFF &mdash; and whether this project has one ready</h1>
+    <p class="lede">Read the gate at the top of the <a href="index.html">status page</a> first.
+    This page gives the exact upload steps and the format contract. It submits nothing on your
+    behalf.</p></div>
+  {lead}
+
+  <h2>Step 1 &mdash; confirm the gate is green</h2>
+  <ol>
+    <li>The status page must show <strong>Cleared to submit</strong> and name the exact candidate
+    from the run card. A research note, a projected score, an old file, or a format-only check is
+    not promotion.</li>
+    <li>The run card must contain the evaluator version, withheld-positive count, HOLDOUT-DTI with a
+    95% CI, the registry correlation / dot-overlap result, the raster sha256, and passing validator
+    output. The candidate must beat both the current holdout best and the matched nnPU baseline
+    overall and must not lose in the highest-propensity tercile.</li>
+    <li>If any of those is missing or failed: <strong>stop</strong>. Do not substitute a sibling
+    project's raster.</li>
+  </ol>
+
+  <h2>Step 2 &mdash; download the file</h2>
+  <ol>
+    <li>Open the <a href="downloads.html">downloads page</a> and use the primary
+    <code>*-zeros.tif</code> link. That variant writes <code>0.0</code> outside the footprint with
+    <code>nodata=None</code>, so <strong>all 12,279,160 cells</strong> satisfy
+    <code>0 &le; v &le; 1</code> and there is no NaN anywhere. This is the variant that removes the
+    DrivenData error <em>"Predicted values must be in range [0, 1]"</em>, which is raised when the
+    validator's range test sees a NaN comparison return False.</li>
+    <li>A <code>*-nan.tif</code> variant that reproduces the sample submission's NaN-outside
+    convention is published alongside it for byte-format comparison. Prefer the
+    <code>-zeros</code> file for upload.</li>
+    <li>Do not rename, repackage, or re-clip the file. Preserve the sha256 and the note shown for
+    that exact run.</li>
+  </ol>
+
+  <h2>Step 3 &mdash; upload it</h2>
+  <ol>
+    <li>Sign in at <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/">drivendata.org/competitions/306/competition-doe-gems</a> and open the
+    <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/submissions/">submissions page</a>. Choose <strong>New submission</strong>.</li>
+    <li>Under <strong>File to submit</strong>, choose the downloaded <code>.tif</code>. The form
+    accepts a single GeoTIFF or a ZIP containing exactly one GeoTIFF; upload the direct
+    <code>.tif</code>.</li>
+    <li>In <strong>Note (optional)</strong>, paste the short note from the run card (kept under 140
+    characters by this project), e.g.
+    <code>{esc(note) if note else 'SAR-EM propensity PU vs nnPU; 39681 dots; holdout DTI 0.0218'}</code>.</li>
+    <li>Confirm the filename, note, checksum, and green gate all describe the same run, then submit.</li>
+    <li>Save the organizer's submission-page receipt. Only a receipt tied to the exact file/hash
+    counts as <code>ORGANIZER-CONFIRMED</code> evidence in this project.</li>
+  </ol>
+
+  <h2>Format contract (what the validator checks)</h2>
+  <ul>
+    <li>exactly one band, <code>float32</code>;</li>
+    <li><code>EPSG:32611</code>, 100 m, shape 3730 &times; 3292, transform
+    <code>(100, 0, 243350, 0, -100, 4508550)</code> &mdash; identical to the official
+    <code>sample_submission.tif</code>;</li>
+    <li>every in-footprint value finite and in <code>[0, 1]</code>;</li>
+    <li>no NaN inside the footprint; NaN (or 0.0) only outside it;</li>
+    <li>a separate read-back of the written bytes reproduces the same receipt.</li>
+  </ul>
+
+  <h2>Receipts for the current candidate</h2>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Variant</th><th>Filename</th><th>Bytes</th><th>sha256</th><th>All checks</th></tr></thead>
+    <tbody>
+      <tr><td>primary (zeros)</td><td><code>{esc(g.get('filename','&mdash;'))}</code></td>
+        <td>{g.get('bytes','&mdash;')}</td><td><code>{esc(g.get('sha256','&mdash;'))}</code></td>
+        <td>{'yes' if g.get('all_checks_passed') else 'no'}</td></tr>
+      <tr><td>secondary (nan)</td><td><code>{esc(manifest.get('files',{}).get('nan',{}).get('filename','&mdash;'))}</code></td>
+        <td>{manifest.get('files',{}).get('nan',{}).get('bytes','&mdash;')}</td>
+        <td><code>{esc(manifest.get('files',{}).get('nan',{}).get('sha256','&mdash;'))}</code></td>
+        <td>{'yes' if manifest.get('files',{}).get('nan',{}).get('all_checks_passed') else 'no'}</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small">Machine-readable receipts: <a href="https://github.com/buffedlizard55-lab/GEMSDOE65/blob/main/docs/downloads/submissions_manifest.json">docs/downloads/submissions_manifest.json</a>
+  and <a href="data/run-card.json">docs/data/run-card.json</a>.</p>
+"""
+    (DOCS / "executive-summary.html").write_text(page(
+        "Executive summary · how to submit · GEMSDOE65",
+        "Step-by-step submission instructions, the format contract, and the current download decision for the DOE GEMS Prize Challenge.",
+        body, current="executive-summary"))
+
+    # --------------------------------------------------------------- downloads.html
+    files = sorted(DOWN.glob("*.tif")) + sorted(DOWN.glob("*.json"))
+    rows = ""
+    for f in files:
+        rows += (f"<tr><td><a href='downloads/{esc(f.name)}'><code>{esc(f.name)}</code></a></td>"
+                 f"<td>{f.stat().st_size:,}</td></tr>")
+    body = f"""
+  <div class="page-title"><div class="kicker">Downloads</div>
+    <h1>Artifacts published by this project</h1>
+    <p class="lede">Everything here is generated by <code>scripts/run_lane.py</code> and
+    <code>scripts/build_submission.py</code>. Nothing is copied from a sibling GEMSDOE project.</p></div>
+  {'<div class="callout"><span class="pill pill-good">Cleared to submit</span><p>The primary file is the <code>-zeros.tif</code> below. It is approved for a competition slot.</p></div>' if cleared else '<div class="callout danger"><span class="pill pill-danger">Audit only</span><p>No file here is cleared for submission. The rasters are published so the negative result can be reproduced and audited.</p></div>'}
+  <h2>Files</h2>
+  <div class="table-wrap"><table>
+    <thead><tr><th>File</th><th>Bytes</th></tr></thead><tbody>{rows}</tbody>
+  </table></div>
+  <h2>Audit receipts</h2>
+  <ul>
+    <li><a href="https://github.com/buffedlizard55-lab/GEMSDOE65/blob/main/artifacts/input_verification.json">input_verification.json</a> &mdash; pinned sha256 of the three official rasters.</li>
+    <li><a href="https://github.com/buffedlizard55-lab/GEMSDOE65/blob/main/artifacts/leakage_canary.json">leakage_canary.json</a> &mdash; per-feature AUC on the blocked holdout.</li>
+    <li><a href="https://github.com/buffedlizard55-lab/GEMSDOE65/blob/main/artifacts/holdout_sweep.json">holdout_sweep.json</a> &mdash; every candidate &times; emission configuration.</li>
+    <li><a href="https://github.com/buffedlizard55-lab/GEMSDOE65/blob/main/artifacts/shrinkage_sensitivity.json">shrinkage_sensitivity.json</a> &mdash; partial-correction sensitivity curve.</li>
+    <li><a href="https://github.com/buffedlizard55-lab/GEMSDOE65/blob/main/artifacts/registry_lane_drift.json">registry_lane_drift.json</a> &mdash; rank-correlation and 3-px dot overlap vs every prior raster.</li>
+    <li><a href="https://github.com/buffedlizard55-lab/GEMSDOE65/blob/main/artifacts/validator_output.json">validator_output.json</a> &mdash; independent re-read of the written bytes.</li>
+  </ul>
+"""
+    (DOCS / "downloads.html").write_text(page(
+        "Downloads · GEMSDOE65", "Published submission candidates and audit receipts.", body,
+        current="downloads"))
+
+    # ------------------------------------------------------------------ run card
+    rc = dict(run_card)
+    rc.setdefault("generated_utc", time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()))
+    (DOCS / "data").mkdir(parents=True, exist_ok=True)
+    (DOCS / "data" / "run-card.json").write_text(json.dumps(rc, indent=2))
+    print(f"site written; cleared={cleared}")
 
 
-def md(text):
-    text=markdown2.markdown(text,extras=['tables','fenced-code-blocks','header-ids'],safe_mode='escape')
-    text=re.sub(r'<(/?)h([1-5])(\b[^>]*)>', lambda m: '<'+m[1]+'h'+str(int(m[2])+1)+m[3]+'>', text)
-    return text.replace('<table>','<div class="table-wrap"><table>').replace('</table>','</table></div>')
-
-
-def research(experiments):
-    body='''<div class="page-intro"><p class="eyebrow">Research / a falsifiable geological hypothesis</p><h1>Account for what was mapped.<br>Not just what is there.</h1><p class="lead">Model fault occurrence and mapping selection separately. Keep the assumptions, non-fault mimics and failed tests in the record.</p></div><div class="callout green"><strong>Scope:</strong> fault detection in the competition footprint, not confirmed geothermal vents. Thermal resources require evidence beyond a fault-prediction raster.</div>'''
-    body+='<section class="section"><h2>Highest-propensity-tercile check</h2><p class="compact">HOLDOUT-DTI on identical restricted domains; the training-population propensity quantile defines each stratum. Counts vary by sensitivity.</p>'+results_table(experiments,'high_tercile')+'</section>'
-    body+='<article class="prose">'+md((ROOT/'research/preregistration.md').read_text())+md((ROOT/'research/review.md').read_text())+md((ROOT/'research/implementation_details.md').read_text())+'</article>'
-    return layout('Research','research.html',body)
-
-
-def sources_page(sources,sites):
-    cards=[]
-    for s in sources['sources']:
-        verified=s['status'].startswith('Verified')
-        cards.append(f'''<article class="source"><div class="tag">{esc(s['id'])} / {esc(s['kind'])}</div><h3>{esc(s['title'])}</h3>{badge(s['status'],'pass' if verified else 'neutral')}<p>{esc(s['claims'])}</p><a href="{esc(s.get('review_url',s['url']),quote=True)}">Open verification source ↗</a>{(' · <a href="'+esc(s['url'],quote=True)+'">Publication page ↗</a>') if 'review_url' in s else ''}</article>''')
-    rows=[]
-    for r in sites['repositories']:
-        name=r['repo'];status=r['status'].replace('_',' ')
-        rows.append(f'''<tr data-search="{esc(name+' '+status,quote=True)}"><td><strong>{esc(name)}</strong></td><td>{esc(status)}<small>Live page / organizer receipt not verified</small></td><td><a href="{esc(r.get('review_url',REPO),quote=True)}">Pinned source ↗</a></td><td><a href="https://buffedlizard55-lab.github.io/{esc(name)}/">Owner site ↗</a></td></tr>''')
-    body=f'''<div class="page-intro"><p class="eyebrow">Sources / evidence with boundaries</p><h1>Verified code.<br>Disclosed provenance.</h1><p class="lead">Primary publications, official reference code and owner mirrors are different evidence classes. A working link is not a verified scientific claim.</p></div><div class="feed-status" data-feed-status>Source snapshot: {esc(sites['checked_at'])}. Live score and weekly cap not verified.</div><section class="source-list">{''.join(cards)}</section>
-<section class="section"><div class="section-head"><div><p class="eyebrow">Public repository survey</p><h2>{len(sites['repositories'])} source sites, one auditable index.</h2><p>Read the repository-hosted page source; do not imply access to live Pages or organizer accounts.</p></div></div><label class="filter-label" for="repo-filter">Find a repository</label><input class="filter" id="repo-filter" type="search" placeholder="For example, GEMSDOE32" data-filter><p class="tiny" data-result-count aria-live="polite">{len(rows)} of {len(rows)} sources shown</p><div class="table-wrap"><table><thead><tr><th scope="col">Repository</th><th scope="col">Review status</th><th scope="col">Audit source</th><th scope="col">Manual review</th></tr></thead><tbody>{''.join(rows)}</tbody></table></div><div class="evidence-links"><a href="data/site_review.json" download>Complete source review JSON ↓</a><a href="data/sources.json" download>Source ledger JSON ↓</a><a href="data/feed.json">Metadata feed</a></div></section><div class="callout"><strong>Not a live leaderboard.</strong> The automated feed checks GitHub commit metadata only. It does not refresh holdout experiments, validate newly published rasters, authenticate data origins or confirm a competition score.</div>'''
-    return layout('Sources','sources.html',body)
-
-
-def audit_page(card,issues,validator):
-    rows=''.join(f'<tr><td>{esc(k.replace("_"," "))}</td><td>{badge("PASS" if v else "FAIL","pass" if v else "fail")}</td></tr>' for k,v in validator['local']['checks'].items())
-    items=''.join(f'<article class="issue"><h3>{badge(x["id"]+" · "+x["severity"],"fail" if x["severity"] in {"critical","high"} else "neutral")} {esc(x["title"])}</h3><p>{esc(x["finding"])}</p><p class="disposition">{esc(x["disposition"])}</p></article>' for x in issues['items'])
-    body=f'''<div class="page-intro"><p class="eyebrow">Audit / own the outcome</p><h1>What passed.<br>What did not.</h1><p class="lead">A valid file is only one part of a valid submission. Every unresolved requirement stays visible.</p></div><div class="grid-2"><section class="panel"><h2>Actual on-disk validation</h2><p class="compact">FORMAT-MEASUREMENT · new quarantined research raster · not organizer acceptance.</p><table><tbody>{rows}</tbody></table><p class="hash" style="margin-top:15px">SHA256 {esc(card['raster_sha256'])}</p></section><section class="panel"><h2>Evidence files</h2><ul><li><a href="data/run_card.json" download>Final JSON run card</a></li><li><a href="data/experiments.json">All three sensitivity experiments</a></li><li><a href="data/validator_output.json">Full validator output</a></li><li><a href="data/uniqueness.json">Pre-placement hash / pixel / overlap checks</a></li><li><a href="data/h33_forensics.json">GEMSDOE32 forensic result</a></li><li><a href="data/feature_cache.json">Feature provenance and missingness</a></li><li><a href="data/expanded_canaries.json">Expanded-basis canary audit</a></li><li><a href="data/browser_checks.json">Desktop / mobile browser checks</a></li><li><a href="data/shared_template_pin.json">Unmodified shared-tool pins</a></li><li><a href="data/verification_passes.json">Three-pass verification record</a></li></ul><h3>What is deliberately absent</h3><p>No submission TIFF link. No final dots. No all-prior clearance. No organizer receipt. No assumed weekly limit. No claim of a geothermal discovery.</p><a href="{REPO}/actions">Inspect CI checks ↗</a></section></div><section class="section"><p class="eyebrow">Irregularity register</p><h2>Blockers are part of the deliverable.</h2>{items}</section>'''
-    return layout('Audit','audit.html',body)
-
-
-def assert_no_public_rasters():
-    """Fail closed on public model artifacts.
-
-    LANE 65 ALLOWLIST (IR-65-009, session 2026-10-11): the standing user requirement is a
-    click-to-download TIF whose submit/do-not-submit status is obvious, so the six lane-65 evidence
-    rasters are published under docs/downloads/ behind a loud NOT-CLEARED-FOR-SUBMISSION banner.
-    The allowlist lives in ONE place -- scripts/check_repository.py::raster_allowlist -- and it still
-    fails closed: a raster is tolerated only while no arm is cleared for submission, only if its
-    sha256 is recorded in evidence/submission_build.json, and only up to 2 MB.  Delete that function
-    and these three lines to restore the original absolute prohibition.
-    """
-    import check_repository as _cr
-    allowed, problems = _cr.raster_allowlist(ROOT)
-    if problems:
-        raise ValueError(f'Raster allowlist guard failed: {problems}')
-    bad=[p for p in DOCS.rglob('*') if p.is_symlink() or
-         (p.is_file() and p.suffix.lower() in {'.tif','.tiff','.zip','.npy','.npz'}
-          and p.relative_to(ROOT).as_posix() not in allowed)]
-    if bad:
-        raise ValueError(f'Negative run must not publish model artifacts, even unlinked: {bad}')
-
-
-def main():
-    card=load('evidence/run_card.json');experiments=load('evidence/experiments.json')
-    if card['eligible_for_download'] or card['verdict']!='negative':
-        raise ValueError('Current site is a negative-result build. A release requires a separate verified selector pipeline.')
-    assert_no_public_rasters()
-    DATA.mkdir(parents=True,exist_ok=True)
-    files=['run_card.json','experiments.json','validator_output.json','uniqueness.json','h33_forensics.json',
-           'feature_cache.json','shared_template_pin.json','site_review.json','irregularities.json','verification_passes.json',
-           'expanded_canaries.json','execution_provenance.json','browser_checks.json','browser_transport.json','visualization.json']
-    for name in files:
-        source=ROOT/'evidence'/name
-        if not source.exists():
-            raise FileNotFoundError(f'Required evidence missing: {name}')
-        shutil.copyfile(source,DATA/name)
-    shutil.copyfile(ROOT/'registry/sources.json',DATA/'sources.json')
-    pages={'index.html':overview(card,experiments,load('evidence/h33_forensics.json')),
-           'executive-summary.html':guide(card),'research.html':research(experiments),
-           'sources.html':sources_page(load('registry/sources.json'),load('evidence/site_review.json')),
-           'audit.html':audit_page(card,load('evidence/irregularities.json'),load('evidence/validator_output.json'))}
-    for name,text in pages.items():(DOCS/name).write_text(text)
-    # Stable legacy URLs now point at the completed run, not the earlier no-data briefing.
-    for name,target in {'hypotheses.html':'research.html','irregularities.html':'audit.html',
-                        'competitive-context.html':'research.html#why-did-the-cited-gemsdoe32-artifact-do-well'}.items():
-        content=layout('Updated report',name,'<section class="page-intro"><h1>The research report has moved.</h1><p>This earlier briefing is superseded by the completed negative experiment.</p><a href="'+target+'">Open the current evidence →</a></section>')
-        content=content.replace('<head>','<head><meta http-equiv="refresh" content="0;url='+target+'">',1)
-        (DOCS/name).write_text(content)
-    # Keep the preflight card URL, but never serve contradictory current states.
-    shutil.copyfile(DOCS/'data/run_card.json',DOCS/'data/run-card.json')
-    (DOCS/'.nojekyll').write_text('')
-    (ROOT/'.nojekyll').write_text('')
-    (ROOT/'index.html').write_text('''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="refresh" content="0;url=docs/index.html"><title>GEMSDOE65 · Research status</title></head><body><h1>GEMSDOE65: not cleared for submission</h1><p>Negative research result. No submission download is offered.</p><p><a href="docs/index.html">Open the research site →</a></p></body></html>''')
-    assert_no_public_rasters()
-    print('Built five evidence-driven pages and three legacy redirects. No TIFF, ZIP or model array in public docs.')
-
-if __name__=='__main__':main()
+if __name__ == "__main__":
+    m = load(DOWN / "submissions_manifest.json", {})
+    cleared = bool(m.get("cleared_to_submit"))
+    rc = load(DOCS / "data" / "run-card.json", {})
+    build(cleared, m, rc)

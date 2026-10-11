@@ -20,7 +20,7 @@ from scipy.stats import spearmanr
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from gems65 import propensity as prop          # noqa: E402
+from gems65 import propensity_sar2inv as prop          # noqa: E402
 from gems65.anchor import C_GRID, e_from_q, fit_anchor   # noqa: E402
 
 

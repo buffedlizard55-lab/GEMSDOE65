@@ -16,7 +16,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from gems65 import propensity as prop          # noqa: E402
+from gems65 import propensity_sar2inv as prop          # noqa: E402
 
 
 def _population(rng, n=200_000, d=4, pi=0.03):

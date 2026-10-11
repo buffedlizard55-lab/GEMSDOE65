@@ -93,8 +93,13 @@ fixed, and what remains open for the owner. Nothing here is silently waived.</p>
 </tr>
 <tr>
 <td>IR-65B-PARALLEL-01</td>
-<td>A second session ran the same lane and merged first; both verdicts are negative</td>
+<td>Four sessions ran the same lane; three merged while this branch was open</td>
 <td><strong>resolved by integration</strong>, not by overwriting</td>
+</tr>
+<tr>
+<td>IR-65B-MAINREGRESSION-01</td>
+<td><code>main</code> is red: later sessions replaced <code>pu.py</code> and <code>build_site.py</code> and dropped APIs their own earlier tests require</td>
+<td><strong>measured, reported, not silently patched</strong></td>
 </tr>
 </tbody>
 </table>
@@ -338,8 +343,8 @@ under <code>docs/lane65b/</code> with its own artefact, run card and evidence fi
 two lanes' artefacts is reported below.</p>
 <p><strong>Cross-session drift check</strong> (the protocol's duplicate test, applied to the two lanes' published
 rasters rather than to the registry at large; receipt <code>evidence/cross_session_drift.json</code>,
-script <code>scripts/cross_session_drift.py</code>): against all <strong>6</strong> rasters the sibling
-session published, worst Spearman ρ = <strong>0.0170</strong> (limit 0.9),
+script <code>scripts/cross_session_drift.py</code>): against all <strong>10</strong> rasters the three sibling
+sessions published, worst Spearman ρ = <strong>0.0170</strong> (limit 0.9),
 worst forward dot overlap = <strong>0.2873</strong> (limit
 0.7), worst Jaccard = <strong>0.0122</strong> (limit
 0.5) → <code>duplicate_by_any_limit = false</code>.
@@ -347,8 +352,73 @@ The informative number is the overlap: <strong>28.7 %</strong> of this lane's
 dots land within 300 m of the sibling lane's best-matching field — far above chance for two sparse
 38,000-dot fields on 5.17 M pixels, far below the duplicate threshold. Two independent
 implementations of the same lane agree on roughly a quarter of placements and disagree on the rest,
-which is consistent with both verdicts being negative for <em>different</em> reasons.</p></main>
-<footer>Built 2026-10-11 22:46 UTC from committed evidence
+which is consistent with both verdicts being negative for <em>different</em> reasons.</p>
+<hr />
+<h2 id="ir-65b-mainregression-01-main-was-already-red-before-this-branch-merged-reported-not-patched">IR-65B-MAINREGRESSION-01 — <code>main</code> was already red before this branch merged (reported, not patched)</h2>
+<p>Measured on 2026-10-11 by extracting <code>origin/main</code> (<code>5166ef9</code>) to a clean directory and running the
+same interpreter and the same commands on both trees:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><code>origin/main</code></th>
+<th>this branch after merging main</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>collection errors</td>
+<td>2 (<code>tests/test_pu.py</code>, <code>tests/test_canary.py</code>)</td>
+<td>2 — <strong>identical</strong></td>
+</tr>
+<tr>
+<td>failures (those two modules ignored)</td>
+<td>12</td>
+<td>12 — <strong>identical set</strong>, verified by <code>comm</code> on the sorted failure lists: zero main-only, zero branch-only</td>
+</tr>
+<tr>
+<td>passes (same invocation)</td>
+<td>93</td>
+<td>114 (= 93 + this session's 21)</td>
+</tr>
+<tr>
+<td><code>scripts/check_repository.py</code></td>
+<td>flags two published rasters whose sha256 is absent from <code>evidence/submission_build.json</code></td>
+<td><code>ok: true</code>, 340 tracked files, no problems</td>
+</tr>
+</tbody>
+</table>
+<p>Root causes, both cross-session clobbering rather than anything this lane did:</p>
+<ol>
+<li><code>src/gems65/pu.py</code> was replaced (commit <code>469ba44</code>, PR #14) by a version that no longer defines
+   <code>Design</code>, <code>posterior</code>, <code>logistic_objective</code>, <code>propensity_risk</code>, <code>nnpu_risk</code>, <code>weighted_quantile</code>,
+   <code>fit_sar</code> or <code>predict</code>. <code>src/gems65/canary.py</code> still does <code>from .pu import Design</code>, and
+   <code>tests/test_pu.py</code> / <code>tests/test_metric.py</code> still import those names — hence the 2 collection
+   errors and 5 of the 12 failures.</li>
+<li><code>scripts/build_site.py</code> was replaced by a version without <code>assert_no_public_rasters()</code>, which
+   <code>tests/test_publication.py</code> calls — hence the other 7 failures, including
+   <code>test_symlink_cannot_expose_quarantine</code> (<code>AttributeError: module 'build_site' has no attribute
+   'assert_no_public_rasters'</code>).</li>
+</ol>
+<p>What this session did about it: <strong>nothing inside their modules.</strong> Editing another session's <code>pu.py</code>
+or <code>build_site.py</code> to satisfy tests written against a superseded API would have been a guess about
+which of the two designs the owner wants; instead the two concrete, non-interpretive fixes were
+made and are recorded here:</p>
+<ul>
+<li>the two rasters published by PR #14
+  (<code>gems65-sar-em-propensity-half-20261011T223500Z-5e4660cd-{nan,zeros}.tif</code>) now have their
+  sha256 recorded in <code>evidence/submission_build.json</code> under
+  <code>arms.lane65d_*</code> with <code>OK_TO_DOWNLOAD_AND_SUBMIT: false</code> and a note saying which session produced
+  them, so the publication guard can verify bytes it did not create — this is what turned
+  <code>check_repository.py</code> green;</li>
+<li>one additive nav entry pointing at <code>docs/lane65b/</code> was added to their <code>NAV</code> template so this
+  session's pages are reachable from the canonical site and survive a rebuild.</li>
+</ul>
+<p><strong>Owner action requested:</strong> decide which <code>pu.py</code> and which <code>build_site.py</code> API is canonical, then
+restore the matching tests — or delete the superseded ones. Until then <code>main</code>'s CI is red for
+reasons unrelated to any lane's science, and four sessions' artefacts sit in one <code>docs/downloads/</code>
+behind one allowlist.</p></main>
+<footer>Built 2026-10-11 23:03 UTC from committed evidence
 receipts by <code>scripts/build_site.py</code>. Every number carries an evidence class.
 HOLDOUT-DTI is a local blocked-holdout measurement, never a leaderboard score.
 Core values: <b>Maximize P(Win)</b> · <b>Own the Outcome</b>.</footer>

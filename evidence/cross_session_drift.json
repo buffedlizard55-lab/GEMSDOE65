@@ -12,7 +12,7 @@
     "forward_overlap": 0.7,
     "jaccard": 0.5
   },
-  "n_comparators": 8,
+  "n_comparators": 10,
   "worst_spearman": 0.01695506185648723,
   "worst_spearman_on_dot_union": -0.9758157894736843,
   "worst_forward_overlap": 0.2873421052631579,
@@ -94,6 +94,32 @@
       "my_dots_within_3px_of_theirs": 0.2708421052631579,
       "their_dots_within_3px_of_mine": 0.3575263157894737,
       "jaccard_dot_sets": 0.011957071715799846,
+      "duplicate_by_rho": false,
+      "duplicate_by_overlap": false
+    },
+    {
+      "file": "gems65-sar-em-propensity-half-20261011T223500Z-5e4660cd-nan.tif",
+      "sha256": "939f93d5b6439e3f37d7763bd966027cc3bf894d27962e575613af7ed0e159b6",
+      "their_dots": 39802,
+      "spearman_full_footprint": -0.0012357515352016265,
+      "spearman_on_dot_union": -0.9936985702841202,
+      "n_dot_union": 77557,
+      "my_dots_within_3px_of_theirs": 0.07623684210526316,
+      "their_dots_within_3px_of_mine": 0.16197678508617658,
+      "jaccard_dot_sets": 0.0031589669533375452,
+      "duplicate_by_rho": false,
+      "duplicate_by_overlap": false
+    },
+    {
+      "file": "gems65-sar-em-propensity-half-20261011T223500Z-5e4660cd-zeros.tif",
+      "sha256": "b2e05f0b0d61a785d01cc9469462442fbf3b9b5bdc9a34c2abe0852fd66ec9dc",
+      "their_dots": 39802,
+      "spearman_full_footprint": -0.0012357515352016265,
+      "spearman_on_dot_union": -0.9936985702841202,
+      "n_dot_union": 77557,
+      "my_dots_within_3px_of_theirs": 0.07623684210526316,
+      "their_dots_within_3px_of_mine": 0.16197678508617658,
+      "jaccard_dot_sets": 0.0031589669533375452,
       "duplicate_by_rho": false,
       "duplicate_by_overlap": false
     },

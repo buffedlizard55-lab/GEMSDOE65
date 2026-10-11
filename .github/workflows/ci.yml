@@ -25,6 +25,11 @@ jobs:
           python-version: '3.11'
           cache: pip
       - run: python -m pip install -r requirements.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test public metadata UI and offline fallback without external requests
+        run: node tests/browser/feed-unit.cjs
       - name: Verify immutable template pins and build negative-result site
         run: python scripts/build_site.py
       - name: Unit, gradient, format, gate and publication tests

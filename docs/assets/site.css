@@ -5,3 +5,4 @@
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 /* Long primary-source URLs must wrap on narrow screens; data tables scroll locally. */
 .prose{overflow-wrap:anywhere;min-width:0}.table-wrap{max-width:100%;min-width:0}
+.feed-status[data-state="caution"]{background:#fff2e9;border-color:#d9ad77}.footer-nav{flex-wrap:wrap}

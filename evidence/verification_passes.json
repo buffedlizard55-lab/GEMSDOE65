@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-10-11T20:54:02.190647+00:00",
+  "checked_at": "2026-10-11T21:07:18.761413+00:00",
   "status": "Three local review passes complete; negative scientific verdict is unchanged",
   "passes": [
     {
@@ -22,23 +22,24 @@
         "144 expanded basis canaries passed without refitting",
         "Validator summary requires explicit named checks; cache identities verified",
         "Source feed revision comparison repaired",
-        "Desktop/mobile overflow fixed; no JS errors or TIFF/ZIP links"
+        "Desktop/mobile checks passed for all eight routes; bundled-browser proxy CA limitation and separately TLS-verified anonymous GitHub endpoint documented"
       ]
     },
     {
       "pass": 3,
       "status": "complete",
       "verified": [
-        "68 local tests passed",
-        "Five site pages: local links/fragments, JSON identity and negative publication checks passed",
+        "78 local tests passed after concurrent-main integration",
+        "Five site pages plus three legacy redirects: links/fragments, JSON identity and negative publication checks passed",
         "Original prompt archived in README; agent read-first agreement added",
         "Shared template source hashes remain unchanged",
-        "All scope limits and unperformed checks disclosed; no leaderboard promise or slot spent"
+        "All scope limits and unperformed checks disclosed; no leaderboard promise or slot spent",
+        "Retained prior planning/history, no-leaderboard policy and readiness tests; updated obsolete preflight-card assertions to the actual completed run"
       ]
     }
   ],
   "unit_tests": {
-    "tests": 68,
+    "tests": 78,
     "failures": 0,
     "errors": 0,
     "skipped": 0
@@ -47,5 +48,6 @@
   "geological_experiments": 3,
   "organizer_uploads": 0,
   "submission_ready": false,
-  "github_ci": "See pull-request checks; local review record is not a remote-CI receipt."
+  "github_ci": "See pull-request checks; local review record is not a remote-CI receipt.",
+  "browser_feed_unit_cases": 8
 }

@@ -105,6 +105,27 @@
       "title": "Preregistration detail gap",
       "finding": "The mechanism/scenarios/gates were written before fitting, but the prose did not spell out every solver/sample setting. The numeric 25-iteration cap was fixed in execution code.",
       "disposition": "Executed settings and original source hashes recorded separately. Do not call the numerical configuration fully preregistered or the EM result converged."
+    },
+    {
+      "id": "I16",
+      "severity": "medium",
+      "title": "Concurrent preflight-only main updates reconciled",
+      "finding": "PRs 1\u20133 changed main while this experiment ran, leaving contradictory preflight-only pages and a null run-card URL.",
+      "disposition": "Preserved historical briefs/card; kept access-policy/readiness tests; redirected legacy pages and made both current run-card URLs byte-identical. No earlier experiments or scores were invented."
+    },
+    {
+      "id": "I17",
+      "severity": "low",
+      "title": "Pages settings scope is restricted",
+      "finding": "Pages mode-change API returned 403 while the existing main:/ branch publisher remained enabled.",
+      "disposition": "Keep native branch publishing. Guard optional Actions deployment. Separate daily GitHub-only metadata commits to the assigned research branch; browser uses public Contents API with a dated fallback."
+    },
+    {
+      "id": "I18",
+      "severity": "low",
+      "title": "Bundled Chromium cannot verify the sandbox proxy certificate",
+      "finding": "Normal browser HTTPS attempted the public GitHub feed but correctly fell back to the local dated snapshot after a certificate-authority error.",
+      "disposition": "Anonymous endpoint independently TLS-verified with CORS response recorded. UI QA uses an explicitly recorded test-only HTTPS override; production code has no TLS bypass or credentials. Eight no-network tests cover fallback/scope behavior."
     }
   ]
 }

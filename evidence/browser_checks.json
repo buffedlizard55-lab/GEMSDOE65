@@ -1,5 +1,7 @@
 {
-  "checked_at": "2026-10-11T20:55:07.567Z",
+  "checked_at": "2026-10-11T21:04:42.777Z",
+  "sandbox_proxy_tls_override": true,
+  "transport_receipt": "browser_transport.json",
   "engine": "Chromium via Playwright",
   "viewports": [
     {
@@ -53,9 +55,33 @@
       "disabledDownload": true
     },
     {
+      "path": "hypotheses.html",
+      "status": 200,
+      "desktopOverflow": false,
+      "tifLinks": 0,
+      "h1Count": 1,
+      "disabledDownload": true
+    },
+    {
+      "path": "irregularities.html",
+      "status": 200,
+      "desktopOverflow": false,
+      "tifLinks": 0,
+      "h1Count": 1,
+      "disabledDownload": true
+    },
+    {
+      "path": "competitive-context.html",
+      "status": 200,
+      "desktopOverflow": false,
+      "tifLinks": 0,
+      "h1Count": 1,
+      "disabledDownload": true
+    },
+    {
       "sourceFilterVisibleRows": 1,
       "filterStatus": "1 of 62 sources shown",
-      "feed": "METADATA SNAPSHOT · 2026-10-11 20:35:39 UTC · 62 repositories checked · 1 changed since scientific review · 0 unavailable. No leaderboard or score verification."
+      "feed": "GITHUB METADATA SNAPSHOT · 2026-10-11 20:35:39 UTC · 62 repositories checked · 1 changed since scientific review · 0 unavailable. No leaderboard or score verification."
     },
     {
       "path": "index.html",
@@ -75,6 +101,18 @@
     },
     {
       "path": "audit.html",
+      "mobileOverflow": false
+    },
+    {
+      "path": "hypotheses.html",
+      "mobileOverflow": false
+    },
+    {
+      "path": "irregularities.html",
+      "mobileOverflow": false
+    },
+    {
+      "path": "competitive-context.html",
       "mobileOverflow": false
     }
   ],

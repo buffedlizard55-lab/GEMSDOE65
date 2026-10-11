@@ -10,3 +10,5 @@
 8. Keep raw data, cached arrays, prior rasters, and quarantine files out of Git. Keep deterministic manifests, code, and honest receipts in Git. Do not expose negative model artifacts through the public site.
 9. Run all tests, `scripts/build_site.py`, and the site integrity checker. Review in three passes. Keep next-session blockers explicit.
 10. Maximize P(Win) by preserving slots and measuring real improvement. Own the Outcome by verifying actual files and recording failures, not by overstating success.
+
+- Preserve the integrated no-leaderboard-scraping policy. Automated feed requests are GitHub repository metadata only. Earlier briefings are archived, not current run results.

@@ -14,3 +14,9 @@ artifacts/
 .env
 coverage/
 .DS_Store
+/data/
+/cache/
+/runs/
+/registry/rasters/
+.mypy_cache/
+*.tmp

@@ -44,11 +44,17 @@ OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 .venv/bin/python -m pytest -q
 .venv/bin/python -m http.server 8000 --bind 0.0.0.0 --directory docs
 ```
 
-The CI workflow runs the tests and static-site safety checks on each PR/push. The Pages workflow refreshes public GitHub commit metadata daily at 07:22 UTC and deploys only static public files. It cannot check organizer scores/caps, train, place candidates, or submit. Browser QA instructions are in `tests/browser/README.md`.
+The CI workflow runs tests and static-site safety checks on each PR/push. The existing `main:/` Pages publisher serves the static site; changing the Pages mode was permission-blocked. A separate workflow refreshes public GitHub commit metadata daily at 07:22 UTC and commits only `docs/data/feed.json` to this session’s `arena/f09c3103-gemsdoe65` branch. The browser reads that small public JSON via the GitHub API, with a dated local fallback; no token reaches the browser. Keep that branch to retain automatic feed updates. The Pages workflow only uses Actions deployment if the repository mode actually permits it. It cannot check organizer scores/caps, train, place candidates, or submit. Browser QA instructions are in `tests/browser/README.md`.
 
 The experiment runner is `scripts/run_experiments.py`. It **refuses to overwrite existing experiment evidence**. This session has already used the three-experiment budget. `scripts/finalize_run.py` reuses recorded predictions; it does not retrain. The CLI `scripts/validate_submission.py` delegates to the pinned shared validators. A static GitHub Pages site cannot train a model in the browser and does not manufacture an arbitrary TIFF when its scientific gate fails.
 
 Large raw inputs, caches, prior rasters, and quarantined outputs stay outside Git. Input and prior rasters are restored by immutable blob/hash pins; the model surface/TIFF is local-only, as explained below. No prior prediction enters `prepare_data.py` or the training runner. `vendor/template58` is an **unmodified, checksummed shared-template snapshot**, not a private metric/writer fork. A fresh checkout can reproduce source restoration and tests; it cannot recover the ignored research TIFF without the recorded model surface or a separately authorized reproducibility run. Do not confuse deterministic reproduction with a new hypothesis test.
+
+## Concurrent-session integration and access policy
+
+PRs #1–#3 updated `main` during the experiment. Their complete planning briefs and preflight card are preserved under `research/earlier-briefs/` and `evidence/history/`; they are historical, not the completed-run state. Legacy page URLs redirect to the current report. The existing presence audit and its tests are retained with the restored-cache/shared-tool paths added.
+
+This project **does not automate access to, scrape, monitor, or mirror the DrivenData leaderboard**. It links to the [official leaderboard](https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/) and [access terms](https://www.drivendata.org/termsofuse/). Any receipt verification must use an authorized access method. The earlier sessions reviewed the terms; this session did not independently access that host. The GitHub-only metadata feed is not a leaderboard feed.
 
 ## Scope, limitations, and next session
 

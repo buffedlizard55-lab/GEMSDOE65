@@ -17,3 +17,15 @@ archive into `.cache/browser/libs` and ran with
 were fetched from an unapproved host. Ordinary Linux desktop/CI images with these
 libraries already installed do not need this step. Screenshots are ignored scratch
 files, not new scientific evidence or a submission.
+
+## Sandbox HTTPS caveat
+
+The bundled Chromium does not trust this sandbox’s egress proxy CA. A normal
+HTTPS attempt exercised the dated local fallback, not a fresh feed. The public
+GitHub Contents endpoint was separately tested anonymously with system TLS
+verification and its `Access-Control-Allow-Origin: *` response recorded in
+`evidence/browser_transport.json`. For sandbox UI-only QA,
+`QA_SANDBOX_PROXY=1` sets Playwright `ignoreHTTPSErrors`; the receipt explicitly
+records this limitation. Production site JavaScript never disables certificate
+validation or sends credentials. `node tests/browser/feed-unit.cjs` covers eight
+remote/fallback/cache/scope cases without networking.

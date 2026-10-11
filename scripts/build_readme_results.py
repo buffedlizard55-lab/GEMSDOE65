@@ -61,7 +61,7 @@ def build() -> str:
     can, ci, rf = load("leakage_canary.json"), load("catalogue_identity.json"), \
         load("range_front_variants.json")
     if e1 is None or rc is None:
-        raise SystemExit("run scripts/run_lane.py e1b and scripts/make_submission.py first")
+        raise SystemExit("run scripts/run_lane_sar2inv.py e1b and scripts/make_submission.py first")
     dec, val, g = rc["ship_decision"], rc["validation"], rc["emission_geometry"]
     uq, two, prop = rc["uniqueness"]["summary"], rc["uniqueness"]["two_phase"], rc["propensity"]
     art = Path(rc["artifact"]).name

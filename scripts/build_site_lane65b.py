@@ -195,7 +195,7 @@ def build() -> None:
     if rc is None:
         raise SystemExit("evidence/live_run_card.json missing; run scripts/make_submission.py")
     if e1 is None:
-        raise SystemExit("evidence/e1_px5.json missing; run scripts/run_lane.py e1")
+        raise SystemExit("evidence/e1_px5.json missing; run scripts/run_lane_sar2inv.py e1")
 
     verdict = rc["verdict"]
     ok = verdict == "SHIPPABLE"
@@ -525,9 +525,9 @@ rasters from sibling public repositories, not the organizer's registry.
 <pre><code>python -m venv .venv &amp;&amp; .venv/bin/pip install -r requirements.txt
 .venv/bin/python scripts/build_covariates.py       # 5 px covariate cache (~3 min)
 .venv/bin/python -m pytest tests -q                # 21 tests, unit-verified risks
-.venv/bin/python scripts/run_lane.py bias          # two-inventory mapping bias
-.venv/bin/python scripts/run_lane.py canary        # leakage canary
-.venv/bin/python scripts/run_lane.py e1            # the gated experiment (PX5)
+.venv/bin/python scripts/run_lane_sar2inv.py bias          # two-inventory mapping bias
+.venv/bin/python scripts/run_lane_sar2inv.py canary        # leakage canary
+.venv/bin/python scripts/run_lane_sar2inv.py e1            # the gated experiment (PX5)
 .venv/bin/python scripts/diagnose_irregularities.py
 .venv/bin/python scripts/make_submission.py        # live fit, emit, write, validate, certify
 .venv/bin/python scripts/build_site.py             # this site

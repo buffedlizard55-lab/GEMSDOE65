@@ -76,7 +76,7 @@
       "what_it_cannot_do": "It cannot make the gate pass. The gate, the tercile condition, the ship rule and the budget are unchanged, and the verdict is still computed mechanically from the receipt by scripts/make_submission.py.",
       "affected_files": [
         "src/gems65/lane.py (propensity_choice rule=anchor_primary)",
-        "scripts/run_lane.py (stage e1b, arm A3_sar_em_1me, control C_distance_only)"
+        "scripts/run_lane_sar2inv.py (stage e1b, arm A3_sar_em_1me, control C_distance_only)"
       ],
       "also_added": "C_distance_only control arm (score exp(-d/3 px) to visible mapped traces, no learning). Not part of the gate: added because the sibling repository measured this trivial control beating its own headline candidate on the same style of holdout (60GEMSDOE: distance_only 0.1907 [0.1820, 0.1996] vs H68-1 0.1719), and a lane that does not report it cannot be interpreted."
     }

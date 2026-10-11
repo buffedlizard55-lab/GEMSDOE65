@@ -800,10 +800,74 @@ Go ahead and create a pull request and then merge the pull request onto the main
 
 </details>
 
+<h2 id="corrected-scale-lane-65-run-second-independent-run-session-arena832a5ec9-gemsdoe65">Corrected-scale lane-65 run — second, independent run (session <code>arena/832a5ec9-gemsdoe65</code>)</h2>
+<p>A second lane-65 run was executed independently in parallel with the run recorded above. It is
+published as its own sub-site, <strong><a href="docs/lane65-corrected-scale/index.html"><code>docs/lane65-corrected-scale/</code></a></strong>,
+and its card is <a href="registry/run-card.json"><code>registry/run-card.json</code></a> (the repository's canonical card
+stays <code>docs/data/run_card.json</code> / <code>RUN_CARD.json</code>). <strong>Verdict: NEGATIVE — do not submit.</strong></p>
+<ul>
+<li>It found and fixed a real <strong>unit bug</strong> in the SAR-EM recursion: a complete labelled sample was
+  compared with a 1/127.7 subsample of the unlabeled pool without a sampling-fraction weight, so the
+  implied hidden-positive mass was 127.7× too small and the EM fixed point was pinned near
+  e(x) ≈ 1. The corrected recursion runs on pixel-population counts and yields a non-degenerate
+  propensity (e_pos ∈ [0.436, 0.720], inverse weights 1.00–2.28, clip fraction 0).</li>
+<li>Four matched arms on identical blocked folds (only the weights differ):</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>arm</th>
+<th>instrument</th>
+<th>propensity</th>
+<th>Δ (paired 95 % CI)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>E1 (16 cells)</td>
+<td>registered (uniform withholding)</td>
+<td>quantile grid</td>
+<td>−4.32e−05 [−3.87e−04, +3.17e−04]</td>
+</tr>
+<tr>
+<td>E2 (8 cells)</td>
+<td>bias-matched, P(select) ∝ (1−ē)²</td>
+<td>quantile grid</td>
+<td>+1.70e−04 [−9.29e−05, +4.12e−04]</td>
+</tr>
+<tr>
+<td>E3 (8 cells)</td>
+<td>registered, same folds as E1</td>
+<td>continuous RBF</td>
+<td>−1.05e−05 [−5.38e−04, +5.99e−04]</td>
+</tr>
+<tr>
+<td>E3b (8 cells)</td>
+<td>bias-matched, same design as E2</td>
+<td>continuous RBF</td>
+<td>+3.45e−05 [−3.12e−04, +3.86e−04]</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Artifact: <code>docs/downloads/gems65-sarprop-em-v2-20261011-9b1c65d-zeros.tif</code>
+  (sha256 <code>5aee83cb2e55f0122432611ff46af6fdd1e5a9182f263888e03f667647315c37</code>, 790 718 B, 28 047 dots,
+  15/15 shared-validator checks pass; the NaN variant is diagnostics only). Registered in
+  <code>evidence/submission_build.json</code> under the publisher allowlist with <code>OK_TO_DOWNLOAD_AND_SUBMIT: false</code>.</li>
+<li>Uniqueness vs 62 priors: worst |ρ| 0.0366, no hash match, worst forward overlap 0.9975 only against a
+  saturated lattice witness (a random control also scores 0.9987 there); unsaturated worst 0.9005 with
+  reverse 0.019 and Jaccard 0.0047.</li>
+<li>Highest-value next step from that run: <strong>emission geometry</strong>. The shipped field sits a median of
+  12.5 px from the catalogue and emits 28 047 dots — more mass than the family's owner-reported
+  hidden-mass estimate (K̂ ≈ 12 226 px) — so most of it cannot pay for itself under the metric's
+  <code>accept a dot ⇔ k &gt; α·DTI</code> rule. Recipe: restrict the allowed set to a 10–40 px dilation of the
+  catalogue, set the assumed truth mass from K̂, and re-test on the registered folds.</li>
+<li>Reproduce: <code>python3 scripts/build_features.py &amp;&amp; python3 scripts/run_lane.py --seeds 20,21 --modes all,detached</code>
+  (plus <code>--propensity rbf</code> for E3/E3b), <code>python3 scripts/emit_submission.py --name &lt;unique&gt; --note "&lt;≤140 chars&gt;"</code>,
+  <code>python3 scripts/make_run_card.py</code>, <code>python3 scripts/build_lane65_corrected_site.py</code>.</li>
+</ul>
 <hr />
-<h1 id="second-independent-lane-65-session-arena98cb5eb2-gemsdoe65-2026-10-11">Second independent lane-65 session (<code>arena/98cb5eb2-gemsdoe65</code>, 2026-10-11)</h1>
-<hr />
-<h2 id="second-independent-lane-65-session-arena98cb5eb2-gemsdoe65-2026-10-11_1">Second independent lane-65 session (<code>arena/98cb5eb2-gemsdoe65</code>, 2026-10-11)</h2>
+<h2 id="second-independent-lane-65-session-arena98cb5eb2-gemsdoe65-2026-10-11">Second independent lane-65 session (<code>arena/98cb5eb2-gemsdoe65</code>, 2026-10-11)</h2>
 <p>Merged into the canonical repository without overwriting any of it: the first
 lane-65 session (<code>arena/1217c9a0-gemsdoe65</code>, PRs #7 and #9) keeps the canonical
 site, run card, guards and tests; this session's pages live under
@@ -1111,7 +1175,7 @@ pass-3 re-check: <a href="docs/research/review-pass3.md"><code>docs/research/rev
 shared-template divergence: <a href="vendor/template60/PROVENANCE.md"><code>vendor/template60/PROVENANCE.md</code></a> ·
 cross-session drift: <a href="evidence/cross_session_drift.json"><code>evidence/cross_session_drift.json</code></a></p>
 <!--RESULTS-END--></main>
-<footer>Built 2026-10-11 22:40 UTC from committed evidence
+<footer>Built 2026-10-11 22:46 UTC from committed evidence
 receipts by <code>scripts/build_site.py</code>. Every number carries an evidence class.
 HOLDOUT-DTI is a local blocked-holdout measurement, never a leaderboard score.
 Core values: <b>Maximize P(Win)</b> · <b>Own the Outcome</b>.</footer>

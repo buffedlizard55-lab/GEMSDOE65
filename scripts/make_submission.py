@@ -143,7 +143,7 @@ def main() -> None:
     e1_path = next((q for q in (EVIDENCE / "e1b_px5.json", EVIDENCE / "e1_px5.json")
                     if q.exists()), None)
     if e1_path is None:
-        raise SystemExit("no experiment receipt; run scripts/run_lane.py e1b first")
+        raise SystemExit("no experiment receipt; run scripts/run_lane_sar2inv.py e1b first")
     e1 = json.loads(e1_path.read_text())
     print("[gated experiment]", e1_path.name, "| pre-amendment receipt retained at",
           "evidence/e1_px5.json" if (EVIDENCE / "e1_px5.json").exists() else "(absent)")

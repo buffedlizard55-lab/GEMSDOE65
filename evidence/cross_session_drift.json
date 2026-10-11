@@ -12,7 +12,7 @@
     "forward_overlap": 0.7,
     "jaccard": 0.5
   },
-  "n_comparators": 6,
+  "n_comparators": 8,
   "worst_spearman": 0.01695506185648723,
   "worst_spearman_on_dot_union": -0.9758157894736843,
   "worst_forward_overlap": 0.2873421052631579,
@@ -94,6 +94,32 @@
       "my_dots_within_3px_of_theirs": 0.2708421052631579,
       "their_dots_within_3px_of_mine": 0.3575263157894737,
       "jaccard_dot_sets": 0.011957071715799846,
+      "duplicate_by_rho": false,
+      "duplicate_by_overlap": false
+    },
+    {
+      "file": "gems65-sarprop-em-v2-20261011-9b1c65d-nan.tif",
+      "sha256": "3f302785383ec30f5cfa2515d14089ed88357bed4506cd5813a1c0c9b940cb30",
+      "their_dots": 28047,
+      "spearman_full_footprint": 0.002396808963460258,
+      "spearman_on_dot_union": -0.9911993407520997,
+      "n_dot_union": 65763,
+      "my_dots_within_3px_of_theirs": 0.019894736842105264,
+      "their_dots_within_3px_of_mine": 0.2773558669376404,
+      "jaccard_dot_sets": 0.004318537779602512,
+      "duplicate_by_rho": false,
+      "duplicate_by_overlap": false
+    },
+    {
+      "file": "gems65-sarprop-em-v2-20261011-9b1c65d-zeros.tif",
+      "sha256": "5aee83cb2e55f0122432611ff46af6fdd1e5a9182f263888e03f667647315c37",
+      "their_dots": 28047,
+      "spearman_full_footprint": 0.002396808963460258,
+      "spearman_on_dot_union": -0.9911993407520997,
+      "n_dot_union": 65763,
+      "my_dots_within_3px_of_theirs": 0.019894736842105264,
+      "their_dots_within_3px_of_mine": 0.2773558669376404,
+      "jaccard_dot_sets": 0.004318537779602512,
       "duplicate_by_rho": false,
       "duplicate_by_overlap": false
     }

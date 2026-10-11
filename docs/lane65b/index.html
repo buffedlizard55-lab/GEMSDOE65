@@ -273,9 +273,9 @@ rasters from sibling public repositories, not the organizer's registry.
 <pre><code>python -m venv .venv &amp;&amp; .venv/bin/pip install -r requirements.txt
 .venv/bin/python scripts/build_covariates.py       # 5 px covariate cache (~3 min)
 .venv/bin/python -m pytest tests -q                # 21 tests, unit-verified risks
-.venv/bin/python scripts/run_lane.py bias          # two-inventory mapping bias
-.venv/bin/python scripts/run_lane.py canary        # leakage canary
-.venv/bin/python scripts/run_lane.py e1            # the gated experiment (PX5)
+.venv/bin/python scripts/run_lane_sar2inv.py bias          # two-inventory mapping bias
+.venv/bin/python scripts/run_lane_sar2inv.py canary        # leakage canary
+.venv/bin/python scripts/run_lane_sar2inv.py e1            # the gated experiment (PX5)
 .venv/bin/python scripts/diagnose_irregularities.py
 .venv/bin/python scripts/make_submission.py        # live fit, emit, write, validate, certify
 .venv/bin/python scripts/build_site.py             # this site
@@ -283,7 +283,7 @@ rasters from sibling public repositories, not the organizer's registry.
 <p class="mut">Artefacts copied to <code>docs/downloads/</code>: gemsdoe65-gems65-sar2inv-a2-38k-20261011T220214Z-296a58fcf2a6-zeros-runcard.json, gemsdoe65-gems65-sar2inv-a2-38k-20261011T220214Z-296a58fcf2a6-zeros.json, gemsdoe65-gems65-sar2inv-a2-38k-20261011T220214Z-296a58fcf2a6-zeros.tif, gemsdoe65-gems65-sar2inv-a2-38k-20261011T220214Z-296a58fcf2a6-zeros-runcard.json.
 Run card: <code>evidence/live_run_card.json</code>.</p>
 </main>
-<footer>Built 2026-10-11 22:40 UTC from committed evidence
+<footer>Built 2026-10-11 22:46 UTC from committed evidence
 receipts by <code>scripts/build_site.py</code>. Every number carries an evidence class.
 HOLDOUT-DTI is a local blocked-holdout measurement, never a leaderboard score.
 Core values: <b>Maximize P(Win)</b> · <b>Own the Outcome</b>.</footer>

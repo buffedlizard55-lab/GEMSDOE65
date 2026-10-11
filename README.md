@@ -780,9 +780,43 @@ Go ahead and create a pull request and then merge the pull request onto the main
 
 </details>
 
----
 
-# Second independent lane-65 session (`arena/98cb5eb2-gemsdoe65`, 2026-10-11)
+## Corrected-scale lane-65 run — second, independent run (session `arena/832a5ec9-gemsdoe65`)
+
+A second lane-65 run was executed independently in parallel with the run recorded above. It is
+published as its own sub-site, **[`docs/lane65-corrected-scale/`](docs/lane65-corrected-scale/index.html)**,
+and its card is [`registry/run-card.json`](registry/run-card.json) (the repository's canonical card
+stays `docs/data/run_card.json` / `RUN_CARD.json`). **Verdict: NEGATIVE — do not submit.**
+
+* It found and fixed a real **unit bug** in the SAR-EM recursion: a complete labelled sample was
+  compared with a 1/127.7 subsample of the unlabeled pool without a sampling-fraction weight, so the
+  implied hidden-positive mass was 127.7× too small and the EM fixed point was pinned near
+  e(x) ≈ 1. The corrected recursion runs on pixel-population counts and yields a non-degenerate
+  propensity (e_pos ∈ [0.436, 0.720], inverse weights 1.00–2.28, clip fraction 0).
+* Four matched arms on identical blocked folds (only the weights differ):
+
+  | arm | instrument | propensity | Δ (paired 95 % CI) |
+  |---|---|---|---|
+  | E1 (16 cells) | registered (uniform withholding) | quantile grid | −4.32e−05 [−3.87e−04, +3.17e−04] |
+  | E2 (8 cells) | bias-matched, P(select) ∝ (1−ē)² | quantile grid | +1.70e−04 [−9.29e−05, +4.12e−04] |
+  | E3 (8 cells) | registered, same folds as E1 | continuous RBF | −1.05e−05 [−5.38e−04, +5.99e−04] |
+  | E3b (8 cells) | bias-matched, same design as E2 | continuous RBF | +3.45e−05 [−3.12e−04, +3.86e−04] |
+
+* Artifact: `docs/downloads/gems65-sarprop-em-v2-20261011-9b1c65d-zeros.tif`
+  (sha256 `5aee83cb2e55f0122432611ff46af6fdd1e5a9182f263888e03f667647315c37`, 790 718 B, 28 047 dots,
+  15/15 shared-validator checks pass; the NaN variant is diagnostics only). Registered in
+  `evidence/submission_build.json` under the publisher allowlist with `OK_TO_DOWNLOAD_AND_SUBMIT: false`.
+* Uniqueness vs 62 priors: worst |ρ| 0.0366, no hash match, worst forward overlap 0.9975 only against a
+  saturated lattice witness (a random control also scores 0.9987 there); unsaturated worst 0.9005 with
+  reverse 0.019 and Jaccard 0.0047.
+* Highest-value next step from that run: **emission geometry**. The shipped field sits a median of
+  12.5 px from the catalogue and emits 28 047 dots — more mass than the family's owner-reported
+  hidden-mass estimate (K̂ ≈ 12 226 px) — so most of it cannot pay for itself under the metric's
+  `accept a dot ⇔ k > α·DTI` rule. Recipe: restrict the allowed set to a 10–40 px dilation of the
+  catalogue, set the assumed truth mass from K̂, and re-test on the registered folds.
+* Reproduce: `python3 scripts/build_features.py && python3 scripts/run_lane.py --seeds 20,21 --modes all,detached`
+  (plus `--propensity rbf` for E3/E3b), `python3 scripts/emit_submission.py --name <unique> --note "<≤140 chars>"`,
+  `python3 scripts/make_run_card.py`, `python3 scripts/build_lane65_corrected_site.py`.
 
 ---
 

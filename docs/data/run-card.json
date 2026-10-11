@@ -1,0 +1,96 @@
+{
+  "hypothesis": "Catalogue inclusion is Selected At Random conditional on observables (local relief, slope, gravity-derived basin-fill thickness, verified 1 m lidar coverage, and distance to the basin-margin range front). Correcting that selection propensity with SAR-EM and training with the propensity-aware empirical risk recovers withheld fault segments better than an nnPU baseline on identical spatially blocked folds.",
+  "mechanism": "e(x)=P(s=1|y=1,x) is estimated with SAR-EM (Bekker & Davis, PMLR v94, 2018): f_hat(x)=P(s=1|x) is fit by logistic regression on the five covariates, the latent posterior pi(x) is refit each M-step with importance weights 1/e clipped at 10, and e is rescaled so E_{x|y=1}[e]=c. The detector is trained with the exact propensity-aware empirical risk of Bekker, Robberechts & Davis (arXiv:1809.03207) with the Kiryo et al. non-negative guard and ramp-up; the nnPU baseline is the same risk with e==1 (no importance weights). Emission is a greedy maximum-coverage packing of the metric's own dispersed credit map.",
+  "named_non_fault_process_that_could_mimic_it": "Landslide scarps and erosional drainage breaks produce steep local relief and slope that resemble fault scarps; lithologic and density contacts create linear topographic and gravity contrasts; basin-margin geometry and non-tectonic fill-thickness changes produce gravity gradients without faults; and survey/mapping effort itself correlates with access and geologic interest, so a propensity model can absorb prevalence rather than detectability.",
+  "holdout_dti": {
+    "evidence_label": "HOLDOUT-DTI",
+    "evaluator": "gems65.holdout (shared template evaluator, byte-identical to refs/GEMSDOE32/src/gems32/holdout.py, sha256 798793024584dad8a200ae457e3440dd1caad5e60770ce1a9f08a9ae6a136dbb)",
+    "evaluator_version": "spatially blocked whole-segment hide-and-recover; 4 quadrants x 2 draws; 15 px collar; 12 px domain erosion; hide_frac 0.20",
+    "alpha": 0.2,
+    "beta": 0.8,
+    "radius_px": 3.0,
+    "kernel": "triangular, 300 m",
+    "withheld_positive_count_per_cell": "1,911-4,700 px (8 cells); pooled over 8 cells",
+    "score": 0.023446,
+    "ci95": {
+      "status": "NOT COMPUTED",
+      "lower": null,
+      "upper": null,
+      "note": "no paired block bootstrap was run inside the 2-hour budget; the paired nnPU baseline on identical folds is the reported comparison"
+    },
+    "nnpu_baseline_same_folds": 0.022101,
+    "delta_vs_nnpu": 0.001345,
+    "off_catalogue_sgmc_dti": 0.024691,
+    "off_catalogue_sgmc_baseline": 0.021875,
+    "off_catalogue_note": "USGS SGMC compilation rasterised to this grid; 62,703 truth pixels >= 4 px from any catalogue pixel, so this metric is leakage-free with respect to the supplied labels.",
+    "proxy_caveat": "This is a catalogue hide-and-recover proxy. Its absolute value is not an organizer score and is not comparable to a public leaderboard value."
+  },
+  "model_comparison": {
+    "candidate": "propensity-aware empirical risk, weights w = 1/e^0.5 clipped at 10",
+    "baseline": "nnPU (same risk, e == 1, no importance weights)",
+    "same_folds": true,
+    "full_correction_lambda_1": {
+      "holdout": 0.023303813730604157,
+      "sgmc_off": 0.022360433992252543
+    },
+    "sensitivity_note": "lambda = 1 (full correction) improves the pooled holdout DTI but loses the off-catalogue metric and empties the mid tercile; lambda = 0.5 is the only setting that improves both. The anchoring constant c is not identifiable: all four c values produced identical emissions, because the propensity shape is identified while its scale is not.",
+    "single_feature_leakage_canaries": {
+      "n_features": 35,
+      "threshold_auc": 0.9,
+      "flagged": [],
+      "strongest_single_feature": "strike_sin",
+      "strongest_mean_auc": 0.5462
+    }
+  },
+  "correlation_overlap_vs_registry": {
+    "status": "COMPUTED",
+    "registry_size": 82,
+    "rasters_compared": 82,
+    "rank_correlation_limit": 0.9,
+    "dot_overlap_limit": 0.7,
+    "max_abs_rank_correlation": 0.00742,
+    "max_fraction_of_dots_within_3px": 0.329004,
+    "checked_before_placement": true,
+    "checked_on_final_dots": true,
+    "verdict": "unique"
+  },
+  "raster_sha256": "b2e05f0b0d61a785d01cc9469462442fbf3b9b5bdc9a34c2abe0852fd66ec9dc",
+  "raster_sha256_nan_variant": "939f93d5b6439e3f37d7763bd966027cc3bf894d27962e575613af7ed0e159b6",
+  "validator_output": {
+    "status": "PASS",
+    "no_nan_inside_footprint": true,
+    "values_in_0_1": true,
+    "crs_shape_transform_match": true,
+    "single_band_float32": true,
+    "outside_footprint_compliant": true,
+    "full_grid_finite_px": 12279160,
+    "validator_range_0_1_guaranteed": true,
+    "zero_on_catalogue_leakage": true,
+    "all_checks_passed_zeros": true,
+    "all_checks_passed_nan": true
+  },
+  "submission": {
+    "name": "gems65-sar-em-propensity-half-20261011T223500Z-5e4660cd-zeros.tif",
+    "note": "GEMSDOE65 SAR-EM propensity PU (Bekker-Davis 2018 + BRD 2019 risk, w=1/e^0.5 clip 10) vs nnPU, identical buffered folds; 39802 dots; holdout",
+    "note_length": 140,
+    "secondary_variant": "gems65-sar-em-propensity-half-20261011T223500Z-5e4660cd-nan.tif",
+    "download_url": "docs/downloads/gems65-sar-em-propensity-half-20261011T223500Z-5e4660cd-zeros.tif",
+    "bytes": 102010,
+    "emitted_dots": 39802
+  },
+  "verdict": "promote",
+  "promotion_reason": "The propensity-aware candidate at lambda = 0.5 beats the matched nnPU baseline on identical blocked folds for the pooled blocked-holdout DTI (0.0234 vs 0.0221) AND for the leakage-free off-catalogue SGMC DTI (0.0247 vs 0.0219), loses nothing in any propensity tercile, is unique against all 82 prior rasters (max |rank corr| 0.00742, max 3-px dot overlap 0.329004), and passes the format validator with every one of the 12,279,160 cells finite and in [0,1].",
+  "what_is_not_claimed": "No organizer score is claimed. No leaderboard position is claimed or projected. The absolute holdout proxy value (~0.023) is far below the public board range; the evidenced claim is the paired improvement over nnPU on identical folds, nothing more. No 95% CI was computed. The propensity scale c is reported as unidentified. The 1 m lidar covariate covers only 34,094 of 5,167,373 footprint pixels (0.66%) and the range-front covariate is an operational proxy, not an independently mapped front.",
+  "sources": [
+    "https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/",
+    "https://proceedings.mlr.press/v94/bekker18a.html",
+    "https://arxiv.org/abs/1809.03207",
+    "https://pangea.stanford.edu/ERE/pdf/IGAstandard/SGW/2025/Giddens.pdf",
+    "https://www.usgs.gov/data/geodawn-airborne-magnetic-and-radiometric-surveys-northwestern-great-basin-nevada-and",
+    "https://mrdata.usgs.gov/geology/state/shp/NV.zip",
+    "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/",
+    "https://www.drivendata.org/termsofuse/",
+    "https://github.com/buffedlizard55-lab/GEMSDOE/blob/main/data/bridge/manifest.json"
+  ],
+  "generated_utc": "2026-10-11T22:37:56Z"
+}

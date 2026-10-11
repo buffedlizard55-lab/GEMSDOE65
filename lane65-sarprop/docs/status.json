@@ -21,7 +21,7 @@
   {
    "check": "Parallel-run duplicate audit",
    "green": true,
-   "detail": "No registry raster exceeds rho 0.90 (worst 0.0401), the dot-set Jaccard against every checked raster is at most 0.0207, and all 58 literal 3 px firings are at or below their own uniform null. Flagged as irregularity IR-65-01."
+   "detail": "No registry raster exceeds rho 0.90 (worst 0.0401), the dot-set Jaccard against every checked raster is at most 0.0207, and all 58 literal 3 px firings are at or below their own uniform null. Flagged as irregularity IR-65L-01."
   },
   {
    "check": "Emission rule is the gated one",

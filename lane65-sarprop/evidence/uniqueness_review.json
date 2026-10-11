@@ -283,7 +283,7 @@
   }
  },
  "irregularity": {
-  "id": "IR-65-01",
+  "id": "IR-65L-01",
   "statement": "The parallel-run stop rule as literally written (\"more than 70% of your dots within 3 px of one registry raster's dots\") fires for any candidate whose dots are well spread, because a prior field covering a few percent of the map covers all of it after a 3-px dilation. In this audit 58 of 653 rasters fired, 53 of them with support above 300,000 cells (mean 4.3M), and every one of the twelve worst is at or below its own uniform null. The rule is therefore not evidence of lane drift in this registry and needs an owner ruling on whether the density-corrected reading replaces it.",
   "action_taken": "Reported, not silently overridden: the literal result is published alongside the density-corrected reading, the site shows the anomaly, and the run card records both."
  }

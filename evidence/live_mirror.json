@@ -1,0 +1,209 @@
+{
+  "generated_utc": "2026-10-11T21:19:49Z",
+  "evidence_class": "MIRROR-DTI (instrument, not a score; pseudo-truth is a submission, not the hidden truth)",
+  "anchor": "/home/user/.cache/registry_rasters/g32-h33-2-b2-zeros-0.2778.tif",
+  "anchor_reported_live_score": 0.2778,
+  "anchor_pseudo_truth_pixels": 37654,
+  "instrument_quality": {
+    "spearman_mirror_vs_live_anchor_pseudo_truth": 0.803680981595092,
+    "spearman_mirror_vs_live_leave_one_out": 0.803680981595092,
+    "n_scored_rasters": 10,
+    "interpretation": "rho near 1 means the mirror ranks the family the way the leaderboard did; it says nothing about faults outside the family"
+  },
+  "rows": [
+    {
+      "raster": "g32-h33-2-b2-zeros-0.2778.tif",
+      "path": "/home/user/.cache/registry_rasters/g32-h33-2-b2-zeros-0.2778.tif",
+      "reported_live_score": 0.2778,
+      "score_class": "OWNER-REPORT",
+      "dots": 37654,
+      "MIRROR_DTI": 1.0,
+      "MIRROR_credit_per_dot": 1.0,
+      "MIRROR_coverage_of_anchor": 1.0,
+      "overlap_with_anchor_dots": 37654
+    },
+    {
+      "raster": "g32-h33-2-b2-nan-0.2778.tif",
+      "path": "/home/user/.cache/registry_rasters/g32-h33-2-b2-nan-0.2778.tif",
+      "reported_live_score": 0.2778,
+      "score_class": "OWNER-REPORT",
+      "dots": 37654,
+      "MIRROR_DTI": 1.0,
+      "MIRROR_credit_per_dot": 1.0,
+      "MIRROR_coverage_of_anchor": 1.0,
+      "overlap_with_anchor_dots": 37654
+    },
+    {
+      "raster": "g36-anderson-pinn-zeros-0.2750.tif",
+      "path": "/home/user/.cache/registry_rasters/g36-anderson-pinn-zeros-0.2750.tif",
+      "reported_live_score": 0.275,
+      "score_class": "OWNER-REPORT",
+      "dots": 38854,
+      "MIRROR_DTI": 0.9936971378590411,
+      "MIRROR_credit_per_dot": 0.969115149019406,
+      "MIRROR_coverage_of_anchor": 1.0,
+      "overlap_with_anchor_dots": 37654
+    },
+    {
+      "raster": "g28-h36-1-rung30-nan-0.2710.tif",
+      "path": "/home/user/.cache/registry_rasters/g28-h36-1-rung30-nan-0.2710.tif",
+      "reported_live_score": 0.271,
+      "score_class": "OWNER-REPORT",
+      "dots": 37660,
+      "MIRROR_DTI": 0.8532301626307066,
+      "MIRROR_credit_per_dot": 0.8555228120779765,
+      "MIRROR_coverage_of_anchor": 0.8556591358914484,
+      "overlap_with_anchor_dots": 26248
+    },
+    {
+      "raster": "g31-h27-4-solo-nan-0.2708.tif",
+      "path": "/home/user/.cache/registry_rasters/g31-h27-4-solo-nan-0.2708.tif",
+      "reported_live_score": 0.2708,
+      "score_class": "OWNER-REPORT",
+      "dots": 40199,
+      "MIRROR_DTI": 0.9867792981015808,
+      "MIRROR_credit_per_dot": 0.9366899674121246,
+      "MIRROR_coverage_of_anchor": 1.0,
+      "overlap_with_anchor_dots": 37654
+    },
+    {
+      "raster": "g28-h27-4-r1-solo-nan-0.2708.tif",
+      "path": "/home/user/.cache/registry_rasters/g28-h27-4-r1-solo-nan-0.2708.tif",
+      "reported_live_score": 0.2708,
+      "score_class": "OWNER-REPORT",
+      "dots": 40199,
+      "MIRROR_DTI": 0.9867792981015808,
+      "MIRROR_credit_per_dot": 0.9366899674121246,
+      "MIRROR_coverage_of_anchor": 1.0,
+      "overlap_with_anchor_dots": 37654
+    },
+    {
+      "raster": "g28-h32-1-prethin-nan-0.2649.tif",
+      "path": "/home/user/.cache/registry_rasters/g28-h32-1-prethin-nan-0.2649.tif",
+      "reported_live_score": 0.2649,
+      "score_class": "OWNER-REPORT",
+      "dots": 42294,
+      "MIRROR_DTI": 0.9678333014793628,
+      "MIRROR_credit_per_dot": 0.8824512601763795,
+      "MIRROR_coverage_of_anchor": 0.991193328674239,
+      "overlap_with_anchor_dots": 36874
+    },
+    {
+      "raster": "g33-h33d-analog-tip-nan-0.2632.tif",
+      "path": "/home/user/.cache/registry_rasters/g33-h33d-analog-tip-nan-0.2632.tif",
+      "reported_live_score": 0.2632,
+      "score_class": "OWNER-REPORT",
+      "dots": 41865,
+      "MIRROR_DTI": 0.9100064861770558,
+      "MIRROR_credit_per_dot": 0.8362457790416433,
+      "MIRROR_coverage_of_anchor": 0.9297665464380517,
+      "overlap_with_anchor_dots": 31614
+    },
+    {
+      "raster": "g32-dotted-h19-5-d2-8-nan-0.2600.tif",
+      "path": "/home/user/.cache/registry_rasters/g32-dotted-h19-5-d2-8-nan-0.2600.tif",
+      "reported_live_score": 0.26,
+      "score_class": "OWNER-REPORT",
+      "dots": 44090,
+      "MIRROR_DTI": 0.9671384917985069,
+      "MIRROR_credit_per_dot": 0.8540258562032207,
+      "MIRROR_coverage_of_anchor": 1.0,
+      "overlap_with_anchor_dots": 37654
+    },
+    {
+      "raster": "g49-gate-ortho-w025-nan-0.2376.tif",
+      "path": "/home/user/.cache/registry_rasters/g49-gate-ortho-w025-nan-0.2376.tif",
+      "reported_live_score": 0.2376,
+      "score_class": "OWNER-REPORT",
+      "dots": 40000,
+      "MIRROR_DTI": 0.1989486842283672,
+      "MIRROR_credit_per_dot": 0.18944381077281378,
+      "MIRROR_coverage_of_anchor": 0.20124694404080712,
+      "overlap_with_anchor_dots": 1174
+    },
+    {
+      "raster": "gems65-h65-sarpu-nnpu-a25-20261011T210925Z-2c0eded4e49d-nan.tif",
+      "path": "../docs/downloads/gems65-h65-sarpu-nnpu-a25-20261011T210925Z-2c0eded4e49d-nan.tif",
+      "reported_live_score": null,
+      "score_class": "CANDIDATE",
+      "dots": 38000,
+      "MIRROR_DTI": 0.14715666472651426,
+      "MIRROR_credit_per_dot": 0.14597360498753556,
+      "MIRROR_coverage_of_anchor": 0.14731494634106207,
+      "overlap_with_anchor_dots": 878
+    }
+  ],
+  "leave_one_out": [
+    {
+      "raster": "g32-h33-2-b2-zeros-0.2778.tif",
+      "pseudo_truth": "g32-h33-2-b2-nan-0.2778.tif",
+      "MIRROR_DTI": 1.0,
+      "reported_live_score": 0.2778
+    },
+    {
+      "raster": "g32-h33-2-b2-nan-0.2778.tif",
+      "pseudo_truth": "g32-h33-2-b2-zeros-0.2778.tif",
+      "MIRROR_DTI": 1.0,
+      "reported_live_score": 0.2778
+    },
+    {
+      "raster": "g36-anderson-pinn-zeros-0.2750.tif",
+      "pseudo_truth": "g32-h33-2-b2-zeros-0.2778.tif",
+      "MIRROR_DTI": 0.9936971378590411,
+      "reported_live_score": 0.275
+    },
+    {
+      "raster": "g28-h36-1-rung30-nan-0.2710.tif",
+      "pseudo_truth": "g32-h33-2-b2-zeros-0.2778.tif",
+      "MIRROR_DTI": 0.8532301626307066,
+      "reported_live_score": 0.271
+    },
+    {
+      "raster": "g31-h27-4-solo-nan-0.2708.tif",
+      "pseudo_truth": "g32-h33-2-b2-zeros-0.2778.tif",
+      "MIRROR_DTI": 0.9867792981015808,
+      "reported_live_score": 0.2708
+    },
+    {
+      "raster": "g28-h27-4-r1-solo-nan-0.2708.tif",
+      "pseudo_truth": "g32-h33-2-b2-zeros-0.2778.tif",
+      "MIRROR_DTI": 0.9867792981015808,
+      "reported_live_score": 0.2708
+    },
+    {
+      "raster": "g28-h32-1-prethin-nan-0.2649.tif",
+      "pseudo_truth": "g32-h33-2-b2-zeros-0.2778.tif",
+      "MIRROR_DTI": 0.9678333014793628,
+      "reported_live_score": 0.2649
+    },
+    {
+      "raster": "g33-h33d-analog-tip-nan-0.2632.tif",
+      "pseudo_truth": "g32-h33-2-b2-zeros-0.2778.tif",
+      "MIRROR_DTI": 0.9100064861770558,
+      "reported_live_score": 0.2632
+    },
+    {
+      "raster": "g32-dotted-h19-5-d2-8-nan-0.2600.tif",
+      "pseudo_truth": "g32-h33-2-b2-zeros-0.2778.tif",
+      "MIRROR_DTI": 0.9671384917985069,
+      "reported_live_score": 0.26
+    },
+    {
+      "raster": "g49-gate-ortho-w025-nan-0.2376.tif",
+      "pseudo_truth": "g32-h33-2-b2-zeros-0.2778.tif",
+      "MIRROR_DTI": 0.1989486842283672,
+      "reported_live_score": 0.2376
+    }
+  ],
+  "candidate": {
+    "raster": "gems65-h65-sarpu-nnpu-a25-20261011T210925Z-2c0eded4e49d-nan.tif",
+    "path": "../docs/downloads/gems65-h65-sarpu-nnpu-a25-20261011T210925Z-2c0eded4e49d-nan.tif",
+    "reported_live_score": null,
+    "score_class": "CANDIDATE",
+    "dots": 38000,
+    "MIRROR_DTI": 0.14715666472651426,
+    "MIRROR_credit_per_dot": 0.14597360498753556,
+    "MIRROR_coverage_of_anchor": 0.14731494634106207,
+    "overlap_with_anchor_dots": 878
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "generated_utc": "2026-10-11T22:05:00Z",
+  "inputs": [
+    {
+      "path": "data/raw/training_features.tif",
+      "sha256": "4371c82e3b8339b807bdffcf4ef59a225520fe2988d521be208ae33743123bc5",
+      "bytes": 418912844,
+      "role": "official 19-band competition feature stack, re-assembled from 5 pinned parts",
+      "identity": "hash pinned in the bridge manifest data/bridge/manifest.json"
+    },
+    {
+      "path": "data/raw/labels.tif",
+      "sha256": "7ba308ccdc4418b31a178f4f1ef21aaa6e152e4028f2f6f64b01f7eb25ae4093",
+      "bytes": 425830,
+      "role": "mapped-fault catalogue (public labels raster)",
+      "identity": "bridge manifest pin"
+    },
+    {
+      "path": "data/raw/sample_submission.tif",
+      "sha256": "2176d08e485aa2cd2860ce8df539db4faf4d76163b38a4dd8c30a40454d35cbc",
+      "bytes": 1599597,
+      "role": "official sample grid / null mask",
+      "identity": "bridge manifest pin"
+    },
+    {
+      "path": "data/external/geodawn_dem_a2_100m.tif",
+      "sha256": "d32762a38222764389e948da423ebc6cadd00ac617ad3938d3dd79c6cfe14431",
+      "bytes": 49531304,
+      "role": "survey-coverage covariate (finite mask only)",
+      "identity": "public GeoDAWN DEM mirror in 60GEMSDOE; official identity not authenticated (IR-65-103/104)"
+    }
+  ],
+  "not_used": [
+    "no leaderboard rows are stored or fetched anywhere in this repository"
+  ]
+}

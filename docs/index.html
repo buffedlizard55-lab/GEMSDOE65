@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="SAR-EM propensity estimation, propensity-aware PU risk, blocked-holdout evidence, and a clear submission gate for the DOE GEMS Prize Challenge.">
+  <title>GEMSDOE65 · selection-bias-aware fault discovery</title><link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header class="site-header"><div class="wrap nav-row">
+  <a class="brand" href="index.html">GEMSDOE65<small>Evidence before submission</small></a>
+  <nav aria-label="Main navigation"><a href="index.html">Status</a><a href="executive-summary.html">Submit guide</a><a href="hypotheses.html">Hypotheses</a><a href="competitive-context.html">Score audit</a><a href="research.html">Research</a><a href="irregularities.html">Irregularities</a><a href="downloads.html">Downloads</a></nav>
+</div></header>
+<main class="wrap">
+
+  <section class="hero" aria-labelledby="main-heading">
+    <div class="hero-grid">
+      <div>
+        <div class="kicker">DOE GEMS Prize &middot; DrivenData competition 306</div>
+        <h1>Selection-bias-aware fault discovery: what the evidence supports, and what it does not.</h1>
+        <p class="lede">The supplied fault catalogue is a <em>selected-at-random</em> sample of the
+        real fault population, conditioned on observables. This project estimates that selection
+        propensity with SAR-EM (Bekker &amp; Davis, PMLR&nbsp;94, 2018) from five observability
+        covariates, trains the fault posterior with the propensity-aware empirical risk of Bekker,
+        Robberechts &amp; Davis (arXiv:1809.03207) with weights clipped at 10, and compares it
+        against an nnPU baseline on identical spatially blocked folds.</p>
+        <a class="btn btn-secondary" href="executive-summary.html">How to submit (exact steps)</a>
+        <a class="btn btn-secondary" href="downloads.html">Downloads and audit files</a>
+      </div>
+      
+      <aside class="gate gate-good" aria-label="Submission readiness">
+        <span class="pill pill-good">Gate passed &middot; 20261011T223500Z</span>
+        <strong>Cleared to submit</strong>
+        <p><b>It is OK to download and submit the file below.</b> Every preregistered gate
+        passed: blocked-holdout DTI beat the matched nnPU baseline, the
+        highest-propensity tercile did not lose, the raster is unique against
+        &mdash; prior rasters, and the written bytes pass the
+        format validator.</p>
+        <p><a class="btn" href="downloads/gems65-sar-em-propensity-half-20261011T223500Z-5e4660cd-zeros.tif">Download submission TIF</a></p>
+        <p class="small">sha256 <code>b2e05f0b0d61a785d01cc9469462442f&hellip;</code><br>
+        note: <code>GEMSDOE65 SAR-EM propensity PU (Bekker-Davis 2018 + BRD 2019 risk, w=1/e^0.5 clip 10) vs nnPU, identical buffered folds; 39802 dots; holdout</code></p>
+      </aside>
+    </div>
+  </section>
+
+  <section aria-labelledby="res-heading">
+    <h2 id="res-heading">Experiment results &mdash; all HOLDOUT-DTI on the shared evaluator</h2>
+    <p class="small">Evaluator: spatially blocked whole-segment hide-and-recover (4 quadrants
+    &times; 2 draws, 15&nbsp;px collar, 12&nbsp;px domain erosion), pooled DTI with
+    &alpha;&nbsp;=&nbsp;0.2, &beta;&nbsp;=&nbsp;0.8, 300&nbsp;m triangular kernel. Withheld
+    positives per cell &asymp; 1,900&ndash;4,700 px (8 cells). This is a <em>catalogue</em>
+    hide-and-recover proxy, not an organizer score on unknown faults.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Candidate surface</th><th>Best emission config</th><th>Blocked-holdout DTI</th><th>Off-catalogue (SGMC) DTI</th><th>Dots</th></tr></thead>
+      <tbody></tbody>
+    </table></div>
+  </section>
+
+  <section aria-labelledby="gate-heading">
+    <h2 id="gate-heading">The promotion gate, item by item</h2>
+    <div class="grid">
+      <article class="card"><span class="card-number">0.0013</span>
+        <h3>Overall blocked-holdout DTI</h3>
+        <p>SAR propensity-aware risk 0.0234 vs nnPU
+        baseline 0.0221.
+        <b>PASS</b></p></article>
+      <article class="card"><span class="card-number">0.0028</span>
+        <h3>Off-catalogue (USGS SGMC) DTI</h3>
+        <p>SAR 0.0247 vs nnPU
+        0.0219. An independent,
+        leakage-free truth proxy (62,703 px &ge; 4 px from any catalogue pixel).
+        <b>PASS</b></p></article>
+      <article class="card"><span class="card-number">yes</span>
+        <h3>Highest-propensity tercile</h3>
+        <p>SAR 0.0000 vs nnPU
+        0.0000.
+        <b>PASS</b></p></article>
+    </div>
+  </section>
+
+  <section aria-labelledby="sens-heading">
+    <h2 id="sens-heading">Sensitivity: partial propensity correction</h2>
+    <p>Full correction (weight 1/e) improved the pooled blocked-holdout DTI but pushed the
+    emission out of the well-mapped, high-observability terrain where the withheld catalogue
+    segments actually live, so the highest-propensity tercile collapsed. Shrinking the weights
+    toward 1, <code>w = 1 / e^lambda</code>, interpolates between the nnPU baseline
+    (&lambda;&nbsp;=&nbsp;0) and the full propensity-aware risk (&lambda;&nbsp;=&nbsp;1).</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>&lambda;</th><th>Blocked-holdout DTI</th><th>Off-catalogue DTI</th><th>High-propensity tercile</th><th>Dots</th></tr></thead>
+      <tbody><tr><td colspan="5">not run</td></tr></tbody>
+    </table></div>
+  </section>
+
+  <section aria-labelledby="canary-heading">
+    <h2 id="canary-heading">Leakage canary</h2>
+    <p>&mdash; single features were each tested alone on the blocked
+    holdout. None exceeded the 0.90 AUC leakage threshold; the strongest single feature was
+    <code>&amp;mdash;</code> at mean AUC
+    &mdash;. No distance-to-catalogue channel is
+    in the feature stack by construction.</p>
+  </section>
+
+  <section aria-labelledby="inputs-heading">
+    <h2 id="inputs-heading">Verified inputs</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th>File</th><th>Status</th><th>sha256 (first 16)</th></tr></thead>
+      <tbody></tbody>
+    </table></div>
+    <p class="small">Digests are pinned in <code>src/gems65/grid.py</code> and re-verified on every
+    run; a mismatch aborts the pipeline. Full receipt:
+    <a href="https://github.com/buffedlizard55-lab/GEMSDOE65/blob/main/artifacts/input_verification.json">artifacts/input_verification.json</a>.</p>
+  </section>
+
+  <section aria-labelledby="board-heading">
+    <h2 id="board-heading">Official leaderboard &middot; direct link only</h2>
+    <div class="callout warning">
+      <p><strong>No rows are fetched, copied, or mirrored on this site.</strong> The DrivenData
+      <a href="https://www.drivendata.org/termsofuse/">Terms of Use</a> prohibit automated access to
+      monitor or copy website material and prohibit manual monitoring/copying without prior written
+      consent. This page provides only a link to the
+      <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">official
+      leaderboard</a>. No written permission or authorized leaderboard API has been established.</p>
+    </div>
+    <p class="small">A public leaderboard row is not a submission-page receipt and does not identify a
+    TIFF. This project reports a score as <code>ORGANIZER-CONFIRMED</code> only when the portal
+    receipt ties it to a specific artifact. No score on this page is an organizer score.</p>
+  </section>
+
+</main>
+<footer class="footer"><div class="wrap"><a href="index.html">Status and download gate</a><a href="executive-summary.html">Submit guide</a><a href="downloads.html">Downloads</a><a href="data/run-card.json">Current JSON run card</a><p><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/">Official problem description</a><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">Official leaderboard</a><a href="https://github.com/drivendataorg/gems-prize-reference-solution">Organizer reference solution</a></p></div></footer>
+</body></html>

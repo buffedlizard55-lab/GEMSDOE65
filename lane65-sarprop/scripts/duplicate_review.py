@@ -109,7 +109,7 @@ def main():
     uni = json.loads((ROOT / "evidence" / "uniqueness.json").read_text())
     rep = review(uni["checks"], allowed)
     rep["irregularity"] = {
-        "id": "IR-65-01",
+        "id": "IR-65L-01",
         "statement": ("The parallel-run stop rule as literally written "
                       "(\"more than 70% of your dots within 3 px of one registry raster's "
                       "dots\") fires for any candidate whose dots are well spread, because a "

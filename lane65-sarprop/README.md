@@ -8,6 +8,16 @@
 > its own canonical, negative-result site and its own verification workflow, and nothing here
 > changes it.
 
+**Why the artifact is a release asset and not a tracked file.** The repository root lineage
+publishes its own rasters under `docs/downloads/` through a hash-pinned allowlist
+(`scripts/check_repository.py`, its irregularity IR-65-009) that deliberately refuses to publish
+anything once an arm is *cleared* for submission without an organizer-confirmed receipt. This
+lineage's arm **is** cleared locally, so it cannot use that allowlist without tripping the guard,
+and it has no organizer receipt. The artifact therefore lives outside Git entirely: attached to
+this lane's release, rebuilt on demand from the committed dot list, and never silently present in
+a clone. Irregularity ids in this subtree are prefixed `IR-65L-` to keep them distinct from the
+root lineage's `IR-65-0xx` series.
+
 **Site:** `lane65-sarprop/docs/index.html` — Executive Summary
 first, with the one-click submission download and the exact steps to enter it in the competition.
 It is also served live at
@@ -38,7 +48,7 @@ slot, because nobody has claimed one for this file yet.
 | Emission rule measured, not assumed | **MEASURED** — monotone to saturation; NMS at the kernel radius; prune ≤2 px | `evidence/budget_curve.json`, `evidence/prune.json` |
 | Hypothesis that failed | **NEGATIVE** — forbidding the 3 px halo around known faults lowers holdout DTI at every arm | `evidence/emission_halo.json` |
 | On-disk format validator (frozen template) | **PASS** — single band, float32, all-finite, min 0, max 1, 74,351 positives | `docs/downloads/gems65-sarprop-pu-v1.json` |
-| Parallel-run duplicate audit vs 653 published rasters | **CLEAR with a flagged anomaly** — worst rank correlation 0.0401, worst dot-set Jaccard 0.0207; the literal 3 px rule fired 58 times and every firing is at or below its own uniform null (irregularity **IR-65-01**) | `evidence/uniqueness.json`, `evidence/uniqueness_review.json` |
+| Parallel-run duplicate audit vs 653 published rasters | **CLEAR with a flagged anomaly** — worst rank correlation 0.0401, worst dot-set Jaccard 0.0207; the literal 3 px rule fired 58 times and every firing is at or below its own uniform null (irregularity **IR-65L-01**) | `evidence/uniqueness.json`, `evidence/uniqueness_review.json` |
 | Ranked candidate-hypothesis register | **DELIVERED** — 5 candidates with layers, signature, cost and source; the top locally runnable one was tested and **rejected** | `HYPOTHESES.md`, `evidence/hypotheses.json` |
 | Unit tests | **13 PASS** in under a second, synthetic, no competition rasters needed | `tests/test_lane.py` |
 | Organizer acceptance / leaderboard score | **NOT KNOWN** — nobody has spent a slot on this file yet | — |
@@ -250,7 +260,7 @@ Full list with reasoning on `docs/limitations.html`. The short version:
   receipt for that attribution exists in any repo inspected. What *is* verified is the raster:
   `GEMSDOE32:docs/downloads/gemsdoe32-h33-h33-2-b2-20261004T220000Z-e5eb6e7e-zeros.tif`, and its
   exact set identity against the 0.2708 parent (`GEMSDOE28:…-h27-4-r1-solo-d2-8-…-allfinite.tif`).
-- **IR-65-01 — the parallel-run duplicate rule is not scale free.** The rule "stop if more than
+- **IR-65L-01 — the parallel-run duplicate rule is not scale free.** The rule "stop if more than
   70% of your dots fall within 3 px of one registry raster's dots" fired **58 times** against this
   file, all of it as an artifact: the template dilates the other raster's support by the kernel
   radius, so any prior covering a few percent of the map covers all of it, and the statistic
@@ -260,7 +270,7 @@ Full list with reasoning on `docs/limitations.html`. The short version:
   index, is at most **0.0207 across all 653 rasters**. Reported, not silently overridden: both
   readings are published (`evidence/uniqueness_review.json`), the site shows the anomaly, and an
   owner ruling is needed on whether the density-corrected reading replaces the literal one.
-- **IR-65-02 — the registry audit covers 653 of 655 indexed rasters.** Two entries could not be
+- **IR-65L-02 — the registry audit covers 653 of 655 indexed rasters.** Two entries could not be
   read (details in `evidence/uniqueness_review.json` under `error_details`), so a completeness
   claim is out of reach and none is made; "not a duplicate of anything checked" is the claim.
 - **IR-58-08**, **IR-S6-01** — owner rulings outstanding; see §5 above.

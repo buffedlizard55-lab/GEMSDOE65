@@ -217,7 +217,7 @@ def decision(ev: dict) -> dict:
                     f"{fmt(drev.get('max_spearman'), 4)}), the dot-set Jaccard against every "
                     f"checked raster is at most {fmt(drev.get('max_jaccard'), 4)}, and all "
                     f"{drev.get('literal_rule_firings', 0)} literal 3 px firings are at or "
-                    f"below their own uniform null. Flagged as irregularity IR-65-01.")
+                    f"below their own uniform null. Flagged as irregularity IR-65L-01.")
     elif drev:
         u_detail = "The audit fired and the firing is not explained by density — treat as a duplicate."
     else:
@@ -343,7 +343,7 @@ Do not spend a slot on this file until the banner above is green.</p>
 rasters compared: worst rank correlation {fmt(rev.get('max_spearman'), 4)}, worst dot-set Jaccard
 {fmt(rev.get('max_jaccard'), 4)}. The literal 3 px rule fired
 {esc(rev.get('literal_rule_firings'))} times and every firing is at or below its own uniform null
-&mdash; an artifact of a rule that is not scale free, flagged as <b>IR-65-01</b>.</li>
+&mdash; an artifact of a rule that is not scale free, flagged as <b>IR-65L-01</b>.</li>
 <li class="ok"><b>Gate is PROMOTE</b> on the blocked holdout: SAR propensity arm {fmt(d('sar'))}
 versus nnPU {fmt(d('nnpu'))}, and no loss in the highest-propensity tercile.</li>
 <li class="warn"><b>Hypotheses register published</b> ({esc(len((ev.get('hypotheses') or {}).get('hypotheses', [])))} candidates, ranked).
@@ -811,10 +811,10 @@ holdout's scored area and the live scored area are within 0.3% of each other (5,
 receipts' arithmetic. An organizer confirmation would replace an inference with a fact.</li>
 <li><b>Uniqueness scope is the indexed public inventory, and 2 of 655 could not be read.</b>
 653 rasters were compared, all hash-checked; the two failures are a CRS mismatch, not a match
-(<b>IR-65-02</b>), so the claim is "not a duplicate of anything checked", no more. Private,
+(<b>IR-65L-02</b>), so the claim is "not a duplicate of anything checked", no more. Private,
 unlinked or never-published files cannot be ruled out.</li>
 <li><b>The parallel-run stop rule needed a density correction to be interpretable</b>
-(<b>IR-65-01</b>). As literally written it fired for 58 of 653 rasters and every firing is at or
+(<b>IR-65L-01</b>). As literally written it fired for 58 of 653 rasters and every firing is at or
 below its own uniform null; the published verdict rests on the rank correlation and the dot-set
 Jaccard instead. Until an owner rules, both readings are kept.</li>
 <li><b>Only one hypothesis has been tested, and only as an emission-level blend.</b> The

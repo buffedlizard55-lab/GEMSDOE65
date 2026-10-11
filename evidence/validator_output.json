@@ -1,0 +1,112 @@
+{
+  "ok": true,
+  "status": "PASS",
+  "format": {
+    "path": "/home/user/GEMSDOE65/artifacts/quarantine/gems65-sar-em-c050-oof-20261011-a40eda4bc662-RESEARCH-ONLY.tif",
+    "bytes": 17823885,
+    "sha256": "356b85a8f08e9b37ac990b1eeffaf5b8de92c424d4ed6f18d04f92011290e9a9",
+    "bands": 1,
+    "dtype": "float32",
+    "crs": "EPSG:32611",
+    "width": 3292,
+    "height": 3730,
+    "bounds": [
+      243350.0,
+      4135550.0,
+      572550.0,
+      4508550.0
+    ],
+    "ref_bounds": [
+      243350.0,
+      4135550.0,
+      572550.0,
+      4508550.0
+    ],
+    "transform": [
+      100.0,
+      0.0,
+      243350.0,
+      0.0,
+      -100.0,
+      4508550.0
+    ],
+    "nodata": "NaN",
+    "blocksize": [
+      256,
+      256
+    ],
+    "fixture_grid": false,
+    "has_validity_mask": true,
+    "footprint_pixels": 5167373,
+    "nan_pixels": 7111787,
+    "infinity_pixels": 0,
+    "finite_inside": 5167373,
+    "nan_outside": 7111787,
+    "finite_outside": 0,
+    "min": 0.0,
+    "max": 0.4162907898426056,
+    "mean": 0.02146502211689949,
+    "n_nonzero": 5106385,
+    "mass": 110917.771720405,
+    "mass_outside_footprint": 0,
+    "problems": [],
+    "ok": true,
+    "validation_class": "local on-disk check against the official sample representation; not organizer upload acceptance"
+  },
+  "local": {
+    "file": "/home/user/GEMSDOE65/artifacts/quarantine/gems65-sar-em-c050-oof-20261011-a40eda4bc662-RESEARCH-ONLY.tif",
+    "bytes": 17823885,
+    "sha256": "356b85a8f08e9b37ac990b1eeffaf5b8de92c424d4ed6f18d04f92011290e9a9",
+    "meta": {
+      "crs": "EPSG:32611",
+      "shape": [
+        3730,
+        3292
+      ],
+      "dtype": "float32",
+      "count": 1,
+      "nodata": "NaN",
+      "transform": [
+        100.0,
+        0.0,
+        243350.0,
+        0.0,
+        -100.0,
+        4508550.0
+      ],
+      "profile_compress": "deflate"
+    },
+    "band_description": [
+      null
+    ],
+    "n_finite": 5167373,
+    "n_nan": 7111787,
+    "n_infinite": 0,
+    "min_finite": 0.0,
+    "max_finite": 0.4162907898426056,
+    "mean_finite": 0.02146502211689949,
+    "emitted_positive_pixels": 5106385,
+    "checks": {
+      "single_band": true,
+      "dtype_float32": true,
+      "dimensions_3730x3292": true,
+      "crs_epsg_32611": true,
+      "transform_matches_sample_submission": true,
+      "no_inf_anywhere": true,
+      "no_sentinel_values": true,
+      "in_footprint_all_finite": true,
+      "in_footprint_range_0_1": true,
+      "outside_footprint_nan": true,
+      "nodata_nan": true,
+      "zero_dots_on_mapped_catalogue": true
+    },
+    "all_checks_passed": true,
+    "validation_class": "local format/range preflight against the published sample-grid representation; not organizer acceptance or uniqueness clearance",
+    "on_catalogue_positive_pixels": 0,
+    "in_footprint_positive_pixels": 5106385,
+    "footprint_fraction": 0.9881974844858307,
+    "outside_footprint_finite_pixels": 0
+  },
+  "organizer_acceptance": false,
+  "scope": "Local format/range preflight only; not a promotion or slot approval."
+}

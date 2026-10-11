@@ -116,7 +116,7 @@ Do not spend a slot on this file until the banner above is green.</p>
 rasters compared: worst rank correlation 0.0401, worst dot-set Jaccard
 0.0207. The literal 3 px rule fired
 58 times and every firing is at or below its own uniform null
-&mdash; an artifact of a rule that is not scale free, flagged as <b>IR-65-01</b>.</li>
+&mdash; an artifact of a rule that is not scale free, flagged as <b>IR-65L-01</b>.</li>
 <li class="ok"><b>Gate is PROMOTE</b> on the blocked holdout: SAR propensity arm 0.073242
 versus nnPU 0.067864, and no loss in the highest-propensity tercile.</li>
 <li class="warn"><b>Hypotheses register published</b> (5 candidates, ranked).
@@ -158,7 +158,7 @@ they score the withheld pixels only, while the organizer scores every fault, so
 <b>they must never be compared with a leaderboard score</b>.</p>
 
 <h2>Build-time status feed</h2>
-<ul class="feed"><li class="ok"><b>Blocked-holdout gate</b> <span class="chip ok">GREEN</span> &mdash; SAR-propensity arm beats nnPU on pooled HOLDOUT-DTI and does not lose in the highest-propensity tercile.</li><li class="ok"><b>On-disk format validator</b> <span class="chip ok">GREEN</span> &mdash; All-finite float32, EPSG:32611, 3730x3292, values in [0,1], positive support only outside the mapped catalogue.</li><li class="ok"><b>Parallel-run duplicate audit</b> <span class="chip ok">GREEN</span> &mdash; No registry raster exceeds rho 0.90 (worst 0.0401), the dot-set Jaccard against every checked raster is at most 0.0207, and all 58 literal 3 px firings are at or below their own uniform null. Flagged as irregularity IR-65-01.</li><li class="ok"><b>Emission rule is the gated one</b> <span class="chip ok">GREEN</span> &mdash; 74351 dots, accept candidates in descending expected credit with non-maximum suppression at the metric&#x27;s 3 px kernel radius, budget taken to saturation on the measured curve, then prune every dot within 2.0 px of a mapped fault.</li></ul>
+<ul class="feed"><li class="ok"><b>Blocked-holdout gate</b> <span class="chip ok">GREEN</span> &mdash; SAR-propensity arm beats nnPU on pooled HOLDOUT-DTI and does not lose in the highest-propensity tercile.</li><li class="ok"><b>On-disk format validator</b> <span class="chip ok">GREEN</span> &mdash; All-finite float32, EPSG:32611, 3730x3292, values in [0,1], positive support only outside the mapped catalogue.</li><li class="ok"><b>Parallel-run duplicate audit</b> <span class="chip ok">GREEN</span> &mdash; No registry raster exceeds rho 0.90 (worst 0.0401), the dot-set Jaccard against every checked raster is at most 0.0207, and all 58 literal 3 px firings are at or below their own uniform null. Flagged as irregularity IR-65L-01.</li><li class="ok"><b>Emission rule is the gated one</b> <span class="chip ok">GREEN</span> &mdash; 74351 dots, accept candidates in descending expected credit with non-maximum suppression at the metric&#x27;s 3 px kernel radius, budget taken to saturation on the measured curve, then prune every dot within 2.0 px of a mapped fault.</li></ul>
 <p class="mut">Machine-readable copy: <a href="status.json">status.json</a>.
 Re-checked on every build, so nothing here needs manual verification.</p>
 

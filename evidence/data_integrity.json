@@ -1,0 +1,94 @@
+{
+  "checked_at": "2026-10-11T20:19:02.921362+00:00",
+  "source_class": "Hash-pinned owner mirrors, NOT independently authenticated official downloads",
+  "files": [
+    {
+      "path": "data/raw/gems-geodawn-numerical-features.tif.part-000",
+      "sha256": "0a330f8951af6c921029e25c84a579319d2db554d62d30d894d6ddc97f98cff7",
+      "bytes": 94371840,
+      "source": "https://github.com/buffedlizard55-lab/GEMSDOE",
+      "git_blob_sha": "f34e5143d5e7c10014b5cfe01c85d01bcede4c0a",
+      "integrity_verified": true,
+      "organizer_authenticated": false
+    },
+    {
+      "path": "data/raw/gems-geodawn-numerical-features.tif.part-001",
+      "sha256": "3c98037b2c997e3bbfcdfc2d9a982e8b820a77410dd7404b05cdb80594922c50",
+      "bytes": 94371840,
+      "source": "https://github.com/buffedlizard55-lab/GEMSDOE",
+      "git_blob_sha": "4bd98099ae505f63cc6c3733954f259974efd290",
+      "integrity_verified": true,
+      "organizer_authenticated": false
+    },
+    {
+      "path": "data/raw/gems-geodawn-numerical-features.tif.part-002",
+      "sha256": "c375c4dbc40c59bbaece572b5e348700b75935f9a30c879c82b6417e0836f31c",
+      "bytes": 94371840,
+      "source": "https://github.com/buffedlizard55-lab/GEMSDOE",
+      "git_blob_sha": "d6f883ba8822207ac2765445737ecd2ecdfd2914",
+      "integrity_verified": true,
+      "organizer_authenticated": false
+    },
+    {
+      "path": "data/raw/gems-geodawn-numerical-features.tif.part-003",
+      "sha256": "b164159e6d0cb2595bc9f63a948af2646b124114a9c5921880c7516092137320",
+      "bytes": 94371840,
+      "source": "https://github.com/buffedlizard55-lab/GEMSDOE",
+      "git_blob_sha": "976977b4ac84c4c9b6fec72495c4e512341de872",
+      "integrity_verified": true,
+      "organizer_authenticated": false
+    },
+    {
+      "path": "data/raw/gems-geodawn-numerical-features.tif.part-004",
+      "sha256": "fa0a6f9c936fac1d6f20ca37f5929b2d60bf7a80f3d477dcab886f941aee2696",
+      "bytes": 41425484,
+      "source": "https://github.com/buffedlizard55-lab/GEMSDOE",
+      "git_blob_sha": "41a7bb7b7603c1e7669d8cc8405cfeb5efb5cf0c",
+      "integrity_verified": true,
+      "organizer_authenticated": false
+    },
+    {
+      "path": "data/raw/existing_faults.tif",
+      "sha256": "7ba308ccdc4418b31a178f4f1ef21aaa6e152e4028f2f6f64b01f7eb25ae4093",
+      "bytes": 425830,
+      "source": "https://github.com/buffedlizard55-lab/57GEMSDOE",
+      "git_blob_sha": "4ad3c1f3f19823e40924589bee7e51e44ae3a2e7",
+      "integrity_verified": true,
+      "organizer_authenticated": false
+    },
+    {
+      "path": "data/raw/sample_submission.tif",
+      "sha256": "2176d08e485aa2cd2860ce8df539db4faf4d76163b38a4dd8c30a40454d35cbc",
+      "bytes": 1599597,
+      "source": "https://github.com/buffedlizard55-lab/57GEMSDOE",
+      "git_blob_sha": "7d865a9921a40ed2ea4c742a6a25b1fa2f357c5a",
+      "integrity_verified": true,
+      "organizer_authenticated": false
+    },
+    {
+      "path": "data/external/topo_10m_derived_100m_u8.tif",
+      "sha256": "a6398d9950965dec6aae6ccecdaa6ced48645d133eab222cbdd11def9bdabfa4",
+      "bytes": 32523329,
+      "source": "https://github.com/buffedlizard55-lab/60GEMSDOE",
+      "git_blob_sha": "5388687c1396d98ba4a2298af431361eabd213f1",
+      "integrity_verified": true,
+      "organizer_authenticated": false
+    },
+    {
+      "path": "data/external/lidar_scarp_features_u8.tif",
+      "sha256": "d580bb8bdcdb941e32fefb8b38044bc5bf04e199bf2e83498c3576e6fc465568",
+      "bytes": 36943606,
+      "source": "https://github.com/buffedlizard55-lab/60GEMSDOE",
+      "git_blob_sha": "da733b53147efad5c141ffdb96e469ec5b4da8b8",
+      "integrity_verified": true,
+      "organizer_authenticated": false
+    },
+    {
+      "path": "data/raw/training_features.tif",
+      "sha256": "4371c82e3b8339b807bdffcf4ef59a225520fe2988d521be208ae33743123bc5",
+      "bytes": 418912844,
+      "integrity_verified": true,
+      "organizer_authenticated": false
+    }
+  ]
+}

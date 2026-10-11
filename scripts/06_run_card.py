@@ -214,6 +214,9 @@ def main() -> int:
 
         # ---- 9 verdict
         "verdict": verdict,
+        # same machine-readable guard fields the canonical evidence/run_card.json exposes, so the
+        # fail-closed checkers can read either card (IR-65-009).
+        "eligible_for_download": bool(any(a.get("OK_TO_DOWNLOAD_AND_SUBMIT") for a in arms.values())),
         "verdict_detail": {
             "sar_arm": sar.get("verdict"),
             "sar_arm_reason": sar.get("verdict_reason"),

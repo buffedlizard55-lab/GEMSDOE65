@@ -1,0 +1,164 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>Method &amp; hypotheses · GEMSDOE65</title>
+<link rel="stylesheet" href="assets/site.css"></head><body><div class="wrap">
+<header class="site"><h1>Method, hypotheses and the leakage canary</h1><div class="sub">generated 2026-10-11T21:34:12Z</div><nav class="toc"><a href="../index.html">Canonical home</a><a href="index.html">Lane 65 home</a><a href="executive-summary.html">Executive summary / how to submit</a><a href="research.html">Method &amp; hypotheses</a><a href="sources.html">Verified sources</a><a href="irregularities.html">Irregularities</a><a href="limitations.html">Limitations</a><a href="run-card.html">Run card</a></nav><div class="panel" style="border-color:var(--bad);margin-top:14px"><b style="color:#ff9aa2">NOT CLEARED FOR SUBMISSION</b> — no raster built by this lane may be submitted. The files under <code>docs/downloads/</code> are evidence artifacts only.</div></header>
+<h2>Leakage canary — every feature tested alone on the holdout</h2>
+<div class="panel"><p class="small">Protocol rule 4: AUC above 0.90 means leakage until proven otherwise.
+Pooled over 8 blocked cells, weighted by withheld positives.</p>
+<table><tr><th>feature</th><th class="num">holdout AUC (alone)</th><th>verdict</th></tr><tr><td class='mono'>cov_dist_range_front</td><td class='num'>0.5738</td><td><span class="badge b-ok">ok</span></td></tr><tr><td class='mono'>curv</td><td class='num'>0.5720</td><td><span class="badge b-ok">ok</span></td></tr><tr><td class='mono'>grad_det_elev</td><td class='num'>0.5694</td><td><span class="badge b-ok">ok</span></td></tr><tr><td class='mono'>relief</td><td class='num'>0.5572</td><td><span class="badge b-ok">ok</span></td></tr><tr><td class='mono'>cov_relief</td><td class='num'>0.5572</td><td><span class="badge b-ok">ok</span></td></tr><tr><td class='mono'>det_elev_slope</td><td class='num'>0.5513</td><td><span class="badge b-ok">ok</span></td></tr><tr><td class='mono'>cov_slope</td><td class='num'>0.5513</td><td><span class="badge b-ok">ok</span></td></tr><tr><td class='mono'>tc</td><td class='num'>0.5485</td><td><span class="badge b-ok">ok</span></td></tr><tr><td class='mono'>grad_iso_grav</td><td class='num'>0.5469</td><td><span class="badge b-ok">ok</span></td></tr><tr><td class='mono'>iso_grav_anom_slope</td><td class='num'>0.5445</td><td><span class="badge b-ok">ok</span></td></tr><tr><td class='mono'>det_elev</td><td class='num'>0.5444</td><td><span class="badge b-ok">ok</span></td></tr><tr><td class='mono'>iso_grav_anom_hg</td><td class='num'>0.5411</td><td><span class="badge b-ok">ok</span></td></tr><tr><td class='mono'>depth_to_base_surf</td><td class='num'>0.5372</td><td><span class="badge b-ok">ok</span></td></tr><tr><td class='mono'>iso_grav_anom_vg</td><td class='num'>0.5370</td><td><span class="badge b-ok">ok</span></td></tr><tr><td class='mono'>geod_shearrate</td><td class='num'>0.5330</td><td><span class="badge b-ok">ok</span></td></tr><tr><td class='mono'>rtp</td><td class='num'>0.5316</td><td><span class="badge b-ok">ok</span></td></tr><tr><td class='mono'>ieq_n100a15</td><td class='num'>0.5306</td><td><span class="badge b-ok">ok</span></td></tr><tr><td class='mono'>tmi_hg</td><td class='num'>0.5304</td><td><span class="badge b-ok">ok</span></td></tr><tr><td class='mono'>cond_surf</td><td class='num'>0.5276</td><td><span class="badge b-ok">ok</span></td></tr><tr><td class='mono'>cov_basin_fill</td><td class='num'>0.5249</td><td><span class="badge b-ok">ok</span></td></tr><tr><td class='mono'>iso_grav_anom</td><td class='num'>0.5247</td><td><span class="badge b-ok">ok</span></td></tr><tr><td class='mono'>cov_lidar_cov</td><td class='num'>0.5234</td><td><span class="badge b-ok">ok</span></td></tr><tr><td class='mono'>mag_anom</td><td class='num'>0.5234</td><td><span class="badge b-ok">ok</span></td></tr><tr><td class='mono'>deq_n100a15</td><td class='num'>0.5232</td><td><span class="badge b-ok">ok</span></td></tr><tr><td class='mono'>geod_2ndinv</td><td class='num'>0.5225</td><td><span class="badge b-ok">ok</span></td></tr><tr><td class='mono'>geod_dilaterate</td><td class='num'>0.5189</td><td><span class="badge b-ok">ok</span></td></tr><tr><td class='mono'>tmi</td><td class='num'>0.5178</td><td><span class="badge b-ok">ok</span></td></tr><tr><td class='mono'>tmi_vg</td><td class='num'>0.5105</td><td><span class="badge b-ok">ok</span></td></tr></table></div>
+<h2>Method and candidate hypotheses</h2>
+<div class="panel"><p><h2>Candidate geological hypotheses — ranked by expected DTI gain vs implementation cost</h2></p><p>Generated 2026-10-11 by the GEMSDOE65 lane. Every geological statement below is either (a) quoted<br>
+from a source that was fetched and read in this sandbox (links in <code>registry/sources.json</code>), or<br>
+(b) a measurement made on the hash-pinned rasters by a script in <code>scripts/</code>. Anything that is my<br>
+own inference is labelled <b>INFERENCE</b> and carries the mechanism that makes it falsifiable.</p><p>Protocol compliance: the top-ranked candidate was validated on the spatially blocked holdout<br>
+(8 cells = 4 quadrant blocks x 2 draws) <b>before</b> any weekly slot was considered, per the standing<br>
+brief. No slot was spent.</p><p>---</p><p><h2>Why these hypotheses exist at all</h2></p><p>Two verified facts define the opportunity:</p><p>1. <b>The catalogue is incomplete in a terrain-correlated way.</b> Giddens &amp; Faulds 2025 (SGP-TR-229,<br>
+   read in full, <a href="https://pangea.stanford.edu/ERE/pdf/IGAstandard/SGW/2025/Giddens.pdf">https://pangea.stanford.edu/ERE/pdf/IGAstandard/SGW/2025/Giddens.pdf</a>):<br>
+   *&quot;with only ~25% of the study area mapped in sufficient detail (e.g., 1:24,000)&quot;*, and step-overs<br>
+   are *&quot;more commonly associated with range-front faults (~91.9%). There is potential bias in this,<br>
+   as step-overs along range-front faults are more easily identified due to steep topographic<br>
+   gradients.&quot;*<br>
+2. <b>Lidar is not the bottleneck; maps are.</b> Faulds 2026 (51st Workshop,<br>
+   <a href="https://pangea.stanford.edu/ERE/db/GeoConf/papers/SGW/2026/Faulds.pdf">https://pangea.stanford.edu/ERE/db/GeoConf/papers/SGW/2026/Faulds.pdf</a>): *&quot;Publicly available<br>
+   high-resolution Lidar now covers much of the GBR, but detailed geological maps include less than<br>
+   25% of the region.&quot;* Measured here: lidar covers <b>0.7537</b> of the scoring footprint.</p><p><b>INFERENCE (the mechanism all five hypotheses share):</b> a fault that is physically present but<br>
+never mapped is *not* a random draw from all faults. It is preferentially a fault whose surface<br>
+expression is weak in the specific ways that a field geologist or a 1:24,000 mapper keys on —<br>
+low-relief, alluvium-covered, low-scarp-density, away from range fronts. Those are exactly the<br>
+terrain attributes available in the covariate stack. So &quot;unmapped fault&quot; is a *learnable class*,<br>
+and a model that predicts it directly targets the catalogue&#x27;s blind spots rather than its<br>
+well-mapped parts. This is the whole reason the lane is a selection-bias (SAR) PU problem instead of<br>
+a segmentation problem.</p><p><b>The named non-fault process that mimics it</b> (required by protocol rule 5): **alluvial and<br>
+eolian burial.** A basin floor covered by post-faulting sediment produces low relief, low curvature<br>
+variance and low lidar-derived scarp density — statistically indistinguishable from &quot;mapped-less<br>
+because expression-less&quot; — but contains fewer faults per unit area than the mapped uplands simply<br>
+because it is younger surface. Any hypothesis below that keys only on &quot;flat and blank&quot; will score<br>
+on buried alluvium, not on buried faults. Every candidate therefore pairs a *suppression* term<br>
+(why it was not mapped) with a *presence* term (why a fault is physically there anyway).</p><p>---</p><p><h2>Ranked candidates</h2></p><p>Ranking score = expected DTI gain / implementation cost, where cost is measured in engineer-hours<br>
+inside this sandbox (2 CPU, ~2.8 GB RAM, chunked inference mandatory) and gain is measured against<br>
+the registry&#x27;s own owner-reported band (0.2376–0.2778) and the 2026-10-04 leaderboard snapshot<br>
+(#1 = 0.3262), not against any projection.</p><p><h3>H-65-A — Step-over / relay-ramp corridors (RANK 1, validated on blocked holdout)</h3></p><p>* <b>Layers used:</b> <code>training_features.tif</code> band 19 <code>det_elev_slope</code> (measured standardised mean<br>
+  difference between labelled and background: <b>0.482</b>, second strongest of 19 bands), band 5<br>
+  <code>iso_grav_anom_slope</code> (SMD <b>0.362</b>), band 3 <code>tmi_hg</code> (SMD <b>0.386</b>), plus the derived<br>
+  range-front mask (<b>441,499 px = 8.5%</b> of the footprint) and lidar coverage (<b>0.7537</b>).<br>
+* <b>Physical signature:</b> two en-echelon normal fault strands separated by a transfer zone. The<br>
+  relay ramp is a gently-dipping, topographically expressed surface between the strand tips, with<br>
+  systematic drainage deflection and a local gravity gradient step from the displaced basin fill.<br>
+* <b>Why it catches catalogue-missing faults:</b> verified — *&quot;&gt;73% of right-stepping step-overs on<br>
+  N–NNE strands, ~58% on westerly-dipping faults&quot;* and mean relay-ramp width <b>2.5 km</b> in the<br>
+  western Great Basin (Giddens &amp; Faulds 2025). At 100 m pixels a 2.5 km ramp is 25 px wide, so the<br>
+  structure is resolvable but only if the *pair* is detected; a mapper working quadrangle-by-<br>
+  quadrangle records the two strands and misses the ramp between them, especially across a<br>
+  quadrangle boundary. <b>INFERENCE:</b> the highest-yield pixels are therefore the *inter-strand<br>
+  corridor*, not the strands themselves — and the strands are already in the catalogue (and, per the<br>
+  staff ruling in forum thread 11516, masked out of scoring anyway).<br>
+* <b>How it differs from the repo/template:</b> GEMSDOE32&#x27;s best artifact (owner-reported 0.2778) is a<br>
+  smoothed-belief max-coverage emitter over a generic segmentation belief; it has no structural<br>
+  pairing operator and no explicit step-over geometry. Nothing in either sibling repo computes an<br>
+  inter-strand corridor field.<br>
+* <b>Expected gain:</b> moderate-to-high. The mechanism is documented, the discriminating bands are the<br>
+  two strongest in the stack, and the target pixels are provably outside the catalogue&#x27;s masked<br>
+  core.<br>
+* <b>Implementation cost:</b> low-moderate (~1 day). Needs a strand-tip detector, a directional pairing<br>
+  search over the fault-component graph (already computed: catalogue = 60,988 px in 3,199<br>
+  8-connected components, median size 12), and a corridor field. No new data.<br>
+* <b>Holdout result:</b> this is the candidate that was actually built and validated this session. It is<br>
+  the SAR/propensity arm. <b>The gate was NOT met</b> — pooled HOLDOUT-DTI 0.06183 (SAR propensity-aware<br>
+  ERM) vs 0.06687 (nnPU SCAR baseline), Δ = −0.00504, 95% CI [−0.01015, −0.00111], wins 2/8 cells;<br>
+  top-propensity tercile Δ = −0.01107. Logged as a <b>negative result</b>. See the validity caveat in<br>
+  <code>registry/irregularities.json</code> IR-65-006: the holdout&#x27;s truth is the withheld part of the same<br>
+  catalogue, which concentrates in *high*-propensity terrain, so it structurally penalises the<br>
+  reallocation this hypothesis is designed to perform. The instrument measured what it can measure;<br>
+  it did not confirm the thesis.</p><p><h3>H-65-B — Fault-intersection dilational nodes (RANK 2)</h3></p><p>* <b>Layers used:</b> catalogue component graph (already built), band 16 <code>ieq_n100a15|seismic</code> (SMD<br>
+  <b>0.570</b>, the strongest single band), band 7 <code>geod_shearrate</code> (SMD <b>0.390</b>), derived<br>
+  <code>grad_det_elev</code>.<br>
+* <b>Physical signature:</b> where two fault systems cross, the local stress field is dilational;<br>
+  permeability is enhanced and there is a measurable seismic-velocity and geodetic-strain-rate<br>
+  anomaly at the node.<br>
+* <b>Why it catches catalogue-missing faults:</b> verified frequency — fault intersections are <b>26.1%</b><br>
+  of known geothermal fault-system settings (Faulds 2026), second only to step-overs. An intersection<br>
+  node implies at least two strands; if either strand is unmapped at 1:24,000 scale, the node is<br>
+  absent from the catalogue even though its *signature* is present in the geophysics, which is<br>
+  acquisition-blind to map coverage.<br>
+* <b>How it differs from the repo:</b> no sibling repo builds a node field from the intersection of the<br>
+  *geophysical* lineaments; they use the catalogue&#x27;s own geometry only.<br>
+* <b>Expected gain:</b> moderate. Fewer target pixels than H-65-A (nodes are sparse) but each is high<br>
+  confidence, and the DTI is a coverage-weighted kernel, so sparse-and-right beats dense-and-wrong.<br>
+* <b>Implementation cost:</b> moderate (~1–2 days). Requires a lineament extraction from the gravity/<br>
+  magnetic derivative bands (the two highest-SMD bands are both derivative fields, which is a good<br>
+  sign) and a crossing detector. No new data.</p><p><h3>H-65-C — Accommodation-zone transfer faults between adjacent ranges (RANK 3)</h3></p><p>* <b>Layers used:</b> <code>log1p(depth_to_base_surf)</code> from the gravity-derived basin-fill proxy (measured<br>
+  Pearson r = <b>0.591</b> against the independent <code>basin_fill</code> covariate — corroboration that the<br>
+  proxy is real), band 19 <code>det_elev_slope</code>, DEM-derived relief.<br>
+* <b>Physical signature:</b> a transverse zone where the polarity of basin-range tilting alternates;<br>
+  expressed as a topographic step across the basin floor and a basement-depth discontinuity that is<br>
+  *oblique* to the dominant range trend.<br>
+* <b>Why it catches catalogue-missing faults:</b> verified frequency <b>6.8%</b> (Faulds 2026), and by<br>
+  construction these structures lie *in the basin*, i.e. under alluvium, i.e. exactly where 1:24,000<br>
+  mapping is thinnest. This is the purest &quot;mapped-less because expression-less&quot; candidate.<br>
+* <b>How it differs from the repo:</b> uses the gravity basement-depth field as the primary layer rather<br>
+  than as one band among nineteen, and requires a trend-obliquity test rather than a magnitude test.<br>
+* <b>Expected gain:</b> low-moderate, and it carries the <b>highest mimicry risk</b>: this is the<br>
+  hypothesis most exposed to the alluvial-burial non-fault process named above. A basement step can<br>
+  be a depositional surface.<br>
+* <b>Implementation cost:</b> moderate (~2 days). Needs a dominant-trend estimate per window and an<br>
+  obliquity map.</p><p><h3>H-65-D — Horse-tail terminations and splay fans at strand ends (RANK 4)</h3></p><p>* <b>Layers used:</b> catalogue component endpoints (median component size 12 px — most components are<br>
+  small enough that their endpoints are computable exactly), <code>curv</code>, <code>grad_det_elev</code>.<br>
+* <b>Physical signature:</b> a propagating normal fault tip loses displacement into a fan of short<br>
+  splays; curvature variance rises locally while relief stays low.<br>
+* <b>Why it catches catalogue-missing faults:</b> verified — terminations are <b>16.7%</b> of known<br>
+  settings, and ~90% of known geothermal systems sit in four structural settings, horse-tailing<br>
+  terminations being one of them (Faulds 2026). Splays below 1:24,000 mapping resolution are<br>
+  systematically dropped.<br>
+* <b>Expected gain:</b> low-moderate. The splays are short, so the DTI kernel (R = 300 m = 3 px) will<br>
+  often be satisfied by an adjacent catalogue pixel — which earns *nothing*, because catalogue<br>
+  pixels are masked out of scoring (forum thread 11516).<br>
+* <b>Implementation cost:</b> low (~0.5 day). Cheapest candidate on the list; a reasonable control<br>
+  experiment rather than a primary bet.</p><p><h3>H-65-E — Pull-apart basins at releasing bends (RANK 5)</h3></p><p>* <b>Layers used:</b> <code>basin_fill</code>, <code>log1p(depth_to_base_surf)</code>, <code>tmi_hg</code>, plan-view fault trace<br>
+  curvature from the catalogue graph.<br>
+* <b>Physical signature:</b> a rhomboid, locally deep basement depression with a strong magnetic-low<br>
+  fill, bounded by two en-echelon strike-slip-oblique strands.<br>
+* <b>Why it catches catalogue-missing faults:</b> verified frequency <b>2.3%</b> (Faulds 2026) — the rarest<br>
+  of the five settings, hence the smallest candidate pixel population.<br>
+* <b>Expected gain:</b> low, purely because of rarity; but the discriminant is sharp (a rhomboid deep<br>
+  basement body is hard to fake), so precision should be high.<br>
+* <b>Implementation cost:</b> high (~3 days) relative to its population. Ranked last on the<br>
+  gain/cost ratio.</p><p>---</p><p><h2>Summary table</h2></p><p>| rank | id | expected gain | cost | new data needed | mimicry risk | holdout-validated |<br>
+|---|---|---|---|---|---|---|<br>
+| 1 | H-65-A step-over corridors | moderate-high | ~1 d | none | medium | <b>yes — gate FAILED, logged negative</b> |<br>
+| 2 | H-65-B intersection dilational nodes | moderate | ~1–2 d | none | low-medium | no |<br>
+| 3 | H-65-C accommodation-zone transfer faults | low-moderate | ~2 d | none | <b>high</b> | no |<br>
+| 4 | H-65-D horse-tail splay fans | low-moderate | ~0.5 d | none | medium | no |<br>
+| 5 | H-65-E pull-apart basins | low (rare) | ~3 d | none | low | no |</p><p><b>Recommendation.</b> H-65-B is the best next experiment on gain/cost: it uses the strongest<br>
+discriminating band in the stack (band 16, SMD 0.570), its target pixels are provably outside the<br>
+masked catalogue core, and its mimicry exposure is lower than H-65-C&#x27;s. H-65-D is the cheapest<br>
+possible control and should be run first if a fast sanity check is wanted.</p><p>---</p><p><h2>If new external data are needed: the specific free official source</h2></p><p>No candidate above requires it — all five are computable from the restored, hash-pinned stack. The<br>
+one gap in the whole lane is the <b>propensity-scale anchor</b> (IR-65-001), and the free official<br>
+source that closes it is:</p><p>* <b>Nevada Bureau of Mines and Geology — MapInfo / digital geologic map inventory</b>,<br>
+  <a href="https://nbmg.unr.edu/library/mapinfo.html">https://nbmg.unr.edu/library/mapinfo.html</a> (NBMG is the official state geological survey; all<br>
+  products free). It carries the *scale* of every published quadrangle map, which is exactly the<br>
+  &quot;exhaustively mapped at 1:24,000&quot; index the brief asks for.<br>
+* <b>Confirming alternative, also free and official:</b> the **USGS National Geologic Map Database<br>
+  (NGMDB) Map Index**, <a href="https://ngmdb.usgs.gov/maps/">https://ngmdb.usgs.gov/maps/</a> — a per-quadrangle inventory of published<br>
+  geologic maps with scale, free, no login.<br>
+* <b>Obtainability from this sandbox: NOT obtainable.</b> <code>nbmg.unr.edu</code>, <code>usgs.gov</code> and <code>epsg.io</code> are<br>
+  all off the egress allowlist (measured, not assumed). Obtainability from a normal machine is high:<br>
+  both are public, no authentication, no rate limit of consequence. <b>Action for a human reviewer:</b><br>
+  download the NBMG map-scale inventory, rasterise &quot;mapped at &gt;= 1:24,000&quot; onto the competition grid,<br>
+  and re-run <code>python scripts/02_run_holdout.py --a-bar &lt;measured mean propensity over mapped area&gt;</code>.<br>
+  That converts the propensity sensitivity analysis into an identified estimate.<br>
+* Secondary free official source already in the stack: <b>USGS 3DEP 1 m DEM tiles</b> via the public<br>
+  TNM bucket <code>https://prd-tnm.s3.amazonaws.com/</code> (716 URLs pinned in <code>data/external/dem_links.json</code>)<br>
+  and <b>GeoDAWN</b> gravity/magnetics, DOI <a href="https://doi.org/10.5066/P93LGLVQ">https://doi.org/10.5066/P93LGLVQ</a>.</p><p>---</p><p><h2>What would falsify each hypothesis</h2></p><p>* <b>H-65-A</b>: if a corridor field, evaluated against *organizer-confirmed* scores rather than the<br>
+  catalogue-hidden holdout, does not beat the nnPU baseline by more than its 95% CI width, the<br>
+  reallocation thesis is dead for this metric. One receipt settles it.<br>
+* <b>H-65-B</b>: if the extracted geophysical lineaments do not reproduce the catalogue&#x27;s own traces<br>
+  where the catalogue exists (leave-one-cell-out agreement), the lineaments are noise and every node<br>
+  derived from them is noise.<br>
+* <b>H-65-C</b>: if basement-depth discontinuities are as frequent inside mapped alluvial fans as across<br>
+  range-bounding structures, the feature is a depositional surface and the hypothesis collapses.<br>
+* <b>H-65-D</b>: if splay-fan pixels fall within 3 px of catalogue pixels more often than chance, they<br>
+  are masked out of scoring and the hypothesis cannot earn DTI regardless of geological validity.<br>
+* <b>H-65-E</b>: if fewer than ~200 candidate pixels survive thresholding, the population is too small<br>
+  to move a coverage-weighted metric.<br>
+</p></div>
+</div></body></html>

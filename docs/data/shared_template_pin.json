@@ -1,0 +1,91 @@
+{
+  "repository": "buffedlizard55-lab/58GEMSDOE",
+  "tree_sha": "3ccda56feaca7215e2ceef01d755e0c7b5fd486e",
+  "files": [
+    {
+      "path": "vendor/template58/gems57/__init__.py",
+      "upstream_path": "src/gems57/__init__.py",
+      "git_blob_sha": "964b55b3be184774e11956963b3e0e10b6580c7b",
+      "sha256": "bd7f12b45caf67b7b4d0da4656c7c3895513bec524ec0b7f251227ecbdd39d26",
+      "modified": false
+    },
+    {
+      "path": "vendor/template58/gems57/emit.py",
+      "upstream_path": "src/gems57/emit.py",
+      "git_blob_sha": "025eeb2cc697a8a0fbee5096119eebcb69b8b1ed",
+      "sha256": "05c473e736e4a599b35be77b2791b62d72460383853c8fba0eb56ea26c99055d",
+      "modified": false
+    },
+    {
+      "path": "vendor/template58/gems57/evaluate_holdout.py",
+      "upstream_path": "src/gems57/evaluate_holdout.py",
+      "git_blob_sha": "9c65eb9de1468fecfc909d9b2c1348bed52f67ca",
+      "sha256": "ad86640b46f3c5fc6b1aceec4c4bfc82d03e35008b37ab2a8ad6076e6810ff3a",
+      "modified": false
+    },
+    {
+      "path": "vendor/template58/gems57/gates.py",
+      "upstream_path": "src/gems57/gates.py",
+      "git_blob_sha": "62be8f7df06fa8968841298fd2b50e92f9d61777",
+      "sha256": "5a671f6f99b7ecea67f7b92930707c017a02dd1191087590e1c08d1807a5f414",
+      "modified": false
+    },
+    {
+      "path": "vendor/template58/gems57/grid.py",
+      "upstream_path": "src/gems57/grid.py",
+      "git_blob_sha": "b5691fd681956749c0ead9ecdd88b976406b1210",
+      "sha256": "ce549e30814b7f81de6cd999939d770b3ca97cb4fbc61a821939af090ac542aa",
+      "modified": false
+    },
+    {
+      "path": "vendor/template58/gems57/holdout.py",
+      "upstream_path": "src/gems57/holdout.py",
+      "git_blob_sha": "d6840014ebd5aef8faea68c8fe220660af0a81a2",
+      "sha256": "5434549bee01086ce224360707fd96df228c2b4c441a9f0e2761ad311752e167",
+      "modified": false
+    },
+    {
+      "path": "vendor/template58/gems57/metric.py",
+      "upstream_path": "src/gems57/metric.py",
+      "git_blob_sha": "67008aae6782b6fece2c4dafdf99a5b59dc9e5fd",
+      "sha256": "4afe10cbaa229948520c75194b1ebc32676e72544f05582f0725092b097b4d7f",
+      "modified": false
+    },
+    {
+      "path": "vendor/template58/gems57/network.py",
+      "upstream_path": "src/gems57/network.py",
+      "git_blob_sha": "3df35ca834dacbb8e7377c09f82f2ad5b64462bc",
+      "sha256": "d5e53d7df182e69bb22a6e39ac16f43d3f5b730e503d86538d5f8f7360020943",
+      "modified": false
+    },
+    {
+      "path": "vendor/template58/gems57/spatial.py",
+      "upstream_path": "src/gems57/spatial.py",
+      "git_blob_sha": "ebb32c2617bf4da74bb3e851e0f0080a9bb9c8d8",
+      "sha256": "fad7b09db9efc512247b9a176a7e7ce8631e287592b4e07902d0b9c38bed00f8",
+      "modified": false
+    },
+    {
+      "path": "vendor/template58/gems57/submission_writer.py",
+      "upstream_path": "src/gems57/submission_writer.py",
+      "git_blob_sha": "d75ad8ccc73b7ba0b4aeb068c3e7173de720fe6a",
+      "sha256": "627879b3bbe12926905318f4c39aa40727f07ea5358a142e6071294de17f2565",
+      "modified": false
+    },
+    {
+      "path": "vendor/template58/gems57/uniqueness.py",
+      "upstream_path": "src/gems57/uniqueness.py",
+      "git_blob_sha": "0e31385dd44637e2479046502ad2feae7d4a53a5",
+      "sha256": "99a0683fed3f437fe23b8fc29e1c7cff2a5f8e1075db4c8d2bb6a1ed62bdbf28",
+      "modified": false
+    },
+    {
+      "path": "vendor/template58/gems57/validate.py",
+      "upstream_path": "src/gems57/validate.py",
+      "git_blob_sha": "d6e0481122582a6189465f155c604595ddfcdfc6",
+      "sha256": "b4dca03101d9a3f1825195c26f047c14e85932e6f6445695c61ae34514bc0ced",
+      "modified": false
+    }
+  ],
+  "policy": "Unmodified shared-template snapshot; no private metric/writer fork. Re-fetch by immutable Git blob SHA."
+}

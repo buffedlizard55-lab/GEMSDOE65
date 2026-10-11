@@ -1,49 +1,52 @@
-name: ci
-
+name: Verification
 on:
   push:
-    branches: [main, "arena/**"]
+    branches: [main, 'arena/**']
   pull_request:
+    branches: [main]
   workflow_dispatch:
-
+permissions:
+  contents: read
+concurrency:
+  group: verification-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
-  tests:
+  verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
+    env:
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
-      - name: Install
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-      - name: Unit tests (metric, dupcheck)
-        run: |
-          python - <<'PY'
-          import sys, traceback
-          sys.path[:0] = ["src", "scripts", "tests"]
-          import test_metric, test_dupcheck
-          fails = 0
-          for mod in (test_metric, test_dupcheck):
-              for name in sorted(dir(mod)):
-                  if not name.startswith("test_"):
-                      continue
-                  fn = getattr(mod, name)
-                  if not callable(fn):
-                      continue
-                  try:
-                      fn()
-                      print(f"PASS {mod.__name__}.{name}")
-                  except Exception:
-                      fails += 1
-                      print(f"FAIL {mod.__name__}.{name}")
-                      traceback.print_exc()
-          print(f"\n{fails} failures")
-          raise SystemExit(1 if fails else 0)
-          PY
-      - name: Site builds from evidence (no hand-typed numbers)
+          python-version: '3.11'
+          cache: pip
+      - run: python -m pip install -r requirements.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test public metadata UI and offline fallback without external requests
+        run: node tests/browser/feed-unit.cjs
+      - name: Verify immutable template pins and build negative-result site
         run: python scripts/build_site.py
-      - name: Run card builds
-        run: python scripts/06_run_card.py
+      - name: Unit, gradient, format, gate and publication tests
+        run: python -m pytest -q --junitxml=.cache/verification-tests.xml
+      - name: Lane 65 - rebuild lane pages from evidence (no hand-typed numbers)
+        run: |
+          python scripts/build_site_lane65.py
+          python scripts/06_run_card.py
+      - name: Lane 65 - metric/dupcheck regression tests
+        run: python -m pytest -q tests/test_metric.py tests/test_dupcheck.py
+      - name: Check local links, JSON identity and absence of public rasters
+        run: python scripts/check_site.py
+      - name: Reject accidental large/training artifacts in Git
+        run: python scripts/check_repository.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: verification-results
+          path: .cache/verification-tests.xml
+          if-no-files-found: ignore

@@ -1,9 +1,25 @@
-# Data is restored from the hash-pinned mirror by scripts/00_restore_data.py and NEVER committed.
-data/
-.cache/
-*.tif.part-*
-__pycache__/
-*.pyc
-.pytest_cache/
 .venv/
+.cache/
+__pycache__/
+.pytest_cache/
+*.py[cod]
+node_modules/
+data/raw/
+data/cache/
+data/external/
+data/registry_rasters/
+artifacts/
+!artifacts/.gitkeep
 *.egg-info/
+.env
+coverage/
+.DS_Store
+/data/
+/cache/
+/runs/
+/registry/rasters/
+.mypy_cache/
+*.tmp
+# --- lane65 additions (session 2026-10-11) ---
+*.tif.part-*
+*.pyc

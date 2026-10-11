@@ -1,6 +1,6 @@
 {
   "schema": "gems65-run-card/v1",
-  "generated_utc": "2026-10-11T21:23:29Z",
+  "generated_utc": "2026-10-11T21:31:25Z",
   "repo": "buffedlizard55-lab/GEMSDOE65",
   "lane": "selection-bias-aware (SAR) positive-unlabeled learning",
   "competition": {
@@ -235,6 +235,7 @@
     }
   },
   "verdict": "NEGATIVE",
+  "eligible_for_download": false,
   "verdict_detail": {
     "sar_arm": "NEGATIVE",
     "sar_arm_reason": "pre-registered gate NOT met (higher pooled blocked-holdout DTI overall AND no loss in the highest-propensity tercile); logged as a negative result per protocol, so the experimental arm is never offered for submission",
@@ -364,6 +365,12 @@
       "severity": "medium",
       "status": "closed",
       "title": "EM convergence diagnostic was mislabelled: the logged 'll' was only the f-part of the complete-data likelihood"
+    },
+    {
+      "id": "IR-65-009",
+      "severity": "high",
+      "status": "open",
+      "title": "Publication policy conflict: canonical fail-closed 'no public TIFF' vs the standing user requirement of a click-to-download TIF"
     }
   ],
   "reproduce": [

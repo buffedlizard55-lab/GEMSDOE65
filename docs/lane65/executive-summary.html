@@ -1,0 +1,98 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Executive summary — how to submit · GEMSDOE65</title>
+<link rel="stylesheet" href="assets/site.css"></head><body><div class="wrap">
+<header class="site"><h1>Executive summary — exactly how to make a submission</h1><div class="sub">generated 2026-10-11T21:34:12Z · every number read from <code>evidence/*.json</code></div><nav class="toc"><a href="../index.html">Canonical home</a><a href="index.html">Lane 65 home</a><a href="executive-summary.html">Executive summary / how to submit</a><a href="research.html">Method &amp; hypotheses</a><a href="sources.html">Verified sources</a><a href="irregularities.html">Irregularities</a><a href="limitations.html">Limitations</a><a href="run-card.html">Run card</a></nav><div class="panel" style="border-color:var(--bad);margin-top:14px"><b style="color:#ff9aa2">NOT CLEARED FOR SUBMISSION</b> — no raster built by this lane may be submitted. The files under <code>docs/downloads/</code> are evidence artifacts only.</div></header>
+
+<div class="panel"><b>Bottom line:</b> <b style="color:#ff9aa2">no file is cleared for submission this session.</b> The gate failed; this is a logged negative result.
+The competition metric, the masking rule, the file format and the known portal failure mode are all
+documented below with links, so a submission can be made (or correctly declined) without reading any code.</div>
+
+
+<div class="dl blocked">
+<h3>Step 1 — THERE IS NO FILE CLEARED FOR SUBMISSION</h3>
+<p>The lane's pre-registered gate was not met, so per the standing brief the result is logged as
+<b>NEGATIVE</b> and no file on this page may be submitted. The rasters below are published as
+format-valid evidence artifacts only. Do not spend a weekly slot on them.</p>
+</div>
+
+<h2>Step 2 — what the portal accepts</h2>
+<div class="panel">
+<p>Verbatim from the submission dialog: <i>"You can submit a single-band GeoTIFF (.tif) file, or a .zip
+file containing a single GeoTIFF, with your predictions. It must match the submission format's CRS,
+shape, and geotransform."</i></p>
+<table>
+<tr><th>property</th><th>required value</th><th>verified here</th></tr>
+<tr><td>Driver / bands</td><td>GeoTIFF, single band</td><td><span class="badge b-ok">PASS</span></td></tr>
+<tr><td>Data type</td><td><code>float32</code></td><td><span class="badge b-ok">PASS</span></td></tr>
+<tr><td>CRS</td><td>EPSG:32611 (WGS 84 / UTM zone 11N)</td><td><span class="badge b-ok">PASS</span></td></tr>
+<tr><td>Shape (height × width)</td><td>3730 × 3292</td><td><span class="badge b-ok">PASS</span></td></tr>
+<tr><td>Geotransform</td><td><code>(100.0, 0.0, 243350.0, 0.0, -100.0, 4508550.0)</code></td><td><span class="badge b-ok">PASS</span></td></tr>
+<tr><td>Pixel size</td><td>100 m</td><td><span class="badge b-ok">PASS</span></td></tr>
+<tr><td>Values</td><td>in <code>[0, 1]</code>, higher = more likely fault</td><td><span class="badge b-ok">PASS</span></td></tr>
+<tr><td>Outside the bounds</td><td>null or NaN</td><td><span class="badge b-ok">PASS</span></td></tr>
+<tr><td>Footprint pixels that must be finite</td><td>5,167,373 (from <code>sample_submission.tif</code>)</td><td><span class="badge b-ok">PASS</span></td></tr>
+</table>
+<p class="small">Sources: competition problem description "Submission format"
+<a href="https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/">page 967</a>;
+EPSG:32611 <a href="https://epsg.io/32611">epsg.io/32611</a>. Both read 2026-10-11.</p>
+</div>
+
+<h2>Step 3 — the error this repo engineers out permanently</h2>
+<div class="panel flag">
+<p><b>"Predicted values must be in range [0, 1]"</b> — two mechanisms, both measured here:</p>
+<ul>
+<li><b>M1 — float32 sentinel inside the footprint.</b> <code>training_features.tif</code> declares nodata
+as <code>-3.4028234663852886e+38</code> (the float32 minimum, not NaN). Measured:
+<b>0</b>
+sentinel band-pixels across the 19 bands lie <i>inside</i> the 5,167,373-pixel scoring footprint
+(max 0 in one band).
+A pipeline that does not replace them ships −3.4e38.</li>
+<li><b>M2 — footprint mask mismatch.</b> A footprint taken from a feature band is smaller than the
+template's, which strands scored pixels as NaN. NaN fails any <code>((v&gt;=0)&amp;(v&lt;=1)).all()</code> check.</li>
+</ul>
+<p>Both are handled by construction in <code>src/gems65/submission.py</code>: the footprint is read from the
+pinned <code>sample_submission.tif</code>, every in-footprint output pixel is a finite float32 in [0,1], and
+<code>scripts/validate_submission.py</code> re-reads the written file and refuses to pass it otherwise.</p>
+</div>
+
+<h2>Step 4 — how the score is computed (so the file can be reasoned about)</h2>
+<div class="panel">
+<pre>k(d) = max(1 - d/R, 0),  R = 300 m = 3 px at 100 m
+TP_w = sum over truth pixels g of  max over x with d(x,g) &lt;= R  of  p(x) k(d(x,g))
+FP_w = sum over x with p(x) &gt; 0   of  p(x) [1 - max over g of k(d(x,g))]
+FN_w = sum over g                 of  [1 - max over x of p(x) k(d(x,g))]  =  |G| - TP_w
+DTI  = TP_w / (TP_w + 0.2 FP_w + 0.8 FN_w)</pre>
+<p>Two exact consequences, both brute-force verified in <code>tests/test_metric.py</code>:</p>
+<ul>
+<li><code>DTI = T / (0.2 (T + S − M) + 0.8 K)</code> with <code>S</code> = emitted mass,
+<code>M</code> = mass-weighted kernel coverage, <code>K</code> = |G|. For a dot field, <code>DTI = T / (0.2 N + 0.8 K)</code>.</li>
+<li>Adding one unit of mass raises DTI <b>iff</b> its realised kernel credit <code>k &gt; 0.2 · DTI</code>
+(≈0.056 at 0.28). The denominator rises by exactly 0.2 wherever the mass lands.</li>
+<li>Known USGS/INGENIOUS fault pixels are <b>masked out of scoring</b> (DrivenData staff, forum thread
+<a href="https://community.drivendata.org/t/scoring-clarification-are-known-usgs-ingenious-faults-masked-when-scoring-and-are-they-in-the-final-round-label-set/11516">11516</a>),
+so mass placed on them earns neither TP nor FP. This emitter places <b>zero</b> mass there.</li>
+</ul>
+</div>
+
+<h2>Step 5 — where to submit</h2>
+<div class="panel"><ol>
+<li>Sign in at <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/">DrivenData competition 306</a>.</li>
+<li>Open the leaderboard/submissions page and choose <b>New submission</b>.</li>
+<li><i>File to submit</i> → the downloaded <code>.tif</code> (a <code>.zip</code> containing exactly that one
+<code>.tif</code> is also accepted).</li>
+<li><i>Note (optional)</i> → paste the ≤140-character note from Step 1.</li>
+<li>Submit, then copy the receipt score back into <code>registry/observations.jsonl</code> — that is the only
+way a number in this repo ever becomes <b>ORGANIZER-CONFIRMED</b>.</li>
+</ol>
+<p class="small flag"><b>Weekly cap:</b> the number of slots left is shown on the submission page and cannot be
+read from this sandbox. Promotion to a real slot is a separate selector step (protocol rule 6) — this
+repo builds and validates candidates, it does not spend slots.</p></div>
+
+<h2>What was actually built this session</h2>
+<div class="panel"><table><tr><th>arm</th><th>file</th><th class="num">dots</th><th>verdict</th><th>submit?</th></tr>
+<tr><td class="mono">sar</td><td class="mono" style="font-size:11.5px">gems65-h65-sarpu-sar-a25-20261011T210925Z-0b2fb70e136c-nan.tif</td><td class="num">38,000</td><td>NEGATIVE</td><td><span class="badge b-bad">NO</span></td></tr><tr><td class="mono">nnpu</td><td class="mono" style="font-size:11.5px">gems65-h65-sarpu-nnpu-a25-20261011T210925Z-2c0eded4e49d-nan.tif</td><td class="num">38,000</td><td>NOT-CLEARED-BELOW-HOLDOUT-BEST</td><td><span class="badge b-bad">NO</span></td></tr><tr><td class="mono">em</td><td class="mono" style="font-size:11.5px">gems65-h65-sarpu-em-a25-20261011T210925Z-ab265805d584-nan.tif</td><td class="num">38,000</td><td>NOT-CLEARED-BELOW-HOLDOUT-BEST</td><td><span class="badge b-bad">NO</span></td></tr>
+</table>
+<p class="small">Build config: {&quot;dots&quot;: 38000, &quot;a_bar&quot;: 0.25, &quot;min_dist_px&quot;: 2.8, &quot;catalogue_buffer_px&quot;: 3, &quot;graded&quot;: false, &quot;n_rff&quot;: 48, &quot;n_unlabeled&quot;: 400000, &quot;em_iters&quot;: 8, &quot;weight_clip&quot;: 10.0, &quot;seed&quot;: 20261011}</p></div>
+
+</div></body></html>

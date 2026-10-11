@@ -96,7 +96,7 @@ def main() -> int:
     theta_sar = pu.fit_risk(Df, float(np.mean(s)), s, w,
                             lambda p, ss, ww: pu.propensity_weighted_risk(p, ss, c, ww), l2=1e-3)
     theta_nnpu = pu.fit_risk(Df, pi_ht, s, w,
-                             lambda p, ss, ww: pu.nnpu_risk(p, ss, pi_ht, ww), l2=1e-3)
+                             lambda p, ss, ww: pu.nnpu_risk_pn(p, ss, pi_ht, ww), l2=1e-3)
     clip_frac = float(np.mean(c >= W_CLIP - 1e-9))
     print(f"[model] EM iters={em.n_iter} converged={em.converged} a_bar={args.a_bar} "
           f"mean_e|labelled={float(np.mean(e_tr[s>0.5])):.4f} e_range=[{e_tr.min():.4f},{e_tr.max():.4f}] "

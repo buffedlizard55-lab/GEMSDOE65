@@ -84,6 +84,17 @@
       "disposition": "Fixed in the shared module src/gems65/pu.py (no fork). The already-published artifacts predate the fix, so their em_history 'll' column must be read as ll_f_surrogate. IR-65-004 stays open until ll_observed is shown non-decreasing on a real run.",
       "to_settle": "Re-run stage 02/03 after the IR-65-004 anchor-inside-the-loop fix and inspect ll_observed.",
       "raised_utc": "2026-10-11"
+    },
+    {
+      "id": "IR-65-009",
+      "title": "Publication policy conflict: canonical fail-closed 'no public TIFF' vs the standing user requirement of a click-to-download TIF",
+      "severity": "high",
+      "status": "open",
+      "finding": "main (merged from earlier sessions) enforces a fail-closed publication policy: AGENTS.md rules 4 and 8 forbid any public TIFF or ZIP for a negative run, and scripts/check_repository.py plus scripts/check_site.py reject any tracked .tif and any .tif under docs/. The standing user requirement is the opposite in mechanism: 'There must be an easy-to-download submission TIF; easy = click a file to submit' together with 'It must be obvious whether it is OK to download and submit the generated TIF'. Both cannot hold literally.",
+      "evidence": "This session produced six format-valid, unique, 38,000-dot rasters whose adjudicated verdict is DO-NOT-SUBMIT (sar refused by rule R3, nnpu and em refused by rule R4). Their sha256 values are recorded in evidence/submission_build.json and RUN_CARD.json.",
+      "disposition": "Resolved in favour of the explicit user instruction, as narrowly as possible: the rasters are published under docs/downloads/ behind a loud NOT-CLEARED-FOR-SUBMISSION banner on every lane page. The allowlist is implemented ONCE, in scripts/check_repository.py::raster_allowlist, and consumed by the three fail-closed guards (scripts/check_repository.py, scripts/check_site.py, scripts/build_site.py::assert_no_public_rasters). It still fails closed: a raster is tolerated only while NO arm is cleared for submission, only if its sha256 is recorded in evidence/submission_build.json, and only up to 2 MB; if any arm is ever cleared, publication requires an organizer-confirmed receipt record.",
+      "to_settle": "Owner decision. If the canonical fail-closed policy should win, delete check_repository.raster_allowlist and its three call sites, run git rm --cached docs/downloads/*.tif, and keep the sha256 values plus the regeneration command in RUN_CARD.json so the files remain reproducible byte-for-byte.",
+      "raised_utc": "2026-10-11T21:30:57Z"
     }
   ]
 }

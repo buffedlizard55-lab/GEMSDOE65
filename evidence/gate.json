@@ -1,0 +1,14 @@
+{
+  "verdict": "negative",
+  "eligible_for_download": false,
+  "approved_for_weekly_slot": false,
+  "submission_slots_used": 0,
+  "reasons": [
+    "overall_improvement_not_established",
+    "highest_propensity_tercile_improvement_not_established",
+    "registry_uniqueness_not_cleared",
+    "comparable_incumbent_not_cleared",
+    "complete_registry_not_cleared",
+    "optimization_not_cleared"
+  ]
+}

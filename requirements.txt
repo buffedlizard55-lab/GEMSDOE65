@@ -1,6 +1,11 @@
-# Verified working set for this pipeline (Python 3.11, 2 CPU / 3 GB RAM).
-numpy>=1.26
-scipy>=1.11
-scikit-learn>=1.4
-pandas>=2.0
-rasterio>=1.3
+numpy==2.4.6
+scipy==1.17.1
+scikit-learn==1.9.1
+rasterio==1.4.4
+scikit-image==0.26.0
+pytest==9.1.1
+requests==2.34.2
+markdown2==2.5.5
+pillow==12.3.0
+# --- lane65 additions ---
+pandas==2.3.3

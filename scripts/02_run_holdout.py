@@ -137,7 +137,7 @@ def main() -> int:
         c0 = np.minimum(1.0 / np.clip(e0, 1e-3, 1.0), W_CLIP)
         pi0 = pi_ht[a0]
         thetaB = pu.fit_risk(Df_tr, pi0, s, w,
-                             lambda p, ss, ww: pu.nnpu_risk(p, ss, pi0, ww), l2=1e-3)
+                             lambda p, ss, ww: pu.nnpu_risk_pn(p, ss, pi0, ww), l2=1e-3)
 
         # ---------- test domain prediction, chunked (full-grid active mask -> flat indices)
         sl = cell.bbox

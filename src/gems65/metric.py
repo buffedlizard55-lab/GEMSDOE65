@@ -1,38 +1,23 @@
 """Official Distance-Weighted Tversky Index (DTI) for the DOE GEMS Prize Challenge.
 
-REUSE-NOT-REBUILD: ported verbatim in mathematics from the sibling template
-``buffedlizard55-lab/GEMSDOE32`` ``src/gems32/metric.py`` (Apache-style in-repo code written by
-the same owner), which is itself verified two ways:
-  * against a literal brute-force transcription of the published formulas
-    (``tests/test_metric.py::test_bruteforce_equivalence_random``, abs tol 1e-9), and
-  * against the organizers' own worked example.
+Verified from official competition problem description (DrivenData Page 967):
+https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/#performance-metric
+and official organizer forum clarification on known-fault masking (Thread 11516):
+https://community.drivendata.org/t/scoring-clarification-are-known-usgs-ingenious-faults-masked-when-scoring-and-are-they-in-the-final-round-label-set/11516
 
-Official source of the formulas (read 2026-10-11):
-  https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/#performance-metric
-  TP_w = sum_{g in G} max_{x : d(x,g) <= R} p(x) k(d(x,g))
-  FP_w = sum_{x : p(x) > 0} p(x) [1 - max_{g in G} k(d(x,g))]
-  FN_w = sum_{g in G} [1 - max_{x : d(x,g) <= R} p(x) k(d(x,g))] = |G| - TP_w
-  k(d) = (1 - d/R)_+ ,  R = 300 m = 3 px at 100 m
-  DTI  = TP_w / (TP_w + alpha FP_w + beta FN_w + eps),  alpha = 0.2, beta = 0.8
-
-Organizer clarification used for the ``known`` mask (DrivenData staff ``chrisk-dd``,
-community thread 11516, 16 Sep 2026):
-  https://community.drivendata.org/t/scoring-clarification-are-known-usgs-ingenious-faults-masked-when-scoring-and-are-they-in-the-final-round-label-set/11516
-  "Pixels corresponding to known USGS/INGENIOUS faults are masked / excluded from evaluation,
-   so they do not count towards penalty terms."
-=> prediction mass on catalogue pixels earns neither TP nor FP.  It is pure budget waste, so
-   this repo's emitter refuses to place any dot there.
-
-Algebraic reductions used for speed (both re-derived and brute-force checked in tests):
-  FN_w = |G| - TP_w                                   (exact)
-  DTI  = T / (alpha (T + S - M) + beta K)             with S = sum p, M = sum p*k(d(x,G)), K = |G|
-  dDTI > 0 when adding a unit of mass with realised kernel weight k  <=>  k > alpha * DTI
-      because the denominator rises by exactly alpha: d(alpha(T+F)) = alpha(k + 1 - k) = alpha.
+Mathematical formulation:
+- Triangular kernel: k(d) = max(1 - d / R, 0), with R = 300 m = 3 pixels at 100 m resolution.
+- TP_w = sum_{g in G} max_{x : d(x,g) <= R} p(x) * k(d(x,g))
+- FP_w = sum_{x : p(x) > 0} p(x) * [1 - max_{g in G} k(d(x,g))]
+- FN_w = sum_{g in G} [1 - max_{x : d(x,g) <= R} p(x) * k(d(x,g))] = |G| - TP_w
+- DTI(alpha=0.2, beta=0.8) = TP_w / (TP_w + 0.2 * FP_w + 0.8 * FN_w + eps)
+                           = TP_w / (0.2 * (TP_w + FP_w) + 0.8 * |G| + eps)
 """
 
 from __future__ import annotations
 
 import numpy as np
+from dataclasses import dataclass
 from scipy.ndimage import distance_transform_edt
 
 ALPHA: float = 0.2
@@ -41,12 +26,12 @@ RADIUS_PX: float = 3.0
 EPS: float = 1e-12
 
 
-def kernel(d, radius: float = RADIUS_PX) -> np.ndarray:
-    """Triangular kernel k(d) = max(1 - d/R, 0); d and R in pixels (1 px = 100 m)."""
+def kernel(d: np.ndarray | float, radius: float = RADIUS_PX) -> np.ndarray:
+    """Linear triangular kernel k(d) = max(1 - d / R, 0) where d and radius are in pixels (1 px = 100 m)."""
     return np.maximum(1.0 - np.asarray(d, dtype=np.float64) / radius, 0.0)
 
 
-def _offsets(radius: float = RADIUS_PX):
+def _offsets(radius: float = RADIUS_PX) -> list[tuple[int, int, float]]:
     r = int(np.ceil(radius))
     out = []
     for dy in range(-r, r + 1):
@@ -100,7 +85,7 @@ def dti_exact(pred, truth, valid=None, known=None, alpha: float = ALPHA, beta: f
 
 
 def dti_binary(pred_bool, truth, valid=None, known=None, alpha: float = ALPHA, beta: float = BETA) -> dict:
-    """Fast exact DTI when predictions are binary {0, 1}, via Euclidean distance transforms."""
+    """Fast exact DTI when predictions are binary {0, 1} via Euclidean distance transforms."""
     pred_bool = np.asarray(pred_bool, bool)
     truth = np.asarray(truth, bool)
     valid_ = np.ones(pred_bool.shape, bool) if valid is None else np.asarray(valid, bool)
@@ -123,7 +108,7 @@ def dti_binary(pred_bool, truth, valid=None, known=None, alpha: float = ALPHA, b
 
 
 def dti_bruteforce(pred, truth, alpha: float = ALPHA, beta: float = BETA, radius: float = RADIUS_PX) -> dict:
-    """Literal O(|G|*|P|) transcription of the published equations, for verification only."""
+    """Literal O(|G|*|P|) transcription of the published equations for unit-test verification."""
     pred = np.asarray(pred, float)
     truth = np.asarray(truth, bool)
     gs = np.argwhere(truth)
@@ -146,7 +131,48 @@ def dti_bruteforce(pred, truth, alpha: float = ALPHA, beta: float = BETA, radius
     return dict(tp=tp, fp=fp, fn=fn, dti=tp / (tp + alpha * fp + beta * fn + EPS))
 
 
+def marginal_inclusion_threshold(current_dti: float, alpha: float = ALPHA) -> float:
+    """Minimum marginal kernel credit k for an added dot to improve DTI at score level s.
+
+    CORRECTED 2026-10-04 (IR-32-BAR-01).  This function previously returned
+    ``alpha*s / (1 - alpha*s)`` -- the form quoted in ``docs/research/score-ceiling-analysis.md``
+    and propagated into the GEMSDOE28 repository as ``tau_live = 0.05485``.  That form does not
+    follow from the metric.  Writing ``DTI = T / (alpha*(T+F) + beta*K)`` and adding one unit of
+    mass whose realised kernel weight is k (so dT = k and dF = 1 - k),
+
+        dDTI > 0  <=>  k*D > alpha*T  <=>  k > alpha*DTI        with D = alpha*(T+F) + beta*K,
+
+    because the denominator rises by exactly ``alpha`` regardless of where the mass lands:
+
+        dD = alpha*(dT + dF) = alpha*(k + 1 - k) = alpha.
+
+    The two forms coincide at s = 0 and differ materially above it: at s = 0.2708 the wrong form
+    gives 0.05726 and the correct one 0.05416, and the only kernel weight on the 100 m lattice in
+    that window is the (2,2)-diagonal 1 - 2*sqrt(2)/3 = 0.05719.  The wrong form therefore
+    **rejects a legitimate (2,2)-diagonal emission** at exactly the group's best reported score.
+    Verified by brute force in ``scripts/verify_theorems.py``.
+    """
+    return alpha * current_dti
+
+
+# ---------------------------------------------------------------------------------------------
+# Full-API surface used by scripts/audit_shipped.py, src/gems32/emitter.py and tests/test_*.py.
+# Added back 2026-10-04 after the parallel-session rewrite of this module removed it.
+# ---------------------------------------------------------------------------------------------
+
+def _offsets_list_as_arrays():
+    import numpy as _np
+    dy = _np.array([o[0] for o in _OFFS], dtype=_np.int64)
+    dx = _np.array([o[1] for o in _OFFS], dtype=_np.int64)
+    kw = _np.array([o[2] for o in _OFFS], dtype=_np.float64)
+    return dy, dx, kw
+
+
+_OFF = _offsets_list_as_arrays()
+
+
 def _shift(arr, dy: int, dx: int):
+    """Shift ``arr`` by (dy, dx), filling with 0 (exact here: every shifted array is >= 0)."""
     out = np.zeros_like(arr)
     h, w = arr.shape
     ys0, ys1 = max(0, dy), min(h, h + dy)
@@ -156,53 +182,70 @@ def _shift(arr, dy: int, dx: int):
 
 
 def components(pred, truth, valid=None, known=None) -> dict:
-    """Exact TP_w / FP_w / FN_w plus the algebra terms K, S, M and the marginal credit bar."""
+    """Exact ``TP_w``/``FP_w``/``FN_w`` plus the algebra terms ``K``, ``S``, ``M``."""
     p, g, _ = _prepare(pred, truth, valid, known)
+    dy, dx, kw = _OFF
     best = np.zeros(p.shape)
-    for dy, dx, kk in _OFFS:
-        np.maximum(best, _shift(p, -int(dy), -int(dx)) * kk, out=best)
+    for d, e, kk in zip(dy, dx, kw):
+        np.maximum(best, _shift(p, -int(d), -int(e)) * kk, out=best)
     best = np.clip(best, 0.0, 1.0)
     tp = float(best[g].sum())
     if g.any():
-        k_near = kernel(distance_transform_edt(~g))
+        dist_to_g = distance_transform_edt(~g)
+        k_near = kernel(dist_to_g)
     else:
         k_near = np.zeros(p.shape)
     fp = float((p * (1.0 - k_near)).sum())
     fn = float(g.sum()) - tp
-    c = {"TP_w": tp, "FP_w": fp, "FN_w": fn, "K": float(g.sum()), "S": float(p.sum()),
-         "M": float((p * k_near).sum())}
-    c["credit_per_unit_mass"] = (tp / c["S"]) if c["S"] else 0.0
-    c["dti"] = dti(tp, fp, fn)
-    c["marginal_bar"] = ALPHA * c["dti"]
-    return c
+    k_total = float(g.sum())
+    s = float(p.sum())
+    m = float((p * k_near).sum())
+    return {"TP_w": tp, "FP_w": fp, "FN_w": fn, "K": k_total, "S": s, "M": m,
+            "credit_per_unit_mass": (tp / s) if s else 0.0,
+            "marginal_bar": ALPHA * dti(tp, fp, fn)}
 
 
-def dti(tp: float, fp: float, fn: float, alpha: float = ALPHA, beta: float = BETA) -> float:
-    return float(tp / (tp + alpha * fp + beta * fn + EPS))
+def dti(tp: float, fp: float, fn: float) -> float:
+    """Distance-weighted Tversky index from the three published components."""
+    return float(tp / (tp + ALPHA * fp + BETA * fn + EPS))
 
 
-def dti_pooled(cell_dicts, alpha: float = ALPHA, beta: float = BETA) -> dict:
-    """Pooled DTI: sum TP/FP/FN over cells, then take the ratio once (protocol requirement)."""
-    tp = sum(float(c["tp"]) for c in cell_dicts)
-    fp = sum(float(c["fp"]) for c in cell_dicts)
-    fn = sum(float(c["fn"]) for c in cell_dicts)
-    n_truth = sum(int(c["n_truth"]) for c in cell_dicts)
-    return {"tp": tp, "fp": fp, "fn": fn, "n_truth": n_truth, "dti": dti(tp, fp, fn, alpha, beta),
-            "coverage": (tp / n_truth) if n_truth else 0.0, "n_cells": len(cell_dicts)}
+def dti_components(tp: float, fp: float, fn: float) -> float:
+    return dti(tp, fp, fn)
 
 
-def marginal_inclusion_threshold(current_dti: float, alpha: float = ALPHA) -> float:
-    """Minimum realised kernel credit k for an added unit of mass to raise DTI: k > alpha*DTI."""
-    return alpha * current_dti
+def dti_algebra(t: float, s: float, m: float, k: float) -> float:
+    """Closed form ``T / (0.2*(T + S - M) + 0.8*K)`` (identical to :func:`dti`)."""
+    return float(t / (ALPHA * (t + s - m) + BETA * k + EPS))
 
 
-def bootstrap_ci(values, n_boot: int = 2000, seed: int = 0, alpha: float = 0.05) -> tuple[float, float]:
-    """Percentile bootstrap CI over per-cell components (cells are the resampling unit)."""
-    rng = np.random.default_rng(seed)
-    vals = np.asarray(values, dtype=float)
-    if vals.size == 0:
-        return (0.0, 0.0)
-    idx = rng.integers(0, vals.size, size=(n_boot, vals.size))
-    boots = vals[idx].mean(axis=1)
-    lo, hi = np.percentile(boots, [100 * alpha / 2, 100 * (1 - alpha / 2)])
-    return float(lo), float(hi)
+def score(pred, truth) -> float:
+    c = components(pred, truth)
+    return dti(c["TP_w"], c["FP_w"], c["FN_w"])
+
+
+@dataclass(frozen=True)
+class CreditAudit:
+    n_emitted: int
+    total_mass: float
+    redundancy_fraction: float
+    mean_self_kernel: float
+
+
+def credit_audit(mask) -> CreditAudit:
+    """Kernel-structure audit of an emission mask (no truth required)."""
+    m = np.asarray(mask, dtype=np.float64)
+    pos = m > 0
+    n = int(pos.sum())
+    if n == 0:
+        return CreditAudit(0, 0.0, 0.0, 0.0)
+    best = np.zeros(m.shape)
+    dy, dx, kw = _OFF
+    for d, e, kk in zip(dy, dx, kw):
+        if d == 0 and e == 0:
+            continue
+        np.maximum(best, _shift(m, -int(d), -int(e)) * kk, out=best)
+    red = np.clip(best, 0.0, 1.0)
+    return CreditAudit(n_emitted=n, total_mass=float(m.sum()),
+                       redundancy_fraction=float((red[pos] > 0).mean()),
+                       mean_self_kernel=float(red[pos].mean()))

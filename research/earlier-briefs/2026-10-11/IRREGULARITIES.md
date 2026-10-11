@@ -1,6 +1,6 @@
 # Irregularity register and blockers
 
-**Review date:** 2026-10-11 UTC. The register separates verified repository/source facts from user-reported claims. It is a blocker log, not a performance report.
+**Review date:** 2026-10-11 UTC (updated after the lane was implemented and run). The register separates verified repository/source facts from user-reported claims. It is a blocker log, not a performance report.
 
 | ID | Finding | Evidence / consequence | Disposition |
 |---|---|---|---|
@@ -36,3 +36,16 @@
 6. Keep the download disabled and use no weekly slot unless every gate passes.
 
 See [`STATUS.md`](STATUS.md), [`HYPOTHESES.md`](HYPOTHESES.md), [`SOURCES.md`](SOURCES.md), and the canonical [`docs/data/run-card.json`](data/run-card.json).
+
+## Session 2026-10-11 (lane implemented and run) — new findings
+
+| ID | Finding | Evidence / consequence | Disposition |
+|---|---|---|---|
+| IR-65-101 | The official competition rasters were NOT available from the DrivenData data tab (host unreachable from this sandbox; the tab requires login). | Obtained instead from the owner-maintained bridge mirror `buffedlizard55-lab/GEMSDOE` → `data/bridge/`, whose manifest pins the official data-tab / Dropbox mirror URLs and the sha256 of each file. All three reassembled/verified files match their pins exactly (`artifacts/input_verification.json`). | Recorded as provenance. No access control was bypassed and no credential was requested or stored. |
+| IR-65-102 | The preregistered "evaluate_holdout.py / submission_writer.py" filenames do not exist under those names in any sibling repository. | The equivalent shared tools exist as `GEMSDOE32/src/gems32/holdout.py` and `.../submission.py` (plus `metric.py`). They were reused **byte-identically**; upstream digests are in `docs/PROVENANCE.md`. | Not treated as a blocker; no private fork was created. Flagged for the project owner so the template can expose the canonical filenames. |
+| IR-65-103 | Full propensity correction (lambda = 1) fails the highest-propensity-tercile gate under one truth definition. | With truth = all catalogue pixels in the cell, the full-correction tercile DTI is 0.000 against the nnPU baseline's 0.0563: the correction pushes emission out of the well-mapped, high-observability terrain where withheld catalogue segments live. | Resolved inside the lane by the lambda = 0.5 shrinkage experiment; both truth definitions are recorded in `artifacts/`. |
+| IR-65-104 | The propensity anchoring constant `c` is not identifiable. | All four `c` values (0.25/0.5/0.75/0.95) produced byte-identical emissions. The propensity *shape* is identified from `f/pi`; its *scale* is not, and the clip at 10 is the only channel through which `c` acts. | Reported as a sensitivity result, exactly as the preregistration requires. No absolute propensity is claimed. |
+| IR-65-105 | The 1 m lidar covariate covers only 34,094 of 5,167,373 footprint pixels (0.66%). | The eight official USGS 3DEP 1 m EarthMRI tiles cover a tiny fraction of the competition footprint. | Retained as a real but weak covariate; documented. Its statistical power is negligible. |
+| IR-65-106 | The range-front covariate is not an independently mapped range front. | It is derived operationally from the gravity-derived basin-fill thickness (band 15) as the basin-margin escarpment. | Documented substitution; flagged as the top covariate to replace with mapped structural linework. |
+| IR-65-107 | No 95% CI was computed. | The two-hour budget was exhausted by the three preregistered experiments plus emission, registry, and validation. | Recorded as `NOT COMPUTED` in the run card. It is the first item on the next-steps list. |
+| IR-65-108 | The reported holdout DTI (~0.023) is far below the public leaderboard range. | The candidate is scientifically valid as a *paired* comparison but is not a competitive leaderboard entry. | Stated explicitly in the run card, the manifest, and the site. No projection is offered. |

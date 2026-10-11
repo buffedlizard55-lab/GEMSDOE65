@@ -1,0 +1,30 @@
+name: Verify the lane and the published site
+
+on:
+  push:
+    branches: [main, 'arena/**']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: python -m pip install -r requirements.txt
+      - name: Unit tests (synthetic; the competition rasters are not needed)
+        run: python -m pytest
+      - name: Rebuild the site from the committed evidence artifacts
+        run: python scripts/run_lane.py site
+      - name: Fail closed if the published raster, receipt or banner disagree
+        run: python scripts/check_site.py
+      - name: The site must be byte-stable across a rebuild
+        run: git diff --exit-code docs/ || (echo "docs/ changed during rebuild" && exit 1)

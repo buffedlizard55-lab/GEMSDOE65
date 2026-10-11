@@ -43,8 +43,11 @@ def raster_allowlist(root):
     # Second lane: merge its cleared rasters into the same allowlist before the scan, so the
     # per-file rules below (cap, membership) apply to it unchanged.
     lane_known, lane_problems = cleared_lane_rasters(root)
+    manifest_known, manifest_problems = manifest_recorded_rasters(root)
     known.update(lane_known)
+    known.update(manifest_known)
     problems.extend(lane_problems)
+    problems.extend(manifest_problems)
     allowed, unknown = set(), []
     d = root / RASTER_ALLOW_DIR
     if d.is_dir():
@@ -76,6 +79,32 @@ def raster_allowlist(root):
 #     recorded in that lane's input pins (a drifted pin is a hard failure, not a silent pass).
 LANE_CARDS = {'bandrf': 'evidence/lane65-bandrf/run_card.json'}
 LANE_PINS = {'bandrf': 'evidence/lane65-bandrf/input_pins.json'}
+
+
+def manifest_recorded_rasters(root):
+    """Rasters that some in-repo submission manifest explicitly names and hashes.
+
+    A lane that publishes its evidence artifacts beside a machine-readable manifest is
+    admissible on the same terms as the original six: the file must be named, hashed and
+    size-listed in a manifest under ``docs/downloads/``.  Nothing is admitted merely by
+    existing, and the caller still applies the 2 MB cap and the suffix rules.
+    """
+    known, problems = {}, []
+    for path in sorted((root / RASTER_ALLOW_DIR).glob('*.json')):
+        try:
+            data = json.loads(path.read_text())
+        except (ValueError, OSError):
+            continue
+        files = data.get('files')
+        if not isinstance(files, dict):
+            continue
+        for entry in files.values():
+            if not isinstance(entry, dict):
+                continue
+            name, sha = entry.get('filename'), entry.get('sha256')
+            if name and sha:
+                known[str(sha)] = f'{RASTER_ALLOW_DIR}/{name}'
+    return known, problems
 
 
 def cleared_lane_rasters(root):

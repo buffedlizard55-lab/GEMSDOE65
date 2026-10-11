@@ -60,7 +60,7 @@ Only offer a TIF when every scientific, uniqueness, and format gate passes. It m
 
 The checked-out branch started from commit `90ca1cea667dc1427de27ef997634f3305a7c164`; at the start of this lane its tracked tree contained only this README. The integrated work provides an evidence site, a presence-only readiness audit, and tests—not a model or submission pipeline. A leaderboard scraper and scheduled fetch were removed after review of the [DrivenData Terms of Use](https://www.drivendata.org/termsofuse/), which prohibit automated monitoring/copying and manual monitoring/copying without prior written consent. There is still no `data/`, required segment evaluator, shared writer, prior-raster registry, or TIF in this checkout. The upstream public `GEMSDOE` repository has related components, but its names and block/emission evaluation are not the required segment hide-and-recover evaluator; they are not silently substituted here. The official competition data tab requires access, and no authenticated competition files are present locally.
 
-The current negative run, source audit, and historical-score correction are recorded in [`docs/`](docs/). No submission slot was spent.
+The current negative run, source audit, and score-provenance correction are recorded in [`docs/`](docs/). No submission slot was spent. The live Pages setting was last observed as legacy publishing from `main:/`, and this integration could not change it. This branch adds a root redirect as a legacy fallback; verify the public URL after merge. The Actions deployment workflow also has a guard and will require a repository admin to switch **Settings → Pages → Source** to **GitHub Actions** before Actions can publish the docs artifact.
 
 ## Project pages
 

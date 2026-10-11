@@ -28,6 +28,16 @@ jobs:
         uses: actions/checkout@v4
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
+      - name: Verify Pages uses workflow deployments
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          build_type="$(gh api "repos/${GITHUB_REPOSITORY}/pages" --jq '.build_type')"
+          if [[ "$build_type" != "workflow" ]]; then
+            echo "::error::GitHub Pages is still configured for legacy branch publishing. Set Settings → Pages → Source to GitHub Actions, then rerun this workflow."
+            exit 1
+          fi
       - name: Package static site
         uses: actions/upload-pages-artifact@v3
         with:

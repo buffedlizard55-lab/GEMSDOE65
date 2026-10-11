@@ -34,7 +34,7 @@ The [official leaderboard](https://www.drivendata.org/competitions/306/competiti
 - The shared template's cached feature stack, `evaluate_holdout.py`, `submission_writer.py`, validator, and raster registry must be made available through the normal authorized workflow. They are intentionally not recreated here.
 - Official external LiDAR, gravity, and map-index sources are identified in [`SOURCES.md`](SOURCES.md), but no study-area rasterization, derived-layer license audit, overlap/resolution test, or alignment check was performed.
 - Hardware needs are not assessed: without training data and a runnable model there is no basis to claim CPU/GPU sufficiency.
-- GitHub Pages status/configuration must be confirmed after the PR update is merged; until a live fetch succeeds, do not claim this build is published.
+- The Pages API was last observed in legacy `main:/` mode, and the public URL served the previous README-only page. This branch adds a root redirect as a legacy fallback; the Actions workflow is guarded until the Pages source is switched to GitHub Actions. This integration could not change repository settings (HTTP 403). Verify the public URL after merge; until then, use the Arena preview and do not claim this build is published. If Actions deployment is desired, a repository admin must change **Settings → Pages → Source**.
 
 ## Required next action
 

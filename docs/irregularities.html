@@ -27,7 +27,7 @@
     <li><strong>Gravity-source overlap is unresolved.</strong> A USGS CC0 Great Basin hydrogeologic data release includes a gravity-derived depth-to-basement surface, but its study is predominantly eastern Nevada and western Utah and its model nodes are one mile apart. No exact overlap, alignment, or suitability test against the GeoDAWN footprint/grid has been run; it remains a research lead.</li>
     <li><strong>Several user-supplied dates are future-dated.</strong> The pasted result list includes 2026-10-12 entries, after this review date (2026-10-11 UTC). Treat them as unverified, not current evidence.</li>
     <li><strong>No uniqueness, leakage, holdout, or format validation was run.</strong> There is no local prior-raster registry, candidate surface/dot set, evaluator, or TIFF. Correlation, 3-pixel overlap, one-feature AUC, HOLDOUT-DTI, CI, raster hash, and validator output are all not computed/not run.</li>
-    <li><strong>Published-site state still requires post-merge confirmation.</strong> A Pages configuration existed before this branch was updated; verify the published URL and confirm the workflow deploys the <code>docs/</code> site before claiming the changes are live.</li>
+    <li><strong>Published-site state is not yet confirmed.</strong> The Pages API was last observed in legacy `main:/` mode and the public URL served the old README page. This branch adds a root redirect for legacy publishing. The Actions workflow also has a guard and will only deploy after the Pages source is set to GitHub Actions. Verify the public URL after the PR update merges; use the working Arena preview in the meantime. This integration could not change repository settings.</li>
   </ol>
   <h2>Actions needed before a future experiment</h2>
   <ol>

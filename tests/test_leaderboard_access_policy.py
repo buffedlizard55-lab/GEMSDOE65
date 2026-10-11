@@ -13,6 +13,7 @@ class LeaderboardAccessPolicyTests(unittest.TestCase):
         self.assertNotIn("schedule:", workflow)
         self.assertNotIn("refresh_leaderboard.py", workflow)
         self.assertNotIn("drivendata.org/competitions/306/competition-doe-gems/leaderboard", workflow)
+        self.assertIn("Verify Pages uses workflow deployments", workflow)
 
     def test_site_links_out_without_storing_leaderboard_rows(self) -> None:
         home = (ROOT / "docs" / "index.html").read_text(encoding="utf-8")

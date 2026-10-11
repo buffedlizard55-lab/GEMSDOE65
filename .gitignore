@@ -1,21 +1,16 @@
-__pycache__/
-*.pyc
-.cache/
-.pytest_cache/
-.ruff_cache/
-.venv/
-out/
-.ipynb_checkpoints/
-
-# Large source rasters are restored by hash from the official competition
-# download, never committed.  See data/README.md for the exact command.
-data/training_features.tif
-data/external/*.tif
-data/*.partial
-*.download
-*.partial
-
-# The registry index is committed (small, and it is the audit's scope record);
-# the 655 cached registry rasters are not.
-registry/cache/
-registry/rasters_cache/
+# ---------------------------------------------------------------------------
+# lane65-sarprop: the second, independently developed lineage of this lane.
+# Its large and public-model artifacts stay out of Git; the small text
+# evidence and the dot list that rebuilds the submission do not.
+# ---------------------------------------------------------------------------
+lane65-sarprop/data/bridge/*.tif
+lane65-sarprop/data/*.tif
+lane65-sarprop/data/external/
+lane65-sarprop/data/*.partial
+lane65-sarprop/docs/downloads/*.tif
+lane65-sarprop/docs/downloads/*.zip
+lane65-sarprop/registry/cache/
+lane65-sarprop/registry/rasters_cache/
+lane65-sarprop/__pycache__/
+lane65-sarprop/**/__pycache__/
+lane65-sarprop/.pytest_cache/

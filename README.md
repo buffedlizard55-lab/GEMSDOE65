@@ -1,61 +1,87 @@
-# GEMSDOE65 — evidence-first GEMS fault-mapping research
+# GEMSDOE65 — selection-bias-aware fault discovery
 
-> **Every work session starts here.** Re-read this standing brief, `docs/IRREGULARITIES.md`, `docs/HYPOTHESES.md`, `docs/SOURCES.md`, and `evidence/run_card.json` before changing models, data, the website, or any submission artifact.
+> **Session gate: NEGATIVE. No submission GeoTIFF is available or approved. Do not download a substitute or submit an earlier project's raster.** This checkout has no competition rasters, shared holdout evaluator, submission writer, or prior-raster registry. The negative run card is [`docs/data/run-card.json`](docs/data/run-card.json).
 
-## Submission status — read before anything else
+This README is the project's standing brief. **Read it before each project session**, then read the linked research, hypotheses, irregularities, and latest run card before changing code or making score claims. The brief below consolidates the repeated instructions from the project request without discarding their operative requirements.
 
-**There is no submission GeoTIFF in this repository. It is NOT OK to download or submit a file from this project.** The current checkout contains no competition data, no shared evaluator/writer/validator, no local prior-raster registry, and no candidate raster. The site intentionally offers no enabled download link. Do not synthesize a placeholder, copy a sibling project's raster, or report a projected score as an organizer score.
+## Standing project brief
 
-The only current decision is **negative / blocked**: the improvement gate has not been measured, so no weekly submission slot should be used. The exact machine-readable record is [`evidence/run_card.json`](evidence/run_card.json).
+Build an auditable, reproducible system for the DOE GEMS Prize Challenge (DrivenData competition 306). The competition predicts **geological faults that may indicate geothermal resources**; it does not directly predict geothermal vents. The goal is scientifically credible discovery of previously unmapped faults, a site that links to official sources without copying or scraping their content, and—only after evidence gates pass—a unique, valid, easy-to-download GeoTIFF. Never copy or relabel a prior submission as a new result.
 
-## Mission and values
+### This session's method lane (do not drift)
 
-Build an auditable, reproducible way to identify **previously unmapped geological faults** in the DOE GEMS / GeoDAWN region, test whether they indicate geothermal resources, and—only after a successful, documented validation—produce a legal single-band GeoTIFF for the competition. The task predicts faults, not geothermal vents directly. Never promise a leaderboard score or prize.
+Model catalogue inclusion as **Selected At Random (SAR)** conditional on fault and observable covariates, rather than assuming all faults have the same labeling probability. Use the low-dimensional propensity set:
 
-- **Maximize P(Win):** prioritize work that could improve independently blocked holdout performance; do not spend competition slots on untested ideas or polish an unvalidated model.
-- **Own the Outcome:** verify artifacts from bytes on disk, report failures, preserve provenance, and never describe an unrun step as complete.
+- local relief and slope;
+- DEM-source coverage (including 1 m GeoDAWN lidar versus coarser 3DEP where the source metadata confirms local coverage);
+- a gravity-derived basin-fill proxy; and
+- distance to an independently mapped range front.
 
-## Standing task brief and non-negotiable protocol
+Estimate the propensity with the SAR-EM method of Bekker & Davis (2018). If a public, defensible index of exhaustively mapped quadrangles exists, use it to anchor propensity scale; otherwise report propensity only as a sensitivity analysis, because PU data alone do not uniquely identify the labeling mechanism. Compare the propensity-aware empirical risk of Bekker, Robberechts & Davis (2019), with inverse-propensity weights clipped at 10, against an nnPU baseline on identical spatial folds. Do not treat an unanchored propensity as a calibrated probability.
 
-This section is the durable operational form of the user's project prompt. It keeps the requirements while separating verified facts from inconsistent or unverified score claims.
+### Required validation and safety gates
 
-1. **Research before modeling.** Read the official DrivenData problem, data page, rules, current leaderboard, USGS GeoDAWN materials, primary PU-learning papers, and the organizer reference solution. Keep dated links and the scope of each source in `docs/SOURCES.md`. The leaderboard is a changing public snapshot, not a substitute for local validation or private-round performance.
-2. **Stay in this lane.** Test selection-bias-aware positive–unlabeled (PU) learning: treat catalogue faults as positives selected at random given covariates (SAR), not as a uniformly sampled or complete fault set. Estimate `e(x) = P(labeled | fault, x)` with Bekker–Davis SAR-EM and the prescribed small propensity feature set: local relief, slope, a gravity-derived basin-fill proxy, LiDAR coverage, and distance to range front. If a public, defensible index of exhaustively mapped quadrangles exists, use it to anchor propensity scale; otherwise report sensitivity analysis, because PU data alone do not identify a unique propensity scale. Train Bekker–Robberechts–Davis propensity-aware empirical risk with inverse-propensity weights clipped at 10, against an nnPU baseline on identical folds. Do not turn this into an unrelated fault-lineament or dot-placement lane.
-3. **Reuse, do not fork.** Use the template's cached feature stack, `evaluate_holdout.py`, and `submission_writer.py`. If a shared tool is wrong, fix it in that shared template and report the fix. This checkout does not contain those components; stop rather than silently rebuilding private copies. `scripts/preflight.py` inventories the blocker without generating predictions.
-4. **Holdout is hide-and-recover.** Withhold whole fault segments with a buffer; derive every catalogue-based feature only from visible faults; mask visible faults pixel-exactly; score pooled DTI using alpha 0.2, beta 0.8, and the 300 m triangular kernel. Compare to the current local holdout best. Report withheld-positive count and a 95% CI. A public leaderboard value or model projection is never a holdout score.
-5. **Leakage canary.** Evaluate each feature alone on the holdout before trusting it. AUC above 0.90 is leakage until proven otherwise. Do not use a feature that encodes withheld traces or derives from hidden labels.
-6. **Predeclared gates.** A candidate must improve overall blocked-holdout DTI and must not lose in the highest-propensity tercile. Before placement and again on final dots, compare to every prior registry raster: stop and record a duplicate if rank correlation exceeds 0.90 or if more than 70% of dots fall within 3 pixels of a registry raster's dots. No registry is present here, so uniqueness cannot be claimed.
-7. **One JSON run card per experiment.** Record the hypothesis; mechanism; named non-fault process that could mimic it; HOLDOUT-DTI (evaluator version, withheld-positive count, 95% CI); correlation/overlap versus registry; raster SHA-256; validator output; submission name and a note no longer than 140 characters; and verdict `promote` or `negative`. Use only `HOLDOUT-DTI` or `ORGANIZER-CONFIRMED` copied from an actual submission-page receipt for performance scores. Keep projections, public-board snapshots, owner-reported values, and missing receipts explicitly separate.
-8. **Submission output contract.** A final file must be a single-band float32 GeoTIFF on the exact official sample grid (CRS, shape, transform, bounds, resolution), EPSG:32611, 100 m, with predictions in [0, 1] and NaN/null only outside the footprint. Re-read and validate the written bytes. For the historical form error “Predicted values must be in range [0, 1]”, test every in-footprint value, reject infinities and NaNs inside, normalize/clip only valid pixels, then run the official/shared validator. No such validation has run in this checkout.
-9. **User-facing site.** The executive summary is linked at the top. The site must say plainly whether a file is safe to submit. A one-click TIF download may appear only after all validation, uniqueness, and holdout gates pass. It must never silently surface a placeholder or a copied prior submission. Current state: **no file; do not submit**.
-10. **Budget and process.** Stop at three experiments or two hours. Promotion to a real slot is a separate selector step, subject to the competition's weekly cap. Run three passes: implement and verify; review/fix; re-check against the full request. No slot has been used by this repository review.
+1. **Stay in this lane.** Do not substitute a different geological detector or a prior raster. If a proposed surface's rank correlation with any registry raster exceeds 0.90, or more than 70% of its dots are within 3 pixels of any registry raster's dots, log it as a duplicate and stop. Check before placement and again on final dots.
+2. **Reuse shared tools; do not rebuild them privately.** Use the template's cached feature stack, `evaluate_holdout.py`, and `submission_writer.py`. Hold out whole fault segments with a buffer; derive every catalogue-based feature from visible faults only; mask visible faults pixel-exactly; score pooled DTI with alpha 0.2, beta 0.8, and the 300 m triangular kernel. If a shared tool is wrong, fix it once in the shared template and report the fix—do not keep a private fork.
+3. **Leakage canary.** Test each feature alone on the holdout. Treat AUC above 0.90 as leakage until explained and cleared.
+4. **Promotion gate.** The SAR candidate must beat both the current holdout best and the matched nnPU baseline on blocked-holdout DTI overall, and must not lose in the highest-propensity tercile. If the current best cannot be established, promotion is blocked. Do not consume a weekly submission slot before those gates pass; follow the current competition rules for any cap or final-selection requirement.
+5. **No unsupported scores.** Every score must be labeled either `HOLDOUT-DTI` with evaluator version, withheld-positive count, and 95% CI, or `ORGANIZER-CONFIRMED` copied from a submission-page receipt. A projection is never a score. Negative results are deliverables.
+6. **Budget.** Stop after three experiments or two hours, whichever comes first.
+7. **Run card.** End each experiment with one JSON card containing hypothesis, mechanism, a named non-fault mimic, holdout DTI and CI, correlation/overlap versus the registry, raster SHA-256, validator output, submission name and a note of at most 140 characters, and verdict `promote` or `negative`.
 
-## Verified repository state (2026-10-11 UTC)
+### Submission contract
 
-- The starting Git tree had one tracked file, an 11-byte `README.md`; no prior model, tests, data, cache, raster, registry, website, downloader, evaluator, writer, or validator was present.
-- The official competition data URL redirected this unauthenticated session to DrivenData's login page. No credentials were requested or stored, and no competition data were downloaded.
-- The official live leaderboard no longer supports the prompt's statement that 0.3195 is the current top: the live page displayed another participant above that value when checked. The value 0.2778 shown in the prompt also appears on the official public board under participant `extradr19`; that page does not identify it with the named GEMSDOE32 TIFF. GEMSDOE32's public artifact manifest lists the TIFF with `receipt: null` and an owner-generated note that calls its value projected/UNSCORED. See `docs/IRREGULARITIES.md` and `docs/SOURCES.md`. These are provenance findings, not model-score validations.
-- Giddens & Faulds' 2025 proceedings paper reports that about 91.9% of the study's identified step-overs are associated with range-front faults and explicitly raises topographic visibility bias. The separate “about 25% detailed mapping” claim has not been verified in the official sources checked and is not used as a calibration constant.
-- See the [`review site`](index.html), [`executive summary`](executive-summary.html), [`hypothesis ranking`](hypotheses.html), [`research and provenance analysis`](research.html), and [`source register`](sources.html).
+Only offer a TIF when every scientific, uniqueness, and format gate passes. It must be an easy one-click download with a unique filename and short note, and the site must say plainly whether it is cleared to submit. The competition's published format is a single-band float32 GeoTIFF, EPSG:32611, 100 m, matching the official template's dimensions/bounds/geotransform, with prediction values in [0, 1] and null/NaN outside the footprint. Do not put NaN or a negative nodata sentinel inside the footprint. The executive summary must explain the submit form step by step.
 
-## Candidate experiment selected for the next validation opportunity
+### Research and site requirements
 
-The top-ranked hypothesis is **terrain/coverage-conditioned SAR propensity**: estimate selection propensity from the specified five covariates, then compare propensity-aware PU risk with nnPU on identical, frozen, buffered segment holdouts. This is a proposed test—not a result. It cannot run here because the data and required shared template tools are absent. See [`docs/HYPOTHESES.md`](docs/HYPOTHESES.md) for all four preregistered candidates, caveats, source availability, cost, and the exact gate.
+- Use official, verified sources; preserve source links and separate verified facts, internal claims, projections, and unknowns.
+- Maintain ranked, testable hypotheses and record why a process could be mimicked by non-fault geology or surface processes.
+- Link to the official leaderboard without automatically fetching, monitoring, copying, or mirroring its contents. DrivenData's current Terms of Use prohibit automated access to monitor or copy site material and also prohibit manual monitoring/copying without prior written consent. Do not create or refresh a local leaderboard feed unless written authorization or an official permitted API is obtained. A leaderboard row is not a receipt tying a score to a specific TIF.
+- Make the homepage simple and readable. Put submission readiness and the download decision at the very top; if there is no approved file, show a prominent **do not submit** state.
+- Preserve data provenance and hashes. Do not commit large data, credentials, or copied submission artifacts unless explicitly required.
 
-## Start-of-session checklist
+### Arena working values
 
-- [ ] Read this README and the linked evidence files above.
-- [ ] Run `python scripts/preflight.py`; fail closed if data, tools, or registry are missing.
-- [ ] Confirm the dated official sources and score provenance before quoting any result.
-- [ ] Run no experiment unless the shared template stack and blocked evaluator are present.
-- [ ] Do not publish a TIF or use a submission slot without the predeclared gate and run card.
+**Maximize P(Win).** In every decision, weigh tradeoffs, assess risk, and choose the path that maximizes the probability of success. Set aside emotion and make the decision that maximizes P(Win).
 
-## Reproduce this review
+**Own the Outcome.** Own results end to end. Treat failure and success as signals to improve. When a problem can be addressed, act and report the evidence rather than hiding a failed gate.
+
+## Session-start checklist
+
+- [ ] Read this entire README and the current [`run card`](docs/data/run-card.json).
+- [ ] Read [`research and sources`](docs/research.html), [`ranked hypotheses`](docs/hypotheses.html), and [`irregularities`](docs/irregularities.html).
+- [ ] Run `python3 scripts/audit_lane_readiness.py` before modeling.
+- [ ] Confirm the cached data, exact shared holdout/writer tools, and prior-raster registry are present; do not silently replace them with sibling-repo code.
+- [ ] Use the [official leaderboard](https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/) only through an authorized access method; this project does not fetch, monitor, or mirror its rows.
+- [ ] Do not build or offer a TIF if any required evidence gate is absent.
+
+## Current verified checkout state
+
+The checked-out branch started from commit `90ca1cea667dc1427de27ef997634f3305a7c164`; at the start of this lane its tracked tree contained only this README. The integrated work provides an evidence site, a presence-only readiness audit, and tests—not a model or submission pipeline. A leaderboard scraper and scheduled fetch were removed after review of the [DrivenData Terms of Use](https://www.drivendata.org/termsofuse/), which prohibit automated monitoring/copying and manual monitoring/copying without prior written consent. There is still no `data/`, required segment evaluator, shared writer, prior-raster registry, or TIF in this checkout. The upstream public `GEMSDOE` repository has related components, but its names and block/emission evaluation are not the required segment hide-and-recover evaluator; they are not silently substituted here. The official competition data tab requires access, and no authenticated competition files are present locally.
+
+The current negative run, source audit, and historical-score correction are recorded in [`docs/`](docs/). No submission slot was spent.
+
+## Project pages
+
+- [Status and authorized source links](docs/index.html)
+- [Executive summary and exact submission steps](docs/executive-summary.html)
+- [Ranked within-lane hypotheses](docs/hypotheses.html)
+- [Score-provenance audit](docs/competitive-context.html)
+- [Research and verified sources](docs/research.html)
+- [Detailed research lane](docs/RESEARCH.md)
+- [Detailed hypothesis register](docs/HYPOTHESES.md)
+- [Source register](docs/SOURCES.md)
+- [Irregularities and blockers](docs/irregularities.html) and [detailed irregularity log](docs/IRREGULARITIES.md)
+- [Three-pass session review](docs/session-2026-10-11.md)
+- [Current status](docs/STATUS.md)
+- [Current run card (JSON)](docs/data/run-card.json)
+
+## Run the lightweight checks
 
 ```bash
-python -m unittest discover -s tests -v
-python scripts/preflight.py
-python -m json.tool evidence/run_card.json >/dev/null
+python3 -m unittest discover -s tests -v
+python3 scripts/audit_lane_readiness.py
 ```
 
-`preflight.py` is only a readiness inventory. It does not train, evaluate, validate, create a raster, fetch authenticated competition files, or spend a submission slot.
+The readiness command returns a non-zero exit status when required data, shared tools, or the registry are missing. It is presence-only: a clean result is not a scientific pass or TIF authorization. That is intentional; a blocked gate must not be converted into a synthetic raster or a score claim.

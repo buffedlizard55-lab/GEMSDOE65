@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Ranked, testable within-lane hypotheses for selection-bias-aware positive-unlabeled fault mapping.">
+  <title>Ranked hypotheses · GEMSDOE65</title><link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header class="site-header"><div class="wrap nav-row">
+  <a class="brand" href="index.html">GEMSDOE65<small>Evidence before submission</small></a>
+  <nav aria-label="Main navigation"><a href="index.html">Status</a><a href="executive-summary.html">Submit guide</a><a aria-current="page" href="hypotheses.html">Hypotheses</a><a href="competitive-context.html">Score audit</a><a href="research.html">Research</a><a href="irregularities.html">Irregularities</a></nav>
+</div></header>
+<main class="wrap">
+  <div class="page-title"><div class="kicker">Pre-registered lane exploration</div><h1>Ranked selection-bias hypotheses</h1>
+    <p class="lede">These are variants of the requested SAR positive–unlabeled (PU) lane, not permission to switch to a different fault detector. Ranks are qualitative research priorities—not DTI forecasts. No candidate has been run.</p>
+  </div>
+  <div class="callout danger"><strong>Validation gate blocked.</strong> This checkout does not contain the cached feature stack, the required shared segment hide-and-recover evaluator/writer, or the raster registry. Therefore none of these hypotheses has a measured holdout score, leakage-canary result, uniqueness result, or submission TIFF. Do not interpret ranking as evidence of improvement.</div>
+
+  <div class="table-wrap"><table>
+    <thead><tr><th>Priority</th><th>Hypothesis and layers</th><th>Target signature / why labels may be missing</th><th>Difference and cost</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>1 · test first</strong><br><span class="badge">Highest plausible value</span></td>
+        <td><strong>Terrain visibility drives fault inclusion.</strong><br>Local relief, detrended-elevation slope, DEM-source coverage (1 m GeoDAWN lidar versus coarser 3DEP where verified), and distance to an independently mapped range-front break; model the labeling propensity with SAR-EM.</td>
+        <td>Scarp-scale relief and steep topographic gradients make some fault strands easier to identify. The test is whether catalogue inclusion varies with visibility after conditioning on being a fault. Faults in low-relief, poorly surveyed terrain may be real but absent from the catalogue. This is an observation-process hypothesis, not a claim that relief creates faults.</td>
+        <td>The proposed novelty is correction for <em>which faults enter the catalogue</em>, rather than a direct ridge/scarp score. This checkout contains no implementation. A listed sibling site (<a href="https://buffedlizard55-lab.github.io/20GEMSDOE/docs/index.html">20GEMSDOE</a>) already describes SAR-nnPU and PU-proxy experiments, so generic PU/SAR is not new; the explicit visibility-covariate propensity model and a defensible mapping-coverage anchor are the potentially distinct pieces. The full sibling code/history is not audited, so global novelty is unverified. <strong>Cost: high</strong>—the segment folds, one-feature leakage checks, propensity estimation, clipped-risk training, and matched nnPU comparison must all be run with the shared tools.</td>
+      </tr>
+      <tr>
+        <td><strong>2</strong><br><span class="badge">Moderate–high plausible value</span></td>
+        <td><strong>Detailed-map effort anchors propensity.</strong><br>NGMDB geologic-map publication footprints and scale metadata joined to the USGS 7.5-minute map-index polygons; use map availability only as an inclusion/effort covariate.</td>
+        <td>The signature is the map-production footprint and map scale—not a geologic lineament. Faults in quadrangles lacking detailed mapping may be less likely to appear in the labelled catalogue, even when their geomorphology is comparable. This could anchor the *relative scale* of the SAR propensity only if the inventory is shown to be sufficiently complete and accurately georeferenced.</td>
+        <td>Unlike terrain-only visibility, this models deliberate survey/mapping effort. USGS publishes a free 7.5-minute grid index and NGMDB map catalogue, but the grid is not a geologic-coverage layer and catalog extents can overstate actual mapped area. Completeness must be audited; otherwise keep the propensity unanchored and run sensitivity analyses. <strong>Cost: medium–high</strong>—metadata joins and scale/footprint QA are needed.</td>
+      </tr>
+      <tr>
+        <td><strong>3</strong><br><span class="badge">Moderate, coverage-dependent</span></td>
+        <td><strong>Basin fill obscures fault expression.</strong><br>Provided isostatic-gravity anomaly and its slope, plus a gravity-derived depth-to-basement/basin-fill proxy only where its footprint is confirmed to overlap the competition region; condition on relief and verified DEM-source coverage.</td>
+        <td>A broad gravity low / basin-depth increase and basin-edge gradient can mark thick basin fill, where surface scarps may be muted or absent. The hypothesis is that detection propensity falls under concealment; it is not that every gravity edge is a fault. Missing faults would be expected around buried basin margins or within filled basins.</td>
+        <td>Prior shared-site names include gravity/geophysics prediction experiments. The distinction here is using basin fill as an observation/visibility covariate in the propensity model, not emitting the gravity gradient as a fault prediction. The free USGS gravity-based depth-to-basement release is obtainable from its public ScienceBase listing, but it is a regional eastern-Great-Basin product at coarse scale; its bounding box does not prove raster overlap with this northwestern study footprint. <strong>Cost: high</strong>—exact coverage intersection, resolution, and provenance must be audited before use.</td>
+      </tr>
+      <tr>
+        <td><strong>4</strong><br><span class="badge">Moderate, nested in priority 1</span></td>
+        <td><strong>Range-front association changes visibility, not just geology.</strong><br>Distance to an independently derived range-front break, local relief, and slope; avoid deriving the propensity feature from held-out catalogue traces.</td>
+        <td>At range fronts, strong relief may expose fault scarps and create a mapping preference; basin-interior or subtle relay structures can be missed. Giddens &amp; Faulds report a strong range-front association among identified step-overs and explicitly discuss visibility bias. The test asks whether the apparent association attenuates after correcting for observability.</td>
+        <td>Earlier H33-labelled work focuses on step-over/relay geometry; this sub-hypothesis uses range-front distance to explain label selection and forbids using hidden-fault labels to build the feature. It is not independent of priority 1, so it must be evaluated as a predeclared ablation, not counted as an independent win. <strong>Cost: medium</strong> if a label-independent range-front layer already exists; otherwise high.</td>
+      </tr>
+    </tbody>
+  </table></div>
+
+  <h2>Comparison protocol for the top candidate</h2>
+  <ol>
+    <li>Use the same spatial folds and whole-segment buffers for SAR-EM and nnPU; no random-pixel split.</li>
+    <li>For each covariate alone, run the feature-only leakage canary. Any AUC above the stipulated threshold is treated as leakage until demonstrated otherwise.</li>
+    <li>Estimate <code>e(x)=P(labelled | fault, x)</code> with SAR-EM on the predeclared low-dimensional propensity set. If there is no defensible quadrangle anchor, report a sensitivity family rather than a calibrated propensity.</li>
+    <li>Train the requested propensity-aware empirical risk, cap inverse-propensity weights at 10, and compare with nnPU on identical folds.</li>
+    <li>Use the shared hide-and-recover evaluator: derive catalogue features from visible faults only; mask visible-fault pixels exactly; compute pooled distance-weighted Tversky with the official kernel/weights; report evaluator version, withheld-positive count, and 95% CI.</li>
+    <li>Require improvement over both the current holdout best and the matched nnPU baseline overall, plus no loss in the highest-propensity tercile. If the current best is unavailable, stop promotion. Then perform registry correlation and dot-overlap checks both before placement and on final dots. A failed/untested gate is negative, not a reason to submit.</li>
+  </ol>
+  <p class="small">The current run card records the top candidate as unvalidated because its prerequisites are absent. No numerical score or expected gain is projected here.</p>
+</main>
+<footer class="footer"><div class="wrap"><a href="index.html">Status</a><a href="research.html">Sources</a><a href="HYPOTHESES.md">Detailed hypothesis register</a><a href="data/run-card.json">Current JSON run card</a></div></footer>
+</body></html>

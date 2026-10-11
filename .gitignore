@@ -1,13 +1,14 @@
-# Keep licensed/large competition inputs and transient outputs out of Git.
-data/
-cache/
-runs/
-artifacts/
-registry/rasters/
+# Keep local competition inputs, caches, runs, artifacts, and raster registry out of Git.
+/data/
+/cache/
+/runs/
+/artifacts/
+/registry/rasters/
 
-# Python
+# Local Python environments, bytecode, caches, and atomic-write scratch files.
+.venv/
 __pycache__/
 *.py[cod]
-.venv/
 .pytest_cache/
 .mypy_cache/
+*.tmp

@@ -133,7 +133,9 @@ def download_card(arm_name, arm, primary: bool) -> str:
     audits = arm.get("validator", {})
     a = audits.get("nan", {})
     checks = a.get("checks", {})
-    n_emit = arm.get("emitted_pixels")
+    # some arms record no emission (nothing was written), so the count can be absent;
+    # formatting None with "," is a TypeError and took the whole page down in CI
+    n_emit = arm.get("emitted_pixels") or 0
     dv = arm.get("duplicate_check", {}).get("verdict", {})
     verdict_line = (
         f'<div class="verdict" style="color:#7ee2a8">✔ OK TO DOWNLOAD AND SUBMIT — {esc(v)}</div>'

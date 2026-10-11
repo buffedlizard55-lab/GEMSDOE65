@@ -261,3 +261,23 @@ the download only if the gate is met, else log the negative result.
 * The 1 m lidar coverage covariate is real but covers 0.66% of the footprint.
 * The range-front covariate is a basin-margin proxy, not an independently mapped front.
 * No exhaustive-quadrangle public index was found, so the propensity scale is unanchored.
+
+## Second lane: `bandrf` (cleared for submission)
+
+This repository carries **two** lanes. The canonical lane (`src/gems65/{pu,holdout,gate,emission}.py`,
+run by `scripts/0*.py`) reached a **negative** verdict; `RUN_CARD.json` and `docs/index.html`
+describe it and must not be edited to say otherwise.
+
+The second lane lives entirely under its own namespace — `src/gems65/bandrf/`, `scripts/run_lane_bandrf.py`,
+`scripts/build_site_bandrf.py`, `evidence/lane65-bandrf/`, `docs/lane65-bandrf/`, `tests/test_bandrf_*.py`
+— and it **cleared its gate**: pooled blocked-hold-out DTI 0.01646 [0.01201, 0.02113] against a matched
+nnPU baseline of 0.00614 [0.00121, 0.01164], with no loss in the highest-propensity tercile. Its
+one-click candidate is `docs/downloads/gems65-h65-1-sarpu-bandrf-22726dots-64c0fa71-nan.tif`
+(NaN outside the footprint, the canonical template convention).
+
+Read `docs/lane65-bandrf/index.html` for the decision, `docs/lane65-bandrf/STATUS.md` for the numbers,
+`docs/lane65-bandrf/geology.html` for the geological reasoning and `docs/lane65-bandrf/IRREGULARITIES.md`
+(IR-65-025) for what went wrong on the way. The mandated propensity-weighted comparison is a **null**
+and is reported as one. `scripts/check_site.py` enforces that the canonical pages keep their
+"NOT CLEARED FOR SUBMISSION" banner while this lane's pages carry its own validated banner, and
+`scripts/check_repository.py` admits each lane's rasters only while its own run card clears them.

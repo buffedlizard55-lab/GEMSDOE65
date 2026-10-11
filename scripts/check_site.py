@@ -30,11 +30,30 @@ def check_site(root=None):
         if p.is_file() and p.suffix.lower() in {'.tif','.tiff','.zip','.npy','.npz'}:
             if p.relative_to(root).as_posix() in allowed_rasters: continue
             errors.append(f'Negative run has public artifact: {p}')
-    for p in docs.glob('*.html'):
+    # Pages under docs/lane65-bandrf/ belong to the *second* lane, whose own run card clears a
+    # download.  Its pages must carry the matching banner, verified against that card: a page may
+    # not claim CLEARED unless the card on disk clears it, and it may not stay silent either.
+    import json as _json
+    lane_card_path = root / 'evidence' / 'lane65-bandrf' / 'run_card.json'
+    lane_cleared = False
+    if lane_card_path.exists():
+        lane_cleared = bool((_json.loads(lane_card_path.read_text()).get('verdict') or {})
+                            .get('download_cleared'))
+    lane_dir = docs / 'lane65-bandrf'
+    if lane_dir.is_dir() and not lane_cleared:
+        errors.append('lane65-bandrf pages exist while that lane does not clear a download')
+    for p in list(docs.glob('*.html')) + list((docs / 'lane65-bandrf').glob('*.html')):
         parser=Page();parser.feed(p.read_text());pages[p.resolve()]=parser
         if parser.lang!='en':errors.append(f'Missing document language: {p.name}')
         if parser.h1!=1:errors.append(f'Expected one h1: {p.name} has {parser.h1}')
-        if 'NOT CLEARED FOR SUBMISSION' not in p.read_text():errors.append(f'Missing fail-closed banner: {p.name}')
+        text=p.read_text()
+        if p.parent==docs:
+            if 'NOT CLEARED FOR SUBMISSION' not in text:errors.append(f'Missing fail-closed banner: {p.name}')
+        elif lane_dir in p.parents:
+            if 'CLEARED FOR SUBMISSION' not in text:
+                errors.append(f'Missing lane-cleared banner: {p.relative_to(docs).as_posix()}')
+        elif 'NOT CLEARED FOR SUBMISSION' not in text:
+            errors.append(f'Missing fail-closed banner: {p.relative_to(docs).as_posix()}')
     for path,parsed in pages.items():
         for link in parsed.links:
             u=urlparse(link)

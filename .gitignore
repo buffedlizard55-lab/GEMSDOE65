@@ -12,3 +12,6 @@ __pycache__/
 .pytest_cache/
 .mypy_cache/
 *.tmp
+
+# Large, fully reproducible intermediate surfaces (a 3 s fit regenerates them).
+/registry/*.npy

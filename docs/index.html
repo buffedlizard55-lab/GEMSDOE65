@@ -1,72 +1,108 @@
 <!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Auditable SAR-EM fault-mapping research, direct official source links, and a clear submission gate for DOE GEMS.">
-  <title>GEMSDOE65 · Selection-bias-aware fault discovery</title>
-  <link rel="stylesheet" href="assets/site.css">
-</head>
-<body>
-<header class="site-header"><div class="wrap nav-row">
-  <a class="brand" href="index.html">GEMSDOE65<small>Evidence before submission</small></a>
-  <nav aria-label="Main navigation"><a aria-current="page" href="index.html">Status</a><a href="executive-summary.html">Submit guide</a><a href="hypotheses.html">Hypotheses</a><a href="competitive-context.html">Score audit</a><a href="research.html">Research</a><a href="irregularities.html">Irregularities</a></nav>
-</div></header>
-<main class="wrap">
-  <section class="hero" aria-labelledby="main-heading">
-    <div class="hero-grid">
-      <div>
-        <div class="kicker">DOE GEMS Prize · DrivenData competition 306</div>
-        <h1>Find faults the catalogue may have missed—without mistaking visibility for geology.</h1>
-        <p class="lede">This project specifies a selection-bias-aware positive–unlabeled learning lane: model how relief, slope, verified DEM-source coverage, basin fill, mapping effort, and range-front distance influence whether real faults enter the catalogue.</p>
-        <a class="btn btn-secondary" href="research.html">Review research and sources</a>
-        <a class="btn btn-secondary" href="hypotheses.html">See ranked hypotheses</a>
-      </div>
-      <aside class="gate" aria-label="Submission readiness">
-        <span class="pill pill-danger">Negative gate · 2026-10-11 UTC</span>
-        <strong>No approved TIF</strong>
-        <p><b>Do not download or submit a raster from this project.</b> This checkout has no candidate GeoTIFF, no local competition data, no required shared holdout/writer tools, and no prior-raster registry. The validation gate was not met.</p>
-        <p class="small">No placeholder or prior submission is offered. Negative results are intentional evidence.</p>
-      </aside>
-    </div>
-  </section>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Status, gates and downloads — GEMSDOE65</title><style>body{margin:0;font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#14231f;background:#f6f7f4}
+header{background:#12332b;color:#f2fbf5;padding:18px 22px}header a{color:#cfe9d8;text-decoration:none;margin-right:14px;font-size:.94rem}
+header a[aria-current=page]{color:#fff;text-decoration:underline}
+main{max-width:1040px;margin:0 auto;padding:26px 20px 80px}
+h1{font-size:1.9rem;line-height:1.2;margin:.2em 0 .5em}h2{margin-top:1.9em;font-size:1.3rem}h3{font-size:1.05rem;margin-top:1.3em}
+.banner{border-radius:12px;padding:16px 18px;margin:18px 0;border:2px solid}
+.stop{border-color:#a11f1f;background:#fdecec}.stop strong{color:#8d1a1a}
+.warn{border-color:#a5730f;background:#fdf6e3}.ok{border-color:#1c6b45;background:#eaf6ee}
+.info{border-color:#24556e;background:#eaf3f8}
+table{border-collapse:collapse;width:100%;margin:1em 0;font-size:.92rem}th,td{border:1px solid #d6ddd6;padding:7px 9px;text-align:left;vertical-align:top}
+th{background:#eef2ec}
+code,pre{background:#eff2ee;border-radius:6px}code{padding:1px 4px}pre{padding:10px;overflow:auto}
+.small{font-size:.86rem;color:#4d5f59}.lede{font-size:1.08rem;color:#3a4a45}
+.card{border:1px solid #d8ded7;background:#fff;border-radius:12px;padding:14px 16px;margin:14px 0}
+.pill{display:inline-block;background:#e7efe8;border-radius:999px;padding:2px 10px;font-size:.8rem;margin-right:6px}
+footer{border-top:1px solid #d8ded7;color:#55655f;font-size:.85rem;padding:16px 22px;max-width:1040px;margin:0 auto}
+.callout.warning,.callout{border-left:4px solid #a5730f;background:#fdf6e3;padding:12px 14px;border-radius:8px;margin:14px 0}
+.meta{font-size:.84rem;color:#4d5f59;margin:.2em 0}
+.source-list{padding-left:1.1em}.source-list li{margin:.4em 0}
+</style></head>
+<body><header><strong>GEMSDOE65</strong> · selection-bias-aware PU lane<br><nav><a href="index.html" aria-current=page>Status</a><a href="executive-summary.html">How to submit</a><a href="experiments.html">Experiments</a><a href="research.html">Research</a><a href="hypotheses.html">Hypotheses</a><a href="competitive-context.html">Why 0.2778</a><a href="sources.html">Sources</a><a href="irregularities.html">Irregularities</a></nav></header>
+<main><p class="small">selection-bias-aware PU (SAR propensity) · DOE GEMS Prize (DrivenData 306)</p><h1>Status, gates and downloads</h1><p class="lede">One competent question — is the raster safe to submit? — answered at the top of the page, with every number labelled by how it was obtained.</p>
 
-  <section aria-labelledby="gate-heading">
-    <h2 id="gate-heading">Why the gate is closed</h2>
-    <div class="grid">
-      <article class="card"><span class="card-number">Not present</span><h3>Cached features and labels</h3><p>The tracked checkout has no <code>data/</code> directory or competition rasters. The official data tab requires competition access.</p></article>
-      <article class="card"><span class="card-number">Not present</span><h3>Required shared evaluator and writer</h3><p>The requested whole-segment hide-and-recover evaluator and shared submission writer are absent. A different sibling-repo block/emission tool is not an equivalent substitute.</p></article>
-      <article class="card"><span class="card-number">Not present</span><h3>Registry and candidate</h3><p>Without the prior-raster registry and candidate surface/dots, the duplicate correlation/overlap gate cannot run. There is no raster hash or validator receipt.</p></article>
-    </div>
-  </section>
+<div class="banner stop"><strong>DO NOT SUBMIT THIS RASTER TO A WEEKLY SLOT.</strong>
+<p>A unique candidate GeoTIFF exists and is downloadable below, but the registered promotion gate
+did <em>not</em> pass, so it is published as a <strong>research artifact only</strong>. The honest
+one-line answer to "is it OK to download and submit?" is: <strong>download yes, submit no</strong>.</p>
+<p class="small">Gate verdict: <code>negative</code> · overall gate
+<code>passed=False</code> · top-propensity tercile
+<code>passed=True</code></p></div>
 
-  <section aria-labelledby="board-heading">
-    <h2 id="board-heading">Official leaderboard · direct link only</h2>
-    <div class="callout warning">
-      <p><strong>No rows are fetched, copied, or mirrored on this site.</strong> The DrivenData <a href="https://www.drivendata.org/termsofuse/">Terms of Use</a> prohibit automated access to monitor or copy website material and prohibit manual monitoring/copying without prior written consent. The recurring feed was removed; this page provides only a link to the <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">official leaderboard</a>. No written permission or authorized leaderboard API has been established for this project.</p>
-    </div>
-    <p class="small">A public leaderboard row is not a submission-page receipt and does not identify a TIFF. This project will report a score as <code>ORGANIZER-CONFIRMED</code> only when the portal receipt ties it to a specific artifact.</p>
-  </section>
+<h2>Download</h2>
+<div class="card"><strong>Primary (all-finite, zeros outside the footprint — the policy to use if a
+future run clears the gate)</strong>
+<ul>
+<li><a href="downloads/gems65-sarprop-em-v2-20261011-9b1c65d-zeros.tif">gems65-sarprop-em-v2-20261011-9b1c65d-zeros.tif</a>
+ — 790,718 bytes, sha256 <code>5aee83cb2e55f0122432611ff46af6fdd1e5a9182f263888e03f667647315c37</code></li>
+<li>Diagnostic NaN-outside variant (not for upload):
+<a href="downloads/gems65-sarprop-em-v2-20261011-9b1c65d-nan.tif">gems65-sarprop-em-v2-20261011-9b1c65d-nan.tif</a>
+ sha256 <code>3f302785383ec30f5cfa2515d14089ed88357bed4506cd5813a1c0c9b940cb30</code></li>
+<li>Receipt with every validator check: <a href="downloads/gems65-sarprop-em-v2-20261011-9b1c65d-receipt.json">receipt JSON</a></li>
+</ul>
+<p class="small">28,047 unit-mass dots · EPSG:32611 · 3730 × 3292 · 100 m ·
+float32 · all values in [0, 1] · no NaN inside the footprint · no positive mass on the mapped catalogue.</p></div>
 
-  <section aria-labelledby="h33-heading">
-    <h2 id="h33-heading">Score-provenance correction</h2>
-    <p>The <a href="https://buffedlizard55-lab.github.io/GEMSDOE32/docs/index.html">GEMSDOE32 page for its named H33 TIF</a> labels that artifact “UNSCORED”; the associated manifest entry has no submission-page receipt. A participant-level leaderboard row does not identify uploaded filenames, so no displayed public value can be attributed to that H33 file without an organizer receipt. Its actual submission score, if any, and the reason for any such score are unknown. See the <a href="competitive-context.html">score-provenance audit</a>.</p>
-  </section>
+<h2>What was tested, in one table</h2>
+<table><tr><th>Experiment</th><th>Instrument</th><th>SAR arm</th><th>nnPU arm</th><th>Δ (paired 95% CI)</th><th>Verdict</th></tr>
+<tr><td>E1 registered</td><td>shared hide-and-recover, uniform withholding</td>
+<td>0.023628</td><td>0.023671</td>
+<td>−4.3e−05 [−3.9e−04, +3.2e−04]</td><td>tie → negative</td></tr>
+<tr><td>E2 diagnostic</td><td>bias-matched withholding, P(select) ∝ (1−mean e)²; published EM scale</td>
+<td>0.020985</td><td>0.020816</td>
+<td>+1.70e−04 [−9.3e−05, +4.1e−04]</td><td>directionally +, not significant (propensity was inert)</td></tr>
+<tr><td>E3 (corrected scale)</td><td>registered instrument again, continuous RBF propensity</td><td>0.023661</td><td>0.023671</td><td>-1.05e-05 [-5.38e-04, +5.99e-04]</td><td>tie → negative</td></tr></table>
+<p class="small">E3 exists because a unit-mismatch bug was found in the EM: the propensity was
+computed by comparing a <em>complete</em> labelled sample with a <em>subsampled</em> unlabeled pool,
+which lowered the implied hidden-positive mass by exactly the pool ratio (127.7×) and forced
+e(x) → 1. With the pixel-population correction the propensity is genuinely non-degenerate (in the
+scoring folds e<sub>pos</sub> ∈ [0.436, 0.720], sd 0.055, pool ratio 127.7; in the
+whole-catalogue fit used for the published raster the inverse weights are 1.00–2.28, mean
+1.604, clipped fraction 0.000). The registered instrument is still a tie — which is what an
+instrument with no selection bias to remove must report.</p>
+<p>Numbers are <span class="pill">HOLDOUT-DTI</span> from evaluator <code>gems57-pooled-hide-v2</code>
+(α=0.2, β=0.8, 300 m triangular kernel, pooled over 8–16 blocked folds; 22,641 withheld
+positives in the primary mode). Leakage canary: best single-feature AUC 0.623
+— far below the 0.90 flag. Full detail: <a href="experiments.html">Experiments</a>.</p>
 
-  <section aria-labelledby="next-heading">
-    <h2 id="next-heading">Next scientific step</h2>
-    <div class="callout">Once the shared cache, segment holdout evaluator/writer, and prior-raster registry are available, test the terrain-visibility SAR-EM hypothesis first. Run each one-feature leakage canary, then compare propensity-aware risk with nnPU on identical buffered segment folds. Promote nothing unless overall HOLDOUT-DTI beats both the current best and matched nnPU, the highest-propensity tercile does not lose, and all uniqueness and format gates pass.</div>
-    <a class="btn" href="executive-summary.html">How to submit—only after a green gate</a>
-    <a class="btn btn-secondary" href="data/run-card.json">Open the negative run card</a>
-  </section>
+<h2>Uniqueness versus every recoverable prior</h2>
+<p><span class="pill">REGISTRY-MEASUREMENT</span> 62 prior rasters checked ·
+worst rank correlation |ρ| = 0.0366 ·
+identical file hash: <strong>no</strong> ·
+worst 3 px forward dot overlap 0.9975 against a
+<em>saturated lattice witness</em> whose own dots cover 99.9%
+of the footprint within 3 px — a control random 28 218-dot field scores 0.9987 against it, so that
+rule trips for anything. Excluding saturated witnesses the worst overlap is
+0.900 against a 272 853-dot prior, with reverse
+overlap 0.019 and Jaccard 0.0047 (1 417 shared pixels of 28 047).</p>
 
-  <section aria-labelledby="registers-heading">
-    <h2 id="registers-heading">Project registers and detail</h2>
-    <ul>
-      <li><a href="SOURCES.md">Source register</a> · <a href="IRREGULARITIES.md">Detailed irregularity log</a></li>
-      <li><a href="HYPOTHESES.md">Preregistered hypothesis register</a> · <a href="RESEARCH.md">Detailed research and score-provenance assessment</a></li>
-      <li><a href="STATUS.md">Current status note</a> · <a href="SUBMISSION_GUIDE.md">Text submission guide</a> · <a href="session-2026-10-11.md">Three-pass review record</a></li>
-    </ul>
-  </section>
+<h2>Official competition links (link-out only)</h2>
+<ul class="small">
+<li><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/">Competition home</a> ·
+<a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">Leaderboard</a>
+— read it on DrivenData; this project never fetches, mirrors or stores its rows
+(<a href="https://www.drivendata.org/termsofuse/">Terms of Use</a>).</li>
+<li><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/data/">Data tab</a> (requires login) ·
+<a href="https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/">problem description</a> ·
+<a href="https://docs.nlr.gov/docs/fy26osti/96647.pdf">official rules PDF</a>.</li>
+</ul>
+
+<h2>Why the lane still matters</h2>
+<p>The competition metric rewards recovering <em>hidden</em> faults inside 300 m while punishing
+emitted mass that sits far from any fault. The family's own owner-reported live anchors show a
+sparse catalogue-following field scoring 0.26–0.2778 and its denser variants scoring 0.19–0.25,
+i.e. the sparse strategy is already stretched. The remaining headroom is recall of faults that the
+published compilations never mapped — exactly the quantity a selection-bias-corrected model is
+supposed to improve. This session tested that idea honestly and got a tie — and then found that the propensity fit had
+been silently degenerate because of a unit bug, fixed it, re-ran the whole comparison with an active
+correction, and still got a tie (+0.14 %, CI straddling zero, on the only instrument that contains
+the bias). What the numbers say next is a <em>placement</em> problem, not a propensity problem: this
+candidate's dots sit a median of 12.5 px from the catalogue and number 28 047, more mass than the
+estimated hidden truth, which the metric's own algebra cannot reward. The cheapest large lever is
+therefore the emission geometry — see <a href="hypotheses.html">Hypotheses</a> #1.</p>
 </main>
-<footer class="footer"><div class="wrap"><span>GEMSDOE65 · source-audited research · no approved submission in this build</span><p><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/">Official problem description</a><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">Official leaderboard</a><a href="https://github.com/drivendataorg/gems-prize-reference-solution">Organizer reference solution</a></p></div></footer>
+<footer>Built by <code>scripts/build_site.py</code> from <code>registry/</code> on 2026-10-11T22:16:04Z.
+Scores are labelled HOLDOUT-DTI, REGISTRY-MEASUREMENT, OWNER-REPORT or NOT ESTABLISHED. No leaderboard scraping.</footer>
 </body></html>

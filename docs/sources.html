@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sources, links and claim boundaries — GEMSDOE65</title><style>body{margin:0;font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#14231f;background:#f6f7f4}
+header{background:#12332b;color:#f2fbf5;padding:18px 22px}header a{color:#cfe9d8;text-decoration:none;margin-right:14px;font-size:.94rem}
+header a[aria-current=page]{color:#fff;text-decoration:underline}
+main{max-width:1040px;margin:0 auto;padding:26px 20px 80px}
+h1{font-size:1.9rem;line-height:1.2;margin:.2em 0 .5em}h2{margin-top:1.9em;font-size:1.3rem}h3{font-size:1.05rem;margin-top:1.3em}
+.banner{border-radius:12px;padding:16px 18px;margin:18px 0;border:2px solid}
+.stop{border-color:#a11f1f;background:#fdecec}.stop strong{color:#8d1a1a}
+.warn{border-color:#a5730f;background:#fdf6e3}.ok{border-color:#1c6b45;background:#eaf6ee}
+.info{border-color:#24556e;background:#eaf3f8}
+table{border-collapse:collapse;width:100%;margin:1em 0;font-size:.92rem}th,td{border:1px solid #d6ddd6;padding:7px 9px;text-align:left;vertical-align:top}
+th{background:#eef2ec}
+code,pre{background:#eff2ee;border-radius:6px}code{padding:1px 4px}pre{padding:10px;overflow:auto}
+.small{font-size:.86rem;color:#4d5f59}.lede{font-size:1.08rem;color:#3a4a45}
+.card{border:1px solid #d8ded7;background:#fff;border-radius:12px;padding:14px 16px;margin:14px 0}
+.pill{display:inline-block;background:#e7efe8;border-radius:999px;padding:2px 10px;font-size:.8rem;margin-right:6px}
+footer{border-top:1px solid #d8ded7;color:#55655f;font-size:.85rem;padding:16px 22px;max-width:1040px;margin:0 auto}
+.callout.warning,.callout{border-left:4px solid #a5730f;background:#fdf6e3;padding:12px 14px;border-radius:8px;margin:14px 0}
+.meta{font-size:.84rem;color:#4d5f59;margin:.2em 0}
+.source-list{padding-left:1.1em}.source-list li{margin:.4em 0}
+</style></head>
+<body><header><strong>GEMSDOE65</strong> · selection-bias-aware PU lane<br><nav><a href="index.html">Status</a><a href="executive-summary.html">How to submit</a><a href="experiments.html">Experiments</a><a href="research.html">Research</a><a href="hypotheses.html">Hypotheses</a><a href="competitive-context.html">Why 0.2778</a><a href="sources.html" aria-current=page>Sources</a><a href="irregularities.html">Irregularities</a></nav></header>
+<main><p class="small">official / verified / owner-reported, kept separate</p><h1>Sources, links and claim boundaries</h1><p class="lede">Every claim used by this lane, with the bound on what the source actually establishes.</p>
+
+<h2>Official competition sources</h2>
+<table><tr><th>Source</th><th>What it establishes / bound</th></tr>
+<tr><td><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/">Competition home</a></td>
+<td>The contest exists; submission slots are managed there. Not mirrored here.</td></tr>
+<tr><td><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/">Problem description (page 967)</a></td>
+<td>Task definition, study region, feature families and the metric contract (α = 0.2, β = 0.8,
+300 m triangular kernel).</td></tr>
+<tr><td><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/data/">Data tab</a></td>
+<td>Requires a login; unauthenticated access redirects. No credentials were used or stored.</td></tr>
+<tr><td><a href="https://www.drivendata.org/termsofuse/">Terms of Use</a></td>
+<td>Prohibits automated access for monitoring/copying and manual monitoring/copying without prior
+written consent — hence no scraper, no mirrored leaderboard rows anywhere in this repo.</td></tr>
+<tr><td><a href="https://docs.nlr.gov/docs/fy26osti/96647.pdf">Official rules PDF (NLR/DOE)</a></td>
+<td>Contest rules and submission/prize process.</td></tr>
+<tr><td><a href="https://github.com/drivendataorg/gems-prize-reference-solution">Reference solution (organizer)</a></td>
+<td>CPU-runnable U-Net with α = 0.2 / β = 0.8 Tversky loss; commit
+<code>aebe92f7c8a990f0e3443451b7a825d9afd6336b</code> verified in the family's audit receipt. Its
+training loss is <em>not</em> an independently verified implementation of the organizer's spatial
+DTI.</td></tr></table>
+
+<h2>Scientific sources used by this lane</h2>
+<table><tr><th>Source</th><th>Claim used, and its bound</th></tr>
+<tr><td><a href="https://proceedings.mlr.press/v94/bekker18a.html">Bekker &amp; Davis, PMLR v94 (2018)</a></td>
+<td>Positive labels selected conditionally on attributes (SAR) and an EM estimator of the selection
+function. Assumptions are required; PU data alone do not identify the scale of e(x).</td></tr>
+<tr><td><a href="https://arxiv.org/abs/1809.03207">Bekker, Robberechts &amp; Davis, arXiv:1809.03207</a></td>
+<td>Empirical-risk correction that incorporates the labelling mechanism. Used here to define the
+estimand and the IPW-weighted risk, not as evidence that the geology application works.</td></tr>
+<tr><td><a href="https://pangea.stanford.edu/ERE/pdf/IGAstandard/SGW/2025/Giddens.pdf">Giddens &amp; Faulds (2025), SGP-TR-229</a></td>
+<td>Roughly 92 % of identified step-overs associate with range-front faults and steep relief makes
+them easier to see; about 25 % of their ≈ 499 178 km² study area was mapped at ≈ 1:24 000. These
+are statements about <em>their</em> inventory, not about the competition footprint, and the 25 %
+figure is not an exhaustive-coverage mask.</td></tr>
+<tr><td><a href="https://www.usgs.gov/data/geodawn-airborne-magnetic-and-radiometric-surveys-northwestern-great-basin-nevada-and">USGS GeoDAWN data release</a>
+(<a href="https://doi.org/10.5066/P93LGLVQ">DOI 10.5066/P93LGLVQ</a>)</td>
+<td>Official airborne magnetic/radiometric and coordinated lidar acquisition. Does not by itself
+supply a per-pixel completeness mask.</td></tr>
+<tr><td><a href="https://carto.nationalmap.gov/arcgis/rest/services/map_indices/MapServer">USGS 7.5-minute map index</a> ·
+<a href="https://ngmdb.usgs.gov/mapview/">NGMDB MapView</a></td>
+<td>Map frames and publication records. A frame grid is not proof that faults were exhaustively
+mapped, so it cannot anchor the propensity scale without a separate completeness audit.</td></tr>
+<tr><td><a href="https://www.usgs.gov/faqs/what-coverage-3d-elevation-program-3dep-dems">3DEP coverage FAQ</a> ·
+<a href="https://usgs.gov/NationalMap/LidarExplorer">LidarExplorer</a></td>
+<td>Elevation/lidar availability. Used here only as the survey-coverage covariate; no download.</td></tr></table>
+
+<h2>Data bridge and template provenance (all hashes verified in this session)</h2>
+<table><tr><th>Artifact</th><th>sha256 / identity</th></tr>
+<tr><td><code>labels.tif</code> = <code>existing_faults.tif</code></td><td><code>7ba308ccdc4418b31a178f4f1ef21aaa6e152e4028f2f6f64b01f7eb25ae4093</code></td></tr>
+<tr><td><code>sample_submission.tif</code> = <code>example_submission.tif</code></td><td><code>2176d08e485aa2cd2860ce8df539db4faf4d76163b38a4dd8c30a40454d35cbc</code></td></tr>
+<tr><td><code>training_features.tif</code> (re-assembled from 5 parts)</td><td><code>4371c82e3b8339b807bdffcf4ef59a225520fe2988d521be208ae33743123bc5</code>, 418 912 844 bytes, 19 float32 bands</td></tr>
+<tr><td>Shared template <code>vendor/gems57/</code></td><td>23 files byte-identical to
+<code>buffedlizard55-lab/60GEMSDOE</code> @ <code>6444fa6552335190f0bc89661acf725ed73e7fcb</code>
+(see <a href="data/template_provenance.json">template_provenance.json</a>).</td></tr></table>
+<p class="small">The competition data were recovered through the family's own public data bridge
+(a git repository that exists because the official data tab needs a login). No access control was
+bypassed, no credentials were requested or stored, and every byte used here was hash-checked
+against that bridge manifest.</p>
+</main>
+<footer>Built by <code>scripts/build_site.py</code> from <code>registry/</code> on 2026-10-11T22:16:04Z.
+Scores are labelled HOLDOUT-DTI, REGISTRY-MEASUREMENT, OWNER-REPORT or NOT ESTABLISHED. No leaderboard scraping.</footer>
+</body></html>

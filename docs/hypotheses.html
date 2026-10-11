@@ -1,61 +1,115 @@
 <!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Ranked, testable within-lane hypotheses for selection-bias-aware positive-unlabeled fault mapping.">
-  <title>Ranked hypotheses · GEMSDOE65</title><link rel="stylesheet" href="assets/site.css">
-</head>
-<body>
-<header class="site-header"><div class="wrap nav-row">
-  <a class="brand" href="index.html">GEMSDOE65<small>Evidence before submission</small></a>
-  <nav aria-label="Main navigation"><a href="index.html">Status</a><a href="executive-summary.html">Submit guide</a><a aria-current="page" href="hypotheses.html">Hypotheses</a><a href="competitive-context.html">Score audit</a><a href="research.html">Research</a><a href="irregularities.html">Irregularities</a></nav>
-</div></header>
-<main class="wrap">
-  <div class="page-title"><div class="kicker">Pre-registered lane exploration</div><h1>Ranked selection-bias hypotheses</h1>
-    <p class="lede">These are variants of the requested SAR positive–unlabeled (PU) lane, not permission to switch to a different fault detector. Ranks are qualitative research priorities—not DTI forecasts. No candidate has been run.</p>
-  </div>
-  <div class="callout danger"><strong>Validation gate blocked.</strong> This checkout does not contain the cached feature stack, the required shared segment hide-and-recover evaluator/writer, or the raster registry. Therefore none of these hypotheses has a measured holdout score, leakage-canary result, uniqueness result, or submission TIFF. Do not interpret ranking as evidence of improvement.</div>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Five ranked hypotheses for beating 0.2778 — GEMSDOE65</title><style>body{margin:0;font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#14231f;background:#f6f7f4}
+header{background:#12332b;color:#f2fbf5;padding:18px 22px}header a{color:#cfe9d8;text-decoration:none;margin-right:14px;font-size:.94rem}
+header a[aria-current=page]{color:#fff;text-decoration:underline}
+main{max-width:1040px;margin:0 auto;padding:26px 20px 80px}
+h1{font-size:1.9rem;line-height:1.2;margin:.2em 0 .5em}h2{margin-top:1.9em;font-size:1.3rem}h3{font-size:1.05rem;margin-top:1.3em}
+.banner{border-radius:12px;padding:16px 18px;margin:18px 0;border:2px solid}
+.stop{border-color:#a11f1f;background:#fdecec}.stop strong{color:#8d1a1a}
+.warn{border-color:#a5730f;background:#fdf6e3}.ok{border-color:#1c6b45;background:#eaf6ee}
+.info{border-color:#24556e;background:#eaf3f8}
+table{border-collapse:collapse;width:100%;margin:1em 0;font-size:.92rem}th,td{border:1px solid #d6ddd6;padding:7px 9px;text-align:left;vertical-align:top}
+th{background:#eef2ec}
+code,pre{background:#eff2ee;border-radius:6px}code{padding:1px 4px}pre{padding:10px;overflow:auto}
+.small{font-size:.86rem;color:#4d5f59}.lede{font-size:1.08rem;color:#3a4a45}
+.card{border:1px solid #d8ded7;background:#fff;border-radius:12px;padding:14px 16px;margin:14px 0}
+.pill{display:inline-block;background:#e7efe8;border-radius:999px;padding:2px 10px;font-size:.8rem;margin-right:6px}
+footer{border-top:1px solid #d8ded7;color:#55655f;font-size:.85rem;padding:16px 22px;max-width:1040px;margin:0 auto}
+.callout.warning,.callout{border-left:4px solid #a5730f;background:#fdf6e3;padding:12px 14px;border-radius:8px;margin:14px 0}
+.meta{font-size:.84rem;color:#4d5f59;margin:.2em 0}
+.source-list{padding-left:1.1em}.source-list li{margin:.4em 0}
+</style></head>
+<body><header><strong>GEMSDOE65</strong> · selection-bias-aware PU lane<br><nav><a href="index.html">Status</a><a href="executive-summary.html">How to submit</a><a href="experiments.html">Experiments</a><a href="research.html">Research</a><a href="hypotheses.html" aria-current=page>Hypotheses</a><a href="competitive-context.html">Why 0.2778</a><a href="sources.html">Sources</a><a href="irregularities.html">Irregularities</a></nav></header>
+<main><p class="small">proposals only — none validated here</p><h1>Five ranked hypotheses for beating 0.2778</h1><p class="lede">Each names its layers, its physical signature, why it should catch a fault the catalogue missed, how it differs from work already done, and what it costs.</p>
 
-  <div class="table-wrap"><table>
-    <thead><tr><th>Priority</th><th>Hypothesis and layers</th><th>Target signature / why labels may be missing</th><th>Difference and cost</th></tr></thead>
-    <tbody>
-      <tr>
-        <td><strong>1 · test first</strong><br><span class="badge">Highest plausible value</span></td>
-        <td><strong>Terrain visibility drives fault inclusion.</strong><br>Local relief, detrended-elevation slope, DEM-source coverage (1 m GeoDAWN lidar versus coarser 3DEP where verified), and distance to an independently mapped range-front break; model the labeling propensity with SAR-EM.</td>
-        <td>Scarp-scale relief and steep topographic gradients make some fault strands easier to identify. The test is whether catalogue inclusion varies with visibility after conditioning on being a fault. Faults in low-relief, poorly surveyed terrain may be real but absent from the catalogue. This is an observation-process hypothesis, not a claim that relief creates faults.</td>
-        <td>The proposed novelty is correction for <em>which faults enter the catalogue</em>, rather than a direct ridge/scarp score. This checkout contains no implementation. A listed sibling site (<a href="https://buffedlizard55-lab.github.io/20GEMSDOE/docs/index.html">20GEMSDOE</a>) already describes SAR-nnPU and PU-proxy experiments, so generic PU/SAR is not new; the explicit visibility-covariate propensity model and a defensible mapping-coverage anchor are the potentially distinct pieces. The full sibling code/history is not audited, so global novelty is unverified. <strong>Cost: high</strong>—the segment folds, one-feature leakage checks, propensity estimation, clipped-risk training, and matched nnPU comparison must all be run with the shared tools.</td>
-      </tr>
-      <tr>
-        <td><strong>2</strong><br><span class="badge">Moderate–high plausible value</span></td>
-        <td><strong>Detailed-map effort anchors propensity.</strong><br>NGMDB geologic-map publication footprints and scale metadata joined to the USGS 7.5-minute map-index polygons; use map availability only as an inclusion/effort covariate.</td>
-        <td>The signature is the map-production footprint and map scale—not a geologic lineament. Faults in quadrangles lacking detailed mapping may be less likely to appear in the labelled catalogue, even when their geomorphology is comparable. This could anchor the *relative scale* of the SAR propensity only if the inventory is shown to be sufficiently complete and accurately georeferenced.</td>
-        <td>Unlike terrain-only visibility, this models deliberate survey/mapping effort. USGS publishes a free 7.5-minute grid index and NGMDB map catalogue, but the grid is not a geologic-coverage layer and catalog extents can overstate actual mapped area. Completeness must be audited; otherwise keep the propensity unanchored and run sensitivity analyses. <strong>Cost: medium–high</strong>—metadata joins and scale/footprint QA are needed.</td>
-      </tr>
-      <tr>
-        <td><strong>3</strong><br><span class="badge">Moderate, coverage-dependent</span></td>
-        <td><strong>Basin fill obscures fault expression.</strong><br>Provided isostatic-gravity anomaly and its slope, plus a gravity-derived depth-to-basement/basin-fill proxy only where its footprint is confirmed to overlap the competition region; condition on relief and verified DEM-source coverage.</td>
-        <td>A broad gravity low / basin-depth increase and basin-edge gradient can mark thick basin fill, where surface scarps may be muted or absent. The hypothesis is that detection propensity falls under concealment; it is not that every gravity edge is a fault. Missing faults would be expected around buried basin margins or within filled basins.</td>
-        <td>Prior shared-site names include gravity/geophysics prediction experiments. The distinction here is using basin fill as an observation/visibility covariate in the propensity model, not emitting the gravity gradient as a fault prediction. The free USGS gravity-based depth-to-basement release is obtainable from its public ScienceBase listing, but it is a regional eastern-Great-Basin product at coarse scale; its bounding box does not prove raster overlap with this northwestern study footprint. <strong>Cost: high</strong>—exact coverage intersection, resolution, and provenance must be audited before use.</td>
-      </tr>
-      <tr>
-        <td><strong>4</strong><br><span class="badge">Moderate, nested in priority 1</span></td>
-        <td><strong>Range-front association changes visibility, not just geology.</strong><br>Distance to an independently derived range-front break, local relief, and slope; avoid deriving the propensity feature from held-out catalogue traces.</td>
-        <td>At range fronts, strong relief may expose fault scarps and create a mapping preference; basin-interior or subtle relay structures can be missed. Giddens &amp; Faulds report a strong range-front association among identified step-overs and explicitly discuss visibility bias. The test asks whether the apparent association attenuates after correcting for observability.</td>
-        <td>Earlier H33-labelled work focuses on step-over/relay geometry; this sub-hypothesis uses range-front distance to explain label selection and forbids using hidden-fault labels to build the feature. It is not independent of priority 1, so it must be evaluated as a predeclared ablation, not counted as an independent win. <strong>Cost: medium</strong> if a label-independent range-front layer already exists; otherwise high.</td>
-      </tr>
-    </tbody>
-  </table></div>
+<div class="banner warn">These are <strong>proposals</strong>. None is validated here. Expected
+improvement is qualitative and unmeasured; anything that needs external data names the source and
+whether it was checked as obtainable in this environment.</div>
+<table>
+<tr><th>#</th><th>Hypothesis</th><th>Layers / signature</th><th>Why it should catch a fault the
+catalogue misses</th><th>Difference from work already done</th><th>Cost / data</th></tr>
 
-  <h2>Comparison protocol for the top candidate</h2>
-  <ol>
-    <li>Use the same spatial folds and whole-segment buffers for SAR-EM and nnPU; no random-pixel split.</li>
-    <li>For each covariate alone, run the feature-only leakage canary. Any AUC above the stipulated threshold is treated as leakage until demonstrated otherwise.</li>
-    <li>Estimate <code>e(x)=P(labelled | fault, x)</code> with SAR-EM on the predeclared low-dimensional propensity set. If there is no defensible quadrangle anchor, report a sensitivity family rather than a calibrated propensity.</li>
-    <li>Train the requested propensity-aware empirical risk, cap inverse-propensity weights at 10, and compare with nnPU on identical folds.</li>
-    <li>Use the shared hide-and-recover evaluator: derive catalogue features from visible faults only; mask visible-fault pixels exactly; compute pooled distance-weighted Tversky with the official kernel/weights; report evaluator version, withheld-positive count, and 95% CI.</li>
-    <li>Require improvement over both the current holdout best and the matched nnPU baseline overall, plus no loss in the highest-propensity tercile. If the current best is unavailable, stop promotion. Then perform registry correlation and dot-overlap checks both before placement and on final dots. A failed/untested gate is negative, not a reason to submit.</li>
-  </ol>
-  <p class="small">The current run card records the top candidate as unvalidated because its prerequisites are absent. No numerical score or expected gain is projected here.</p>
+<tr><td>1</td><td><strong>Metric-geometry-matched emission</strong> (new top priority)</td>
+<td>No new layer: the same SAR probability surface, re-emitted. Signature is a
+<em>placement</em> rule, not a detector: accept a dot only where the kernel credit exceeds the
+plug-in bar <code>k &gt; α·DTI</code>, restrict the allowed set to a 10–40 px dilation of the
+visible catalogue, and set the assumed truth mass from the family's <span class="pill">OWNER-REPORT</span>
+hidden-mass estimate K̂ ≈ 12 226 px instead of <code>π·n_active</code>.</td>
+<td>The metric pays only for mass near true faults; a dot 1.2 km away earns ≈ 0 credit but still
+costs 0.2 per unit. This session's candidate sits a median of 12.5 px from the catalogue and emits
+28 047 dots — more mass than the estimated hidden truth — which mathematically caps the score.</td>
+<td>Every previous arm in this lane (and the family's PU variants) tuned the <em>surface</em> and
+kept the template's fixed-budget allocator. Nobody has audited the emission budget against the
+metric's marginal algebra with the family's own K̂.</td>
+<td><strong>Low</strong> — one allocator option plus a re-run of the existing folds.</td></tr>
+
+<tr><td>2</td><td><strong>Non-degenerate SAR-EM propensity</strong> (implemented and fixed here)</td>
+<td>All 19 official bands as context, plus the five registered propensity covariates
+(relief, slope, <code>depth_to_base_surf</code>, survey coverage, distance to range front);
+signature is the <em>selection</em> surface, not a fault detector.</td>
+<td>Re-weights training towards terrain where mapping was sparse, so the learned fault template is
+not dominated by easy-to-see range-front scarps (the brief's 92 %/25 % observation).</td>
+<td>The family's PU arm (20GEMSDOE h20) used nnPU with a <em>fixed</em> prior π = 0.0363 and no
+propensity model; this session's E1/E2 used a 4-bin quantile grid whose fit was flat. A continuous
+logistic SAR-EM with an anchored scale has not been tried.</td>
+<td><strong>Low</strong> — code exists here; needs an anchor or an explicit sensitivity band.</td></tr>
+
+<tr><td>3</td><td><strong>Buried-fault wedges in basin-fill thickness</strong></td>
+<td>Official <code>depth_to_base_surf</code> (gravity-derived basin fill), <code>iso_grav_anom</code>
+and its slope, plus detrended elevation; signature = along-strike gradient / curvature ridges of
+fill thickness and second-derivative structure in the isostatic gravity field.</td>
+<td>The catalogue is surface-mapping-biased; faults under basin fill have no scarp, but they do
+change the fill-thickness field. Those pixels are systematically the omitted ones.</td>
+<td>Previous work fed gravity <em>edge products</em> (grav_edge, depth_grad) into classifiers; a
+structural-geology model of fill-thickness gradient zones conditioned on range-front geometry has
+not been built here.</td>
+<td><strong>Medium</strong>; the needed layers are already in the official feature stack (verify
+band metadata first).</td></tr>
+
+<tr><td>4</td><td><strong>Radiometric alteration haloes near fault intersections</strong></td>
+<td>USGS GeoDAWN airborne radiometric K/Th/U equivalents (public release) plus official
+<code>cond_surf</code>; signature = potassium-enrichment / radiometric-low haloes aligned along fault
+strike at intersections.</td>
+<td>Geothermal upflow alters rock along faults and that alteration can persist after the scarp has
+degraded; the prize cares specifically about geothermal-indicative faults.</td>
+<td>The family's prior work is <em>scarp-first</em>: GEMSDOE46 r11f/r12 fused radiometrics
+<span class="pill">OWNER-REPORT</span> <em>with</em> scarp detections, and its registry states
+explicitly that <em>no</em> arm uses the precomputed Th/K band. This hypothesis inverts the order —
+ratio-edge-first, scarp-free — and conditions the anomaly on strike and intersection density.</td>
+<td><strong>Medium</strong>; 4-band GeoDAWN radiometrics (K/Th/U/TC) exist as a pinned pack in the
+family's public data mirror (<code>data/external/geodawn_rad_u8.tif</code>). Free and official; no
+download was performed this session.</td></tr>
+
+<tr><td>5</td><td><strong>Acquisition-date natural experiment (lidar after mapping)</strong></td>
+<td>Lidar/2 m scarp channels plus the NGMDB publication dates; signature = high scarp SNR in areas
+whose lidar <em>postdates</em> the published map that had no fault there.</td>
+<td>Turns the visibility bias into an instrument: a scarp that exists in modern lidar but not on the
+older published map is a candidate miss with a measurable explanation.</td>
+<td>The family's h66 lane treated lidar scarplets as a detector; nobody has used map publication
+date as the discriminating variable.</td>
+<td><strong>High</strong>; needs NGMDB map-date metadata — free and public, but its join to the
+grid is unverified here.</td></tr>
+
+<tr><td>6</td><td><strong>Structural-strike-constrained fluid-discharge lines</strong></td>
+<td><code>depth_to_base_surf</code> + <code>cond_surf</code> + free USGS/GDR spring and well
+inventories; signature = discharge points aligned along a common strike, with evaporative playa
+margins explicitly masked out (the named mimic).</td>
+<td>Unmapped faults are the ones that still control fluid discharge but were never drawn; a
+strike-alignment test rejects the playa-margin mimic that defeated earlier habitat attempts.</td>
+<td>This habitat has already been audited quantitatively by the family: 70.04 % of the 62 703
+<code>sgmc_off_catalogue</code> pixels beyond 300 m of the catalogue lie in elevated mountain blocks
+(median +127.36 m relief, median depth-to-base 91.74 m), and its off-catalogue calibration arm
+<code>sgmc_prevalence_calibrated_dti_44090px</code> scored 0.00418 on the catalogue instrument
+(<span class="pill">HOLDOUT-DTI</span>, family registry) — the weakest of five. What is untried is
+the strike constraint plus an explicit playa-margin mask.</td>
+<td><strong>Medium</strong>; NWIS/GDR inventories are free official sources — obtainable.</td></tr>
+</table>
+<p class="small">Ranking by expected DTI improvement per unit cost: <strong>1 &gt; 2 &gt; 4 &gt; 3 &gt; 6 &gt; 5</strong>.
+Hypothesis 2 is implemented and now has an active, non-degenerate correction — and it still ties, so
+the lane's remaining headroom is not in the propensity model alone. Hypothesis 1 is a placement
+fix that is independent of the propensity work and is the cheapest large lever available.</p>
 </main>
-<footer class="footer"><div class="wrap"><a href="index.html">Status</a><a href="research.html">Sources</a><a href="HYPOTHESES.md">Detailed hypothesis register</a><a href="data/run-card.json">Current JSON run card</a></div></footer>
+<footer>Built by <code>scripts/build_site.py</code> from <code>registry/</code> on 2026-10-11T22:16:04Z.
+Scores are labelled HOLDOUT-DTI, REGISTRY-MEASUREMENT, OWNER-REPORT or NOT ESTABLISHED. No leaderboard scraping.</footer>
 </body></html>

@@ -1,125 +1,220 @@
-"""Feature extraction: the 19 provided bands + 4 derived terrain terms, footprint-indexed.
+"""Observability (propensity) covariates + the structural detector feature stack.
 
-Output is a single memmap-friendly ``.npy`` of shape (n_footprint_pixels, n_features) float32 plus
-a flat-index vector, so every downstream stage (sampling, EM, fold training, full-grid inference)
-is pure row indexing and never re-decompresses the 419 MB source raster.
+Everything here is derived from the OFFICIAL competition rasters in ``data/`` plus two
+official, public-domain external products that are already vendored under
+``data/external/`` with their own provenance receipts:
 
-Heavy-tailed bands (``deq_n100a15``, ``ieq_n100a15``, ``depth_to_base_surf``) are log1p'd, which
-is monotone and therefore rank-preserving; every other band is passed through unchanged.  The
-float32 sentinel (-3.4028234663852886e+38) is replaced by the per-band footprint median, and the
-number of such pixels is recorded -- this is mechanism M1 of the range-error root cause and it is
-audited, not silently absorbed.
+* ``derived_sgmc_faults_100m_u8.tif`` -- the USGS SGMC (state geologic map) compilation
+  rasterised onto this exact competition grid.  Source: ``https://mrdata.usgs.gov/geology/state/shp/NV.zip``
+  and ``.../CA.zip`` (USGS, public domain).  Used only as an *off-catalogue* truth proxy.
+* ``dem1m_high_prior_openness_lrm.npz`` -- topographic-openness / local-relief-model
+  statistics computed from eight official USGS 3DEP 1 m EarthMRI DEM tiles
+  (``prd-tnm.s3.amazonaws.com`` NV_WestCentral_EarthMRI_2020_D20 project, public domain).
+  Used only as the *lidar coverage* propensity covariate.
+
+The five preregistered propensity covariates (see README "This session's method lane"):
+
+==== ============================== =======================================================
+ z1  ``relief``                     local relief of detrended elevation (band 12), 500 m window
+ z2  ``slope``                      detrended-elevation slope (official band 19)
+ z3  ``basin_fill``                 depth-to-basement / sedimentary-cover thickness (band 15),
+                                    the gravity-derived basin-fill proxy
+ z4  ``lidar_cov``                  1 m 3DEP lidar coverage mask (official tiles)
+ z5  ``dist_rangefront``            distance to the basin-margin ("range front") escarpment
+
+z5 is an OPERATIONAL proxy, not an independently mapped range front: it is the Euclidean
+distance to the locus where the gravity-derived basin-fill thickness drops from basin
+values to range-block values.  An independently mapped range front would require a
+separate, verified structural linework product; none was obtained in this session, and
+the substitution is recorded in ``docs/IRREGULARITIES.md`` rather than hidden.
 """
-
 from __future__ import annotations
 
 from pathlib import Path
 
 import numpy as np
-import rasterio
-from scipy.ndimage import gaussian_filter
+from scipy import ndimage
 
-from . import grid as G
-from .covariates import curvature_proxy, grad_mag, local_relief
+from . import grid
 
-LOG_BANDS = ("deq_n100a15", "ieq_n100a15", "depth_to_base_surf")
-DERIVED = ("relief", "curv", "grad_det_elev", "grad_iso_grav")
-FEATURE_NAMES = list(G.BAND_NAMES) + list(DERIVED)
+NOD = grid.NODATA_F32
+
+# official band numbers (1-based) -> covariate use
+BAND_DET_ELEV = 12        # det_elev
+BAND_DEPTH_BASE = 15      # depth_to_base_surf
+BAND_DET_ELEV_SLOPE = 19  # det_elev_slope
 
 
-def build_feature_matrix(ddir: Path, out_dir: Path, footprint: np.ndarray) -> dict:
-    out_dir = Path(out_dir)
-    out_dir.mkdir(parents=True, exist_ok=True)
-    flat_idx = np.flatnonzero(footprint.ravel())
-    n = flat_idx.size
-    X = np.zeros((n, len(FEATURE_NAMES)), dtype=np.float32)
-    sentinel_fixed = {}
+# --------------------------------------------------------------------------------------
+# propensity covariates
+# --------------------------------------------------------------------------------------
+def local_relief(det_elev: np.ndarray, size: int = 5) -> np.ndarray:
+    """Local relief = max - min of detrended elevation over a ``size x size`` window."""
+    a = np.where(np.isfinite(det_elev) & (det_elev > NOD * np.float32(0.5)), det_elev, np.nan)
+    mx = ndimage.maximum_filter(a, size=size, mode="nearest")
+    mn = ndimage.minimum_filter(a, size=size, mode="nearest")
+    out = mx - mn
+    return np.nan_to_num(out, nan=0.0, posinf=0.0, neginf=0.0).astype(np.float32)
 
-    with rasterio.open(ddir / "training_features.tif") as ds:
-        for j, name in enumerate(G.BAND_NAMES):
-            b = ds.read(G.BAND_INDEX[name]).astype(np.float32)
-            sent = b < -1e30
-            n_sent_foot = int((sent.ravel()[flat_idx]).sum())
-            b[sent] = np.nan
-            v = b.ravel()[flat_idx]
-            med = float(np.nanmedian(v))
-            v = np.where(np.isfinite(v), v, med)
-            if name in LOG_BANDS:
-                v = np.log1p(np.clip(v, 0.0, None))
-            X[:, j] = v.astype(np.float32)
-            sentinel_fixed[name] = n_sent_foot
-            del b
 
-    # derived terrain terms (full grid, then indexed)
-    with rasterio.open(ddir / "training_features.tif") as ds:
-        de = ds.read(G.BAND_INDEX["det_elev"]).astype(np.float32)
-        ig = ds.read(G.BAND_INDEX["iso_grav_anom"]).astype(np.float32)
-    de[de < -1e30] = np.nan
-    ig[ig < -1e30] = np.nan
-    der = {
-        "relief": local_relief(de),
-        "curv": curvature_proxy(de),
-        "grad_det_elev": grad_mag(gaussian_filter(np.nan_to_num(de, nan=float(np.nanmedian(de))), 1.0, mode="nearest")),
-        "grad_iso_grav": grad_mag(gaussian_filter(np.nan_to_num(ig, nan=float(np.nanmedian(ig))), 1.0, mode="nearest")),
+def lidar_coverage(data_dir: Path = grid.DATA) -> np.ndarray:
+    """Boolean 1 m 3DEP lidar coverage from the eight official EarthMRI 1 m tiles."""
+    z = np.load(Path(data_dir) / "external" / "dem1m_high_prior_openness_lrm.npz")
+    m = np.zeros((grid.open_template()["height"], grid.open_template()["width"]), bool)
+    m.ravel()[z["cov_fp_indices"]] = True
+    return m
+
+
+def basin_margin_front(depth_to_base: np.ndarray, quantile: float = 0.5) -> np.ndarray:
+    """Operational range-front proxy: the escarpment at the edge of the basin fill.
+
+    A pixel is a "range front" pixel when the basin-fill thickness is thin (below the
+    footprint median) *and* it is adjacent to thick basin fill, i.e. it sits on the
+    mountain-block side of the basin margin.  This is the topographic expression of the
+    range-bounding (range-front) fault system, derived only from official bands.
+    """
+    a = np.where(
+        np.isfinite(depth_to_base) & (depth_to_base > NOD * np.float32(0.5)),
+        depth_to_base,
+        np.nan,
+    )
+    finite = np.isfinite(a)
+    t = np.nanmedian(a[finite])
+    basin = finite & (a > t)
+    # erode the basin so the "edge" band is the mountain-block shoulder, not the basin centre
+    basin_edge = basin & ~ndimage.binary_erosion(basin, iterations=2, border_value=1)
+    shoulder = ndimage.binary_dilation(basin_edge, iterations=3) & ~basin
+    return shoulder & finite
+
+
+def build_propensity_covariates(data_dir: Path = grid.DATA) -> dict:
+    """Return the five preregistered propensity covariates as float32 (H, W) arrays."""
+    det_elev = grid.read_band(Path(data_dir) / "training_features.tif", BAND_DET_ELEV, fill=np.nan)
+    depth = grid.read_band(Path(data_dir) / "training_features.tif", BAND_DEPTH_BASE, fill=np.nan)
+    slope = grid.read_band(Path(data_dir) / "training_features.tif", BAND_DET_ELEV_SLOPE, fill=0.0)
+    foot = grid.read_footprint(Path(data_dir) / "sample_submission.tif")
+
+    relief = local_relief(det_elev)
+    front = basin_margin_front(depth)
+    dist_front = ndimage.distance_transform_edt(~front).astype(np.float32)
+    lidar = lidar_coverage(data_dir).astype(np.float32)
+
+    basin_fill = np.where(np.isfinite(depth), depth, 0.0).astype(np.float32)
+    slope = np.where(np.isfinite(slope), slope, 0.0).astype(np.float32)
+
+    cov = {
+        "relief": relief,
+        "slope": slope,
+        "basin_fill": basin_fill,
+        "lidar_cov": lidar,
+        "dist_rangefront": dist_front,
     }
-    for k, name in enumerate(DERIVED):
-        v = der[name].ravel()[flat_idx].astype(np.float32)
-        v[~np.isfinite(v)] = float(np.nanmedian(v[np.isfinite(v)]))
-        X[:, len(G.BAND_NAMES) + k] = v
-    del de, ig, der
-
-    np.save(out_dir / "X_footprint.npy", X)
-    np.save(out_dir / "flat_idx.npy", flat_idx)
-    return {
-        "n_footprint_pixels": int(n),
-        "n_features": len(FEATURE_NAMES),
-        "feature_names": FEATURE_NAMES,
-        "log1p_bands": list(LOG_BANDS),
-        "sentinel_pixels_inside_footprint_fixed": sentinel_fixed,
-        "x_path": str(out_dir / "X_footprint.npy"),
-        "flat_idx_path": str(out_dir / "flat_idx.npy"),
-    }
+    cov["_footprint"] = foot
+    cov["_front_px"] = front
+    return cov
 
 
-class FeatureStore:
-    """Row-indexed access to the footprint feature matrix."""
+# --------------------------------------------------------------------------------------
+# structural detector channels (reused from the shared template's cached feature stack)
+# --------------------------------------------------------------------------------------
+CHANNELS = [
+    *[f"band{i:02d}" for i in range(1, 20)],
+    "curv_s1", "curv_s2", "ridge_s1", "ridge_s2", "ridge_s3",
+    "relief5", "tophat2", "tmi_edge", "rtp_edge", "grav_edge", "cond_edge",
+    "depth_grad", "coherence_s2", "strike_cos", "strike_sin", "footprint",
+]
 
-    def __init__(self, work: Path):
-        self.X = np.load(Path(work) / "X_footprint.npy", mmap_mode="r")
-        self.flat_idx = np.load(Path(work) / "flat_idx.npy")
-        self.names = FEATURE_NAMES
-        self._lookup = None
+NEED = {12, 14, 2, 13, 17, 15}
 
-    def lookup(self) -> np.ndarray:
-        """flat pixel index -> row of X_footprint (-1 outside the footprint). Cached."""
-        if self._lookup is None:
-            lk = np.full(int(np.prod(G.SHAPE)) + 1, -1, dtype=np.int64)
-            lk[self.flat_idx] = np.arange(self.flat_idx.size)
-            self._lookup = lk
-        return self._lookup
 
-    @property
-    def n(self) -> int:
-        return int(self.X.shape[0])
+def _sm(a, s):
+    return ndimage.gaussian_filter(a, s, mode="nearest")
 
-    def rows_for_flat(self, flat: np.ndarray) -> np.ndarray:
-        """Materialise rows for absolute flat pixel indices (must all be inside the footprint)."""
-        r = self.lookup()[flat]
-        if (r < 0).any():
-            raise ValueError("requested pixels outside the footprint")
-        return np.asarray(self.X[r], dtype=np.float64)
 
-    def rows_for_mask(self, mask: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
-        flat = np.flatnonzero(mask.ravel())
-        r = self.lookup()[flat]
-        keep = r >= 0
-        return np.asarray(self.X[r[keep]], dtype=np.float64), flat[keep]
+def _grad_mag(a):
+    gy, gx = np.gradient(a)
+    return np.hypot(gx, gy)
 
-    def block_scores(self, theta: np.ndarray, rff, chunk: int = 400_000) -> np.ndarray:
-        """Full-footprint sigmoid scores for a linear model on RFF features, chunked."""
-        out = np.zeros(self.n, dtype=np.float32)
-        for a in range(0, self.n, chunk):
-            b = min(self.n, a + chunk)
-            D = rff.design(np.asarray(self.X[a:b], dtype=np.float64))
-            out[a:b] = (D @ theta).astype(np.float32)
-        return out
+
+def _hessian_ridge(a, sigma):
+    """Sato/Frangi-style ridge response: largest |eigenvalue| with the ridge sign convention."""
+    axx = ndimage.gaussian_filter(a, sigma, order=(0, 2), mode="nearest")
+    ayy = ndimage.gaussian_filter(a, sigma, order=(2, 0), mode="nearest")
+    axy = ndimage.gaussian_filter(a, sigma, order=(1, 1), mode="nearest")
+    tmp = np.sqrt(np.maximum(((axx - ayy) * 0.5) ** 2 + axy ** 2, 0.0))
+    l1 = (axx + ayy) * 0.5 + tmp
+    l2 = (axx + ayy) * 0.5 - tmp
+    big = np.where(np.abs(l1) >= np.abs(l2), l1, l2)
+    small = np.where(np.abs(l1) >= np.abs(l2), l2, l1)
+    return -small * (big < 0).astype(np.float32)
+
+
+def _structure_tensor(a, sigma):
+    gx = ndimage.gaussian_filter(a, sigma, order=(0, 1), mode="nearest")
+    gy = ndimage.gaussian_filter(a, sigma, order=(1, 0), mode="nearest")
+    jxx = _sm(gx * gx, sigma)
+    jyy = _sm(gy * gy, sigma)
+    jxy = _sm(gx * gy, sigma)
+    tr = jxx + jyy + 1e-12
+    coh = np.sqrt(np.maximum(((jxx - jyy) * 0.5) ** 2 + jxy ** 2, 0.0)) / tr
+    theta = 0.5 * np.arctan2(2 * jxy, (jxx - jyy) + 1e-12)
+    return coh.astype(np.float32), theta.astype(np.float32), np.sqrt(tr).astype(np.float32)
+
+
+def build_feature_stack(features_path: Path, out_path: Path, log=print) -> dict:
+    """Build the (H, W, F) float32 stack as a disk-backed array; returns a small receipt.
+
+    This is the shared template's cached feature stack (``src/gems32/features.py``) reused
+    verbatim in behaviour: the 19 official bands as given (sentinel -> 0, plus a footprint
+    flag) and 16 derived line/structure transforms.  No distance-to-catalogue channel is
+    included, by design -- that single column makes a detector AUC 1.0 on the visible
+    catalogue and transfers nothing off it.
+    """
+    import rasterio
+
+    with rasterio.open(features_path) as s:
+        h, w, nb = s.height, s.width, s.count
+        stack = np.lib.format.open_memmap(
+            out_path, mode="w+", dtype=np.float32,
+            shape=(h, w, len(CHANNELS) + max(0, nb - 19)),
+        )
+        kept = {}
+        footprint = None
+        for i in range(1, nb + 1):
+            raw = s.read(i)
+            if i == 1:
+                footprint = np.isfinite(raw) & (raw > NOD * np.float32(0.5))
+            a = np.where(raw < NOD * np.float32(0.5), np.float32(0.0), raw.astype(np.float32))
+            del raw
+            stack[:, :, i - 1] = a
+            if i in NEED:
+                kept[i] = a
+            else:
+                del a
+            if log is not None and (i % 5 == 0 or i == nb):
+                log(f"  band {i:2d}/{nb} read")
+
+    dem = kept[12]
+    c = 19
+    stack[:, :, c] = ndimage.gaussian_laplace(dem, 1.0, mode="nearest"); c += 1
+    stack[:, :, c] = ndimage.gaussian_laplace(dem, 2.5, mode="nearest"); c += 1
+    for sigma in (1.0, 2.0, 3.5):
+        stack[:, :, c] = _hessian_ridge(dem, sigma); c += 1
+    loc = ndimage.maximum_filter(dem, size=5) - ndimage.minimum_filter(dem, size=5)
+    stack[:, :, c] = loc; c += 1
+    stack[:, :, c] = dem - ndimage.grey_opening(dem, size=(5, 5)); c += 1
+    stack[:, :, c] = _sm(_grad_mag(kept[14]), 1.0); c += 1
+    stack[:, :, c] = _sm(_grad_mag(kept[2]), 1.0); c += 1
+    stack[:, :, c] = _sm(_grad_mag(kept[13]), 1.5); c += 1
+    stack[:, :, c] = _sm(_grad_mag(kept[17]), 1.5); c += 1
+    stack[:, :, c] = _sm(_grad_mag(kept[15]), 1.5); c += 1
+    coh, theta, _ = _structure_tensor(dem, 2.0)
+    stack[:, :, c] = coh; c += 1
+    stack[:, :, c] = np.cos(2 * theta); c += 1
+    stack[:, :, c] = np.sin(2 * theta); c += 1
+    stack[:, :, c] = footprint.astype(np.float32); c += 1
+    stack.flush()
+    return dict(
+        channels=CHANNELS, n_channels=len(CHANNELS), shape=[h, w],
+        footprint_px=int(footprint.sum()), path=str(out_path),
+    )

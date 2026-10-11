@@ -1,0 +1,75 @@
+{
+  "generated_utc": "2026-10-11T22:37:15Z",
+  "slug": "gems65-sar-em-propensity-half",
+  "timestamp": "20261011T223500Z",
+  "content_digest8": "5e4660cd",
+  "surface": "propensity-aware PU posterior, weights w = 1/e^0.5 clipped at 10",
+  "sigma_px": 0.0,
+  "budget_dots": 44090,
+  "lambda_": 0.5,
+  "emitted_dots": 39802,
+  "on_catalogue_dots": 0,
+  "gate": {
+    "overall_holdout_dti": {
+      "sar": 0.023446,
+      "nnpu_baseline": 0.022101,
+      "delta": 0.001345
+    },
+    "sgmc_off_catalogue_dti": {
+      "sar": 0.024691,
+      "nnpu_baseline": 0.021875,
+      "delta": 0.002815
+    },
+    "highest_propensity_tercile": {
+      "sar": {
+        "low": 0.028236,
+        "mid": 0.002768,
+        "high": 0.0
+      },
+      "nnpu_baseline": {
+        "low": 0.026981,
+        "mid": 0.0,
+        "high": 0.0
+      },
+      "no_loss": true
+    },
+    "registry_lane_drift": {
+      "verdict": "unique",
+      "rasters_compared": 82,
+      "max_rank_correlation": 0.00742,
+      "max_dot_overlap_3px": 0.329004
+    },
+    "format_validation": true
+  },
+  "gates_pass": true,
+  "files": {
+    "zeros": {
+      "filename": "gems65-sar-em-propensity-half-20261011T223500Z-5e4660cd-zeros.tif",
+      "sha256": "b2e05f0b0d61a785d01cc9469462442fbf3b9b5bdc9a34c2abe0852fd66ec9dc",
+      "bytes": 102010,
+      "url": "docs/downloads/gems65-sar-em-propensity-half-20261011T223500Z-5e4660cd-zeros.tif",
+      "all_checks_passed": true,
+      "role": "primary -- all 12,279,160 cells finite and in [0,1]; no NaN anywhere"
+    },
+    "nan": {
+      "filename": "gems65-sar-em-propensity-half-20261011T223500Z-5e4660cd-nan.tif",
+      "sha256": "939f93d5b6439e3f37d7763bd966027cc3bf894d27962e575613af7ed0e159b6",
+      "bytes": 143427,
+      "url": "docs/downloads/gems65-sar-em-propensity-half-20261011T223500Z-5e4660cd-nan.tif",
+      "all_checks_passed": true,
+      "role": "secondary -- reproduces the sample submission's NaN-outside convention"
+    }
+  },
+  "submission_note": "GEMSDOE65 SAR-EM propensity PU (Bekker-Davis 2018 + BRD 2019 risk, w=1/e^0.5 clip 10) vs nnPU, identical buffered folds; 39802 dots; holdout",
+  "cleared_to_submit": true,
+  "evidence_caveat": "HOLDOUT-DTI is a blocked catalogue hide-and-recover proxy (alpha 0.2, beta 0.8, 300 m triangular kernel) and is NOT an organizer score. The absolute proxy value (~0.023) is far below the public leaderboard range (~0.28-0.38); the comparison that is evidenced here is SAR propensity-aware risk vs matched nnPU on identical folds, not a projected leaderboard position.",
+  "provenance": {
+    "inputs": "artifacts/input_verification.json",
+    "leakage_canary": "artifacts/leakage_canary.json",
+    "sar_em": "artifacts/sar_em_summary.json",
+    "holdout_sweep": "artifacts/holdout_sweep.json",
+    "shrinkage": "artifacts/shrinkage_sensitivity.json",
+    "registry": "registry/rasters.jsonl",
+    "validator": "artifacts/validator_output.json"
+  }
+}

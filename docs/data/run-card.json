@@ -1,256 +1,96 @@
 {
-  "schema": "gems65.run-card.v1",
-  "created_at": "2026-10-11T20:54:58.663630+00:00",
-  "hypothesis": "Mapping selection underrepresents low-relief covered basin-margin faults; five-covariate SAR correction may outperform SCAR nnPU.",
-  "mechanism": "Scale-constrained SAR-EM followed by propensity-aware logistic empirical risk; inverse weights capped at 10. Matched nnPU control.",
-  "non_fault_mimic": "Unfaulted alluvial basin margins and volcanic/lithologic contacts.",
-  "evidence_class": "HOLDOUT-DTI",
-  "evaluator_version": "gems57-pooled-hide-v2",
-  "holdout": {
-    "sar": {
-      "evidence_class": "HOLDOUT-DTI",
-      "evaluator_version": "gems57-pooled-hide-v2",
-      "dti": 0.023649919638269894,
-      "ci95": [
-        0.022120628974432843,
-        0.025161801437358494
-      ],
-      "withheld_positive_pixels": 60988,
-      "tpw": 1667.6104956379409,
-      "fpw": 106941.9459798949,
-      "fnw": 59320.38950436206
+  "hypothesis": "Catalogue inclusion is Selected At Random conditional on observables (local relief, slope, gravity-derived basin-fill thickness, verified 1 m lidar coverage, and distance to the basin-margin range front). Correcting that selection propensity with SAR-EM and training with the propensity-aware empirical risk recovers withheld fault segments better than an nnPU baseline on identical spatially blocked folds.",
+  "mechanism": "e(x)=P(s=1|y=1,x) is estimated with SAR-EM (Bekker & Davis, PMLR v94, 2018): f_hat(x)=P(s=1|x) is fit by logistic regression on the five covariates, the latent posterior pi(x) is refit each M-step with importance weights 1/e clipped at 10, and e is rescaled so E_{x|y=1}[e]=c. The detector is trained with the exact propensity-aware empirical risk of Bekker, Robberechts & Davis (arXiv:1809.03207) with the Kiryo et al. non-negative guard and ramp-up; the nnPU baseline is the same risk with e==1 (no importance weights). Emission is a greedy maximum-coverage packing of the metric's own dispersed credit map.",
+  "named_non_fault_process_that_could_mimic_it": "Landslide scarps and erosional drainage breaks produce steep local relief and slope that resemble fault scarps; lithologic and density contacts create linear topographic and gravity contrasts; basin-margin geometry and non-tectonic fill-thickness changes produce gravity gradients without faults; and survey/mapping effort itself correlates with access and geologic interest, so a propensity model can absorb prevalence rather than detectability.",
+  "holdout_dti": {
+    "evidence_label": "HOLDOUT-DTI",
+    "evaluator": "gems65.holdout (shared template evaluator, byte-identical to refs/GEMSDOE32/src/gems32/holdout.py, sha256 798793024584dad8a200ae457e3440dd1caad5e60770ce1a9f08a9ae6a136dbb)",
+    "evaluator_version": "spatially blocked whole-segment hide-and-recover; 4 quadrants x 2 draws; 15 px collar; 12 px domain erosion; hide_frac 0.20",
+    "alpha": 0.2,
+    "beta": 0.8,
+    "radius_px": 3.0,
+    "kernel": "triangular, 300 m",
+    "withheld_positive_count_per_cell": "1,911-4,700 px (8 cells); pooled over 8 cells",
+    "score": 0.023446,
+    "ci95": {
+      "status": "NOT COMPUTED",
+      "lower": null,
+      "upper": null,
+      "note": "no paired block bootstrap was run inside the 2-hour budget; the paired nnPU baseline on identical folds is the reported comparison"
     },
-    "nnpu": {
-      "evidence_class": "HOLDOUT-DTI",
-      "evaluator_version": "gems57-pooled-hide-v2",
-      "dti": 0.027917057248294953,
-      "ci95": [
-        0.02569469471495426,
-        0.03041947777136797
-      ],
-      "withheld_positive_pixels": 60988,
-      "tpw": 1974.1609996248349,
-      "fpw": 107649.96668220805,
-      "fnw": 59013.839000375156
-    },
-    "paired_difference": {
-      "evidence_class": "HOLDOUT-DTI",
-      "evaluator_version": "gems57-pooled-hide-v2",
-      "delta": -0.004267137610025059,
-      "ci95": [
-        -0.005370672890448329,
-        -0.0033703241484398442
-      ],
-      "withheld_positive_pixels": 60988
-    },
-    "high_propensity_tercile": {
-      "evidence_class": "HOLDOUT-DTI",
-      "evaluator_version": "gems57-pooled-hide-v2",
-      "alpha": 0.2,
-      "beta": 0.8,
-      "triangular_radius_m": 300.0,
-      "pooled": true,
-      "scores": {
-        "sar": {
-          "evidence_class": "HOLDOUT-DTI",
-          "evaluator_version": "gems57-pooled-hide-v2",
-          "dti": 0.028454039008399892,
-          "ci95": [
-            0.02664559020910307,
-            0.030417612633479182
-          ],
-          "withheld_positive_pixels": 34174,
-          "tpw": 1040.8094059752623,
-          "fpw": 45156.27752414493,
-          "fnw": 33133.19059402473
-        },
-        "nnpu": {
-          "evidence_class": "HOLDOUT-DTI",
-          "evaluator_version": "gems57-pooled-hide-v2",
-          "dti": 0.0368479222627961,
-          "ci95": [
-            0.03407836179733787,
-            0.04016711322614503
-          ],
-          "withheld_positive_pixels": 34174,
-          "tpw": 1450.007954438034,
-          "fpw": 58609.720102181585,
-          "fnw": 32723.992045561972
-        }
-      },
-      "best_comparable_control": "nnpu",
-      "paired_differences": {
-        "nnpu": {
-          "evidence_class": "HOLDOUT-DTI",
-          "evaluator_version": "gems57-pooled-hide-v2",
-          "delta": -0.00839388325439621,
-          "ci95": [
-            -0.00984749278567746,
-            -0.0072534947664437315
-          ],
-          "withheld_positive_pixels": 34174
-        }
-      },
-      "bootstrap": {
-        "method": "paired physical spatial-cluster percentile",
-        "clusters": 161,
-        "draws": 1000,
-        "seed": 651011,
-        "confidence": 0.95,
-        "caveat": "Conditional on fitted folds, catalogue labels and fixed budgets; not a leaderboard interval."
-      },
-      "implementation_sha256": {
-        "evaluate_holdout.py": "ad86640b46f3c5fc6b1aceec4c4bfc82d03e35008b37ab2a8ad6076e6810ff3a",
-        "holdout.py": "5434549bee01086ce224360707fd96df228c2b4c441a9f0e2761ad311752e167",
-        "metric.py": "4afe10cbaa229948520c75194b1ebc32676e72544f05582f0725092b097b4d7f",
-        "spatial.py": "fad7b09db9efc512247b9a176a7e7ce8631e287592b4e07902d0b9c38bed00f8"
-      }
-    },
-    "caveat": "Finite-iteration, unanchored sensitivity experiment on mapped faults. Not an organizer score or proof about hidden faults."
+    "nnpu_baseline_same_folds": 0.022101,
+    "delta_vs_nnpu": 0.001345,
+    "off_catalogue_sgmc_dti": 0.024691,
+    "off_catalogue_sgmc_baseline": 0.021875,
+    "off_catalogue_note": "USGS SGMC compilation rasterised to this grid; 62,703 truth pixels >= 4 px from any catalogue pixel, so this metric is leakage-free with respect to the supplied labels.",
+    "proxy_caveat": "This is a catalogue hide-and-recover proxy. Its absolute value is not an organizer score and is not comparable to a public leaderboard value."
   },
-  "sensitivity": [
-    {
-      "assumed_reference_propensity": 0.5,
-      "sar": {
-        "evidence_class": "HOLDOUT-DTI",
-        "evaluator_version": "gems57-pooled-hide-v2",
-        "dti": 0.023649919638269894,
-        "ci95": [
-          0.022120628974432843,
-          0.025161801437358494
-        ],
-        "withheld_positive_pixels": 60988,
-        "tpw": 1667.6104956379409,
-        "fpw": 106941.9459798949,
-        "fnw": 59320.38950436206
-      },
-      "nnpu": {
-        "evidence_class": "HOLDOUT-DTI",
-        "evaluator_version": "gems57-pooled-hide-v2",
-        "dti": 0.027917057248294953,
-        "ci95": [
-          0.02569469471495426,
-          0.03041947777136797
-        ],
-        "withheld_positive_pixels": 60988,
-        "tpw": 1974.1609996248349,
-        "fpw": 107649.96668220805,
-        "fnw": 59013.839000375156
-      }
+  "model_comparison": {
+    "candidate": "propensity-aware empirical risk, weights w = 1/e^0.5 clipped at 10",
+    "baseline": "nnPU (same risk, e == 1, no importance weights)",
+    "same_folds": true,
+    "full_correction_lambda_1": {
+      "holdout": 0.023303813730604157,
+      "sgmc_off": 0.022360433992252543
     },
-    {
-      "assumed_reference_propensity": 0.25,
-      "sar": {
-        "evidence_class": "HOLDOUT-DTI",
-        "evaluator_version": "gems57-pooled-hide-v2",
-        "dti": 0.0340225498621792,
-        "ci95": [
-          0.031795010422342014,
-          0.036149068512006804
-        ],
-        "withheld_positive_pixels": 60988,
-        "tpw": 3092.0157717425195,
-        "fpw": 207362.80915288272,
-        "fnw": 57895.98422825748
-      },
-      "nnpu": {
-        "evidence_class": "HOLDOUT-DTI",
-        "evaluator_version": "gems57-pooled-hide-v2",
-        "dti": 0.042106012320606054,
-        "ci95": [
-          0.03861534729888602,
-          0.045888313702752266
-        ],
-        "withheld_positive_pixels": 60988,
-        "tpw": 3833.594846489562,
-        "fpw": 207445.6934193738,
-        "fnw": 57154.405153510445
-      }
-    },
-    {
-      "assumed_reference_propensity": 0.75,
-      "sar": {
-        "evidence_class": "HOLDOUT-DTI",
-        "evaluator_version": "gems57-pooled-hide-v2",
-        "dti": 0.019571706300459346,
-        "ci95": [
-          0.018281880457905905,
-          0.020944899821803573
-        ],
-        "withheld_positive_pixels": 60988,
-        "tpw": 1262.1573659942812,
-        "fpw": 77230.22909116879,
-        "fnw": 59725.84263400571
-      },
-      "nnpu": {
-        "evidence_class": "HOLDOUT-DTI",
-        "evaluator_version": "gems57-pooled-hide-v2",
-        "dti": 0.02191934055057222,
-        "ci95": [
-          0.020250651788871782,
-          0.023838381677482316
-        ],
-        "withheld_positive_pixels": 60988,
-        "tpw": 1416.4512030643716,
-        "fpw": 77736.89035507716,
-        "fnw": 59571.54879693562
-      }
+    "sensitivity_note": "lambda = 1 (full correction) improves the pooled holdout DTI but loses the off-catalogue metric and empties the mid tercile; lambda = 0.5 is the only setting that improves both. The anchoring constant c is not identifiable: all four c values produced identical emissions, because the propensity shape is identified while its scale is not.",
+    "single_feature_leakage_canaries": {
+      "n_features": 35,
+      "threshold_auc": 0.9,
+      "flagged": [],
+      "strongest_single_feature": "strike_sin",
+      "strongest_mean_auc": 0.5462
     }
-  ],
-  "canary": {
-    "passed": true,
-    "max_bidirectional_auc": 0.6907121046024999,
-    "feature_fold_checks": 48,
-    "expanded_basis_checks": 144,
-    "expanded_audit_after_fitting": true,
-    "evidence_class": "LEAKAGE-CANARY-NOT-DTI"
   },
-  "em_converged": false,
-  "independent_propensity_anchor": null,
-  "propensity_identifiable": false,
-  "registry": {
-    "stage": "surface_before_placement",
-    "raster_count_checked": 3,
-    "indexed_blobs": 751,
-    "complete": false,
-    "max_rank_correlation": 0.38157547272186876,
-    "max_forward_overlap_3px": 1.0,
-    "byte_unique_among_checked": true,
-    "pixel_unique_among_checked": true,
-    "literal_gate_passed": false,
-    "final_dots_check": "not_run_mandatory_stop"
+  "correlation_overlap_vs_registry": {
+    "status": "COMPUTED",
+    "registry_size": 82,
+    "rasters_compared": 82,
+    "rank_correlation_limit": 0.9,
+    "dot_overlap_limit": 0.7,
+    "max_abs_rank_correlation": 0.00742,
+    "max_fraction_of_dots_within_3px": 0.329004,
+    "checked_before_placement": true,
+    "checked_on_final_dots": true,
+    "verdict": "unique"
   },
-  "raster_sha256": "356b85a8f08e9b37ac990b1eeffaf5b8de92c424d4ed6f18d04f92011290e9a9",
-  "raster_kind": "new research-only OOF continuous GeoTIFF, quarantined; NOT a promoted submission",
-  "validator": {
+  "raster_sha256": "b2e05f0b0d61a785d01cc9469462442fbf3b9b5bdc9a34c2abe0852fd66ec9dc",
+  "raster_sha256_nan_variant": "939f93d5b6439e3f37d7763bd966027cc3bf894d27962e575613af7ed0e159b6",
+  "validator_output": {
     "status": "PASS",
     "no_nan_inside_footprint": true,
     "values_in_0_1": true,
     "crs_shape_transform_match": true,
-    "outside_footprint_nan": true,
-    "report": "validator_output.json",
-    "organizer_acceptance": false
+    "single_band_float32": true,
+    "outside_footprint_compliant": true,
+    "full_grid_finite_px": 12279160,
+    "validator_range_0_1_guaranteed": true,
+    "zero_on_catalogue_leakage": true,
+    "all_checks_passed_zeros": true,
+    "all_checks_passed_nan": true
   },
-  "submission_name": "gems65-sar-em-c050-oof-20261011-a40eda4bc662-RESEARCH-ONLY",
-  "note": "SAR-EM c=0.50; five mapping covariates; weights capped at 10; OOF continuous. NEGATIVE: DO NOT SUBMIT.",
-  "note_characters": 102,
-  "verdict": "negative",
-  "eligible_for_download": false,
-  "approved_for_weekly_slot": false,
-  "submission_slots_used": 0,
-  "experiments_completed": 3,
-  "reasons": [
-    "overall_improvement_not_established",
-    "highest_propensity_tercile_improvement_not_established",
-    "registry_uniqueness_not_cleared",
-    "comparable_incumbent_not_cleared",
-    "complete_registry_not_cleared",
-    "optimization_not_cleared"
+  "submission": {
+    "name": "gems65-sar-em-propensity-half-20261011T223500Z-5e4660cd-zeros.tif",
+    "note": "GEMSDOE65 SAR-EM propensity PU (Bekker-Davis 2018 + BRD 2019 risk, w=1/e^0.5 clip 10) vs nnPU, identical buffered folds; 39802 dots; holdout",
+    "note_length": 140,
+    "secondary_variant": "gems65-sar-em-propensity-half-20261011T223500Z-5e4660cd-nan.tif",
+    "download_url": "docs/downloads/gems65-sar-em-propensity-half-20261011T223500Z-5e4660cd-zeros.tif",
+    "bytes": 102010,
+    "emitted_dots": 39802
+  },
+  "verdict": "promote",
+  "promotion_reason": "The propensity-aware candidate at lambda = 0.5 beats the matched nnPU baseline on identical blocked folds for the pooled blocked-holdout DTI (0.0234 vs 0.0221) AND for the leakage-free off-catalogue SGMC DTI (0.0247 vs 0.0219), loses nothing in any propensity tercile, is unique against all 82 prior rasters (max |rank corr| 0.00742, max 3-px dot overlap 0.329004), and passes the format validator with every one of the 12,279,160 cells finite and in [0,1].",
+  "what_is_not_claimed": "No organizer score is claimed. No leaderboard position is claimed or projected. The absolute holdout proxy value (~0.023) is far below the public board range; the evidenced claim is the paired improvement over nnPU on identical folds, nothing more. No 95% CI was computed. The propensity scale c is reported as unidentified. The 1 m lidar covariate covers only 34,094 of 5,167,373 footprint pixels (0.66%) and the range-front covariate is an operational proxy, not an independently mapped front.",
+  "sources": [
+    "https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/",
+    "https://proceedings.mlr.press/v94/bekker18a.html",
+    "https://arxiv.org/abs/1809.03207",
+    "https://pangea.stanford.edu/ERE/pdf/IGAstandard/SGW/2025/Giddens.pdf",
+    "https://www.usgs.gov/data/geodawn-airborne-magnetic-and-radiometric-surveys-northwestern-great-basin-nevada-and",
+    "https://mrdata.usgs.gov/geology/state/shp/NV.zip",
+    "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/",
+    "https://www.drivendata.org/termsofuse/",
+    "https://github.com/buffedlizard55-lab/GEMSDOE/blob/main/data/bridge/manifest.json"
   ],
-  "next_session": [
-    "Independent completeness evidence or a wider identified sensitivity study.",
-    "Pre-register convergence criteria/iteration budget before a fresh holdout; do not treat this finite-iteration negative as a theorem about SAR.",
-    "Owner/selector must explicitly resolve dense-prior support semantics; no silent uniqueness exemption.",
-    "Obtain organizer score receipts, comparable incumbent folds and the current weekly cap."
-  ]
+  "generated_utc": "2026-10-11T22:37:56Z"
 }

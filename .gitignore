@@ -1,0 +1,4 @@
+# Local Python bytecode and atomic-write scratch files
+__pycache__/
+*.py[cod]
+*.tmp

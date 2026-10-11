@@ -1,296 +1,256 @@
 {
-  "schema": "gems65-run-card/1",
-  "generated_utc": "2026-10-11T22:16:04Z",
-  "generator": "scripts/make_run_card.py (derived, not hand-written)",
-  "repo": "buffedlizard55-lab/GEMSDOE65",
-  "lane": "selection-bias-aware PU learning (SAR propensity)",
-  "hypothesis": "Catalogue inclusion is Selected-At-Random conditional on a small covariate set (local relief, slope, gravity-derived basin-fill proxy, survey coverage, distance to a range front); therefore the omission of true faults from the published compilation is a measurable function of those covariates and can be corrected by inverse-propensity weighting.",
-  "mechanism": "e(x) = P(S=1 | Y=1, x) is estimated by the SAR-EM recursion of Bekker & Davis (PMLR v94, 2018), as a quantile grid (E1/E2) and as a continuous soft-binned RBF model (E3). Labelled positives carry weight clip(1/e(x), 1, 10) in the propensity-aware empirical risk of Bekker, Robberechts & Davis (arXiv:1809.03207); the matched arm is the same risk with unit weights. Both arms share features, sampler, optimiser, prior and emission rule.",
-  "named_non_fault_mimic": "Landslide and erosional scarps, paleo-shorelines, lithologic contacts and cultural/roads lineaments in the topographic and gravity-gradient channels: they produce fault-like linear relief without being faults, and they are the reason a raw edge map over-fires.",
-  "experiments": [
-    {
-      "id": "E1",
+  "schema": "gems65.run-card.v1",
+  "created_at": "2026-10-11T20:54:58.663630+00:00",
+  "hypothesis": "Mapping selection underrepresents low-relief covered basin-margin faults; five-covariate SAR correction may outperform SCAR nnPU.",
+  "mechanism": "Scale-constrained SAR-EM followed by propensity-aware logistic empirical risk; inverse weights capped at 10. Matched nnPU control.",
+  "non_fault_mimic": "Unfaulted alluvial basin margins and volcanic/lithologic contacts.",
+  "evidence_class": "HOLDOUT-DTI",
+  "evaluator_version": "gems57-pooled-hide-v2",
+  "holdout": {
+    "sar": {
       "evidence_class": "HOLDOUT-DTI",
-      "instrument": "registered: shared gems57.holdout.build_holdout (whole segments withheld uniformly at random per quadrant, 12 px domain erosion, 3 px buffer, 2 seeds x 4 quadrants x {all, detached}) - recorded by the pre-fix writer that did not carry an instrument_note field",
-      "cells": 16,
-      "withheld_positive_pixels_primary_mode": {
-        "draw20_foldNW_all": 1925,
-        "draw20_foldNW_detached": 1919,
-        "draw20_foldNE_all": 2360,
-        "draw20_foldNE_detached": 2361,
-        "draw20_foldSW_all": 3780,
-        "draw20_foldSW_detached": 3778,
-        "draw20_foldSE_all": 3253,
-        "draw20_foldSE_detached": 3249,
-        "draw21_foldNW_all": 1919,
-        "draw21_foldNW_detached": 1924,
-        "draw21_foldNE_all": 2365,
-        "draw21_foldNE_detached": 2358,
-        "draw21_foldSW_all": 3786,
-        "draw21_foldSW_detached": 3781,
-        "draw21_foldSE_all": 3253,
-        "draw21_foldSE_detached": 3249
-      },
-      "propensity_model": "grid",
-      "results": {
-        "mode_all": {
-          "sar": 0.02362789389988425,
-          "sar_ci95": [
-            0.018895983420193548,
-            0.028527148799470287
+      "evaluator_version": "gems57-pooled-hide-v2",
+      "dti": 0.023649919638269894,
+      "ci95": [
+        0.022120628974432843,
+        0.025161801437358494
+      ],
+      "withheld_positive_pixels": 60988,
+      "tpw": 1667.6104956379409,
+      "fpw": 106941.9459798949,
+      "fnw": 59320.38950436206
+    },
+    "nnpu": {
+      "evidence_class": "HOLDOUT-DTI",
+      "evaluator_version": "gems57-pooled-hide-v2",
+      "dti": 0.027917057248294953,
+      "ci95": [
+        0.02569469471495426,
+        0.03041947777136797
+      ],
+      "withheld_positive_pixels": 60988,
+      "tpw": 1974.1609996248349,
+      "fpw": 107649.96668220805,
+      "fnw": 59013.839000375156
+    },
+    "paired_difference": {
+      "evidence_class": "HOLDOUT-DTI",
+      "evaluator_version": "gems57-pooled-hide-v2",
+      "delta": -0.004267137610025059,
+      "ci95": [
+        -0.005370672890448329,
+        -0.0033703241484398442
+      ],
+      "withheld_positive_pixels": 60988
+    },
+    "high_propensity_tercile": {
+      "evidence_class": "HOLDOUT-DTI",
+      "evaluator_version": "gems57-pooled-hide-v2",
+      "alpha": 0.2,
+      "beta": 0.8,
+      "triangular_radius_m": 300.0,
+      "pooled": true,
+      "scores": {
+        "sar": {
+          "evidence_class": "HOLDOUT-DTI",
+          "evaluator_version": "gems57-pooled-hide-v2",
+          "dti": 0.028454039008399892,
+          "ci95": [
+            0.02664559020910307,
+            0.030417612633479182
           ],
-          "nnpu": 0.023671092986981897,
-          "nnpu_ci95": [
-            0.01881331884605698,
-            0.028484784053619643
-          ],
-          "paired_delta": -4.319908709764578e-05,
-          "paired_delta_ci95": [
-            -0.00038729677283665906,
-            0.00031668422695202105
-          ]
+          "withheld_positive_pixels": 34174,
+          "tpw": 1040.8094059752623,
+          "fpw": 45156.27752414493,
+          "fnw": 33133.19059402473
         },
-        "top_propensity_tercile": {
-          "sar": 0.025097838972475042,
-          "nnpu": 0.024932497523708148,
-          "passed": true
-        }
-      },
-      "leakage_canary_max_single_feature_auc": 0.6234518342139995,
-      "verdict": "tie / no detectable difference",
-      "interpretation": "The registered instrument withholds whole segments uniformly at random, i.e. it is SCAR by construction: the withheld positives are exchangeable with the visible ones, so there is no covariate-dependent bias to remove and the correction can only add variance. This instrument cannot confirm or refute the selection-bias mechanism."
-    },
-    {
-      "id": "E2",
-      "evidence_class": "HOLDOUT-DTI",
-      "instrument": "diagnostic instrument: identical geometry/scoring to the shared design but segment withholding probability proportional to (1 - mean e(x))^2",
-      "cells": 8,
-      "propensity_model": "grid",
-      "results": {
-        "sar": 0.02098532694606154,
-        "sar_ci95": [
-          0.016318615982566197,
-          0.025947197949356255
-        ],
-        "nnpu": 0.020815513497404008,
-        "nnpu_ci95": [
-          0.016130446440866867,
-          0.025795081718330393
-        ],
-        "paired_delta": 0.00016981344865753256,
-        "paired_delta_ci95": [
-          -9.292950027217951e-05,
-          0.0004117976717177159
-        ],
-        "top_propensity_tercile": {
-          "sar": 0.017310193346328027,
-          "nnpu": 0.017289853720760685,
-          "passed": true
-        }
-      },
-      "leakage_canary_max_single_feature_auc": 0.6681116094152489,
-      "verdict": "negative (not significant)",
-      "interpretation": "Bias-matched withholding does create the situation the lane exists for, but with the originally published EM scale the fitted propensity was flat (see diagnostics), so the weights were inert."
-    },
-    {
-      "id": "E3",
-      "evidence_class": "HOLDOUT-DTI",
-      "instrument": "shared gems57.holdout.build_holdout; whole segments withheld uniformly at random inside each quadrant domain",
-      "cells": 8,
-      "propensity_model": "rbf",
-      "results": {
-        "mode_all": {
-          "sar": 0.023660544256590116,
-          "sar_ci95": [
-            0.018926694127834452,
-            0.0285828693155298
+        "nnpu": {
+          "evidence_class": "HOLDOUT-DTI",
+          "evaluator_version": "gems57-pooled-hide-v2",
+          "dti": 0.0368479222627961,
+          "ci95": [
+            0.03407836179733787,
+            0.04016711322614503
           ],
-          "nnpu": 0.023671092986981897,
-          "nnpu_ci95": [
-            0.01881331884605698,
-            0.028484784053619643
-          ],
-          "paired_delta": -1.0548730391780892e-05,
-          "paired_delta_ci95": [
-            -0.0005382480229872887,
-            0.0005986296539686028
-          ]
-        },
-        "top_propensity_tercile": {
-          "sar": 0.027026905882486126,
-          "nnpu": 0.02693975244725181,
-          "passed": true
+          "withheld_positive_pixels": 34174,
+          "tpw": 1450.007954438034,
+          "fpw": 58609.720102181585,
+          "fnw": 32723.992045561972
         }
       },
-      "propensity_diagnostics": {
-        "e_pos_mean": 0.6235418929299371,
-        "e_pos_min": 0.4362476303951108,
-        "e_pos_max": 0.7196506862310994,
-        "e_pos_sd": 0.055211684131358546,
-        "pool_ratio": 127.70775,
-        "labelled_ratio": 9.843833333333333,
-        "clip_fraction": 0.0
+      "best_comparable_control": "nnpu",
+      "paired_differences": {
+        "nnpu": {
+          "evidence_class": "HOLDOUT-DTI",
+          "evaluator_version": "gems57-pooled-hide-v2",
+          "delta": -0.00839388325439621,
+          "ci95": [
+            -0.00984749278567746,
+            -0.0072534947664437315
+          ],
+          "withheld_positive_pixels": 34174
+        }
       },
-      "leakage_canary_max_single_feature_auc": 0.6234518342139995,
-      "verdict": "negative (tie, identical folds to E1)",
-      "interpretation": "Fixing the pixel-population scale of the EM makes the propensity genuinely non-degenerate, but on the registered SCAR instrument the comparison is still a tie - which is the correct reading of an instrument that contains no selection bias to correct."
+      "bootstrap": {
+        "method": "paired physical spatial-cluster percentile",
+        "clusters": 161,
+        "draws": 1000,
+        "seed": 651011,
+        "confidence": 0.95,
+        "caveat": "Conditional on fitted folds, catalogue labels and fixed budgets; not a leaderboard interval."
+      },
+      "implementation_sha256": {
+        "evaluate_holdout.py": "ad86640b46f3c5fc6b1aceec4c4bfc82d03e35008b37ab2a8ad6076e6810ff3a",
+        "holdout.py": "5434549bee01086ce224360707fd96df228c2b4c441a9f0e2761ad311752e167",
+        "metric.py": "4afe10cbaa229948520c75194b1ebc32676e72544f05582f0725092b097b4d7f",
+        "spatial.py": "fad7b09db9efc512247b9a176a7e7ce8631e287592b4e07902d0b9c38bed00f8"
+      }
+    },
+    "caveat": "Finite-iteration, unanchored sensitivity experiment on mapped faults. Not an organizer score or proof about hidden faults."
+  },
+  "sensitivity": [
+    {
+      "assumed_reference_propensity": 0.5,
+      "sar": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "dti": 0.023649919638269894,
+        "ci95": [
+          0.022120628974432843,
+          0.025161801437358494
+        ],
+        "withheld_positive_pixels": 60988,
+        "tpw": 1667.6104956379409,
+        "fpw": 106941.9459798949,
+        "fnw": 59320.38950436206
+      },
+      "nnpu": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "dti": 0.027917057248294953,
+        "ci95": [
+          0.02569469471495426,
+          0.03041947777136797
+        ],
+        "withheld_positive_pixels": 60988,
+        "tpw": 1974.1609996248349,
+        "fpw": 107649.96668220805,
+        "fnw": 59013.839000375156
+      }
     },
     {
-      "id": "E3b",
-      "evidence_class": "HOLDOUT-DTI",
-      "instrument": "diagnostic instrument: identical geometry/scoring to the shared design but segment withholding probability proportional to (1 - mean e(x))^2",
-      "cells": 8,
-      "propensity_model": "rbf",
-      "results": {
-        "sar": 0.0246820537044619,
-        "sar_ci95": [
-          0.02018199144821233,
-          0.029248861583085792
+      "assumed_reference_propensity": 0.25,
+      "sar": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "dti": 0.0340225498621792,
+        "ci95": [
+          0.031795010422342014,
+          0.036149068512006804
         ],
-        "nnpu": 0.024647558606655375,
-        "nnpu_ci95": [
-          0.019978984170136778,
-          0.029324911721233676
-        ],
-        "paired_delta": 3.449509780652574e-05,
-        "paired_delta_ci95": [
-          -0.0003116747263107435,
-          0.0003860866962547747
-        ],
-        "top_propensity_tercile": {
-          "sar": 0.02811653252499339,
-          "nnpu": 0.028018645569825442,
-          "passed": true
-        }
+        "withheld_positive_pixels": 60988,
+        "tpw": 3092.0157717425195,
+        "fpw": 207362.80915288272,
+        "fnw": 57895.98422825748
       },
-      "verdict": "diagnostic",
-      "interpretation": "Duplicate of E3 on the bias-matched instrument; when the withheld set is enriched where the catalogue is thin the comparison is no longer bias-free, and this is the number that tests the mechanism."
+      "nnpu": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "dti": 0.042106012320606054,
+        "ci95": [
+          0.03861534729888602,
+          0.045888313702752266
+        ],
+        "withheld_positive_pixels": 60988,
+        "tpw": 3833.594846489562,
+        "fpw": 207445.6934193738,
+        "fnw": 57154.405153510445
+      }
+    },
+    {
+      "assumed_reference_propensity": 0.75,
+      "sar": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "dti": 0.019571706300459346,
+        "ci95": [
+          0.018281880457905905,
+          0.020944899821803573
+        ],
+        "withheld_positive_pixels": 60988,
+        "tpw": 1262.1573659942812,
+        "fpw": 77230.22909116879,
+        "fnw": 59725.84263400571
+      },
+      "nnpu": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "dti": 0.02191934055057222,
+        "ci95": [
+          0.020250651788871782,
+          0.023838381677482316
+        ],
+        "withheld_positive_pixels": 60988,
+        "tpw": 1416.4512030643716,
+        "fpw": 77736.89035507716,
+        "fnw": 59571.54879693562
+      }
     }
   ],
-  "gate": {
-    "rule": "pooled blocked-holdout DTI(sar) > DTI(nnpu) overall AND DTI(sar) >= DTI(nnpu) in the highest-propensity tercile, on the pre-registered registered instrument (uniform withholding, blocked folds)",
-    "overall_passed": false,
-    "tercile_passed": true,
-    "verdict": "negative",
-    "current_holdout_best": "NOT ESTABLISHED - no prior holdout artifact exists in this checkout; the matched nnpu arm is the only incumbent available"
+  "canary": {
+    "passed": true,
+    "max_bidirectional_auc": 0.6907121046024999,
+    "feature_fold_checks": 48,
+    "expanded_basis_checks": 144,
+    "expanded_audit_after_fitting": true,
+    "evidence_class": "LEAKAGE-CANARY-NOT-DTI"
   },
-  "diagnosis": {
-    "registered_instrument_is_scar": "Uniform segment withholding makes the withheld set exchangeable with the visible set, so no selection bias exists for the correction to remove; E1 and E3 ties are a property of the instrument.",
-    "scale_bug_found_and_fixed": "The EM originally compared a complete labelled sample with a subsampled unlabeled pool, which lowers the implied hidden-positive mass by exactly the pool ratio (127.7x) and drives the fixed point to e -> 1. With the pixel-population correction the fitted propensity is non-degenerate (E3 diagnostics).",
-    "what_remains_unidentified": "PU data alone cannot pin the absolute scale of e(x); the lane reports e(x) with an explicit prior convention (pi = catalogue pixel density) and would need a proven exhaustive-completeness source to calibrate it."
+  "em_converged": false,
+  "independent_propensity_anchor": null,
+  "propensity_identifiable": false,
+  "registry": {
+    "stage": "surface_before_placement",
+    "raster_count_checked": 3,
+    "indexed_blobs": 751,
+    "complete": false,
+    "max_rank_correlation": 0.38157547272186876,
+    "max_forward_overlap_3px": 1.0,
+    "byte_unique_among_checked": true,
+    "pixel_unique_among_checked": true,
+    "literal_gate_passed": false,
+    "final_dots_check": "not_run_mandatory_stop"
   },
-  "raster": {
-    "submission_name": "gems65-sarprop-em-v2-20261011-9b1c65d",
-    "note": "GEMS65 SAR-EM propensity PU v2, corrected-scale continuous e(x); both instruments tie (bias-matched +3.4e-5 n.s.); research only",
-    "note_chars": 128,
-    "primary_file": "docs/downloads/gems65-sarprop-em-v2-20261011-9b1c65d-zeros.tif",
-    "primary_sha256": "5aee83cb2e55f0122432611ff46af6fdd1e5a9182f263888e03f667647315c37",
-    "primary_bytes": 790718,
-    "diagnostic_nan_file": "docs/downloads/gems65-sarprop-em-v2-20261011-9b1c65d-nan.tif",
-    "diagnostic_nan_sha256": "3f302785383ec30f5cfa2515d14089ed88357bed4506cd5813a1c0c9b940cb30",
-    "emitted_positive_pixels": 28047,
-    "crs": "EPSG:32611",
-    "shape": [
-      3292,
-      3730
-    ],
-    "dtype": "float32",
-    "transform": [
-      100.0,
-      0.0,
-      243350.0,
-      0.0,
-      -100.0,
-      4508550.0
-    ],
-    "encoding_primary": "all-finite, zeros outside the footprint (upload variant)",
-    "encoding_diagnostic": "NaN outside the footprint (diagnostics only)",
-    "propensity": "continuous RBF SAR-EM (soft-binned) on 5 covariates",
-    "distance_to_catalogue_px": {
-      "median_px": 12.529964086141668,
-      "p90_px": 49.34774339602164,
-      "max_px": 175.75551200460256,
-      "fraction_within_3px": 0.14190466003494134,
-      "fraction_beyond_30px": 0.22458729988947124
-    }
+  "raster_sha256": "356b85a8f08e9b37ac990b1eeffaf5b8de92c424d4ed6f18d04f92011290e9a9",
+  "raster_kind": "new research-only OOF continuous GeoTIFF, quarantined; NOT a promoted submission",
+  "validator": {
+    "status": "PASS",
+    "no_nan_inside_footprint": true,
+    "values_in_0_1": true,
+    "crs_shape_transform_match": true,
+    "outside_footprint_nan": true,
+    "report": "validator_output.json",
+    "organizer_acceptance": false
   },
-  "validator_output": {
-    "tool": "vendor/gems57/validate.py + vendor/gems57/gates.py (byte-identical to the shared template pin 6444fa65...)",
-    "all_checks_passed": true,
-    "checks": {
-      "single_band": true,
-      "dtype_float32": true,
-      "dimensions_3730x3292": true,
-      "crs_epsg_32611": true,
-      "transform_matches_sample_submission": true,
-      "no_nan_anywhere": true,
-      "no_inf_anywhere": true,
-      "no_sentinel_values": true,
-      "range_0_1_guaranteed": true,
-      "min_ge_0": true,
-      "max_le_1": true,
-      "in_footprint_all_finite": true,
-      "in_footprint_range_0_1": true,
-      "outside_footprint_zero": true,
-      "zero_dots_on_mapped_catalogue": true
-    },
-    "portal_note": "A prior upload of a different project's raster was rejected with 'Predicted values must be in range [0, 1]'. The cause was never proven, so the primary artifact is the strict all-finite encoding."
-  },
-  "correlation_overlap_vs_registry": {
-    "evidence_class": "REGISTRY-MEASUREMENT",
-    "rasters_checked": 62,
-    "worst_spearman_abs": 0.03662132858727179,
-    "worst_spearman_file": "/tmp/c60/registry/rasters/calib_h161_01855.tif",
-    "duplicate_hash_match": false,
-    "worst_forward_overlap_3px": 0.9974685349591756,
-    "worst_forward_overlap_file": "/tmp/c60/registry/rasters/calib_r13lattice_00904.tif",
-    "rule_false_positive": "A prior whose own dots cover the whole footprint within 3 px makes the forward-overlap rule trip at ~1.0 for ANY nonempty candidate. The saturation column records that; the rule is only informative against non-saturated priors.",
-    "saturated_witnesses": [
-      "/tmp/c60/registry/rasters/calib_r13lattice_00904.tif",
-      "/tmp/c60/registry/rasters/r13_lattice_s5_00904.tif"
-    ],
-    "worst_forward_overlap_excluding_saturated_priors": 0.9004884657895675,
-    "worst_forward_overlap_excluding_saturated_priors_file": null,
-    "unique_by_hash_and_surface": true,
-    "unique_by_literal_overlap_rule": false,
-    "scope_note": "Prior set = every raster committed in the family's public registry mirror plus explicit extras. Private, unlinked or un-fetched priors are absent; this is a scope-stated check, not proof of global uniqueness."
-  },
-  "template": {
-    "pin": "6444fa6552335190f0bc89661acf725ed73e7fcb",
-    "verification": "vendor/gems57 is byte-identical to the shared template pin; no upstream fix to report",
-    "files_identical": 23
-  },
-  "submission": {
-    "name": "gems65-sarprop-em-v2-20261011-9b1c65d",
-    "note": "GEMS65 SAR-EM propensity PU v2, corrected-scale continuous e(x); both instruments tie (bias-matched +3.4e-5 n.s.); research only",
-    "okay_to_submit": false,
-    "reason": "The registered promotion gate did not pass: on the registered instrument the two arms are statistically indistinguishable, so this raster is a research artifact and a weekly slot must not be spent on it.",
-    "cleared_artifact_for_upload": null
-  },
+  "submission_name": "gems65-sar-em-c050-oof-20261011-a40eda4bc662-RESEARCH-ONLY",
+  "note": "SAR-EM c=0.50; five mapping covariates; weights capped at 10; OOF continuous. NEGATIVE: DO NOT SUBMIT.",
+  "note_characters": 102,
   "verdict": "negative",
-  "next_steps": [
-    "Re-run E3 on fresh seeds (disjoint folds) before treating the corrected propensity as confirmed; the scale fix was made after E1/E2 were visible.",
-    "Find or rule out an official exhaustively-complete mapping source to calibrate the absolute scale of e(x); otherwise keep reporting it as a prior-conditional estimate.",
-    "Candidates ranked as in docs/hypotheses.html: buried-fault wedges in basin-fill thickness, structural-strike fluid-discharge lines, radiometric alteration haloes.",
-    "Extend the registry uniqueness check to every fetchable prior raster, not only the 62 committed priors.",
-    "Track the family's live anchors (OWNER-REPORT only) so the lane's holdout numbers are read as model-selection evidence, not as a leaderboard projection."
+  "eligible_for_download": false,
+  "approved_for_weekly_slot": false,
+  "submission_slots_used": 0,
+  "experiments_completed": 3,
+  "reasons": [
+    "overall_improvement_not_established",
+    "highest_propensity_tercile_improvement_not_established",
+    "registry_uniqueness_not_cleared",
+    "comparable_incumbent_not_cleared",
+    "complete_registry_not_cleared",
+    "optimization_not_cleared"
   ],
-  "sources": [
-    "https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/",
-    "https://www.drivendata.org/termsofuse/",
-    "https://proceedings.mlr.press/v94/bekker18a.html",
-    "https://arxiv.org/abs/1809.03207",
-    "https://pangea.stanford.edu/ERE/pdf/IGAstandard/SGW/2025/Giddens.pdf",
-    "https://doi.org/10.5066/P93LGLVQ"
-  ],
-  "inputs": {
-    "generated_utc": "2026-10-11T22:40:00Z",
-    "candidate": "gems65-sarprop-em-v2-20261011-9b1c65d-zeros.tif",
-    "candidate_sha256": "5aee83cb2e55f0122432611ff46af6fdd1e5a9182f263888e03f667647315c37",
-    "priors": {
-      "source": "60GEMSDOE/registry/rasters (62 committed prior rasters)",
-      "raster_count": 62,
-      "note": "the prior mirror is not committed into this repo; the check records the source path and the per-prior rows in registry/registry_check.json"
-    }
-  }
+  "next_session": [
+    "Independent completeness evidence or a wider identified sensitivity study.",
+    "Pre-register convergence criteria/iteration budget before a fresh holdout; do not treat this finite-iteration negative as a theorem about SAR.",
+    "Owner/selector must explicitly resolve dense-prior support semantics; no silent uniqueness exemption.",
+    "Obtain organizer score receipts, comparable incumbent folds and the current weekly cap."
+  ]
 }

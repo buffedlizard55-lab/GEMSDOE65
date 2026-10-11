@@ -1,17 +1,28 @@
-# Keep local competition inputs, caches, runs, artifacts, and raster registry out of Git.
+.venv/
+.cache/
+__pycache__/
+.pytest_cache/
+*.py[cod]
+node_modules/
+data/raw/
+data/cache/
+data/external/
+data/registry_rasters/
+artifacts/
+!artifacts/.gitkeep
+*.egg-info/
+.env
+coverage/
+.DS_Store
 /data/
 /cache/
 /runs/
-/artifacts/
 /registry/rasters/
-
-# Local Python environments, bytecode, caches, and atomic-write scratch files.
-.venv/
-__pycache__/
-*.py[cod]
-.pytest_cache/
 .mypy_cache/
 *.tmp
-
 # Large, fully reproducible intermediate surfaces (a 3 s fit regenerates them).
 /registry/*.npy
+# --- lane65 additions (session 2026-10-11) ---
+*.tif.part-*
+*.pyc
+/registry/*.npz   # derived arm-term caches; the JSON arm files carry every number

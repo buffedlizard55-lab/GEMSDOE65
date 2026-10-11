@@ -1,0 +1,10 @@
+{
+  "checked_at": "2026-10-11T21:04:30.087611+00:00",
+  "url": "https://api.github.com/repos/buffedlizard55-lab/GEMSDOE65/contents/docs/data/feed.json?ref=arena%2Ff09c3103-gemsdoe65",
+  "status": 200,
+  "anonymous_request": true,
+  "tls_verified": true,
+  "access_control_allow_origin": "*",
+  "valid_feed_scope": true,
+  "browser_sandbox_caveat": "Bundled Chromium does not trust the sandbox egress proxy CA. Normal browser attempt used the dated local fallback. Sandbox UI QA separately ignores HTTPS errors; production JavaScript never disables TLS validation."
+}

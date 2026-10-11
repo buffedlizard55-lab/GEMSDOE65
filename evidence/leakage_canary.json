@@ -1,0 +1,49 @@
+{
+  "auc_limit": 0.9,
+  "per_feature": {
+    "relief_local": {
+      "auc": 0.5664913847186174,
+      "n": 4840798,
+      "n_truth": 11321,
+      "auc_above_limit": false,
+      "flag": "ok"
+    },
+    "slope": {
+      "auc": 0.5635584214220134,
+      "n": 4840798,
+      "n_truth": 11321,
+      "auc_above_limit": false,
+      "flag": "ok"
+    },
+    "grav_basin_fill": {
+      "auc": 0.4593376301698018,
+      "n": 4840798,
+      "n_truth": 11321,
+      "auc_above_limit": false,
+      "flag": "ok"
+    },
+    "lidar_cover": {
+      "auc": 0.5328839031302977,
+      "n": 4840798,
+      "n_truth": 11321,
+      "auc_above_limit": false,
+      "flag": "ok"
+    },
+    "dist_range_front": {
+      "auc": 0.506412757209209,
+      "n": 4840798,
+      "n_truth": 11321,
+      "auc_above_limit": false,
+      "flag": "ok"
+    },
+    "dist_to_visible_catalogue": {
+      "auc": 0.7548417852857813,
+      "n": 4840798,
+      "n_truth": 11321,
+      "auc_above_limit": false,
+      "flag": "ok"
+    }
+  },
+  "worst_auc": 0.7548417852857813,
+  "any_flagged": false
+}

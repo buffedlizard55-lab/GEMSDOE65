@@ -9,3 +9,6 @@ markdown2==2.5.5
 pillow==12.3.0
 # --- lane65 additions ---
 pandas==2.3.3
+# --- lane65b additions (independent SAR-PU session 2026-10-11) ---
+shapely==2.2.0
+markdown==3.11

@@ -1,0 +1,425 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Irregularities and dispositions</title><link rel="stylesheet" href="assets/site.css"></head>
+<body><header><div class="wrap"><h1>GEMSDOE65 — selection-bias-aware PU learning (SAR)
+for the DOE GEMS Prize</h1>
+<div class="mut"><a href="index.html">Submission & results</a> · <a href="executive-summary.html">How to submit</a> · <a href="research/hypotheses.html">Hypotheses</a> ·
+<a href="research/why-02778.html">Why 0.2778</a> ·
+<a href="research/irregularities.html">Irregularities</a> ·
+<a href="../../README.md">README / standing brief</a> ·
+<a href="../index.html">canonical site</a> ·
+<a href="https://buffedlizard55-lab.github.io/GEMSDOE65/docs/lane65b/">site root</a></div></div></header>
+<main><p class="mut"><a href="../index.html">← back to the submission page</a> · source <code>docs/research/irregularities-lane65b.md</code></p><h1 id="irregularities-found-in-this-lane-and-what-was-done-about-each">Irregularities found in this lane, and what was done about each</h1>
+<p>Every entry states what was observed, the measurement that established it, whether it was
+fixed, and what remains open for the owner. Nothing here is silently waived.</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>irregularity</th>
+<th>status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IR-65-CAT-01</td>
+<td>The catalogue's weak topographic AUCs looked like a data error</td>
+<td><strong>resolved</strong>: the catalogue <em>is</em> the QFaults/INGENIOUS compilation</td>
+</tr>
+<tr>
+<td>IR-65-FRONT-01</td>
+<td>"Distance to the range front" has no single defensible operationalization</td>
+<td><strong>resolved by proxy</strong>, documented</td>
+</tr>
+<tr>
+<td>IR-65-IDENT-01</td>
+<td>The propensity is not identified from PU data alone; the EM mirrors</td>
+<td><strong>resolved</strong> by an external two-inventory anchor + proofs in tests</td>
+</tr>
+<tr>
+<td>IR-65-PROP-01</td>
+<td>The pre-registered EM-selection rule accepted a degenerate near-constant propensity</td>
+<td><strong>fixed</strong> by pre-registration amendment A1; both experiments retained</td>
+</tr>
+<tr>
+<td>IR-65-NORM-01</td>
+<td>SAR risk normalised by π·E[e] instead of ρ = P(s=1)</td>
+<td><strong>fixed</strong> before any experiment; guarded by a test</td>
+</tr>
+<tr>
+<td>IR-65-SUBS-01</td>
+<td>Unweighted unlabeled subsampling inflated π from ≈0.02 to 0.867</td>
+<td><strong>fixed</strong>; guarded by two tests</td>
+</tr>
+<tr>
+<td>IR-65-FOLD-01</td>
+<td>Per-fold emissions OR-ed together multiplied scored mass by n_folds</td>
+<td><strong>fixed</strong>: out-of-fold score fields, one global emission per arm</td>
+</tr>
+<tr>
+<td>IR-65-PEEL-01</td>
+<td>Peel used <code>d &gt; peel_px</code> where the champion geometry is <code>d &gt;= 3</code> px</td>
+<td><strong>fixed</strong></td>
+</tr>
+<tr>
+<td>IR-65-I2LEAK-01</td>
+<td>The propensity anchor would have been fitted on the same pixels instrument I2 scores</td>
+<td><strong>fixed</strong>: leave-one-quadrant-out anchor</td>
+</tr>
+<tr>
+<td>IR-65-UNIQ-01</td>
+<td>The literal uniqueness rule is unmeetable for sparse fields</td>
+<td><strong>flagged for the owner</strong>, not waived</td>
+</tr>
+<tr>
+<td>IR-65-COV-01</td>
+<td>Covariate receipt reports <code>mean_on_catalogue</code> = NaN for two covariates</td>
+<td><strong>open</strong> (cosmetic; the run reads <code>nanmean</code> over valid pixels)</td>
+</tr>
+<tr>
+<td>IR-65-ACCESS-01</td>
+<td>No outbound access to the organizer, USGS, or the data mirrors</td>
+<td><strong>open</strong>; reported as a limitation</td>
+</tr>
+<tr>
+<td>IR-65B-TEMPLATE-01</td>
+<td>Two divergent pins of the shared <code>gems57</code> template now live in this repository</td>
+<td><strong>contained + reported</strong>; owner consolidation needed</td>
+</tr>
+<tr>
+<td>IR-65B-FORMAT-01</td>
+<td>The two pins contradict each other on the portal format (NaN vs zeros outside the footprint)</td>
+<td><strong>flagged for the owner</strong>; artefact written in zeros mode with the reason recorded</td>
+</tr>
+<tr>
+<td>IR-65B-PARALLEL-01</td>
+<td>Four sessions ran the same lane; three merged while this branch was open</td>
+<td><strong>resolved by integration</strong>, not by overwriting</td>
+</tr>
+<tr>
+<td>IR-65B-MAINREGRESSION-01</td>
+<td><code>main</code> is red: later sessions replaced <code>pu.py</code> and <code>build_site.py</code> and dropped APIs their own earlier tests require</td>
+<td><strong>measured, reported, not silently patched</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="ir-65-cat-01-is-the-catalogue-the-known-fault-compilation-resolved">IR-65-CAT-01 — is the catalogue the known-fault compilation? (resolved)</h2>
+<p><strong>Observed.</strong> Every topographic covariate is near-random against the catalogue
+(<code>relief_local</code> AUC 0.5633, <code>slope</code> 0.5577, <code>grav_basin_fill</code> 0.4593, <code>lidar_cover</code> 0.5205) but
+strongly predictive of the state-geologic-map-only fault pixels (<code>relief_local</code> 0.7740,
+<code>height_above_base</code> 0.7687, <code>slope</code> 0.7617). For a fault map of an extensional province that is
+suspicious: faults are supposed to like relief.</p>
+<p><strong>Measurement.</strong> <code>scripts/diagnose_irregularities.py</code> rasterises the mirrored QFaults/INGENIOUS
+<code>trace_segments_utm11.csv</code> (84,268 of 84,331 segments inside the grid, 1,126 lines) onto the
+official grid and compares:</p>
+<ul>
+<li>catalogue pixels covered by rasterised traces: <strong>96.54 %</strong>; catalogue-to-trace distance
+  median <strong>0 px</strong>, mean 0.035 px, p90 0 px,
+  p99 1 px, <strong>max 1 px</strong> (Mann-Whitney p = 0
+  that catalogue pixels are closer to a trace than non-catalogue pixels);</li>
+<li>all <strong>84,331</strong> segment rows of the mirrored file were rasterised
+  (<code>all_touched=True</code>), giving <strong>82,871</strong> trace pixels inside the
+  footprint, of which <strong>71.05 %</strong> are catalogue pixels —
+  the catalogue is a <em>subset</em> of the trace network, i.e. the compiled traces that were accepted;</li>
+<li>morphology: <strong>3,199</strong> 8-connected components, median
+  <strong>12 px</strong>, max <strong>360 px</strong>, and only
+  <strong>24 px</strong> of 60,988 survive a 3×3 erosion
+  (0.0394 %) — 1-pixel-wide lines, not areas.</li>
+</ul>
+<p><strong>Resolution.</strong> The catalogue is the USGS QFaults / INGENIOUS compilation, so its weak
+topographic AUCs are a real property of a geophysics-inferred inventory, not a data error. This
+is what makes the two-inventory differential a legitimate selection-bias signal: QFaults carries
+many <em>Inferred</em> basin-margin faults drawn from geophysics, while state geologic maps are
+bedrock-exposure maps. Receipt: <code>evidence/catalogue_identity.json</code>.</p>
+<h2 id="ir-65-front-01-which-range-front-resolved-by-proxy">IR-65-FRONT-01 — which range front? (resolved by proxy)</h2>
+<p>Four operationalizations were compared on one criterion: which carries the two-inventory
+differential best (AUC of negative distance-to-front separating catalogue pixels from
+state-map-only fault pixels).</p>
+<table>
+<thead>
+<tr>
+<th>variant (1-px boundary isoline of the set)</th>
+<th style="text-align: right;">set px</th>
+<th style="text-align: right;">isoline px</th>
+<th style="text-align: right;">median dist</th>
+<th style="text-align: right;">bias AUC</th>
+<th style="text-align: right;">AUC vs I2</th>
+<th>= stored covariate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A_h50_isoline_over_5km_local_min</td>
+<td style="text-align: right;">3,616,040</td>
+<td style="text-align: right;">160,275</td>
+<td style="text-align: right;">28.60</td>
+<td style="text-align: right;"><strong>0.6608</strong></td>
+<td style="text-align: right;">0.3561</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>B_toe_of_front</td>
+<td style="text-align: right;">260,866</td>
+<td style="text-align: right;">78,466</td>
+<td style="text-align: right;">31.30</td>
+<td style="text-align: right;"><strong>0.6144</strong></td>
+<td style="text-align: right;">0.4067</td>
+<td>no</td>
+</tr>
+<tr>
+<td>C_mid_slope_band</td>
+<td style="text-align: right;">2,572,243</td>
+<td style="text-align: right;">221,096</td>
+<td style="text-align: right;">10.63</td>
+<td style="text-align: right;"><strong>0.5543</strong></td>
+<td style="text-align: right;">0.5312</td>
+<td>no</td>
+</tr>
+<tr>
+<td>D_basin_edge</td>
+<td style="text-align: right;">1,078,921</td>
+<td style="text-align: right;">119,209</td>
+<td style="text-align: right;">33.62</td>
+<td style="text-align: right;"><strong>0.6397</strong></td>
+<td style="text-align: right;">0.3331</td>
+<td>no</td>
+</tr>
+</tbody>
+</table>
+<p>Variant A is byte-identical to the stored <code>range_front</code> covariate the model actually uses, and
+was kept; it is labelled a <strong>proxy of limited geomorphic fidelity</strong> everywhere it
+appears: its job is to carry the differential, not to be a mapped front. A real front needs raw
+3DEP 10 m/1 m tiles, which are unreachable from this sandbox (IR-65-ACCESS-01). Receipt:
+<code>evidence/range_front_variants.json</code>.</p>
+<p><em>Superseded numbers.</em> An earlier ad-hoc diagnostic in this session rasterised merged polylines
+rather than per-segment lines and reported 89.25 % coverage and different variant pixel counts.
+The committed script is the authority; its values are the ones above, and the difference is
+recorded here rather than quietly overwritten.</p>
+<h2 id="ir-65-ident-01-the-propensity-is-not-identified-from-pu-data-alone-resolved">IR-65-IDENT-01 — the propensity is not identified from PU data alone (resolved)</h2>
+<p>The observed-data likelihood of a SAR PU model,
+<code>L = Σ_labeled log(g·e) + Σ_unlabeled log(1 − g·e)</code>, depends only on the product
+<code>g(x)e(x) = P(s=1|x)</code>. Any re-factorisation of the same product fits equally well, and the
+parametric class does not exclude the mirror (a logistic <code>e</code> mirrored about 0.5 is still
+logistic).</p>
+<p><code>tests/test_anchor.py::test_em_direction_is_not_identified</code> demonstrates this numerically on
+synthetic data with a known propensity: the EM returns both a correct-direction branch
+(corr &gt; +0.5) and a mirrored branch (corr &lt; −0.5), and their observed-data log-likelihoods differ
+by less than 2 %. Two earlier EM initialisations were retired for this reason (a
+labelled-vs-unlabelled logistic start gave Spearman −0.899; an 8-iteration constant-<code>e0</code>
+responsibility warm start gave −0.906).</p>
+<p><strong>Resolution.</strong> A second public inventory anchors the direction: with
+<code>q(x) = P(in catalogue | in catalogue ∪ reference, x)</code> and reference-inventory completeness <code>c</code>,
+<code>q = e/(e + c(1−e))</code> inverts to <code>e(x;c) = c·q/(1 − q + c·q)</code>. The ordering is identified by data;
+<code>c</code> is one documented scale parameter, swept as the sensitivity analysis the brief asks for.
+<code>tests/test_anchor.py::test_anchor_recovers_true_propensity_direction</code> shows the anchor recovers
+the true ordering (corr &gt; 0.6) for every <code>c</code> in the grid on synthetic data where the EM alone
+mirrors it.</p>
+<h2 id="ir-65-prop-01-the-selection-rule-accepted-a-degenerate-propensity-fixed">IR-65-PROP-01 — the selection rule accepted a degenerate propensity (fixed)</h2>
+<p><strong>Observed in <code>evidence/e1_px5.json</code>.</strong> Under the original rule ("use the EM when its Spearman
+against the anchor is positive"), the EM was selected in all four folds, but its propensity was
+near-constant: <strong>e ∈ [0.2808, 0.2961]</strong> across the whole footprint (p01–p99), mean 0.2881 on
+catalogue pixels vs 0.2889 off them — i.e. no usable variance and the wrong (weakly) direction.
+Consequences visible in the same receipt: <code>A2_sar_1me</code> was indistinguishable from <code>A1_sar</code>
+(paired Δ +0.000120, CI [−0.000464, +0.000825]) and every arm scored AUC ≈ 0.50 against the
+state-map-only instrument, where single covariates reach 0.77. A sign test on the ordering cannot
+detect a variance collapse.</p>
+<p><strong>Fix.</strong> Pre-registration amendment <code>GEMSDOE65-PREREG-1-A1</code> (see
+<code>registry/preregistration.json</code>): the anchored propensity is primary and the EM becomes a
+reported sensitivity arm (<code>A3_sar_em_1me</code>). The amendment is arm-neutral — no ranking rule, risk
+functional, fold, seed, budget, emission geometry, gate or ship rule changed — and the
+pre-amendment experiment is retained and reported next to the post-amendment one. The amendment
+cannot make the gate pass; it only stops the mechanism from being switched off by a defect.</p>
+<h2 id="ir-65-norm-01-ir-65-subs-01-ir-65-fold-01-ir-65-peel-01-all-fixed-before-the-gate">IR-65-NORM-01 / IR-65-SUBS-01 / IR-65-FOLD-01 / IR-65-PEEL-01 (all fixed before the gate)</h2>
+<ul>
+<li><strong>Normaliser.</strong> Scaling the labelled SAR block by <code>π·E_x[e]</code> is biased when <code>g</code> and <code>e</code>
+  correlate — and they do here. Correct normaliser is <code>ρ = P(s=1) = n_L/(n_L+n_U)</code> on
+  <strong>population</strong> counts. Guarded by
+  <code>tests/test_risks.py::test_wrong_normaliser_pi_ebar_is_detected</code>.</li>
+<li><strong>Subsample π.</strong> With a 20,000-row unlabeled subsample of a 5,116,066-pixel population the EM
+  returned <strong>π = 0.867</strong> against a truth of ≈0.02 because every subsample row was treated as one
+  population member. Fixed with <code>u_weight = n_population/n_subsample</code>; guarded by both tests in
+  <code>tests/test_propensity_subsample.py</code>.</li>
+<li><strong>Per-fold emission.</strong> Emitting inside each fold and OR-ing the results multiplies the scored
+  mass by the number of folds. Replaced by out-of-fold score fields plus <strong>one global emission
+  per arm per instrument</strong>.</li>
+<li><strong>Peel.</strong> <code>d &gt; peel_px</code> admits dots at exactly 3.00 px only by accident; the champion geometry
+  is <code>d &gt;= 3</code> px (300 m), which is what <code>allowed_mask</code> now enforces. Measured in the E1 receipt:
+  <code>min_dist_to_visible_px = 3.0</code>.</li>
+</ul>
+<h2 id="ir-65-i2leak-01-the-anchor-must-not-see-the-pixels-it-is-scored-on-fixed">IR-65-I2LEAK-01 — the anchor must not see the pixels it is scored on (fixed)</h2>
+<p>Instrument I2's truth <em>is</em> the state-map-only population, and the anchor is fitted on that same
+population. Fitting the anchor on all of it would make I2 an in-sample instrument and its AUC
+meaningless. Fix: for fold <em>k</em> the anchor is fitted on reference pixels <strong>outside</strong> quadrant <em>k</em>,
+and I2 is scored leave-one-quadrant-out on quadrant <em>k</em>. Instrument I1 needs no such treatment —
+its truth is withheld catalogue components, which are excluded from the anchor's catalogue sample
+by construction and cannot appear in the reference sample (which is &gt;3 px from the whole
+catalogue).</p>
+<h2 id="ir-65-uniq-01-the-literal-uniqueness-rule-is-unmeetable-for-sparse-fields-flagged">IR-65-UNIQ-01 — the literal uniqueness rule is unmeetable for sparse fields (flagged)</h2>
+<p>The inherited rule blocks a candidate when more than 70 % of its dots fall within 3 px of <em>any</em>
+one registry raster's dots. Dense lattice comparators in the family registry
+(<code>calib_r13lattice_00904.tif</code> and friends) cover nearly the whole footprint, so the sibling
+repository measured <strong>0.9985</strong> overlap for its best candidate — a value no sparse field can avoid.
+This lane reports both readings side by side (the literal one over all accessible rasters, and a
+like-for-like one restricted to dot-field comparators, which is the only comparison in which a
+dot-overlap test carries information) and <strong>flags the conflict for the owner instead of waiving
+it</strong>. Changing the rule to get a pass would be a waiver, and this session does not make one.</p>
+<p>Also note the inventory itself is incomplete: only sibling public-repository rasters are
+accessible from this sandbox, so <code>complete_accessible_scan</code> is <code>false</code> and the shared tool
+therefore returns <code>unique: false</code> regardless of the measurements.</p>
+<h2 id="ir-65-cov-01-cosmetic-receipt-bug-open">IR-65-COV-01 — cosmetic receipt bug (open)</h2>
+<p><code>scripts/build_covariates.py</code> writes <code>mean_on_catalogue = NaN</code> for <code>slope</code> and <code>grav_basin_fill</code>
+because sentinel pixels sit inside the catalogue. The lane reads <code>nanmean</code> over valid pixels, so
+no result is affected; the receipt should still be fixed upstream.</p>
+<h2 id="ir-65-access-01-no-outbound-access-open-reported">IR-65-ACCESS-01 — no outbound access (open, reported)</h2>
+<p><code>drivendata.org</code>, <code>docs.nlr.gov</code> (rules PDF), the five Dropbox data mirrors, <code>gdr.openei.org</code>,
+<code>usgs.gov</code>, <code>gbcge.org</code> and <code>raw.githubusercontent.com</code> all return HTTP 000 from this sandbox.
+Official statements are therefore quoted from the family's line-by-line verification record
+(<code>60GEMSDOE/docs/research/verification-2026-10-04.md</code>, read 2026-10-04) with links for manual
+review, and are labelled as such rather than presented as freshly verified. No organizer receipt
+exists anywhere in this repository: <strong>nothing was uploaded and no submission slot was spent.</strong></p>
+<hr />
+<h2 id="ir-65b-template-01-two-divergent-pins-of-the-shared-template-contained-reported">IR-65B-TEMPLATE-01 — two divergent pins of the shared template (contained, reported)</h2>
+<p><strong>Observed.</strong> Merging <code>origin/main</code> into this branch revealed that the canonical lane-65 session
+vendors the shared template at <code>vendor/template58/</code> (pinned to <code>buffedlizard55-lab/58GEMSDOE</code> tree
+<code>3ccda56f…</code>, per-file hashes in <code>docs/data/shared_template_pin.json</code>), while this session had
+committed its own copy of the same template under <code>src/gems57/</code>. Because <code>gems57</code> is a single
+module name per Python process, the copy imported first wins for everything imported afterwards:
+with <code>src/</code> on <code>sys.path</code>, this session's copy shadowed the canonical pin and
+<code>tests/test_submission.py::test_writer_actual_tiff_and_single_member_zip_roundtrip</code> failed (it
+asserts NaN outside the footprint; the shadowing writer produced zeros).</p>
+<p><strong>Contained.</strong> <code>src/gems57/</code> was moved to <code>vendor/template60/</code> with a provenance file
+(<code>vendor/template60/PROVENANCE.md</code>) that records the measured SHA-256 divergence per module:
+<code>__init__</code>, <code>emit</code>, <code>evaluate_holdout</code>, <code>metric</code>, <code>network</code>, <code>spatial</code> are <strong>byte-identical</strong>
+between the pins; <code>gates</code>, <code>grid</code>, <code>holdout</code>, <code>submission_writer</code>, <code>uniqueness</code>, <code>validate</code>
+differ. <code>scripts/_bootstrap.py</code> puts <code>vendor/template60</code> first for this lane's scripts only and
+then <strong>asserts which copy actually loaded</strong> (<code>assert_template60</code>), so a silent version swap cannot
+change a published number — the guard caught a real mis-wiring while it was being added. Test
+modules reach <code>gems57</code> through the canonical pin (<code>from gems65 import common</code>), so the shared
+pytest process loads exactly one template. Full suite after the change: <strong>113 passed</strong>, and
+<code>scripts/check_repository.py</code> reports <code>ok: true</code> with no problems.</p>
+<p><strong>What this means for the numbers.</strong> Every HOLDOUT-DTI on this lane's pages comes from
+<code>evaluate_holdout.py</code> and <code>metric.py</code>, which are byte-identical to the canonical pin, and the fold
+quadrant assignment (<code>holdout.quadrant_ids</code>) is byte-identical too — so the DTI arithmetic is
+reproducible under the canonical template. The <strong>fold constructor is not</strong>: template58 has no
+<code>buffered_component_draw</code> (it exposes <code>build_buffered_holdout_context</code> / <code>HoldoutContext</code> and marks
+<code>build_holdout</code> legacy). Porting this lane's instruments to that API would change the folds and
+therefore every number, so it is left as the owner's consolidation step rather than being done
+silently at merge time.</p>
+<p><strong>Not a private fork.</strong> Nothing in <code>vendor/template60/</code> was edited; it is a labelled second pin,
+reported here, per the standing rule "if a shared tool is wrong, fix it once in the template and
+report it; never keep a private fork".</p>
+<h2 id="ir-65b-format-01-the-two-pins-contradict-each-other-on-the-portal-format-flagged">IR-65B-FORMAT-01 — the two pins contradict each other on the portal format (flagged)</h2>
+<p>The canonical pin (<code>vendor/template58/gems57/grid.py</code>) says <code>mode="nan"</code> "is the submission
+representation" and that <code>mode="zeros"</code> "is not portal-format compliant". This lane's pin
+(<code>vendor/template60/gems57/grid.py</code>) says the opposite: <code>mode="zeros"</code> "is the only
+submission-compatible mode" and <code>mode="nan"</code> is "for local diagnostics only … a prior portal range
+error does not establish NaN as its cause".</p>
+<p>This artefact was written in <strong>all-finite <code>zeros</code> mode</strong>, because (a) the organizer's own reference
+solution (<a href="https://github.com/drivendataorg/gems-prize-reference-solution">https://github.com/drivendataorg/gems-prize-reference-solution</a>) writes an all-finite
+raster with <strong>no</strong> <code>nodata</code> tag, (b) the official format statement recorded in the family's
+verification notes says values must be in [0, 1] with null/NaN outside the bounds — which zeros also
+satisfies, since 0 is inside [0, 1] and the scored footprint is what the metric reads, and (c) the
+portal rejection this lane was asked to fix (<em>"Predicted values must be in range [0, 1]"</em>) arrived
+with NaN primaries. The contradiction cannot be settled from this sandbox
+(<code>drivendata.org</code> is unreachable, IR-65-ACCESS-01), so it is flagged: <strong>if the owner prefers the
+canonical NaN representation, <code>scripts/make_submission.py</code> should write both variants</strong> — the
+sibling session already publishes <code>-nan.tif</code> and <code>-zeros.tif</code> pairs, which is the safest convention
+and is recommended here.</p>
+<h2 id="ir-65b-parallel-01-two-sessions-ran-the-same-lane-resolved-by-integration">IR-65B-PARALLEL-01 — two sessions ran the same lane (resolved by integration)</h2>
+<p>The parallel-run protocol anticipates this. Session <code>arena/1217c9a0-gemsdoe65</code> implemented the same
+SAR-PU lane first and merged PRs #7 and #9 (canonical site, <code>RUN_CARD.json</code>, verdict NEGATIVE,
+six published rasters behind a loud not-cleared banner). This session
+(<code>arena/98cb5eb2-gemsdoe65</code>) implemented it independently: different covariate pipeline
+(<code>covariates_sar2inv.py</code>), different propensity estimator (a two-inventory anchor with the EM as a
+sensitivity arm, versus an EM with a Horvitz-Thompson π), different instruments (leave-one-quadrant-out
+I2), different emission geometry (3 px NMS with <code>d &gt;= 3</code> peel at a 38,000-dot budget), and a
+pre-registered ship rule with an amendment trail.</p>
+<p><strong>Both sessions reached a negative verdict, for different reasons.</strong> That agreement is the useful
+result: two independent implementations of the same lane, with different propensity estimators and
+different instruments, both fail their own pre-registered gates. Nothing was overwritten in the
+merge — the canonical site, run card, guards and tests are untouched, and this session's pages live
+under <code>docs/lane65b/</code> with its own artefact, run card and evidence files. Drift check between the
+two lanes' artefacts is reported below.</p>
+<p><strong>Cross-session drift check</strong> (the protocol's duplicate test, applied to the two lanes' published
+rasters rather than to the registry at large; receipt <code>evidence/cross_session_drift.json</code>,
+script <code>scripts/cross_session_drift.py</code>): against all <strong>10</strong> rasters the three sibling
+sessions published, worst Spearman ρ = <strong>0.0170</strong> (limit 0.9),
+worst forward dot overlap = <strong>0.2873</strong> (limit
+0.7), worst Jaccard = <strong>0.0122</strong> (limit
+0.5) → <code>duplicate_by_any_limit = false</code>.
+The informative number is the overlap: <strong>28.7 %</strong> of this lane's
+dots land within 300 m of the sibling lane's best-matching field — far above chance for two sparse
+38,000-dot fields on 5.17 M pixels, far below the duplicate threshold. Two independent
+implementations of the same lane agree on roughly a quarter of placements and disagree on the rest,
+which is consistent with both verdicts being negative for <em>different</em> reasons.</p>
+<hr />
+<h2 id="ir-65b-mainregression-01-main-was-already-red-before-this-branch-merged-reported-not-patched">IR-65B-MAINREGRESSION-01 — <code>main</code> was already red before this branch merged (reported, not patched)</h2>
+<p>Measured on 2026-10-11 by extracting <code>origin/main</code> (<code>5166ef9</code>) to a clean directory and running the
+same interpreter and the same commands on both trees:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><code>origin/main</code></th>
+<th>this branch after merging main</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>collection errors</td>
+<td>2 (<code>tests/test_pu.py</code>, <code>tests/test_canary.py</code>)</td>
+<td>2 — <strong>identical</strong></td>
+</tr>
+<tr>
+<td>failures (those two modules ignored)</td>
+<td>12</td>
+<td>12 — <strong>identical set</strong>, verified by <code>comm</code> on the sorted failure lists: zero main-only, zero branch-only</td>
+</tr>
+<tr>
+<td>passes (same invocation)</td>
+<td>93</td>
+<td>114 (= 93 + this session's 21)</td>
+</tr>
+<tr>
+<td><code>scripts/check_repository.py</code></td>
+<td>flags two published rasters whose sha256 is absent from <code>evidence/submission_build.json</code></td>
+<td><code>ok: true</code>, 340 tracked files, no problems</td>
+</tr>
+</tbody>
+</table>
+<p>Root causes, both cross-session clobbering rather than anything this lane did:</p>
+<ol>
+<li><code>src/gems65/pu.py</code> was replaced (commit <code>469ba44</code>, PR #14) by a version that no longer defines
+   <code>Design</code>, <code>posterior</code>, <code>logistic_objective</code>, <code>propensity_risk</code>, <code>nnpu_risk</code>, <code>weighted_quantile</code>,
+   <code>fit_sar</code> or <code>predict</code>. <code>src/gems65/canary.py</code> still does <code>from .pu import Design</code>, and
+   <code>tests/test_pu.py</code> / <code>tests/test_metric.py</code> still import those names — hence the 2 collection
+   errors and 5 of the 12 failures.</li>
+<li><code>scripts/build_site.py</code> was replaced by a version without <code>assert_no_public_rasters()</code>, which
+   <code>tests/test_publication.py</code> calls — hence the other 7 failures, including
+   <code>test_symlink_cannot_expose_quarantine</code> (<code>AttributeError: module 'build_site' has no attribute
+   'assert_no_public_rasters'</code>).</li>
+</ol>
+<p>What this session did about it: <strong>nothing inside their modules.</strong> Editing another session's <code>pu.py</code>
+or <code>build_site.py</code> to satisfy tests written against a superseded API would have been a guess about
+which of the two designs the owner wants; instead the two concrete, non-interpretive fixes were
+made and are recorded here:</p>
+<ul>
+<li>the two rasters published by PR #14
+  (<code>gems65-sar-em-propensity-half-20261011T223500Z-5e4660cd-{nan,zeros}.tif</code>) now have their
+  sha256 recorded in <code>evidence/submission_build.json</code> under
+  <code>arms.lane65d_*</code> with <code>OK_TO_DOWNLOAD_AND_SUBMIT: false</code> and a note saying which session produced
+  them, so the publication guard can verify bytes it did not create — this is what turned
+  <code>check_repository.py</code> green;</li>
+<li>one additive nav entry pointing at <code>docs/lane65b/</code> was added to their <code>NAV</code> template so this
+  session's pages are reachable from the canonical site and survive a rebuild.</li>
+</ul>
+<p><strong>Owner action requested:</strong> decide which <code>pu.py</code> and which <code>build_site.py</code> API is canonical, then
+restore the matching tests — or delete the superseded ones. Until then <code>main</code>'s CI is red for
+reasons unrelated to any lane's science, and four sessions' artefacts sit in one <code>docs/downloads/</code>
+behind one allowlist.</p></main>
+<footer>Built 2026-10-11 23:25 UTC from committed evidence
+receipts by <code>scripts/build_site.py</code>. Every number carries an evidence class.
+HOLDOUT-DTI is a local blocked-holdout measurement, never a leaderboard score.
+Core values: <b>Maximize P(Win)</b> · <b>Own the Outcome</b>.</footer>
+</body></html>

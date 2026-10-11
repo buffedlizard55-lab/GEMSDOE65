@@ -62,3 +62,12 @@ lane65-sarprop/.pytest_cache/
 /data/*
 !/data/bridge/
 !/data/bridge/*.tif
+
+# --- lane65b additions (independent SAR-PU session 2026-10-11) ---
+# this lane's derived caches and intermediate rasters are large and regenerable
+.cache/
+*.part-[0-9][0-9][0-9]
+# official grid rasters are restored by scripts/00_restore_data.py (canonical) or
+# scripts/_bootstrap.py; the repository guard forbids tracking *.tif outside the
+# docs/downloads allowlist
+data/bridge/*.tif

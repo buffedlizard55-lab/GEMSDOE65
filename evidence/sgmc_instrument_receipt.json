@@ -1,0 +1,10 @@
+{
+  "evidence_class": "MEASURED",
+  "truth_px": 59012,
+  "source": "/home/user/GEMSDOE65/.cache/external/sgmc_faults_100m.tif",
+  "source_sha256": "26d142c4c93282cd94f6950ab96f22aeff59fbbea523d43d662e76fa1b161b5c",
+  "min_dist_px": 3,
+  "sgmc_total_px": 82151,
+  "sgmc_inside_footprint_px": 82151,
+  "sgmc_on_catalogue_px": 3718
+}

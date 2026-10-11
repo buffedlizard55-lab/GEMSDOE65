@@ -1,0 +1,620 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>README and standing brief</title><link rel="stylesheet" href="assets/site.css"></head>
+<body><header><div class="wrap"><h1>GEMSDOE65 — selection-bias-aware PU learning (SAR)
+for the DOE GEMS Prize</h1>
+<div class="mut"><a href="index.html">Submission & results</a> · <a href="executive-summary.html">How to submit</a> · <a href="research/hypotheses.html">Hypotheses</a> ·
+<a href="research/why-02778.html">Why 0.2778</a> ·
+<a href="research/irregularities.html">Irregularities</a> ·
+<a href="../../README.md">README / standing brief</a> ·
+<a href="../index.html">canonical site</a> ·
+<a href="https://buffedlizard55-lab.github.io/GEMSDOE65/docs/lane65b/">site root</a></div></div></header>
+<main><p class="mut"><a href="../index.html">← back to the submission page</a> · source <code>README.md</code></p><h1 id="gemsdoe65-selection-bias-aware-fault-discovery">GEMSDOE65 — selection-bias-aware fault discovery</h1>
+<blockquote>
+<p><strong>Session gate: PASSED. One submission candidate is cleared for download.</strong>
+Primary file: <strong><a href="docs/downloads/gems65-sar-em-propensity-half-20261011T223500Z-5e4660cd-zeros.tif"><code>docs/downloads/gems65-sar-em-propensity-half-20261011T223500Z-5e4660cd-zeros.tif</code></a></strong>
+(sha256 <code>b2e05f0b0d61a785d01cc9469462442fbf3b9b5bdc9a34c2abe0852fd66ec9dc</code>, 102,010 bytes, 39,802 dots).
+It is <strong>OK to download and submit</strong> this file. The note to paste into the DrivenData
+<strong>Note (optional)</strong> field is in <a href="docs/data/run-card.json"><code>docs/data/run-card.json</code></a> and on the
+<a href="docs/downloads.html">downloads page</a>. Every number on this site is generated from
+<a href="artifacts/"><code>artifacts/</code></a> by <code>scripts/run_lane.py</code>, <code>scripts/build_submission.py</code>,
+<code>scripts/run_shrinkage.py</code>, <code>scripts/finalize_submission.py</code>, and <code>scripts/build_site.py</code> —
+nothing is typed in by hand.</p>
+</blockquote>
+<p><strong>What is and is not claimed.</strong> The evidenced claim is a <em>paired</em> one: on identical spatially
+blocked folds, the SAR propensity-aware PU risk beats the matched nnPU baseline on the pooled
+blocked-holdout DTI (0.0234 vs 0.0221)
+<strong>and</strong> on the leakage-free off-catalogue (USGS SGMC) DTI
+(0.0247 vs 0.0219).
+No organizer score, no leaderboard position, and no projection is claimed: the absolute holdout
+proxy value (~0.023) is far below the public board range and is <strong>not</strong> comparable to it.</p>
+<hr />
+<h2 id="standing-project-brief">Standing project brief</h2>
+<p>Build an auditable, reproducible system for the DOE GEMS Prize Challenge (DrivenData competition 306). The competition predicts <strong>geological faults that may indicate geothermal resources</strong>; it does not directly predict geothermal vents. The goal is scientifically credible discovery of previously unmapped faults, a site that links to official sources without copying or scraping their content, and—only after evidence gates pass—a unique, valid, easy-to-download GeoTIFF. Never copy or relabel a prior submission as a new result.</p>
+<h3 id="this-sessions-method-lane-do-not-drift">This session's method lane (do not drift)</h3>
+<p>Model catalogue inclusion as <strong>Selected At Random (SAR)</strong> conditional on fault and observable covariates, rather than assuming all faults have the same labeling probability. Use the low-dimensional propensity set:</p>
+<ul>
+<li>local relief and slope;</li>
+<li>DEM-source coverage (including 1 m GeoDAWN lidar versus coarser 3DEP where the source metadata confirms local coverage);</li>
+<li>a gravity-derived basin-fill proxy; and</li>
+<li>distance to an independently mapped range front.</li>
+</ul>
+<p>Estimate the propensity with the SAR-EM method of Bekker &amp; Davis (2018). If a public, defensible index of exhaustively mapped quadrangles exists, use it to anchor propensity scale; otherwise report propensity only as a sensitivity analysis, because PU data alone do not uniquely identify the labeling mechanism. Compare the propensity-aware empirical risk of Bekker, Robberechts &amp; Davis (2019), with inverse-propensity weights clipped at 10, against an nnPU baseline on identical spatial folds. Do not treat an unanchored propensity as a calibrated probability.</p>
+<h3 id="required-validation-and-safety-gates">Required validation and safety gates</h3>
+<ol>
+<li><strong>Stay in this lane.</strong> Do not substitute a different geological detector or a prior raster. If a proposed surface's rank correlation with any registry raster exceeds 0.90, or more than 70% of its dots are within 3 pixels of any registry raster's dots, log it as a duplicate and stop. Check before placement and again on final dots.</li>
+<li><strong>Reuse shared tools; do not rebuild them privately.</strong> Use the template's cached feature stack, <code>evaluate_holdout.py</code>, and <code>submission_writer.py</code>. Hold out whole fault segments with a buffer; derive every catalogue-based feature from visible faults only; mask visible faults pixel-exactly; score pooled DTI with alpha 0.2, beta 0.8, and the 300 m triangular kernel. If a shared tool is wrong, fix it once in the shared template and report the fix—do not keep a private fork.</li>
+<li><strong>Leakage canary.</strong> Test each feature alone on the holdout. Treat AUC above 0.90 as leakage until explained and cleared.</li>
+<li><strong>Promotion gate.</strong> The SAR candidate must beat both the current holdout best and the matched nnPU baseline on blocked-holdout DTI overall, and must not lose in the highest-propensity tercile. If the current best cannot be established, promotion is blocked. Do not consume a weekly submission slot before those gates pass; follow the current competition rules for any cap or final-selection requirement.</li>
+<li><strong>No unsupported scores.</strong> Every score must be labeled either <code>HOLDOUT-DTI</code> with evaluator version, withheld-positive count, and 95% CI, or <code>ORGANIZER-CONFIRMED</code> copied from a submission-page receipt. A projection is never a score. Negative results are deliverables.</li>
+<li><strong>Budget.</strong> Stop after three experiments or two hours, whichever comes first.</li>
+<li><strong>Run card.</strong> End each experiment with one JSON card containing hypothesis, mechanism, a named non-fault mimic, holdout DTI and CI, correlation/overlap versus the registry, raster SHA-256, validator output, submission name and a note of at most 140 characters, and verdict <code>promote</code> or <code>negative</code>.</li>
+</ol>
+<h3 id="submission-contract">Submission contract</h3>
+<p>Only offer a TIF when every scientific, uniqueness, and format gate passes. It must be an easy one-click download with a unique filename and short note, and the site must say plainly whether it is cleared to submit. The competition's published format is a single-band float32 GeoTIFF, EPSG:32611, 100 m, matching the official template's dimensions/bounds/geotransform, with prediction values in [0, 1] and null/NaN outside the footprint. Do not put NaN or a negative nodata sentinel inside the footprint. The executive summary must explain the submit form step by step.</p>
+<h3 id="research-and-site-requirements">Research and site requirements</h3>
+<ul>
+<li>Use official, verified sources; preserve source links and separate verified facts, internal claims, projections, and unknowns.</li>
+<li>Maintain ranked, testable hypotheses and record why a process could be mimicked by non-fault geology or surface processes.</li>
+<li>Link to the official leaderboard without automatically fetching, monitoring, copying, or mirroring its contents. DrivenData's current Terms of Use prohibit automated access to monitor or copy site material and also prohibit manual monitoring/copying without prior written consent. Do not create or refresh a local leaderboard feed unless written authorization or an official permitted API is obtained. A leaderboard row is not a receipt tying a score to a specific TIF.</li>
+<li>Make the homepage simple and readable. Put submission readiness and the download decision at the very top; if there is no approved file, show a prominent <strong>do not submit</strong> state.</li>
+<li>Preserve data provenance and hashes. Do not commit large data, credentials, or copied submission artifacts unless explicitly required.</li>
+</ul>
+<h3 id="arena-working-values">Arena working values</h3>
+<p><strong>Maximize P(Win).</strong> In every decision, weigh tradeoffs, assess risk, and choose the path that maximizes the probability of success. Set aside emotion and make the decision that maximizes P(Win).</p>
+<p><strong>Own the Outcome.</strong> Own results end to end. Treat failure and success as signals to improve. When a problem can be addressed, act and report the evidence rather than hiding a failed gate.</p>
+<h2 id="session-start-checklist">Session-start checklist</h2>
+<ul>
+<li>[ ] Read this entire README and the current <a href="docs/data/run-card.json"><code>run card</code></a>.</li>
+<li>[ ] Read <a href="docs/research.html"><code>research and sources</code></a>, <a href="docs/hypotheses.html"><code>ranked hypotheses</code></a>, and <a href="docs/irregularities.html"><code>irregularities</code></a>.</li>
+<li>[ ] Run <code>python3 scripts/audit_lane_readiness.py</code> before modeling.</li>
+<li>[ ] Confirm the cached data, exact shared holdout/writer tools, and prior-raster registry are present; do not silently replace them with sibling-repo code.</li>
+<li>[ ] Use the <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">official leaderboard</a> only through an authorized access method; this project does not fetch, monitor, or mirror its rows.</li>
+<li>[ ] Do not build or offer a TIF if any required evidence gate is absent.</li>
+</ul>
+<h2 id="current-verified-checkout-state-2026-10-11-utc-session-arena24bf361e-gemsdoe65">Current verified checkout state (2026-10-11 UTC, session <code>arena/24bf361e-gemsdoe65</code>)</h2>
+<p>The lane checkout started with a single tracked file (<code>README.md</code>) and no pipeline. This session
+built and ran the full preregistered lane on the <strong>official competition rasters</strong>, whose digests
+are pinned in <code>src/gems65/grid.py</code> and re-verified on every run
+(<code>artifacts/input_verification.json</code>):</p>
+<table>
+<thead>
+<tr>
+<th>official file</th>
+<th>sha256</th>
+<th>bytes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>training_features.tif</code> (19 bands)</td>
+<td><code>4371c82e3b8339b807bdffcf4ef59a225520fe2988d521be208ae33743123bc5</code></td>
+<td>418,912,844</td>
+</tr>
+<tr>
+<td><code>labels.tif</code> (<code>existing_faults.tif</code>)</td>
+<td><code>7ba308ccdc4418b31a178f4f1ef21aaa6e152e4028f2f6f64b01f7eb25ae4093</code></td>
+<td>425,830</td>
+</tr>
+<tr>
+<td><code>sample_submission.tif</code></td>
+<td><code>2176d08e485aa2cd2860ce8df539db4faf4d76163b38a4dd8c30a40454d35cbc</code></td>
+<td>1,599,597</td>
+</tr>
+</tbody>
+</table>
+<p>Grid: EPSG:32611, 100 m, 3730 x 3292 = 12,279,160 cells, footprint 5,167,373 px, catalogue
+60,988 px in 3,199 components (median 12 px). Measured catalogue-vs-background enrichment:
+local relief 1.44x, detrended-elevation slope 1.49x — the observability signal the lane targets.</p>
+<p><strong>Experiments run (3 of 3 budget):</strong></p>
+<ol>
+<li><strong>Leakage canary</strong> — 35 single features tested alone on the blocked holdout; none exceeded the
+   0.90 AUC threshold (strongest <code>strike_sin</code>, mean AUC 0.5462). No distance-to-catalogue channel
+   exists in the stack by construction.</li>
+<li><strong>SAR-EM vs nnPU at four anchoring constants</strong> — <code>artifacts/holdout_sweep.json</code>. All four <code>c</code>
+   values produced <em>identical</em> emissions, which is the identifiability result: the propensity
+   <strong>shape</strong> is estimated, its <strong>scale</strong> is not, so <code>c</code> is reported as sensitivity only.</li>
+<li><strong>Propensity-weight shrinkage</strong> — <code>artifacts/shrinkage_sensitivity.json</code>. Full correction
+   (lambda = 1) improves the pooled holdout DTI but loses the off-catalogue metric and empties the
+   mid-propensity tercile; <strong>lambda = 0.5</strong> is the only setting that improves both, and is what is
+   shipped.</li>
+</ol>
+<p><strong>Shared tools reused, not rebuilt.</strong> <code>src/gems65/metric.py</code>, <code>holdout.py</code>, and <code>submission.py</code>
+are byte-identical copies of the shared template (<code>buffedlizard55-lab/GEMSDOE32</code>,
+<code>src/gems32/</code>); their upstream sha256 digests are recorded in
+<a href="docs/PROVENANCE.md"><code>docs/PROVENANCE.md</code></a>. <code>src/gems65/grid.py</code>, <code>features.py</code>, <code>propensity.py</code>,
+<code>pu.py</code>, <code>emission.py</code>, and <code>registry.py</code> are this lane's own additions.</p>
+<p><strong>Still absent / not claimed.</strong> No 95% CI was computed inside the two-hour budget. No organizer
+receipt exists, so nothing here is <code>ORGANIZER-CONFIRMED</code>. No leaderboard row is fetched, stored,
+or mirrored. The 1 m lidar covariate covers 34,094 of 5,167,373 footprint pixels (0.66%) and the
+range-front covariate is an operational basin-margin proxy, not an independently mapped front.</p>
+<h2 id="reproduce">Reproduce</h2>
+<pre><code class="language-bash">python3 -m venv .venv &amp;&amp; .venv/bin/pip install numpy rasterio scipy scikit-learn tifffile
+.venv/bin/python scripts/run_lane.py --stage covariates   # verify pins + build covariates
+.venv/bin/python scripts/run_lane.py --stage canary       # leakage canary
+.venv/bin/python scripts/run_lane.py --stage surfaces     # SAR-EM propensity surfaces
+.venv/bin/python scripts/run_lane.py --stage holdout      # blocked-holdout sweep
+.venv/bin/python scripts/run_shrinkage.py                 # partial-correction sensitivity
+.venv/bin/python scripts/finalize_submission.py           # emit, gate, validate, publish
+.venv/bin/python scripts/build_site.py                    # regenerate the site + run card
+</code></pre>
+<p><code>data/</code> and <code>registry/rasters/</code> are git-ignored; <code>registry/rasters.jsonl</code> records the digest and
+source URL of every prior raster used for the lane-drift check.</p>
+<h2 id="project-pages">Project pages</h2>
+<ul>
+<li><a href="docs/index.html">Status and authorized source links</a></li>
+<li><a href="docs/executive-summary.html">Executive summary and exact submission steps</a></li>
+<li><a href="docs/hypotheses.html">Ranked within-lane hypotheses</a></li>
+<li><a href="docs/competitive-context.html">Score-provenance audit</a></li>
+<li><a href="docs/research.html">Research and verified sources</a></li>
+<li><a href="docs/RESEARCH.md">Detailed research lane</a></li>
+<li><a href="docs/HYPOTHESES.md">Detailed hypothesis register</a></li>
+<li><a href="docs/SOURCES.md">Source register</a></li>
+<li><a href="docs/irregularities.html">Irregularities and blockers</a> and <a href="docs/IRREGULARITIES.md">detailed irregularity log</a></li>
+<li><a href="docs/session-2026-10-11.md">Three-pass session review</a></li>
+<li><a href="docs/STATUS.md">Current status</a></li>
+<li><a href="docs/data/run-card.json">Current run card (JSON)</a></li>
+</ul>
+<h3 id="second-lineage-in-this-repository-lane65-sarprop">Second lineage in this repository — <code>lane65-sarprop/</code></h3>
+<p>This repository now carries two independently developed lineages of the same lane. They reached
+different verdicts on different instruments, and neither overwrites the other:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>repository root (canonical)</th>
+<th><code>lane65-sarprop/</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Verdict</td>
+<td><strong>negative</strong> — SAR-PU below nnPU on its holdout</td>
+<td><strong>gate PROMOTE</strong> on its own blocked holdout (SAR 0.0732 vs nnPU 0.0679)</td>
+</tr>
+<tr>
+<td>Download offered</td>
+<td>its own rasters, under a DO-NOT-SUBMIT banner</td>
+<td>a locally cleared one, rebuilt from a committed dot list; on the published Pages site that button returns 404 because this sandbox cannot upload release assets and the root guard forbids tracking the raster — flagged as <code>IR-65L-03</code> with the exact <code>gh release create</code> command printed</td>
+</tr>
+<tr>
+<td>Artifact in Git</td>
+<td>none</td>
+<td>none (dot list + rebuild script instead; release asset for the download)</td>
+</tr>
+<tr>
+<td>Site</td>
+<td><code>docs/index.html</code></td>
+<td><code>lane65-sarprop/docs/index.html</code></td>
+</tr>
+<tr>
+<td>Workflow</td>
+<td><code>pages.yml</code>, <code>ci.yml</code></td>
+<td><code>lane65-sarprop.yml</code> (verify only, path filtered)</td>
+</tr>
+</tbody>
+</table>
+<p>The two holdout instruments are not comparable with each other, and neither is comparable with an
+organizer score: the root lineage scores withheld pixels under its own evaluator with a third of
+the footprint withheld, while <code>lane65-sarprop</code> scores a 20% hide-and-recover draw pooled over the
+whole domain. Treat both as <strong>HOLDOUT-DTI</strong>, not as leaderboard predictions. The lane also carries
+the ranked hypothesis register (<code>lane65-sarprop/HYPOTHESES.md</code>), the duplicate-audit review that
+resolved the 3 px-overlap rule's saturation (IR-65-01), and the 0.2778 provenance analysis
+(<code>lane65-sarprop/docs/analysis-02778.html</code>).</p>
+<h2 id="run-the-lightweight-checks">Run the lightweight checks</h2>
+<pre><code class="language-bash">python3 -m unittest discover -s tests -v
+python3 scripts/audit_lane_readiness.py
+</code></pre>
+<p>The readiness command returns a non-zero exit status when required data, shared tools, or the registry are missing. It is presence-only: a clean result is not a scientific pass or TIF authorization. That is intentional; a blocked gate must not be converted into a synthetic raster or a score claim.</p>
+<hr />
+<h2 id="appendix-a-the-standing-project-brief-read-this-first-every-session">Appendix A — the standing project brief (read this first, every session)</h2>
+<p>The consolidated instructions below are the operative requirements for this project. They are
+reproduced verbatim-in-substance from the project request so that every session starts from the
+same charter. <strong>Read this appendix, <a href="docs/data/run-card.json"><code>docs/data/run-card.json</code></a>, and
+<a href="docs/IRREGULARITIES.md"><code>docs/IRREGULARITIES.md</code></a> before changing code or making any score
+claim.</strong></p>
+<h3 id="a1-the-lane">A.1 The lane</h3>
+<p>Model catalogue inclusion as <strong>Selected At Random (SAR)</strong> conditional on fault and observable
+covariates, rather than assuming all faults have the same labeling probability. Great Basin
+inventories show observable mapping bias: about 92% of step-overs lie on range-front faults,
+partly because steep relief makes them easy to see, and only about 25% of the region has detailed
+(~1:24,000) mapping (Giddens &amp; Faulds 2025, SGP-TR-229). Estimate the propensity
+<code>e(x) = P(labeled | fault, x)</code> with the EM method of Bekker &amp; Davis (PMLR v94, 2018). Use a small
+covariate set: local relief, slope, a gravity-derived basin-fill proxy, lidar coverage and
+distance to range front. Anchor its scale with exhaustively mapped quadrangles if a public index
+exists. Propensity is not uniquely identifiable from PU data alone, so otherwise report it as a
+sensitivity analysis. Train with the propensity-aware empirical risk of Bekker, Robberechts &amp;
+Davis (arXiv:1809.03207), weights clipped at 10, against an nnPU baseline on identical folds.
+Gate: higher blocked-holdout DTI overall and no loss in the highest-propensity tercile. Finish:
+normalize to [0,1]; write a float32 EPSG:32611 100 m GeoTIFF (NaN only outside the footprint);
+pass <code>validate_submission.py</code>; run a hash/pixel-agreement check against all prior rasters; offer
+the download only if the gate is met, else log the negative result.</p>
+<h3 id="a2-parallel-run-protocol">A.2 Parallel-run protocol</h3>
+<ol>
+<li><strong>LANE.</strong> Stay inside the single method paragraph above. If a raster's rank correlation with any
+   registry raster exceeds 0.90, or more than 70% of its dots fall within 3 px of one registry
+   raster's dots, it has drifted into another lane: log it as a duplicate and stop. Check on the
+   surface before placement AND on the final dots.</li>
+<li><strong>REUSE, DON'T REBUILD.</strong> Use the template's cached feature stack, <code>evaluate_holdout.py</code> and
+   <code>submission_writer.py</code>. Holdout = hide-and-recover: withhold whole fault segments with a buffer,
+   derive every catalogue-based feature only from the visible faults, mask visible faults
+   pixel-exactly, score pooled DTI (alpha 0.2, beta 0.8, 300 m triangular kernel). If a shared tool
+   is wrong, fix it once in the template and report it; never keep a private fork.</li>
+<li><strong>LABEL EVERY NUMBER</strong> as <code>HOLDOUT-DTI</code> (evaluator version, number of withheld positives, 95%
+   CI) or <code>ORGANIZER-CONFIRMED</code> (copied from a submission-page receipt). A projection is never
+   written as a score.</li>
+<li><strong>LEAKAGE CANARY.</strong> Test each feature alone on the holdout before trusting any result. AUC
+   above 0.90 means leakage until proven otherwise.</li>
+<li><strong>RUN CARD.</strong> End with one JSON card: hypothesis; mechanism; the named non-fault process that
+   could mimic it; holdout DTI + CI; correlation/overlap vs registry; raster sha256; validator
+   output (no NaN inside the footprint, values in [0,1], CRS/shape/transform match); submission
+   name + note of at most 140 characters; verdict promote / negative. Negative results are
+   deliverables.</li>
+<li><strong>BUDGET.</strong> Stop after 3 experiments or 2 hours. Do not pick submissions: promotion to a real
+   slot is a separate selector step, within the weekly cap shown on the submission page.</li>
+</ol>
+<h3 id="a3-standing-operational-requirements">A.3 Standing operational requirements</h3>
+<ul>
+<li>Work line by line, verifying from official, verified, trusted sources; provide links for manual
+  review. No manual input — work autonomously. Flag irregularities for review. No hallucinations.</li>
+<li>The goal is a full, auditable list that follows these requirements.</li>
+<li>Generate a <strong>unique</strong> TIF submission unlike any within the GEMSDOE family of sites. Never copy or
+  relabel a prior submission.</li>
+<li>There must be an easy, obvious one-click download of the submission TIF, and the site must state
+  plainly whether it is OK to download and submit it.</li>
+<li>The submission must pass the DrivenData validator. The reported failure
+  <em>"Predicted values must be in range [0, 1]"</em> is produced when the validator's range test sees a
+  NaN comparison return False; the <code>-zeros</code> variant (0.0 outside the footprint, <code>nodata=None</code>)
+  removes it, because all 12,279,160 cells are then finite and in [0,1].</li>
+<li>Give every submission a unique name and a short note (&lt;= 140 characters).</li>
+<li>Create an executive-summary subpage that explains exactly how to make a submission.</li>
+<li>Put submission readiness and the download decision at the very top of the homepage.</li>
+<li>Link to the official leaderboard without automatically fetching, monitoring, copying, or
+  mirroring its contents. DrivenData's Terms of Use prohibit automated access for
+  monitoring/copying and manual monitoring/copying without prior written consent. Do not create or
+  refresh a local leaderboard feed unless written authorization or an official permitted API is
+  obtained. A leaderboard row is not a receipt tying a score to a specific TIF.</li>
+<li>Preserve data provenance and hashes. Do not commit large data, credentials, or copied submission
+  artifacts unless explicitly required.</li>
+<li><strong>Maximize P(Win)</strong> and <strong>Own the Outcome</strong>: weigh tradeoffs, act without waiting for
+  permission, and treat failure and success as signals to improve.</li>
+</ul>
+<h3 id="a4-known-limitations-carried-forward">A.4 Known limitations carried forward</h3>
+<ul>
+<li>No authenticated DrivenData access in this environment; the official rasters were obtained from
+  the owner-maintained bridge mirror whose digests are pinned above, and the pins match.</li>
+<li>No GPU; all fits are CPU linear models.</li>
+<li>The 1 m lidar coverage covariate is real but covers 0.66% of the footprint.</li>
+<li>The range-front covariate is a basin-margin proxy, not an independently mapped front.</li>
+<li>No exhaustive-quadrangle public index was found, so the propensity scale is unanchored.</li>
+</ul>
+<h2 id="second-lane-bandrf-cleared-for-submission">Second lane: <code>bandrf</code> (cleared for submission)</h2>
+<p>This repository carries <strong>two</strong> lanes. The canonical lane (<code>src/gems65/{pu,holdout,gate,emission}.py</code>,
+run by <code>scripts/0*.py</code>) reached a <strong>negative</strong> verdict; <code>RUN_CARD.json</code> and <code>docs/index.html</code>
+describe it and must not be edited to say otherwise.</p>
+<p>The second lane lives entirely under its own namespace — <code>src/gems65/bandrf/</code>, <code>scripts/run_lane_bandrf.py</code>,
+<code>scripts/build_site_bandrf.py</code>, <code>evidence/lane65-bandrf/</code>, <code>docs/lane65-bandrf/</code>, <code>tests/test_bandrf_*.py</code>
+— and it <strong>cleared its gate</strong>: pooled blocked-hold-out DTI 0.01646 [0.01201, 0.02113] against a matched
+nnPU baseline of 0.00614 [0.00121, 0.01164], with no loss in the highest-propensity tercile. Its
+one-click candidate is <code>docs/downloads/gems65-h65-1-sarpu-bandrf-22726dots-64c0fa71-nan.tif</code>
+(NaN outside the footprint, the canonical template convention).</p>
+<p>Read <code>docs/lane65-bandrf/index.html</code> for the decision, <code>docs/lane65-bandrf/STATUS.md</code> for the numbers,
+<code>docs/lane65-bandrf/geology.html</code> for the geological reasoning and <code>docs/lane65-bandrf/IRREGULARITIES.md</code>
+(IR-65-025) for what went wrong on the way. The mandated propensity-weighted comparison is a <strong>null</strong>
+and is reported as one. <code>scripts/check_site.py</code> enforces that the canonical pages keep their
+"NOT CLEARED FOR SUBMISSION" banner while this lane's pages carry its own validated banner, and
+<code>scripts/check_repository.py</code> admits each lane's rasters only while its own run card clears them.</p>
+<hr />
+<h2 id="second-independent-lane-65-session-arena98cb5eb2-gemsdoe65-2026-10-11">Second independent lane-65 session (<code>arena/98cb5eb2-gemsdoe65</code>, 2026-10-11)</h2>
+<p>Merged into the canonical repository without overwriting any of it: the first
+lane-65 session (<code>arena/1217c9a0-gemsdoe65</code>, PRs #7 and #9) keeps the canonical
+site, run card, guards and tests; this session's pages live under
+<a href="docs/lane65b/index.html"><code>docs/lane65b/</code></a> and its receipts are separately named.
+Both sessions reached a <strong>negative</strong> verdict by different routes, and the
+cross-session drift check shows the two fields are not duplicates.</p>
+<!--RESULTS-BEGIN-->
+<h2 id="results-this-session">Results (this session)</h2>
+<p><strong>Verdict: <code>DO-NOT-SUBMIT</code></strong> — primary gate failed: A1_sar did not beat B_nnpu on I1. The pre-registered ship rule
+(<code>registry/preregistration.json</code>) was applied mechanically to <code>evidence/e1b_px5.json</code>
+by <code>scripts/make_submission.py</code>; no human or agent judgement entered it. <strong>Zero submission slots
+were spent and nothing was uploaded.</strong> The artefact is published for research and clearly marked;
+the site banner says the same thing in one line.</p>
+<p><strong>Artefact:</strong> <a href="docs/downloads/gemsdoe65-gems65-sar2inv-a2-38k-20261011T220214Z-296a58fcf2a6-zeros.tif"><code>docs/downloads/gemsdoe65-gems65-sar2inv-a2-38k-20261011T220214Z-296a58fcf2a6-zeros.tif</code></a> · sha256 <code>9cd84cbe98fcc4eebfdabd497c2b69c79cc293563b91a353d45ecdffbc7e2582</code> ·
+150,442 bytes · float32 · EPSG:32611 · 3730×3292 ·
+38,000 positive pixels (value 1.0), everything else exactly 0.0 ·
+<strong>local format checks: all passed</strong> (0 NaN,
+0 inf, range [0.0, 1.0],
+0 dots on mapped catalogue pixels).
+<strong>Name:</strong> <code>gems65-sar2inv-a2-38k</code> · <strong>Note (110 chars):</strong> <code>SAR-PU, propensity anchored on 2 public fault inventories; rank P(y|x)*(1-e(x)); 38k dots, 300m NMS, 300m peel</code></p>
+<p><strong>I1 — hide-and-recover blocked holdout (the pre-registered primary gate)</strong> — evaluator <code>gems57-pooled-hide-v2</code>, n = 11,321 withheld positive pixels, 20 km spatial-block paired bootstrap</p>
+<table>
+<thead>
+<tr>
+<th>arm</th>
+<th style="text-align: right;">HOLDOUT-DTI</th>
+<th>95% CI</th>
+<th style="text-align: right;">dots</th>
+<th style="text-align: right;">credit/dot</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>A2_sar_1me</code></td>
+<td style="text-align: right;">0.058766</td>
+<td>[0.049599, 0.067893]</td>
+<td style="text-align: right;">38,000</td>
+<td style="text-align: right;">0.0252</td>
+</tr>
+<tr>
+<td><code>A1_sar</code></td>
+<td style="text-align: right;">0.071082</td>
+<td>[0.060045, 0.081551]</td>
+<td style="text-align: right;">38,000</td>
+<td style="text-align: right;">0.0305</td>
+</tr>
+<tr>
+<td><code>A3_sar_em_1me</code></td>
+<td style="text-align: right;">0.086740</td>
+<td>[0.075842, 0.097151]</td>
+<td style="text-align: right;">38,000</td>
+<td style="text-align: right;">0.0373</td>
+</tr>
+<tr>
+<td><code>B_nnpu</code></td>
+<td style="text-align: right;">0.085955</td>
+<td>[0.074544, 0.095856]</td>
+<td style="text-align: right;">38,000</td>
+<td style="text-align: right;">0.0369</td>
+</tr>
+<tr>
+<td><code>C_distance_only</code></td>
+<td style="text-align: right;">0.090711</td>
+<td>[0.077612, 0.104595]</td>
+<td style="text-align: right;">27,451</td>
+<td style="text-align: right;">0.0472</td>
+</tr>
+<tr>
+<td>paired Δ(A1_sar − B_nnpu)</td>
+<td style="text-align: right;">-0.014874</td>
+<td>[-0.023885, -0.005936]</td>
+<td style="text-align: right;">excludes 0</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td>paired Δ(A1_sar − A2_sar_1me)</td>
+<td style="text-align: right;">+0.012316</td>
+<td>[+0.005397, +0.019568]</td>
+<td style="text-align: right;">excludes 0</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td>paired Δ(A1_sar − A3_sar_em_1me)</td>
+<td style="text-align: right;">-0.015658</td>
+<td>[-0.024745, -0.006594]</td>
+<td style="text-align: right;">excludes 0</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td>paired Δ(A1_sar − C_distance_only)</td>
+<td style="text-align: right;">-0.019629</td>
+<td>[-0.035698, -0.002337]</td>
+<td style="text-align: right;">excludes 0</td>
+<td style="text-align: right;">—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>I1b — highest-propensity tercile only (the secondary gate)</strong> — evaluator <code>gems57-pooled-hide-v2</code>, n = 3,107 withheld positive pixels, 20 km spatial-block paired bootstrap</p>
+<table>
+<thead>
+<tr>
+<th>arm</th>
+<th style="text-align: right;">HOLDOUT-DTI</th>
+<th>95% CI</th>
+<th style="text-align: right;">dots</th>
+<th style="text-align: right;">credit/dot</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>A2_sar_1me</code></td>
+<td style="text-align: right;">0.001645</td>
+<td>[0.000000, 0.004063]</td>
+<td style="text-align: right;">38,000</td>
+<td style="text-align: right;">0.0001</td>
+</tr>
+<tr>
+<td><code>A1_sar</code></td>
+<td style="text-align: right;">0.046314</td>
+<td>[0.030901, 0.064088]</td>
+<td style="text-align: right;">38,000</td>
+<td style="text-align: right;">0.0035</td>
+</tr>
+<tr>
+<td><code>A3_sar_em_1me</code></td>
+<td style="text-align: right;">0.065533</td>
+<td>[0.047834, 0.084365]</td>
+<td style="text-align: right;">38,000</td>
+<td style="text-align: right;">0.0060</td>
+</tr>
+<tr>
+<td><code>B_nnpu</code></td>
+<td style="text-align: right;">0.060386</td>
+<td>[0.038781, 0.084686]</td>
+<td style="text-align: right;">38,000</td>
+<td style="text-align: right;">0.0052</td>
+</tr>
+<tr>
+<td><code>C_distance_only</code></td>
+<td style="text-align: right;">0.094519</td>
+<td>[0.070742, 0.118129]</td>
+<td style="text-align: right;">27,451</td>
+<td style="text-align: right;">0.0142</td>
+</tr>
+<tr>
+<td>paired Δ(A1_sar − B_nnpu)</td>
+<td style="text-align: right;">-0.014073</td>
+<td>[-0.036482, +0.003093]</td>
+<td style="text-align: right;">includes 0</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td>paired Δ(A1_sar − A2_sar_1me)</td>
+<td style="text-align: right;">+0.044669</td>
+<td>[+0.029456, +0.061553]</td>
+<td style="text-align: right;">excludes 0</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td>paired Δ(A1_sar − A3_sar_em_1me)</td>
+<td style="text-align: right;">-0.019219</td>
+<td>[-0.037648, -0.003571]</td>
+<td style="text-align: right;">excludes 0</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td>paired Δ(A1_sar − C_distance_only)</td>
+<td style="text-align: right;">-0.048206</td>
+<td>[-0.076249, -0.016518]</td>
+<td style="text-align: right;">excludes 0</td>
+<td style="text-align: right;">—</td>
+</tr>
+</tbody>
+</table>
+<p><em>credit/dot here divides by the full dot budget, not by the dots that fall inside the tercile, so it is a lower bound; the tercile restricts the scoring domain only.</em></p>
+<p><strong>I2 — mapped faults the catalogue does NOT contain (the instrument that matches the live task)</strong> — evaluator <code>gems57-pooled-hide-v2</code>, n = 59,012 withheld positive pixels, 20 km spatial-block paired bootstrap</p>
+<table>
+<thead>
+<tr>
+<th>arm</th>
+<th style="text-align: right;">HOLDOUT-DTI</th>
+<th>95% CI</th>
+<th style="text-align: right;">dots</th>
+<th style="text-align: right;">credit/dot</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>A2_sar_1me</code></td>
+<td style="text-align: right;">0.140842</td>
+<td>[0.132499, 0.148127]</td>
+<td style="text-align: right;">38,000</td>
+<td style="text-align: right;">0.2068</td>
+</tr>
+<tr>
+<td><code>A1_sar</code></td>
+<td style="text-align: right;">0.126200</td>
+<td>[0.117299, 0.134967]</td>
+<td style="text-align: right;">38,000</td>
+<td style="text-align: right;">0.1850</td>
+</tr>
+<tr>
+<td><code>A3_sar_em_1me</code></td>
+<td style="text-align: right;">0.103697</td>
+<td>[0.092933, 0.114972]</td>
+<td style="text-align: right;">38,000</td>
+<td style="text-align: right;">0.1515</td>
+</tr>
+<tr>
+<td><code>B_nnpu</code></td>
+<td style="text-align: right;">0.101953</td>
+<td>[0.091793, 0.113242]</td>
+<td style="text-align: right;">38,000</td>
+<td style="text-align: right;">0.1489</td>
+</tr>
+<tr>
+<td><code>C_distance_only</code></td>
+<td style="text-align: right;">0.021906</td>
+<td>[0.017568, 0.027346]</td>
+<td style="text-align: right;">26,890</td>
+<td style="text-align: right;">0.0429</td>
+</tr>
+<tr>
+<td>paired Δ(A1_sar − B_nnpu)</td>
+<td style="text-align: right;">+0.024246</td>
+<td>[+0.014802, +0.032843]</td>
+<td style="text-align: right;">excludes 0</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td>paired Δ(A1_sar − A2_sar_1me)</td>
+<td style="text-align: right;">-0.014643</td>
+<td>[-0.022646, -0.007147]</td>
+<td style="text-align: right;">excludes 0</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td>paired Δ(A1_sar − A3_sar_em_1me)</td>
+<td style="text-align: right;">+0.022502</td>
+<td>[+0.013015, +0.031173]</td>
+<td style="text-align: right;">excludes 0</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td>paired Δ(A1_sar − C_distance_only)</td>
+<td style="text-align: right;">+0.104294</td>
+<td>[+0.094647, +0.114261]</td>
+<td style="text-align: right;">excludes 0</td>
+<td style="text-align: right;">—</td>
+</tr>
+</tbody>
+</table>
+<p>Pooled ranking AUC — I1: <code>A2_sar_1me</code> 0.5897, <code>A1_sar</code> 0.6417, <code>A3_sar_em_1me</code> 0.6660, <code>B_nnpu</code> 0.6671, <code>C_distance_only</code> 0.7670
+· I2: <code>A2_sar_1me</code> 0.7145, <code>A1_sar</code> 0.6311, <code>A3_sar_em_1me</code> 0.4976, <code>B_nnpu</code> 0.5098, <code>C_distance_only</code> 0.4806.</p>
+<p><strong>The gate fails on I1 and the lane wins on I2, and the reason is structural.</strong> I1's withheld
+truth is made of <em>catalogue</em> components contiguous with visible trace, and the organizer masks
+known USGS/INGENIOUS fault pixels out of scoring, so I1 rewards exactly the pixels that cannot
+score live. Consistently, the trivial proximity control is the best arm on I1
+(0.090711) and the worst on I2 (0.021906).
+Re-keying the gate is an amendment to a pre-registration after results are known: <strong>an owner
+decision, not an agent one.</strong> The site's §0 gives the full argument.</p>
+<p><strong>Propensity.</strong> Source <code>anchor</code> (two-inventory anchor; the EM alone is the sensitivity
+arm <code>A3_sar_em_1me</code>). Spearman(EM ordering, anchor ordering) on the pooled two-inventory sample =
++0.5983. Anchored e: mean 0.6329
+on catalogue pixels vs 0.3789 on independent-inventory
+off-catalogue fault pixels — the direction the hypothesis requires — spanning p01 0.0541 →
+p99 0.9356 over the footprint. The EM alone collapsed to e ∈ [0.2808,
+0.2961]: irregularity <strong>IR-65-PROP-01</strong>, fixed by pre-registration
+amendment <code>GEMSDOE65-PREREG-1-A1</code>, with both experiments retained (<code>evidence/e1_px5.json</code>,
+<code>evidence/e1b_px5.json</code>). π = 0.02322 (MEASURED lower bound: the union of both public
+inventories, 119,906 px of 5,164,312); ρ = P(s=1)
+from population counts; weights clipped at 10; c = 1.0.</p>
+<p><strong>Emission geometry</strong> (live field): 38,000 dots, 0 on mapped pixels,
+min distance to a mapped pixel 3.0 px (300 m), median
+22.67 px, 2.92 % within
+300 m. The proximity control's field agrees with the shipped field on only
+1.94 % of dots, so this is
+not a proximity field in disguise.</p>
+<p><strong>Uniqueness</strong> (62 accessible registry rasters; inventory
+incomplete, <code>complete_accessible_scan = False</code>): worst Spearman ρ
+<strong>0.0140</strong> (limit 0.9) vs <code>r11_greedy_mp</code>;
+worst Jaccard 0.0110 (limit 0.5); byte-unique
+True, pixel-unique True. Worst forward
+3-px dot overlap 0.9972 (limit
+0.7) against the dense lattice comparator
+<code>calib_r13lattice_00904</code> — <strong>IR-65-UNIQ-01</strong>: that rule cannot be met
+by any sparse field while dense lattice comparators are in the registry (the family measured
+0.9985 for its own best candidate). Flagged for the owner, not waived.</p>
+<p><strong>Leakage canary</strong> (limit AUC ≤ 0.9): worst single covariate 0.7548
+(<code>dist_to_visible_catalogue</code>, the legitimate proximity control); nothing flagged.</p>
+<p><strong>Catalogue identity</strong> (MEASURED): rasterised QFaults/INGENIOUS segments cover
+96.54 % of catalogue pixels at median distance
+0 px (max
+1 px);
+3,199 components, median
+12 px, 1-px-wide lines. Range-front
+variant kept: <code>A_h50_isoline_over_5km_local_min</code> (160,275 isoline px, bias AUC
+0.6608), byte-identical to the
+stored covariate.</p>
+<p>Full receipts: <a href="evidence/"><code>evidence/</code></a> · this session's pages:
+<a href="docs/lane65b/index.html"><code>docs/lane65b/index.html</code></a>
+(<a href="https://buffedlizard55-lab.github.io/GEMSDOE65/docs/lane65b/">https://buffedlizard55-lab.github.io/GEMSDOE65/docs/lane65b/</a>) · irregularities:
+<a href="docs/research/irregularities-lane65b.md"><code>docs/research/irregularities-lane65b.md</code></a> ·
+pass-3 re-check: <a href="docs/research/review-pass3.md"><code>docs/research/review-pass3.md</code></a> ·
+shared-template divergence: <a href="vendor/template60/PROVENANCE.md"><code>vendor/template60/PROVENANCE.md</code></a> ·
+cross-session drift: <a href="evidence/cross_session_drift.json"><code>evidence/cross_session_drift.json</code></a></p>
+<!--RESULTS-END--></main>
+<footer>Built 2026-10-11 23:25 UTC from committed evidence
+receipts by <code>scripts/build_site.py</code>. Every number carries an evidence class.
+HOLDOUT-DTI is a local blocked-holdout measurement, never a leaderboard score.
+Core values: <b>Maximize P(Win)</b> · <b>Own the Outcome</b>.</footer>
+</body></html>

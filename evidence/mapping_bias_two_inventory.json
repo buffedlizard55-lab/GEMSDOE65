@@ -1,0 +1,60 @@
+{
+  "evidence_class": "MEASURED",
+  "instrument": "two independent public fault inventories",
+  "catalogue_px": 60988,
+  "sgmc_offcat_px": 59012,
+  "sgmc_receipt": {
+    "evidence_class": "MEASURED",
+    "truth_px": 59012,
+    "source": "/home/user/GEMSDOE65/.cache/external/sgmc_faults_100m.tif",
+    "source_sha256": "26d142c4c93282cd94f6950ab96f22aeff59fbbea523d43d662e76fa1b161b5c",
+    "min_dist_px": 3,
+    "sgmc_total_px": 82151,
+    "sgmc_inside_footprint_px": 82151,
+    "sgmc_on_catalogue_px": 3718
+  },
+  "interpretation": "bias_auc > 0.5 means the competition catalogue over-represents HIGH values of that covariate relative to an independent state geologic-map inventory; < 0.5 means it over-represents LOW values. This is the observable mapping bias the SAR lane needs.",
+  "per_covariate": {
+    "relief_local": {
+      "bias_auc_catalogue_vs_sgmc_offcat": 0.24641263128280372,
+      "auc_vs_catalogue": 0.5633064978849606,
+      "auc_vs_sgmc_offcat": 0.7740496816416564
+    },
+    "slope": {
+      "bias_auc_catalogue_vs_sgmc_offcat": 0.25464759166794304,
+      "auc_vs_catalogue": 0.5576879301873665,
+      "auc_vs_sgmc_offcat": 0.7616607330069993
+    },
+    "grav_basin_fill": {
+      "bias_auc_catalogue_vs_sgmc_offcat": 0.344566015094004,
+      "auc_vs_catalogue": 0.4592986784290879,
+      "auc_vs_sgmc_offcat": 0.617498952330642
+    },
+    "lidar_cover": {
+      "bias_auc_catalogue_vs_sgmc_offcat": 0.5778117948618589,
+      "auc_vs_catalogue": 0.5205092339674658,
+      "auc_vs_sgmc_offcat": 0.4419217940594054
+    },
+    "dist_range_front": {
+      "bias_auc_catalogue_vs_sgmc_offcat": 0.33905408013539806,
+      "auc_vs_catalogue": 0.4795931882270828,
+      "auc_vs_sgmc_offcat": 0.6439626193705374
+    },
+    "depth_to_base_surf": {
+      "bias_auc_catalogue_vs_sgmc_offcat": 0.6934774558528879,
+      "auc_vs_catalogue": 0.5118815248133238,
+      "auc_vs_sgmc_offcat": 0.32902871746033613
+    },
+    "iso_grav_anom_slope": {
+      "bias_auc_catalogue_vs_sgmc_offcat": 0.6101468236640825,
+      "auc_vs_catalogue": 0.533575573845787,
+      "auc_vs_sgmc_offcat": 0.42105697162209077
+    },
+    "height_above_base": {
+      "bias_auc_catalogue_vs_sgmc_offcat": 0.201094152737755,
+      "auc_vs_catalogue": 0.5228287214966085,
+      "auc_vs_sgmc_offcat": 0.7686543848440941
+    }
+  },
+  "caveat": "a covariate differential between two inventories can also be a difference in COMPILER RULES (QFaults/INGENIOUS is geophysics-informed and carries many 'Inferred' basin faults; state geologic maps are bedrock-exposure maps), not only a difference in mapping propensity. This is the named non-fault process that could mimic the hypothesis."
+}

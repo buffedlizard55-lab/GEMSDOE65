@@ -281,3 +281,139 @@ Read `docs/lane65-bandrf/index.html` for the decision, `docs/lane65-bandrf/STATU
 and is reported as one. `scripts/check_site.py` enforces that the canonical pages keep their
 "NOT CLEARED FOR SUBMISSION" banner while this lane's pages carry its own validated banner, and
 `scripts/check_repository.py` admits each lane's rasters only while its own run card clears them.
+
+---
+
+## Second independent lane-65 session (`arena/98cb5eb2-gemsdoe65`, 2026-10-11)
+
+Merged into the canonical repository without overwriting any of it: the first
+lane-65 session (`arena/1217c9a0-gemsdoe65`, PRs #7 and #9) keeps the canonical
+site, run card, guards and tests; this session's pages live under
+[`docs/lane65b/`](docs/lane65b/index.html) and its receipts are separately named.
+Both sessions reached a **negative** verdict by different routes, and the
+cross-session drift check shows the two fields are not duplicates.
+
+<!--RESULTS-BEGIN-->
+## Results (this session)
+
+**Verdict: `DO-NOT-SUBMIT`** — primary gate failed: A1_sar did not beat B_nnpu on I1. The pre-registered ship rule
+(`registry/preregistration.json`) was applied mechanically to `evidence/e1b_px5.json`
+by `scripts/make_submission.py`; no human or agent judgement entered it. **Zero submission slots
+were spent and nothing was uploaded.** The artefact is published for research and clearly marked;
+the site banner says the same thing in one line.
+
+**Artefact:** [`docs/downloads/gemsdoe65-gems65-sar2inv-a2-38k-20261011T220214Z-296a58fcf2a6-zeros.tif`](docs/downloads/gemsdoe65-gems65-sar2inv-a2-38k-20261011T220214Z-296a58fcf2a6-zeros.tif) · sha256 `9cd84cbe98fcc4eebfdabd497c2b69c79cc293563b91a353d45ecdffbc7e2582` ·
+150,442 bytes · float32 · EPSG:32611 · 3730×3292 ·
+38,000 positive pixels (value 1.0), everything else exactly 0.0 ·
+**local format checks: all passed** (0 NaN,
+0 inf, range [0.0, 1.0],
+0 dots on mapped catalogue pixels).
+**Name:** `gems65-sar2inv-a2-38k` · **Note (110 chars):** `SAR-PU, propensity anchored on 2 public fault inventories; rank P(y|x)*(1-e(x)); 38k dots, 300m NMS, 300m peel`
+
+**I1 — hide-and-recover blocked holdout (the pre-registered primary gate)** — evaluator `gems57-pooled-hide-v2`, n = 11,321 withheld positive pixels, 20 km spatial-block paired bootstrap
+
+| arm | HOLDOUT-DTI | 95% CI | dots | credit/dot |
+|---|---:|---|---:|---:|
+| `A2_sar_1me` | 0.058766 | [0.049599, 0.067893] | 38,000 | 0.0252 |
+| `A1_sar` | 0.071082 | [0.060045, 0.081551] | 38,000 | 0.0305 |
+| `A3_sar_em_1me` | 0.086740 | [0.075842, 0.097151] | 38,000 | 0.0373 |
+| `B_nnpu` | 0.085955 | [0.074544, 0.095856] | 38,000 | 0.0369 |
+| `C_distance_only` | 0.090711 | [0.077612, 0.104595] | 27,451 | 0.0472 |
+| paired Δ(A1_sar − B_nnpu) | -0.014874 | [-0.023885, -0.005936] | excludes 0 | — |
+| paired Δ(A1_sar − A2_sar_1me) | +0.012316 | [+0.005397, +0.019568] | excludes 0 | — |
+| paired Δ(A1_sar − A3_sar_em_1me) | -0.015658 | [-0.024745, -0.006594] | excludes 0 | — |
+| paired Δ(A1_sar − C_distance_only) | -0.019629 | [-0.035698, -0.002337] | excludes 0 | — |
+
+**I1b — highest-propensity tercile only (the secondary gate)** — evaluator `gems57-pooled-hide-v2`, n = 3,107 withheld positive pixels, 20 km spatial-block paired bootstrap
+
+| arm | HOLDOUT-DTI | 95% CI | dots | credit/dot |
+|---|---:|---|---:|---:|
+| `A2_sar_1me` | 0.001645 | [0.000000, 0.004063] | 38,000 | 0.0001 |
+| `A1_sar` | 0.046314 | [0.030901, 0.064088] | 38,000 | 0.0035 |
+| `A3_sar_em_1me` | 0.065533 | [0.047834, 0.084365] | 38,000 | 0.0060 |
+| `B_nnpu` | 0.060386 | [0.038781, 0.084686] | 38,000 | 0.0052 |
+| `C_distance_only` | 0.094519 | [0.070742, 0.118129] | 27,451 | 0.0142 |
+| paired Δ(A1_sar − B_nnpu) | -0.014073 | [-0.036482, +0.003093] | includes 0 | — |
+| paired Δ(A1_sar − A2_sar_1me) | +0.044669 | [+0.029456, +0.061553] | excludes 0 | — |
+| paired Δ(A1_sar − A3_sar_em_1me) | -0.019219 | [-0.037648, -0.003571] | excludes 0 | — |
+| paired Δ(A1_sar − C_distance_only) | -0.048206 | [-0.076249, -0.016518] | excludes 0 | — |
+
+*credit/dot here divides by the full dot budget, not by the dots that fall inside the tercile, so it is a lower bound; the tercile restricts the scoring domain only.*
+
+**I2 — mapped faults the catalogue does NOT contain (the instrument that matches the live task)** — evaluator `gems57-pooled-hide-v2`, n = 59,012 withheld positive pixels, 20 km spatial-block paired bootstrap
+
+| arm | HOLDOUT-DTI | 95% CI | dots | credit/dot |
+|---|---:|---|---:|---:|
+| `A2_sar_1me` | 0.140842 | [0.132499, 0.148127] | 38,000 | 0.2068 |
+| `A1_sar` | 0.126200 | [0.117299, 0.134967] | 38,000 | 0.1850 |
+| `A3_sar_em_1me` | 0.103697 | [0.092933, 0.114972] | 38,000 | 0.1515 |
+| `B_nnpu` | 0.101953 | [0.091793, 0.113242] | 38,000 | 0.1489 |
+| `C_distance_only` | 0.021906 | [0.017568, 0.027346] | 26,890 | 0.0429 |
+| paired Δ(A1_sar − B_nnpu) | +0.024246 | [+0.014802, +0.032843] | excludes 0 | — |
+| paired Δ(A1_sar − A2_sar_1me) | -0.014643 | [-0.022646, -0.007147] | excludes 0 | — |
+| paired Δ(A1_sar − A3_sar_em_1me) | +0.022502 | [+0.013015, +0.031173] | excludes 0 | — |
+| paired Δ(A1_sar − C_distance_only) | +0.104294 | [+0.094647, +0.114261] | excludes 0 | — |
+
+
+Pooled ranking AUC — I1: `A2_sar_1me` 0.5897, `A1_sar` 0.6417, `A3_sar_em_1me` 0.6660, `B_nnpu` 0.6671, `C_distance_only` 0.7670
+· I2: `A2_sar_1me` 0.7145, `A1_sar` 0.6311, `A3_sar_em_1me` 0.4976, `B_nnpu` 0.5098, `C_distance_only` 0.4806.
+
+**The gate fails on I1 and the lane wins on I2, and the reason is structural.** I1's withheld
+truth is made of *catalogue* components contiguous with visible trace, and the organizer masks
+known USGS/INGENIOUS fault pixels out of scoring, so I1 rewards exactly the pixels that cannot
+score live. Consistently, the trivial proximity control is the best arm on I1
+(0.090711) and the worst on I2 (0.021906).
+Re-keying the gate is an amendment to a pre-registration after results are known: **an owner
+decision, not an agent one.** The site's §0 gives the full argument.
+
+**Propensity.** Source `anchor` (two-inventory anchor; the EM alone is the sensitivity
+arm `A3_sar_em_1me`). Spearman(EM ordering, anchor ordering) on the pooled two-inventory sample =
++0.5983. Anchored e: mean 0.6329
+on catalogue pixels vs 0.3789 on independent-inventory
+off-catalogue fault pixels — the direction the hypothesis requires — spanning p01 0.0541 →
+p99 0.9356 over the footprint. The EM alone collapsed to e ∈ [0.2808,
+0.2961]: irregularity **IR-65-PROP-01**, fixed by pre-registration
+amendment `GEMSDOE65-PREREG-1-A1`, with both experiments retained (`evidence/e1_px5.json`,
+`evidence/e1b_px5.json`). π = 0.02322 (MEASURED lower bound: the union of both public
+inventories, 119,906 px of 5,164,312); ρ = P(s=1)
+from population counts; weights clipped at 10; c = 1.0.
+
+**Emission geometry** (live field): 38,000 dots, 0 on mapped pixels,
+min distance to a mapped pixel 3.0 px (300 m), median
+22.67 px, 2.92 % within
+300 m. The proximity control's field agrees with the shipped field on only
+1.94 % of dots, so this is
+not a proximity field in disguise.
+
+**Uniqueness** (62 accessible registry rasters; inventory
+incomplete, `complete_accessible_scan = False`): worst Spearman ρ
+**0.0140** (limit 0.9) vs `r11_greedy_mp`;
+worst Jaccard 0.0110 (limit 0.5); byte-unique
+True, pixel-unique True. Worst forward
+3-px dot overlap 0.9972 (limit
+0.7) against the dense lattice comparator
+`calib_r13lattice_00904` — **IR-65-UNIQ-01**: that rule cannot be met
+by any sparse field while dense lattice comparators are in the registry (the family measured
+0.9985 for its own best candidate). Flagged for the owner, not waived.
+
+**Leakage canary** (limit AUC ≤ 0.9): worst single covariate 0.7548
+(`dist_to_visible_catalogue`, the legitimate proximity control); nothing flagged.
+
+**Catalogue identity** (MEASURED): rasterised QFaults/INGENIOUS segments cover
+96.54 % of catalogue pixels at median distance
+0 px (max
+1 px);
+3,199 components, median
+12 px, 1-px-wide lines. Range-front
+variant kept: `A_h50_isoline_over_5km_local_min` (160,275 isoline px, bias AUC
+0.6608), byte-identical to the
+stored covariate.
+
+Full receipts: [`evidence/`](evidence/) · this session's pages:
+[`docs/lane65b/index.html`](docs/lane65b/index.html)
+(<https://buffedlizard55-lab.github.io/GEMSDOE65/docs/lane65b/>) · irregularities:
+[`docs/research/irregularities-lane65b.md`](docs/research/irregularities-lane65b.md) ·
+pass-3 re-check: [`docs/research/review-pass3.md`](docs/research/review-pass3.md) ·
+shared-template divergence: [`vendor/template60/PROVENANCE.md`](vendor/template60/PROVENANCE.md) ·
+cross-session drift: [`evidence/cross_session_drift.json`](evidence/cross_session_drift.json)
+<!--RESULTS-END-->

@@ -1357,7 +1357,52 @@
         }
       },
       "OK_TO_DOWNLOAD_AND_SUBMIT": false
+    },
+    "lane65b_A2_sar_1me_second_session": {
+      "session": "arena/98cb5eb2-gemsdoe65 (second independent lane-65 run, 2026-10-11)",
+      "OK_TO_DOWNLOAD_AND_SUBMIT": false,
+      "verdict": "DO-NOT-SUBMIT",
+      "verdict_reason": "primary gate failed: A1_sar did not beat B_nnpu on I1",
+      "ranker": "P(y=1|x) * (1 - e_anchor(x)); propensity anchored on two public fault inventories",
+      "name": "gems65-sar2inv-a2-38k",
+      "note": "SAR-PU, propensity anchored on 2 public fault inventories; rank P(y|x)*(1-e(x)); 38k dots, 300m NMS, 300m peel",
+      "validator": {
+        "zeros": {
+          "file": "docs/downloads/gemsdoe65-gems65-sar2inv-a2-38k-20261011T220214Z-296a58fcf2a6-zeros.tif",
+          "sha256": "9cd84cbe98fcc4eebfdabd497c2b69c79cc293563b91a353d45ecdffbc7e2582",
+          "bytes": 150442,
+          "emitted_positive_pixels": 38000,
+          "all_checks_passed": true,
+          "run_card": "evidence/live_run_card.json"
+        }
+      },
+      "note_on_inclusion": "added so the canonical raster allowlist guard recognises this session's artefact; it is NOT cleared for submission"
+    },
+    "lane65d_gems65-sar-em-propensity-half-20261011T223500Z-5e4660cd-nan": {
+      "session": "arena/24bf361e-gemsdoe65 (fourth lane-65 run, merged as PR #14)",
+      "OK_TO_DOWNLOAD_AND_SUBMIT": false,
+      "validator": {
+        "nan": {
+          "file": "docs/downloads/gems65-sar-em-propensity-half-20261011T223500Z-5e4660cd-nan.tif",
+          "sha256": "939f93d5b6439e3f37d7763bd966027cc3bf894d27962e575613af7ed0e159b6",
+          "bytes": 143427
+        }
+      },
+      "note_on_inclusion": "hash recorded by the merging session (arena/98cb5eb2-gemsdoe65) so the repository raster allowlist can verify bytes this session did not produce; the owning session's verdict lives in RUN_CARD.json and evidence/run_card.json and is negative"
+    },
+    "lane65d_gems65-sar-em-propensity-half-20261011T223500Z-5e4660cd-zeros": {
+      "session": "arena/24bf361e-gemsdoe65 (fourth lane-65 run, merged as PR #14)",
+      "OK_TO_DOWNLOAD_AND_SUBMIT": false,
+      "validator": {
+        "zeros": {
+          "file": "docs/downloads/gems65-sar-em-propensity-half-20261011T223500Z-5e4660cd-zeros.tif",
+          "sha256": "b2e05f0b0d61a785d01cc9469462442fbf3b9b5bdc9a34c2abe0852fd66ec9dc",
+          "bytes": 102010
+        }
+      },
+      "note_on_inclusion": "hash recorded by the merging session (arena/98cb5eb2-gemsdoe65) so the repository raster allowlist can verify bytes this session did not produce; the owning session's verdict lives in RUN_CARD.json and evidence/run_card.json and is negative"
     }
   },
-  "NOTE_corrected_scale_run": "Second, independent lane-65 run appended by the arena/832a5ec9-gemsdoe65 session: same publisher allowlist, verdict NEGATIVE, submittable=False."
+  "NOTE_corrected_scale_run": "Second, independent lane-65 run appended by the arena/832a5ec9-gemsdoe65 session: same publisher allowlist, verdict NEGATIVE, submittable=False.",
+  "NOTE_lane65b_second_session": "arms.lane65b_A2_sar_1me_second_session is the artefact of the second independent lane-65 session (arena/98cb5eb2-gemsdoe65). It is recorded here so the repository's raster allowlist guard recognises its sha256; OK_TO_DOWNLOAD_AND_SUBMIT is false and its verdict is DO-NOT-SUBMIT. Run card: evidence/live_run_card.json; pages: docs/lane65b/."
 }

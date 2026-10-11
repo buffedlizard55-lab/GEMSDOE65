@@ -1,0 +1,1830 @@
+{
+  "evidence_class": "HOLDOUT-DTI",
+  "tag": "e1b_px5",
+  "covariates": [
+    "relief_local",
+    "slope",
+    "grav_basin_fill",
+    "lidar_cover",
+    "dist_range_front"
+  ],
+  "budget": 38000,
+  "nms_px": 3.0,
+  "peel_px": 3,
+  "weight_clip": 10.0,
+  "hidden_units": 64,
+  "epochs": 250,
+  "lr": 0.03,
+  "batch": 4096,
+  "n_unl_subsample": 160000,
+  "em_iters_max": 12,
+  "pi_used": 0.023218194408083787,
+  "pi_receipt": {
+    "evidence_class": "MEASURED",
+    "pi_lower_bound_union_of_two_inventories": 0.023218194408083787,
+    "catalogue_px": 60988,
+    "sgmc_offcat_px": 59012,
+    "union_px": 119906,
+    "scored_px": 5164312,
+    "note": "both inventories are incomplete, so this is a lower bound on the true fault-pixel prevalence; the nnPU baseline needs a pi and this is the only measurement available in-sandbox.",
+    "pi_grid_sensitivity": [
+      0.023218194408083787,
+      0.03483,
+      0.04644
+    ]
+  },
+  "c_reference_inventory": 1.0,
+  "evaluator_version": "gems57-pooled-hide-v2",
+  "implementation_sha256": {
+    "evaluate_holdout.py": "ad86640b46f3c5fc6b1aceec4c4bfc82d03e35008b37ab2a8ad6076e6810ff3a",
+    "holdout.py": "7a0a84176986190b527aa9c6a84216c2dab4b599f25b1143db5f420e85020ab1",
+    "metric.py": "4afe10cbaa229948520c75194b1ebc32676e72544f05582f0725092b097b4d7f",
+    "spatial.py": "fad7b09db9efc512247b9a176a7e7ce8631e287592b4e07902d0b9c38bed00f8"
+  },
+  "folds_sar": [
+    {
+      "fold": "NW",
+      "quadrant": 0,
+      "arm": "sar",
+      "pi": 0.023218194408083787,
+      "rho": 0.00934219311304197,
+      "u_weight": 31.9754125,
+      "ebar": 0.625169313248702,
+      "risk": {
+        "risk": 0.08652267444338592,
+        "labelled_term": 0.06978817808718105,
+        "unlabelled_term": 0.01673449635620487,
+        "rho": 0.00934219311304197,
+        "frac_clipped_w": 0.011213364838535838,
+        "frac_clipped_v": 0.008871201757658665,
+        "w_mean": 2.0105071941149637,
+        "w_max": 10.0
+      },
+      "n_labelled": 48246,
+      "n_unlabelled_full": 5116066,
+      "n_unlabelled_subsample": 160000,
+      "n_anchor_reference_px": 50261,
+      "propensity_chosen": "anchor",
+      "propensity_rule": "anchor_primary",
+      "propensity_reason": "anchor primary per the brief (a public reference index exists); the EM is reported as a sensitivity arm. EM diagnostics: Spearman vs anchor +0.230, std(e) 0.00298 vs anchor std(e) 0.25692",
+      "spearman_em_vs_anchor": 0.2296034208860768,
+      "em_std_e_two_inventory": 0.0029835194216933794,
+      "anchor_std_e_two_inventory": 0.25691614691062375,
+      "em_variance_ratio_vs_anchor": 0.011612813976738056,
+      "anchor": {
+        "c": 1.0,
+        "q_on_catalogue_mean": 0.625169313248702,
+        "q_on_reference_mean": 0.35989380230790524,
+        "e_on_catalogue_mean": 0.625169313248702,
+        "e_on_reference_mean": 0.35989380230790524,
+        "spearman_q_vs_covariates": {
+          "relief_local": -0.8463178563089041,
+          "slope": -0.821481862058569,
+          "grav_basin_fill": -0.44480591742557624,
+          "lidar_cover": 0.26704871856603174,
+          "dist_range_front": -0.6342641207467601
+        }
+      },
+      "em": {
+        "pi": 0.032380270056539213,
+        "ebar": 0.28875922910925983,
+        "converged": true,
+        "iters": 4,
+        "trace_last": {
+          "iter": 3,
+          "pi": 0.032380270056539213,
+          "ebar": 0.2887589081898119,
+          "e_lab_mean": 0.28846098423337135,
+          "e_lab_min": 0.2755100038618321,
+          "e_lab_max": 0.29649758624734734,
+          "r_mean": 0.023255332752983665,
+          "r_sum": 3720.8532404773864
+        }
+      },
+      "seconds": 56.07
+    },
+    {
+      "fold": "NE",
+      "quadrant": 1,
+      "arm": "sar",
+      "pi": 0.023218194408083787,
+      "rho": 0.00934219311304197,
+      "u_weight": 31.9754125,
+      "ebar": 0.6511131983632217,
+      "risk": {
+        "risk": 0.07858570658386684,
+        "labelled_term": 0.06388144920380978,
+        "unlabelled_term": 0.014704257380057054,
+        "rho": 0.00934219311304197,
+        "frac_clipped_w": 0.0018861667288479875,
+        "frac_clipped_v": 0.0012436264146250466,
+        "w_mean": 1.760138973398004,
+        "w_max": 10.0
+      },
+      "n_labelled": 48246,
+      "n_unlabelled_full": 5116066,
+      "n_unlabelled_subsample": 160000,
+      "n_anchor_reference_px": 34938,
+      "propensity_chosen": "anchor",
+      "propensity_rule": "anchor_primary",
+      "propensity_reason": "anchor primary per the brief (a public reference index exists); the EM is reported as a sensitivity arm. EM diagnostics: Spearman vs anchor +0.212, std(e) 0.00300 vs anchor std(e) 0.20297",
+      "spearman_em_vs_anchor": 0.2123775357642082,
+      "em_std_e_two_inventory": 0.0029957827918039893,
+      "anchor_std_e_two_inventory": 0.20296709701098575,
+      "em_variance_ratio_vs_anchor": 0.014759943044570619,
+      "anchor": {
+        "c": 1.0,
+        "q_on_catalogue_mean": 0.6511131983632217,
+        "q_on_reference_mean": 0.4817037871744826,
+        "e_on_catalogue_mean": 0.6511131983632217,
+        "e_on_reference_mean": 0.4817037871744826,
+        "spearman_q_vs_covariates": {
+          "relief_local": -0.8465023846253847,
+          "slope": -0.8384655412277724,
+          "grav_basin_fill": -0.3232460089056807,
+          "lidar_cover": 0.15347724684862912,
+          "dist_range_front": -0.5874306455031396
+        }
+      },
+      "em": {
+        "pi": 0.032380270056539213,
+        "ebar": 0.28875922910925983,
+        "converged": true,
+        "iters": 4,
+        "trace_last": {
+          "iter": 3,
+          "pi": 0.032380270056539213,
+          "ebar": 0.2887589081898119,
+          "e_lab_mean": 0.28846098423337135,
+          "e_lab_min": 0.2755100038618321,
+          "e_lab_max": 0.29649758624734734,
+          "r_mean": 0.023255332752983665,
+          "r_sum": 3720.8532404773864
+        }
+      },
+      "seconds": 55.87
+    },
+    {
+      "fold": "SW",
+      "quadrant": 2,
+      "arm": "sar",
+      "pi": 0.023218194408083787,
+      "rho": 0.00934219311304197,
+      "u_weight": 31.9754125,
+      "ebar": 0.6372865899052671,
+      "risk": {
+        "risk": 0.08514549649356748,
+        "labelled_term": 0.06649563883341221,
+        "unlabelled_term": 0.018649857660155266,
+        "rho": 0.00934219311304197,
+        "frac_clipped_w": 0.011627906976744186,
+        "frac_clipped_v": 0.009182108361314927,
+        "w_mean": 1.9729939605752627,
+        "w_max": 10.0
+      },
+      "n_labelled": 48246,
+      "n_unlabelled_full": 5116066,
+      "n_unlabelled_subsample": 160000,
+      "n_anchor_reference_px": 48918,
+      "propensity_chosen": "anchor",
+      "propensity_rule": "anchor_primary",
+      "propensity_reason": "anchor primary per the brief (a public reference index exists); the EM is reported as a sensitivity arm. EM diagnostics: Spearman vs anchor +0.264, std(e) 0.00299 vs anchor std(e) 0.26361",
+      "spearman_em_vs_anchor": 0.26381889312547385,
+      "em_std_e_two_inventory": 0.002988546169759739,
+      "anchor_std_e_two_inventory": 0.2636067907876737,
+      "em_variance_ratio_vs_anchor": 0.011337136501035407,
+      "anchor": {
+        "c": 1.0,
+        "q_on_catalogue_mean": 0.6372865899052671,
+        "q_on_reference_mean": 0.3578326952858959,
+        "e_on_catalogue_mean": 0.6372865899052671,
+        "e_on_reference_mean": 0.3578326952858959,
+        "spearman_q_vs_covariates": {
+          "relief_local": -0.823601788787762,
+          "slope": -0.7983700068125996,
+          "grav_basin_fill": -0.5579147565917144,
+          "lidar_cover": 0.31772930591270404,
+          "dist_range_front": -0.5713293435276663
+        }
+      },
+      "em": {
+        "pi": 0.032380270056539213,
+        "ebar": 0.28875922910925983,
+        "converged": true,
+        "iters": 4,
+        "trace_last": {
+          "iter": 3,
+          "pi": 0.032380270056539213,
+          "ebar": 0.2887589081898119,
+          "e_lab_mean": 0.28846098423337135,
+          "e_lab_min": 0.2755100038618321,
+          "e_lab_max": 0.29649758624734734,
+          "r_mean": 0.023255332752983665,
+          "r_sum": 3720.8532404773864
+        }
+      },
+      "seconds": 52.89
+    },
+    {
+      "fold": "SE",
+      "quadrant": 3,
+      "arm": "sar",
+      "pi": 0.023218194408083787,
+      "rho": 0.00934219311304197,
+      "u_weight": 31.9754125,
+      "ebar": 0.6708760305477454,
+      "risk": {
+        "risk": 0.08138243471746893,
+        "labelled_term": 0.06113740542550685,
+        "unlabelled_term": 0.020245029291962084,
+        "rho": 0.00934219311304197,
+        "frac_clipped_w": 0.011793723832027526,
+        "frac_clipped_v": 0.010094101065373295,
+        "w_mean": 1.8660410509306928,
+        "w_max": 10.0
+      },
+      "n_labelled": 48246,
+      "n_unlabelled_full": 5116066,
+      "n_unlabelled_subsample": 160000,
+      "n_anchor_reference_px": 42919,
+      "propensity_chosen": "anchor",
+      "propensity_rule": "anchor_primary",
+      "propensity_reason": "anchor primary per the brief (a public reference index exists); the EM is reported as a sensitivity arm. EM diagnostics: Spearman vs anchor +0.341, std(e) 0.00298 vs anchor std(e) 0.27358",
+      "spearman_em_vs_anchor": 0.3411811804637849,
+      "em_std_e_two_inventory": 0.0029800216289141675,
+      "anchor_std_e_two_inventory": 0.27358144613660007,
+      "em_variance_ratio_vs_anchor": 0.010892630589525554,
+      "anchor": {
+        "c": 1.0,
+        "q_on_catalogue_mean": 0.6708760305477454,
+        "q_on_reference_mean": 0.37007301099512097,
+        "e_on_catalogue_mean": 0.6708760305477454,
+        "e_on_reference_mean": 0.37007301099512097,
+        "spearman_q_vs_covariates": {
+          "relief_local": -0.7893429853841651,
+          "slope": -0.7544001718072197,
+          "grav_basin_fill": -0.6441413379271703,
+          "lidar_cover": 0.46040217493232904,
+          "dist_range_front": -0.45460077699166324
+        }
+      },
+      "em": {
+        "pi": 0.032380270056539213,
+        "ebar": 0.28875922910925983,
+        "converged": true,
+        "iters": 4,
+        "trace_last": {
+          "iter": 3,
+          "pi": 0.032380270056539213,
+          "ebar": 0.2887589081898119,
+          "e_lab_mean": 0.28846098423337135,
+          "e_lab_min": 0.2755100038618321,
+          "e_lab_max": 0.29649758624734734,
+          "r_mean": 0.023255332752983665,
+          "r_sum": 3720.8532404773864
+        }
+      },
+      "seconds": 56.08
+    }
+  ],
+  "folds_nnpu": [
+    {
+      "fold": "NW",
+      "quadrant": 0,
+      "arm": "nnpu",
+      "pi": 0.023218194408083787,
+      "rho": 0.00934219311304197,
+      "u_weight": 31.9754125,
+      "ebar": 0.6251693132487022,
+      "risk": {
+        "risk": 0.10358380401735831,
+        "negative_term": 0.022443009459072502,
+        "non_negative_active": false
+      },
+      "n_labelled": 48246,
+      "n_unlabelled_full": 5116066,
+      "n_unlabelled_subsample": 160000,
+      "n_anchor_reference_px": 50261,
+      "propensity_chosen": "anchor",
+      "propensity_rule": "anchor_primary",
+      "propensity_reason": "anchor primary per the brief (a public reference index exists); the EM is reported as a sensitivity arm. EM diagnostics: Spearman vs anchor +0.230, std(e) 0.00298 vs anchor std(e) 0.25692",
+      "spearman_em_vs_anchor": 0.2296034208860768,
+      "em_std_e_two_inventory": 0.0029835194216933794,
+      "anchor_std_e_two_inventory": 0.25691614691062375,
+      "em_variance_ratio_vs_anchor": 0.011612813976738056,
+      "anchor": {
+        "c": 1.0,
+        "q_on_catalogue_mean": 0.625169313248702,
+        "q_on_reference_mean": 0.35989380230790524,
+        "e_on_catalogue_mean": 0.625169313248702,
+        "e_on_reference_mean": 0.35989380230790524,
+        "spearman_q_vs_covariates": {
+          "relief_local": -0.8463178563089041,
+          "slope": -0.821481862058569,
+          "grav_basin_fill": -0.44480591742557624,
+          "lidar_cover": 0.26704871856603174,
+          "dist_range_front": -0.6342641207467601
+        }
+      },
+      "em": {
+        "pi": 0.032380270056539213,
+        "ebar": 0.28875922910925983,
+        "converged": true,
+        "iters": 4,
+        "trace_last": {
+          "iter": 3,
+          "pi": 0.032380270056539213,
+          "ebar": 0.2887589081898119,
+          "e_lab_mean": 0.28846098423337135,
+          "e_lab_min": 0.2755100038618321,
+          "e_lab_max": 0.29649758624734734,
+          "r_mean": 0.023255332752983665,
+          "r_sum": 3720.8532404773864
+        }
+      },
+      "seconds": 49.11
+    },
+    {
+      "fold": "NE",
+      "quadrant": 1,
+      "arm": "nnpu",
+      "pi": 0.023218194408083787,
+      "rho": 0.00934219311304197,
+      "u_weight": 31.9754125,
+      "ebar": 0.6511131983632215,
+      "risk": {
+        "risk": 0.10358380401735831,
+        "negative_term": 0.022443009459072502,
+        "non_negative_active": false
+      },
+      "n_labelled": 48246,
+      "n_unlabelled_full": 5116066,
+      "n_unlabelled_subsample": 160000,
+      "n_anchor_reference_px": 34938,
+      "propensity_chosen": "anchor",
+      "propensity_rule": "anchor_primary",
+      "propensity_reason": "anchor primary per the brief (a public reference index exists); the EM is reported as a sensitivity arm. EM diagnostics: Spearman vs anchor +0.212, std(e) 0.00300 vs anchor std(e) 0.20297",
+      "spearman_em_vs_anchor": 0.2123775357642082,
+      "em_std_e_two_inventory": 0.0029957827918039893,
+      "anchor_std_e_two_inventory": 0.20296709701098575,
+      "em_variance_ratio_vs_anchor": 0.014759943044570619,
+      "anchor": {
+        "c": 1.0,
+        "q_on_catalogue_mean": 0.6511131983632217,
+        "q_on_reference_mean": 0.4817037871744826,
+        "e_on_catalogue_mean": 0.6511131983632217,
+        "e_on_reference_mean": 0.4817037871744826,
+        "spearman_q_vs_covariates": {
+          "relief_local": -0.8465023846253847,
+          "slope": -0.8384655412277724,
+          "grav_basin_fill": -0.3232460089056807,
+          "lidar_cover": 0.15347724684862912,
+          "dist_range_front": -0.5874306455031396
+        }
+      },
+      "em": {
+        "pi": 0.032380270056539213,
+        "ebar": 0.28875922910925983,
+        "converged": true,
+        "iters": 4,
+        "trace_last": {
+          "iter": 3,
+          "pi": 0.032380270056539213,
+          "ebar": 0.2887589081898119,
+          "e_lab_mean": 0.28846098423337135,
+          "e_lab_min": 0.2755100038618321,
+          "e_lab_max": 0.29649758624734734,
+          "r_mean": 0.023255332752983665,
+          "r_sum": 3720.8532404773864
+        }
+      },
+      "seconds": 48.7
+    },
+    {
+      "fold": "SW",
+      "quadrant": 2,
+      "arm": "nnpu",
+      "pi": 0.023218194408083787,
+      "rho": 0.00934219311304197,
+      "u_weight": 31.9754125,
+      "ebar": 0.6372865899052672,
+      "risk": {
+        "risk": 0.10358380401735831,
+        "negative_term": 0.022443009459072502,
+        "non_negative_active": false
+      },
+      "n_labelled": 48246,
+      "n_unlabelled_full": 5116066,
+      "n_unlabelled_subsample": 160000,
+      "n_anchor_reference_px": 48918,
+      "propensity_chosen": "anchor",
+      "propensity_rule": "anchor_primary",
+      "propensity_reason": "anchor primary per the brief (a public reference index exists); the EM is reported as a sensitivity arm. EM diagnostics: Spearman vs anchor +0.264, std(e) 0.00299 vs anchor std(e) 0.26361",
+      "spearman_em_vs_anchor": 0.26381889312547385,
+      "em_std_e_two_inventory": 0.002988546169759739,
+      "anchor_std_e_two_inventory": 0.2636067907876737,
+      "em_variance_ratio_vs_anchor": 0.011337136501035407,
+      "anchor": {
+        "c": 1.0,
+        "q_on_catalogue_mean": 0.6372865899052671,
+        "q_on_reference_mean": 0.3578326952858959,
+        "e_on_catalogue_mean": 0.6372865899052671,
+        "e_on_reference_mean": 0.3578326952858959,
+        "spearman_q_vs_covariates": {
+          "relief_local": -0.823601788787762,
+          "slope": -0.7983700068125996,
+          "grav_basin_fill": -0.5579147565917144,
+          "lidar_cover": 0.31772930591270404,
+          "dist_range_front": -0.5713293435276663
+        }
+      },
+      "em": {
+        "pi": 0.032380270056539213,
+        "ebar": 0.28875922910925983,
+        "converged": true,
+        "iters": 4,
+        "trace_last": {
+          "iter": 3,
+          "pi": 0.032380270056539213,
+          "ebar": 0.2887589081898119,
+          "e_lab_mean": 0.28846098423337135,
+          "e_lab_min": 0.2755100038618321,
+          "e_lab_max": 0.29649758624734734,
+          "r_mean": 0.023255332752983665,
+          "r_sum": 3720.8532404773864
+        }
+      },
+      "seconds": 48.92
+    },
+    {
+      "fold": "SE",
+      "quadrant": 3,
+      "arm": "nnpu",
+      "pi": 0.023218194408083787,
+      "rho": 0.00934219311304197,
+      "u_weight": 31.9754125,
+      "ebar": 0.6708760305477453,
+      "risk": {
+        "risk": 0.10358380401735831,
+        "negative_term": 0.022443009459072502,
+        "non_negative_active": false
+      },
+      "n_labelled": 48246,
+      "n_unlabelled_full": 5116066,
+      "n_unlabelled_subsample": 160000,
+      "n_anchor_reference_px": 42919,
+      "propensity_chosen": "anchor",
+      "propensity_rule": "anchor_primary",
+      "propensity_reason": "anchor primary per the brief (a public reference index exists); the EM is reported as a sensitivity arm. EM diagnostics: Spearman vs anchor +0.341, std(e) 0.00298 vs anchor std(e) 0.27358",
+      "spearman_em_vs_anchor": 0.3411811804637849,
+      "em_std_e_two_inventory": 0.0029800216289141675,
+      "anchor_std_e_two_inventory": 0.27358144613660007,
+      "em_variance_ratio_vs_anchor": 0.010892630589525554,
+      "anchor": {
+        "c": 1.0,
+        "q_on_catalogue_mean": 0.6708760305477454,
+        "q_on_reference_mean": 0.37007301099512097,
+        "e_on_catalogue_mean": 0.6708760305477454,
+        "e_on_reference_mean": 0.37007301099512097,
+        "spearman_q_vs_covariates": {
+          "relief_local": -0.7893429853841651,
+          "slope": -0.7544001718072197,
+          "grav_basin_fill": -0.6441413379271703,
+          "lidar_cover": 0.46040217493232904,
+          "dist_range_front": -0.45460077699166324
+        }
+      },
+      "em": {
+        "pi": 0.032380270056539213,
+        "ebar": 0.28875922910925983,
+        "converged": true,
+        "iters": 4,
+        "trace_last": {
+          "iter": 3,
+          "pi": 0.032380270056539213,
+          "ebar": 0.2887589081898119,
+          "e_lab_mean": 0.28846098423337135,
+          "e_lab_min": 0.2755100038618321,
+          "e_lab_max": 0.29649758624734734,
+          "r_mean": 0.023255332752983665,
+          "r_sum": 3720.8532404773864
+        }
+      },
+      "seconds": 47.85
+    }
+  ],
+  "propensity_source_by_fold": {
+    "NW": "anchor",
+    "NE": "anchor",
+    "SW": "anchor",
+    "SE": "anchor"
+  },
+  "oof_assigned_px": 5167373,
+  "I1_hide_recover": {
+    "evidence_class": "HOLDOUT-DTI",
+    "evaluator_version": "gems57-pooled-hide-v2",
+    "alpha": 0.2,
+    "beta": 0.8,
+    "triangular_radius_m": 300.0,
+    "pooled": true,
+    "scores": {
+      "B_nnpu": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "dti": 0.08595548888738555,
+        "ci95": [
+          0.07454367068928647,
+          0.09585584432149553
+        ],
+        "withheld_positive_pixels": 11321,
+        "tpw": 1403.684478577294,
+        "fpw": 34964.13885153771,
+        "fnw": 9917.315521422703
+      },
+      "A1_sar": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "dti": 0.0710819528707695,
+        "ci95": [
+          0.0600446532025682,
+          0.08155115302906271
+        ],
+        "withheld_positive_pixels": 11321,
+        "tpw": 1157.4383672151519,
+        "fpw": 34974.330366617476,
+        "fnw": 10163.561632784842
+      },
+      "A2_sar_1me": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "dti": 0.05876576573843689,
+        "ci95": [
+          0.049598984534263514,
+          0.06789331211111464
+        ],
+        "withheld_positive_pixels": 11321,
+        "tpw": 957.0519869635084,
+        "fpw": 35188.32912782468,
+        "fnw": 10363.948013036494
+      },
+      "A3_sar_em_1me": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "dti": 0.0867402345051601,
+        "ci95": [
+          0.07584216513390035,
+          0.09715129990595871
+        ],
+        "withheld_positive_pixels": 11321,
+        "tpw": 1417.1476268438378,
+        "fpw": 34988.02666052408,
+        "fnw": 9903.852373156165
+      },
+      "C_distance_only": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "dti": 0.09071092419139049,
+        "ci95": [
+          0.07761171456861057,
+          0.10459542420435246
+        ],
+        "withheld_positive_pixels": 11321,
+        "tpw": 1294.9450399716204,
+        "fpw": 24798.623401477766,
+        "fnw": 10026.05496002838
+      }
+    },
+    "best_comparable_control": "C_distance_only",
+    "paired_differences": {
+      "B_nnpu": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "delta": -0.014873536016616049,
+        "ci95": [
+          -0.02388459268630221,
+          -0.005935752026036911
+        ],
+        "withheld_positive_pixels": 11321
+      },
+      "A2_sar_1me": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "delta": 0.01231618713233261,
+        "ci95": [
+          0.00539699120354925,
+          0.019567997251824773
+        ],
+        "withheld_positive_pixels": 11321
+      },
+      "A3_sar_em_1me": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "delta": -0.01565828163439059,
+        "ci95": [
+          -0.024745299731528902,
+          -0.0065938991882756445
+        ],
+        "withheld_positive_pixels": 11321
+      },
+      "C_distance_only": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "delta": -0.019628971320620983,
+        "ci95": [
+          -0.035697727164890614,
+          -0.0023371335150772325
+        ],
+        "withheld_positive_pixels": 11321
+      }
+    },
+    "bootstrap": {
+      "method": "paired physical spatial-cluster percentile",
+      "clusters": 158,
+      "draws": 1000,
+      "seed": 520810,
+      "confidence": 0.95,
+      "caveat": "Conditional on fitted folds, catalogue labels and fixed budgets; not a leaderboard interval."
+    },
+    "implementation_sha256": {
+      "evaluate_holdout.py": "ad86640b46f3c5fc6b1aceec4c4bfc82d03e35008b37ab2a8ad6076e6810ff3a",
+      "holdout.py": "7a0a84176986190b527aa9c6a84216c2dab4b599f25b1143db5f420e85020ab1",
+      "metric.py": "4afe10cbaa229948520c75194b1ebc32676e72544f05582f0725092b097b4d7f",
+      "spatial.py": "fad7b09db9efc512247b9a176a7e7ce8631e287592b4e07902d0b9c38bed00f8"
+    },
+    "instrument": "I1_hide_recover",
+    "per_fold": {
+      "B_nnpu": [
+        {
+          "fold": "NW",
+          "dti": 0.07964228588761836,
+          "tpw": 250.90057452173107,
+          "fpw": 7808.817983366712,
+          "fnw": 1672.099425478269,
+          "n_truth": 1923,
+          "n_emitted": 7907,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "NE",
+          "dti": 0.07533401660323079,
+          "tpw": 264.09666819516343,
+          "fpw": 7796.2842746468805,
+          "fnw": 2102.9033318048364,
+          "n_truth": 2367,
+          "n_emitted": 7902,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "SW",
+          "dti": 0.09054657064423584,
+          "tpw": 483.2213073740136,
+          "fpw": 11076.357316085161,
+          "fnw": 3297.7786926259864,
+          "n_truth": 3781,
+          "n_emitted": 11266,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "SE",
+          "dti": 0.09347639566144404,
+          "tpw": 405.4659284863861,
+          "fpw": 8282.679277438974,
+          "fnw": 2844.534071513614,
+          "n_truth": 3250,
+          "n_emitted": 8428,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        }
+      ],
+      "A1_sar": [
+        {
+          "fold": "NW",
+          "dti": 0.07731525001386823,
+          "tpw": 243.6557429314053,
+          "fpw": 7821.632947702079,
+          "fnw": 1679.3442570685947,
+          "n_truth": 1923,
+          "n_emitted": 7913,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "NE",
+          "dti": 0.04704559727572538,
+          "tpw": 165.4998066586416,
+          "fpw": 7955.798261838434,
+          "fnw": 2201.500193341358,
+          "n_truth": 2367,
+          "n_emitted": 8021,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "SW",
+          "dti": 0.0774216344689666,
+          "tpw": 404.0939802246351,
+          "fpw": 10568.87381155006,
+          "fnw": 3376.9060197753647,
+          "n_truth": 3781,
+          "n_emitted": 10726,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "SE",
+          "dti": 0.07832365790151198,
+          "tpw": 344.1888374004706,
+          "fpw": 8628.025345526898,
+          "fnw": 2905.8111625995293,
+          "n_truth": 3250,
+          "n_emitted": 8753,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        }
+      ],
+      "A2_sar_1me": [
+        {
+          "fold": "NW",
+          "dti": 0.06522960999479184,
+          "tpw": 207.31853854965684,
+          "fpw": 7992.125436526216,
+          "fnw": 1715.6814614503432,
+          "n_truth": 1923,
+          "n_emitted": 8071,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "NE",
+          "dti": 0.04657998057662569,
+          "tpw": 182.97508222784774,
+          "fpw": 9989.982252098138,
+          "fnw": 2184.024917772152,
+          "n_truth": 2367,
+          "n_emitted": 10061,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "SW",
+          "dti": 0.06575885035601842,
+          "tpw": 332.7269279267141,
+          "fpw": 9842.2956466264,
+          "fnw": 3448.273072073286,
+          "n_truth": 3781,
+          "n_emitted": 9971,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "SE",
+          "dti": 0.056809380570265126,
+          "tpw": 234.03143825928979,
+          "fpw": 7363.9257925739275,
+          "fnw": 3015.9685617407104,
+          "n_truth": 3250,
+          "n_emitted": 7451,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        }
+      ],
+      "A3_sar_em_1me": [
+        {
+          "fold": "NW",
+          "dti": 0.0864776197397011,
+          "tpw": 270.6903901174787,
+          "fpw": 7688.202345613493,
+          "fnw": 1652.3096098825213,
+          "n_truth": 1923,
+          "n_emitted": 7794,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "NE",
+          "dti": 0.062301479878477076,
+          "tpw": 218.87708203838653,
+          "fpw": 7879.084630694592,
+          "fnw": 2148.1229179616134,
+          "n_truth": 2367,
+          "n_emitted": 7966,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "SW",
+          "dti": 0.09378099841271484,
+          "tpw": 499.5422233228973,
+          "fpw": 11009.903345495512,
+          "fnw": 3281.4577766771026,
+          "n_truth": 3781,
+          "n_emitted": 11206,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "SE",
+          "dti": 0.09799908321084856,
+          "tpw": 428.0379313650754,
+          "fpw": 8410.8363387205,
+          "fnw": 2821.9620686349244,
+          "n_truth": 3250,
+          "n_emitted": 8571,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        }
+      ],
+      "C_distance_only": [
+        {
+          "fold": "NW",
+          "dti": 0.0757030351223945,
+          "tpw": 202.9376161971266,
+          "fpw": 5508.594743438311,
+          "fnw": 1720.0623838028735,
+          "n_truth": 1923,
+          "n_emitted": 5597,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "NE",
+          "dti": 0.06623522360606475,
+          "tpw": 211.00388473909112,
+          "fpw": 6249.370268116542,
+          "fnw": 2155.996115260909,
+          "n_truth": 2367,
+          "n_emitted": 6348,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "SW",
+          "dti": 0.1330958408504937,
+          "tpw": 572.8741972805808,
+          "fpw": 5824.241474699327,
+          "fnw": 3208.125802719419,
+          "n_truth": 3781,
+          "n_emitted": 6061,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "SE",
+          "dti": 0.07506361843445311,
+          "tpw": 308.12934175482195,
+          "fpw": 7216.416915223578,
+          "fnw": 2941.870658245178,
+          "n_truth": 3250,
+          "n_emitted": 7341,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        }
+      ]
+    },
+    "emitted_pixels": {
+      "B_nnpu": 38000,
+      "A1_sar": 38000,
+      "A2_sar_1me": 38000,
+      "A3_sar_em_1me": 38000,
+      "C_distance_only": 27451
+    },
+    "scored_pixels_per_arm": {
+      "B_nnpu": {
+        "NW": 7907,
+        "NE": 7902,
+        "SW": 11266,
+        "SE": 8428
+      },
+      "A1_sar": {
+        "NW": 7913,
+        "NE": 8021,
+        "SW": 10726,
+        "SE": 8753
+      },
+      "A2_sar_1me": {
+        "NW": 8071,
+        "NE": 10061,
+        "SW": 9971,
+        "SE": 7451
+      },
+      "A3_sar_em_1me": {
+        "NW": 7794,
+        "NE": 7966,
+        "SW": 11206,
+        "SE": 8571
+      },
+      "C_distance_only": {
+        "NW": 5597,
+        "NE": 6348,
+        "SW": 6061,
+        "SE": 7341
+      }
+    }
+  },
+  "I1_emission_geometry": {
+    "B_nnpu": {
+      "dots": 38000,
+      "on_catalogue_px": 173,
+      "min_dist_to_visible_px": 3.0,
+      "median_dist_to_visible_px": 19.209372712298546,
+      "p95_dist_to_visible_px": 80.52328855678958,
+      "max_dist_to_visible_px": 219.98636321372285,
+      "frac_within_300m_of_visible": 0.034105263157894736
+    },
+    "A1_sar": {
+      "dots": 38000,
+      "on_catalogue_px": 134,
+      "min_dist_to_visible_px": 3.0,
+      "median_dist_to_visible_px": 21.02379604162864,
+      "p95_dist_to_visible_px": 81.88406438373708,
+      "max_dist_to_visible_px": 226.0,
+      "frac_within_300m_of_visible": 0.032
+    },
+    "A2_sar_1me": {
+      "dots": 38000,
+      "on_catalogue_px": 97,
+      "min_dist_to_visible_px": 3.0,
+      "median_dist_to_visible_px": 23.345235059857504,
+      "p95_dist_to_visible_px": 82.73451516749222,
+      "max_dist_to_visible_px": 224.08257406590099,
+      "frac_within_300m_of_visible": 0.0275
+    },
+    "A3_sar_em_1me": {
+      "dots": 38000,
+      "on_catalogue_px": 186,
+      "min_dist_to_visible_px": 3.0,
+      "median_dist_to_visible_px": 19.235384061671343,
+      "p95_dist_to_visible_px": 80.41237456682308,
+      "max_dist_to_visible_px": 219.98636321372285,
+      "frac_within_300m_of_visible": 0.034342105263157896
+    },
+    "C_distance_only": {
+      "dots": 27451,
+      "on_catalogue_px": 173,
+      "min_dist_to_visible_px": 3.0,
+      "median_dist_to_visible_px": 3.0,
+      "p95_dist_to_visible_px": 128.89142717807107,
+      "max_dist_to_visible_px": 224.28776159211185,
+      "frac_within_300m_of_visible": 0.525226767695166
+    }
+  },
+  "I1_tercile_gate": {
+    "evidence_class": "HOLDOUT-DTI",
+    "evaluator_version": "gems57-pooled-hide-v2",
+    "alpha": 0.2,
+    "beta": 0.8,
+    "triangular_radius_m": 300.0,
+    "pooled": true,
+    "scores": {
+      "B_nnpu": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "dti": 0.06038649150910222,
+        "ci95": [
+          0.03878132573712617,
+          0.08468605529522714
+        ],
+        "withheld_positive_pixels": 3107,
+        "tpw": 197.06253516650702,
+        "fpw": 3691.710491529635,
+        "fnw": 2909.9374648334933
+      },
+      "A1_sar": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "dti": 0.04631356268885613,
+        "ci95": [
+          0.03090116086341111,
+          0.06408812813835527
+        ],
+        "withheld_positive_pixels": 3107,
+        "tpw": 131.54823740365268,
+        "fpw": 1642.364740811852,
+        "fnw": 2975.451762596347
+      },
+      "A2_sar_1me": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "dti": 0.0016448888664958258,
+        "ci95": [
+          0.0,
+          0.004063390510468279
+        ],
+        "withheld_positive_pixels": 3107,
+        "tpw": 4.130767043629655,
+        "fpw": 124.24044978391278,
+        "fnw": 3102.8692329563705
+      },
+      "A3_sar_em_1me": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "dti": 0.06553287461638843,
+        "ci95": [
+          0.047834094175166306,
+          0.08436508664154439
+        ],
+        "withheld_positive_pixels": 3107,
+        "tpw": 228.498561067016,
+        "fpw": 4777.389575580751,
+        "fnw": 2878.5014389329835
+      },
+      "C_distance_only": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "dti": 0.09451932082253942,
+        "ci95": [
+          0.07074219461622744,
+          0.11812882726318205
+        ],
+        "withheld_positive_pixels": 3107,
+        "tpw": 389.8199115694829,
+        "fpw": 7803.356170586883,
+        "fnw": 2717.180088430517
+      }
+    },
+    "best_comparable_control": "C_distance_only",
+    "paired_differences": {
+      "B_nnpu": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "delta": -0.014072928820246092,
+        "ci95": [
+          -0.03648206798033506,
+          0.0030929044260744917
+        ],
+        "withheld_positive_pixels": 3107
+      },
+      "A2_sar_1me": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "delta": 0.044668673822360304,
+        "ci95": [
+          0.029455557826552944,
+          0.061553177773741106
+        ],
+        "withheld_positive_pixels": 3107
+      },
+      "A3_sar_em_1me": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "delta": -0.019219311927532304,
+        "ci95": [
+          -0.037648273306049744,
+          -0.003570840947305616
+        ],
+        "withheld_positive_pixels": 3107
+      },
+      "C_distance_only": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "delta": -0.04820575813368329,
+        "ci95": [
+          -0.07624864255612146,
+          -0.016517969287316876
+        ],
+        "withheld_positive_pixels": 3107
+      }
+    },
+    "bootstrap": {
+      "method": "paired physical spatial-cluster percentile",
+      "clusters": 145,
+      "draws": 1000,
+      "seed": 520810,
+      "confidence": 0.95,
+      "caveat": "Conditional on fitted folds, catalogue labels and fixed budgets; not a leaderboard interval."
+    },
+    "implementation_sha256": {
+      "evaluate_holdout.py": "ad86640b46f3c5fc6b1aceec4c4bfc82d03e35008b37ab2a8ad6076e6810ff3a",
+      "holdout.py": "7a0a84176986190b527aa9c6a84216c2dab4b599f25b1143db5f420e85020ab1",
+      "metric.py": "4afe10cbaa229948520c75194b1ebc32676e72544f05582f0725092b097b4d7f",
+      "spatial.py": "fad7b09db9efc512247b9a176a7e7ce8631e287592b4e07902d0b9c38bed00f8"
+    },
+    "instrument": "I1_highest_propensity_tercile",
+    "per_fold": {
+      "B_nnpu": [
+        {
+          "fold": "NW|restricted",
+          "dti": 0.017659391233761895,
+          "tpw": 6.192339808460588,
+          "fpw": 387.07868932583324,
+          "fnw": 333.8076601915394,
+          "n_truth": 340,
+          "n_emitted": 390,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "NE|restricted",
+          "dti": 0.030262037011480808,
+          "tpw": 11.425485448545333,
+          "fpw": 224.33333333333334,
+          "fnw": 401.5745145514547,
+          "n_truth": 413,
+          "n_emitted": 229,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "SW|restricted",
+          "dti": 0.0444572783489801,
+          "tpw": 37.763831929152005,
+          "fpw": 677.4408251704099,
+          "fnw": 845.236168070848,
+          "n_truth": 883,
+          "n_emitted": 694,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "SE|restricted",
+          "dti": 0.08404830660494027,
+          "tpw": 141.68087798034907,
+          "fpw": 2402.8576437000584,
+          "fnw": 1329.3191220196509,
+          "n_truth": 1471,
+          "n_emitted": 2455,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        }
+      ],
+      "A1_sar": [
+        {
+          "fold": "NW|restricted",
+          "dti": 0.004000691062334635,
+          "tpw": 1.15445631425148,
+          "fpw": 81.66666666666666,
+          "fnw": 338.8455436857485,
+          "n_truth": 340,
+          "n_emitted": 82,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "NE|restricted",
+          "dti": 0.019961403286359966,
+          "tpw": 7.1879580020475915,
+          "fpw": 141.2761423749154,
+          "fnw": 405.8120419979524,
+          "n_truth": 413,
+          "n_emitted": 144,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "SW|restricted",
+          "dti": 0.0437948269288714,
+          "tpw": 33.717184822116906,
+          "fpw": 283.73116176891267,
+          "fnw": 849.2828151778831,
+          "n_truth": 883,
+          "n_emitted": 296,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "SE|restricted",
+          "dti": 0.06293879583428344,
+          "tpw": 89.48863826523669,
+          "fpw": 1135.6907700013571,
+          "fnw": 1381.5113617347633,
+          "n_truth": 1471,
+          "n_emitted": 1169,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        }
+      ],
+      "A2_sar_1me": [
+        {
+          "fold": "NW|restricted",
+          "dti": 0.0,
+          "tpw": 0.0,
+          "fpw": 15.0,
+          "fnw": 340.0,
+          "n_truth": 340,
+          "n_emitted": 15,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "NE|restricted",
+          "dti": 0.0,
+          "tpw": 0.0,
+          "fpw": 9.0,
+          "fnw": 413.0,
+          "n_truth": 413,
+          "n_emitted": 9,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "SW|restricted",
+          "dti": 0.0,
+          "tpw": 0.0,
+          "fpw": 21.0,
+          "fnw": 883.0,
+          "n_truth": 883,
+          "n_emitted": 21,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "SE|restricted",
+          "dti": 0.0034611279351795614,
+          "tpw": 4.130767043629655,
+          "fpw": 79.24044978391278,
+          "fnw": 1466.8692329563703,
+          "n_truth": 1471,
+          "n_emitted": 81,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        }
+      ],
+      "A3_sar_em_1me": [
+        {
+          "fold": "NW|restricted",
+          "dti": 0.016342891922933676,
+          "tpw": 6.32602918950529,
+          "fpw": 569.0808802290397,
+          "fnw": 333.6739708104947,
+          "n_truth": 340,
+          "n_emitted": 572,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "NE|restricted",
+          "dti": 0.03687168236366851,
+          "tpw": 15.24660842946348,
+          "fpw": 400.27614237491537,
+          "fnw": 397.7533915705365,
+          "n_truth": 413,
+          "n_emitted": 406,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "SW|restricted",
+          "dti": 0.05112809133550372,
+          "tpw": 47.26216202870051,
+          "fpw": 1042.6747022447032,
+          "fnw": 835.7378379712995,
+          "n_truth": 883,
+          "n_emitted": 1064,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "SE|restricted",
+          "dti": 0.09062513889119166,
+          "tpw": 159.66376141934674,
+          "fpw": 2765.3578507320926,
+          "fnw": 1311.3362385806533,
+          "n_truth": 1471,
+          "n_emitted": 2828,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        }
+      ],
+      "C_distance_only": [
+        {
+          "fold": "NW|restricted",
+          "dti": 0.07212118953121073,
+          "tpw": 40.65310378393973,
+          "fpw": 1417.7352262051859,
+          "fnw": 299.34689621606026,
+          "n_truth": 340,
+          "n_emitted": 1437,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "NE|restricted",
+          "dti": 0.05103583067808169,
+          "tpw": 32.181699263148694,
+          "fpw": 1468.6717799072883,
+          "fnw": 380.8183007368513,
+          "n_truth": 413,
+          "n_emitted": 1483,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "SW|restricted",
+          "dti": 0.14051401166024088,
+          "tpw": 149.89951202670682,
+          "fpw": 1652.070753841145,
+          "fnw": 733.1004879732932,
+          "n_truth": 883,
+          "n_emitted": 1718,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "SE|restricted",
+          "dti": 0.08967702986391257,
+          "tpw": 167.08559649568764,
+          "fpw": 3264.878410633265,
+          "fnw": 1303.9144035043123,
+          "n_truth": 1471,
+          "n_emitted": 3334,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        }
+      ]
+    },
+    "emitted_pixels": {
+      "B_nnpu": 38000,
+      "A1_sar": 38000,
+      "A2_sar_1me": 38000,
+      "A3_sar_em_1me": 38000,
+      "C_distance_only": 27451
+    },
+    "scored_pixels_per_arm": {
+      "B_nnpu": {
+        "NW|restricted": 390,
+        "NE|restricted": 229,
+        "SW|restricted": 694,
+        "SE|restricted": 2455
+      },
+      "A1_sar": {
+        "NW|restricted": 82,
+        "NE|restricted": 144,
+        "SW|restricted": 296,
+        "SE|restricted": 1169
+      },
+      "A2_sar_1me": {
+        "NW|restricted": 15,
+        "NE|restricted": 9,
+        "SW|restricted": 21,
+        "SE|restricted": 81
+      },
+      "A3_sar_em_1me": {
+        "NW|restricted": 572,
+        "NE|restricted": 406,
+        "SW|restricted": 1064,
+        "SE|restricted": 2828
+      },
+      "C_distance_only": {
+        "NW|restricted": 1437,
+        "NE|restricted": 1483,
+        "SW|restricted": 1718,
+        "SE|restricted": 3334
+      }
+    },
+    "tercile_threshold_e": 0.8053719571932376,
+    "tercile_pixels": 1613600,
+    "e_quantiles_over_scored_domain": {
+      "p05": 0.17003997422432604,
+      "p25": 0.47822170275033393,
+      "p50": 0.7209356266527186,
+      "p75": 0.8359349918204244,
+      "p95": 0.9241223130428144
+    }
+  },
+  "tercile_definition": "highest-propensity tercile of the scored domain, using the PRIMARY (anchored) out-of-fold e(x); the gate asks for no loss there relative to the nnPU baseline",
+  "I1_auc_pooled": {
+    "B_nnpu": 0.6671190557915585,
+    "A1_sar": 0.6417456571931127,
+    "A2_sar_1me": 0.589705603574866,
+    "A3_sar_em_1me": 0.6659858879039893,
+    "C_distance_only": 0.7670499185782382
+  },
+  "I2_sgmc_offcat": {
+    "evidence_class": "HOLDOUT-DTI",
+    "evaluator_version": "gems57-pooled-hide-v2",
+    "alpha": 0.2,
+    "beta": 0.8,
+    "triangular_radius_m": 300.0,
+    "pooled": true,
+    "scores": {
+      "B_nnpu": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "dti": 0.10195331880615163,
+        "ci95": [
+          0.09179295634378565,
+          0.11324165860097116
+        ],
+        "withheld_positive_pixels": 59012,
+        "tpw": 5659.534323290056,
+        "fpw": 35847.644338955084,
+        "fnw": 53352.46567671
+      },
+      "A1_sar": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "dti": 0.1261995736079289,
+        "ci95": [
+          0.11729912627876153,
+          0.13496746492943243
+        ],
+        "withheld_positive_pixels": 59012,
+        "tpw": 7028.285618746935,
+        "fpw": 35382.88099389496,
+        "fnw": 51983.71438125312
+      },
+      "A2_sar_1me": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "dti": 0.14084237947826025,
+        "ci95": [
+          0.13249898375778643,
+          0.14812688620661135
+        ],
+        "withheld_positive_pixels": 59012,
+        "tpw": 7859.524952861145,
+        "fpw": 35110.94171804218,
+        "fnw": 51152.47504713893
+      },
+      "A3_sar_em_1me": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "dti": 0.10369712558010646,
+        "ci95": [
+          0.0929333399949678,
+          0.11497237207490227
+        ],
+        "withheld_positive_pixels": 59012,
+        "tpw": 5757.7816665531545,
+        "fpw": 35819.15896428633,
+        "fnw": 53254.21833344686
+      },
+      "C_distance_only": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "dti": 0.021905541218125203,
+        "ci95": [
+          0.017568192097166885,
+          0.02734563087002199
+        ],
+        "withheld_positive_pixels": 59012,
+        "tpw": 1154.3578386294419,
+        "fpw": 26282.99208605003,
+        "fnw": 57857.64216137056
+      }
+    },
+    "best_comparable_control": "A2_sar_1me",
+    "paired_differences": {
+      "B_nnpu": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "delta": 0.02424625480177728,
+        "ci95": [
+          0.01480219775303812,
+          0.032843085104047536
+        ],
+        "withheld_positive_pixels": 59012
+      },
+      "A2_sar_1me": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "delta": -0.014642805870331344,
+        "ci95": [
+          -0.02264616749996674,
+          -0.007147441777183658
+        ],
+        "withheld_positive_pixels": 59012
+      },
+      "A3_sar_em_1me": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "delta": 0.022502448027822447,
+        "ci95": [
+          0.01301545044830768,
+          0.031172910507538065
+        ],
+        "withheld_positive_pixels": 59012
+      },
+      "C_distance_only": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "delta": 0.10429403238980371,
+        "ci95": [
+          0.09464697342990368,
+          0.11426060891271964
+        ],
+        "withheld_positive_pixels": 59012
+      }
+    },
+    "bootstrap": {
+      "method": "paired physical spatial-cluster percentile",
+      "clusters": 160,
+      "draws": 1000,
+      "seed": 520810,
+      "confidence": 0.95,
+      "caveat": "Conditional on fitted folds, catalogue labels and fixed budgets; not a leaderboard interval."
+    },
+    "implementation_sha256": {
+      "evaluate_holdout.py": "ad86640b46f3c5fc6b1aceec4c4bfc82d03e35008b37ab2a8ad6076e6810ff3a",
+      "holdout.py": "7a0a84176986190b527aa9c6a84216c2dab4b599f25b1143db5f420e85020ab1",
+      "metric.py": "4afe10cbaa229948520c75194b1ebc32676e72544f05582f0725092b097b4d7f",
+      "spatial.py": "fad7b09db9efc512247b9a176a7e7ce8631e287592b4e07902d0b9c38bed00f8"
+    },
+    "instrument": "I2_sgmc_offcat",
+    "per_fold": {
+      "B_nnpu": [
+        {
+          "fold": "I2_NW",
+          "dti": 0.11652042701244525,
+          "tpw": 1025.2714696275182,
+          "fpw": 7966.081787961011,
+          "fnw": 7725.728530372482,
+          "n_truth": 8751,
+          "n_emitted": 8355,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "I2_NE",
+          "dti": 0.08911015191005035,
+          "tpw": 1887.3302362861805,
+          "fpw": 7715.391504828719,
+          "fnw": 22186.66976371382,
+          "n_truth": 24074,
+          "n_emitted": 8429,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "I2_SW",
+          "dti": 0.11365939697018115,
+          "tpw": 1207.0655806270065,
+          "fpw": 11517.056925903758,
+          "fnw": 8886.934419372994,
+          "n_truth": 10094,
+          "n_emitted": 11992,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "I2_SE",
+          "dti": 0.1032622568033735,
+          "tpw": 1539.8670367493517,
+          "fpw": 8649.114120261598,
+          "fnw": 14553.132963250648,
+          "n_truth": 16093,
+          "n_emitted": 9224,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        }
+      ],
+      "A1_sar": [
+        {
+          "fold": "I2_NW",
+          "dti": 0.1287930015619547,
+          "tpw": 1134.4108171873725,
+          "fpw": 7901.669133960984,
+          "fnw": 7616.589182812628,
+          "n_truth": 8751,
+          "n_emitted": 8336,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "I2_NE",
+          "dti": 0.11150532673987198,
+          "tpw": 2370.892395014728,
+          "fpw": 7646.073287141619,
+          "fnw": 21703.10760498527,
+          "n_truth": 24074,
+          "n_emitted": 8526,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "I2_SW",
+          "dti": 0.13637737754563448,
+          "tpw": 1440.5180258344994,
+          "fpw": 10997.154291352941,
+          "fnw": 8653.481974165501,
+          "n_truth": 10094,
+          "n_emitted": 11553,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "I2_SE",
+          "dti": 0.1382917156841784,
+          "tpw": 2082.464380710323,
+          "fpw": 8837.984281439452,
+          "fnw": 14010.535619289676,
+          "n_truth": 16093,
+          "n_emitted": 9585,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        }
+      ],
+      "A2_sar_1me": [
+        {
+          "fold": "I2_NW",
+          "dti": 0.13172529807066638,
+          "tpw": 1165.68164613497,
+          "fpw": 8077.00684910073,
+          "fnw": 7585.31835386503,
+          "n_truth": 8751,
+          "n_emitted": 8518,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "I2_NE",
+          "dti": 0.15014912934293434,
+          "tpw": 3271.562210634662,
+          "fpw": 9376.20006595339,
+          "fnw": 20802.437789365336,
+          "n_truth": 24074,
+          "n_emitted": 10570,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "I2_SW",
+          "dti": 0.13461430023526996,
+          "tpw": 1399.8823491828637,
+          "fpw": 10220.166612043462,
+          "fnw": 8694.117650817136,
+          "n_truth": 10094,
+          "n_emitted": 10759,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "I2_SE",
+          "dti": 0.13695956039007848,
+          "tpw": 2022.3987469086378,
+          "fpw": 7437.568190944594,
+          "fnw": 14070.601253091361,
+          "n_truth": 16093,
+          "n_emitted": 8153,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        }
+      ],
+      "A3_sar_em_1me": [
+        {
+          "fold": "I2_NW",
+          "dti": 0.1205033639912884,
+          "tpw": 1058.2458135293195,
+          "fpw": 7847.143039956283,
+          "fnw": 7692.75418647068,
+          "n_truth": 8751,
+          "n_emitted": 8243,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "I2_NE",
+          "dti": 0.09108491396819662,
+          "tpw": 1930.8979574518053,
+          "fpw": 7767.490867793247,
+          "fnw": 22143.102042548195,
+          "n_truth": 24074,
+          "n_emitted": 8500,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "I2_SW",
+          "dti": 0.11922341025458581,
+          "tpw": 1266.0934583161834,
+          "fpw": 11455.425544562864,
+          "fnw": 8827.906541683817,
+          "n_truth": 10094,
+          "n_emitted": 11951,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "I2_SE",
+          "dti": 0.10067482353703447,
+          "tpw": 1502.54443725584,
+          "fpw": 8749.09951197394,
+          "fnw": 14590.45556274416,
+          "n_truth": 16093,
+          "n_emitted": 9306,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        }
+      ],
+      "C_distance_only": [
+        {
+          "fold": "I2_NW",
+          "dti": 0.030394326803803814,
+          "tpw": 249.85048412102563,
+          "fpw": 5847.6494329222205,
+          "fnw": 8501.149515878975,
+          "n_truth": 8751,
+          "n_emitted": 5970,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "I2_NE",
+          "dti": 0.018709613151886833,
+          "tpw": 385.85907143608864,
+          "fpw": 6436.005606908524,
+          "fnw": 23688.140928563913,
+          "n_truth": 24074,
+          "n_emitted": 6632,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "I2_SW",
+          "dti": 0.016517337501530036,
+          "tpw": 154.6216065033297,
+          "fpw": 6275.229060714297,
+          "fnw": 9939.37839349667,
+          "n_truth": 10094,
+          "n_emitted": 6373,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        },
+        {
+          "fold": "I2_SE",
+          "dti": 0.025119100196727327,
+          "tpw": 364.02667656899825,
+          "fpw": 7724.107985504979,
+          "fnw": 15728.973323431002,
+          "n_truth": 16093,
+          "n_emitted": 7915,
+          "evaluator_version": "gems57-pooled-hide-v2"
+        }
+      ]
+    },
+    "emitted_pixels": {
+      "B_nnpu": 38000,
+      "A1_sar": 38000,
+      "A2_sar_1me": 38000,
+      "A3_sar_em_1me": 38000,
+      "C_distance_only": 26890
+    },
+    "scored_pixels_per_arm": {
+      "B_nnpu": {
+        "I2_NW": 8355,
+        "I2_NE": 8429,
+        "I2_SW": 11992,
+        "I2_SE": 9224
+      },
+      "A1_sar": {
+        "I2_NW": 8336,
+        "I2_NE": 8526,
+        "I2_SW": 11553,
+        "I2_SE": 9585
+      },
+      "A2_sar_1me": {
+        "I2_NW": 8518,
+        "I2_NE": 10570,
+        "I2_SW": 10759,
+        "I2_SE": 8153
+      },
+      "A3_sar_em_1me": {
+        "I2_NW": 8243,
+        "I2_NE": 8500,
+        "I2_SW": 11951,
+        "I2_SE": 9306
+      },
+      "C_distance_only": {
+        "I2_NW": 5970,
+        "I2_NE": 6632,
+        "I2_SW": 6373,
+        "I2_SE": 7915
+      }
+    }
+  },
+  "I2_emission_geometry": {
+    "B_nnpu": {
+      "dots": 38000,
+      "on_catalogue_px": 0,
+      "min_dist_to_visible_px": 3.0,
+      "median_dist_to_visible_px": 17.72004514666935,
+      "p95_dist_to_visible_px": 77.38862965578342,
+      "max_dist_to_visible_px": 219.98636321372285,
+      "frac_within_300m_of_visible": 0.03978947368421053
+    },
+    "A1_sar": {
+      "dots": 38000,
+      "on_catalogue_px": 0,
+      "min_dist_to_visible_px": 3.0,
+      "median_dist_to_visible_px": 19.313207915827967,
+      "p95_dist_to_visible_px": 78.60025445251433,
+      "max_dist_to_visible_px": 221.21934815924217,
+      "frac_within_300m_of_visible": 0.03784210526315789
+    },
+    "A2_sar_1me": {
+      "dots": 38000,
+      "on_catalogue_px": 0,
+      "min_dist_to_visible_px": 3.0,
+      "median_dist_to_visible_px": 21.540659228538015,
+      "p95_dist_to_visible_px": 79.85142424188126,
+      "max_dist_to_visible_px": 222.59604668547013,
+      "frac_within_300m_of_visible": 0.03313157894736842
+    },
+    "A3_sar_em_1me": {
+      "dots": 38000,
+      "on_catalogue_px": 0,
+      "min_dist_to_visible_px": 3.0,
+      "median_dist_to_visible_px": 17.804493814764857,
+      "p95_dist_to_visible_px": 77.05841939723393,
+      "max_dist_to_visible_px": 219.98636321372285,
+      "frac_within_300m_of_visible": 0.039947368421052634
+    },
+    "C_distance_only": {
+      "dots": 26890,
+      "on_catalogue_px": 0,
+      "min_dist_to_visible_px": 3.0,
+      "median_dist_to_visible_px": 3.0,
+      "p95_dist_to_visible_px": 127.54940146325752,
+      "max_dist_to_visible_px": 223.5754906066405,
+      "frac_within_300m_of_visible": 0.5147266641874303
+    }
+  },
+  "I2_auc_pooled": {
+    "B_nnpu": 0.5098438379008027,
+    "A1_sar": 0.6310964680623502,
+    "A2_sar_1me": 0.7145427897746669,
+    "A3_sar_em_1me": 0.49763428479508365,
+    "C_distance_only": 0.4806221086705614
+  },
+  "c_sensitivity": {
+    "0.25": {
+      "note": "ranking-only sensitivity: the SAR risk weights use c=1.0; re-training per c is listed as future work"
+    },
+    "0.5": {
+      "note": "ranking-only sensitivity: the SAR risk weights use c=1.0; re-training per c is listed as future work"
+    },
+    "1.0": {
+      "note": "ranking-only sensitivity: the SAR risk weights use c=1.0; re-training per c is listed as future work"
+    }
+  },
+  "em_sensitivity_e_grid": {
+    "quantiles_over_footprint": {
+      "p01": 0.28080714274414,
+      "p50": 0.28890806409214775,
+      "p99": 0.29611452770096536
+    },
+    "mean_on_catalogue": 0.2880863460996411,
+    "mean_on_sgmc_offcat": 0.2875472865105471,
+    "std_over_footprint": 0.0028231131335402816,
+    "irregularity": "IR-65-PROP-01: the EM propensity collapsed to a near-constant field, which is why the anchored propensity is primary (see lane.propensity_choice)"
+  },
+  "propensity_e_grid": {
+    "quantiles_over_footprint": {
+      "p01": 0.08114713622086174,
+      "p05": 0.17071704633969498,
+      "p25": 0.480316401571025,
+      "p50": 0.7210664178437178,
+      "p75": 0.8355138754900979,
+      "p95": 0.9237467903294676,
+      "p99": 0.9635177775377936
+    },
+    "mean_on_catalogue": 0.659900535196602,
+    "mean_off_catalogue": 0.6438872415233151,
+    "mean_on_sgmc_offcat": 0.42730696884051456
+  },
+  "seconds": 766.7
+}

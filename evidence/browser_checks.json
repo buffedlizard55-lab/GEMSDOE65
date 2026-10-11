@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-10-11T21:04:42.777Z",
+  "checked_at": "2026-10-11T21:11:25.421Z",
   "sandbox_proxy_tls_override": true,
   "transport_receipt": "browser_transport.json",
   "engine": "Chromium via Playwright",
@@ -81,7 +81,7 @@
     {
       "sourceFilterVisibleRows": 1,
       "filterStatus": "1 of 62 sources shown",
-      "feed": "GITHUB METADATA SNAPSHOT · 2026-10-11 20:35:39 UTC · 62 repositories checked · 1 changed since scientific review · 0 unavailable. No leaderboard or score verification."
+      "feed": "GITHUB METADATA SNAPSHOT · 2026-10-11 21:08:37 UTC · 62 repositories checked · 4 changed since scientific review · 0 unavailable. No leaderboard or score verification."
     },
     {
       "path": "index.html",

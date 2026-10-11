@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-10-11T21:07:18.761413+00:00",
+  "checked_at": "2026-10-11T21:11:12.675308+00:00",
   "status": "Three local review passes complete; negative scientific verdict is unchanged",
   "passes": [
     {
@@ -34,7 +34,8 @@
         "Original prompt archived in README; agent read-first agreement added",
         "Shared template source hashes remain unchanged",
         "All scope limits and unperformed checks disclosed; no leaderboard promise or slot spent",
-        "Retained prior planning/history, no-leaderboard policy and readiness tests; updated obsolete preflight-card assertions to the actual completed run"
+        "Retained prior planning/history, no-leaderboard policy and readiness tests; updated obsolete preflight-card assertions to the actual completed run",
+        "Metadata tests use a frozen clock; stale/future snapshots are explicitly exercised without network access"
       ]
     }
   ],
@@ -49,5 +50,5 @@
   "organizer_uploads": 0,
   "submission_ready": false,
   "github_ci": "See pull-request checks; local review record is not a remote-CI receipt.",
-  "browser_feed_unit_cases": 8
+  "browser_feed_unit_cases": 9
 }

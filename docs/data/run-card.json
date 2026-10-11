@@ -44,12 +44,13 @@
     "note": "No file: holdout, uniqueness, and format gates are not met; do not submit."
   },
   "verdict": "negative",
-  "negative_reason": "At session start, the starter checkout contained only the README. The integrated work adds documentation, a static research site, a presence-only readiness audit, and tests; it does not add the required competition data/cache, shared segment hide-and-recover evaluator/writer, or prior-raster registry. A previously merged scheduled leaderboard fetch and mirrored rows were removed after review of DrivenData's Terms of Use; the site now links to the official page without storing rows. No model was trained, no HOLDOUT-DTI was computed, no prior raster was copied, no submission was generated, and no weekly slot was spent.",
+  "negative_reason": "At session start, the starter checkout contained only the README. The integrated work adds documentation, a static research site, a presence-only readiness audit, and tests; it does not add the required competition data/cache, shared segment hide-and-recover evaluator/writer, or prior-raster registry. A previously merged scheduled leaderboard fetch and mirrored rows were removed after review of DrivenData's Terms of Use; the site now links to the official page without storing rows. No model was trained, no HOLDOUT-DTI was computed, no prior raster was copied, no submission was generated, and no weekly slot was spent. Session 2 (2026-10-11): re-checked the environment. The DrivenData data tab and Dropbox links return only login/landing pages; no competition file, grid template, shared evaluator/writer, or registry is present. The official metric/format text, the reference-notebook grid (3292 x 3730, EPSG:32611, 100 m), and the arXiv authorship were verified from public sources. No TIF was generated and no holdout was run; the verdict remains negative.",
   "sources": [
     "https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/",
     "https://proceedings.mlr.press/v94/bekker18a.html",
     "https://arxiv.org/abs/1809.03207",
     "https://pangea.stanford.edu/ERE/pdf/IGAstandard/SGW/2025/Giddens.pdf",
-    "https://www.drivendata.org/termsofuse/"
+    "https://www.drivendata.org/termsofuse/",
+    "https://github.com/drivendataorg/gems-prize-reference-solution/blob/main/unet-mc-cv-reference-solution.ipynb"
   ]
 }

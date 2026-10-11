@@ -74,6 +74,7 @@ The current negative run, source audit, and score-provenance correction are reco
 - [Source register](docs/SOURCES.md)
 - [Irregularities and blockers](docs/irregularities.html) and [detailed irregularity log](docs/IRREGULARITIES.md)
 - [Three-pass session review](docs/session-2026-10-11.md)
+- [Session review 2 — verified checks, 0.2778 analysis, parked candidates](docs/session-2026-10-11-review-2.md)
 - [Current status](docs/STATUS.md)
 - [Current run card (JSON)](docs/data/run-card.json)
 

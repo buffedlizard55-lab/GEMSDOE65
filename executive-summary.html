@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Executive summary and precise upload guidance for validated DOE GEMS GeoTIFF submissions.">
+  <title>Executive summary | GEMSDOE65</title>
+  <link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+  <header class="site-header"><div class="header-inner">
+    <a class="brand" href="index.html">GEMSDOE65 <span>· GEMS research</span></a>
+    <nav class="nav" aria-label="Main navigation"><a href="index.html">Overview</a><a href="executive-summary.html" aria-current="page">Executive summary</a><a href="hypotheses.html">Hypotheses</a><a href="research.html">Research &amp; score audit</a><a href="sources.html">Sources</a></nav>
+  </div></header>
+  <main>
+    <p class="eyebrow">Submission checklist · read this before downloading anything</p>
+    <h1>Executive summary</h1>
+    <section class="status-panel" aria-labelledby="safe-status">
+      <span class="status-label">NO · NOT SAFE TO SUBMIT</span>
+      <h2 id="safe-status">There is no downloadable TIF candidate.</h2>
+      <p>The download button is absent because this repository has no model output, official sample grid, holdout result, registry comparison, or validator report. This is deliberate. A generated-looking file is not evidence of a valid submission.</p>
+      <p><strong>Do not download or submit any file from this repository today.</strong> The JSON run card states the same decision and leaves every unmeasured score null.</p>
+    </section>
+
+    <h2>What a ready artifact must prove</h2>
+    <ol class="checklist">
+      <li><strong>Scientific gate:</strong> the selection-bias-aware PU candidate has higher pooled, spatially blocked HOLDOUT-DTI than the local incumbent and no loss in the highest-propensity tercile. Report evaluator version, withheld positives, and 95% CI.</li>
+      <li><strong>Leakage and uniqueness:</strong> every feature passes the feature-alone canary; compare both the score surface and final dots against all registry rasters before placement. A duplicate is logged and stopped, not renamed.</li>
+      <li><strong>Format gate:</strong> read the written GeoTIFF back and verify one float32 band, exact official sample CRS/shape/geotransform/bounds/resolution, finite in-footprint values in [0,1], and null/NaN only outside the footprint.</li>
+      <li><strong>Provenance:</strong> preserve the raster SHA-256, named run card, validator output, unique submission name, short note, and—after a human portal submission—the submission-page receipt.</li>
+    </ol>
+    <p>The format requirements and metric come from the <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/">official problem description</a>. The contest describes a single-band float32 GeoTIFF on the training grid, EPSG:32611 at 100 m, values in [0,1], and null/NaN outside the bounds.</p>
+
+    <h2>How to submit once a future release says “OK TO SUBMIT”</h2>
+    <div class="callout info">
+      This is a future workflow, not permission to submit the current project state. The current data page requires a DrivenData login; this project does not bypass authentication or submit on your behalf.
+    </div>
+    <ol class="checklist">
+      <li>Use the site’s top-level download button for the single promoted file only. Verify its displayed filename and SHA-256 against the run card.</li>
+      <li>Open the <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/">DrivenData competition page</a>, sign in, and select <strong>New submission</strong>.</li>
+      <li>Under <strong>File to submit</strong>, choose the downloaded GeoTIFF. The portal accepts a single-band GeoTIFF, or a ZIP containing one GeoTIFF, subject to its displayed format rules.</li>
+      <li>Enter the short comment associated with that named experiment (for example, a concise method tag). The site's actual candidate note must be no longer than 140 characters under this project's run-card protocol.</li>
+      <li>Submit through the portal and retain its receipt. Only a score copied from that receipt may be labelled <code>ORGANIZER-CONFIRMED</code>. A public leaderboard entry is not a receipt and a local holdout score is not an organizer score.</li>
+    </ol>
+
+    <h2>Fixing the range error</h2>
+    <p>The portal error <q>Predicted values must be in range [0, 1]</q> means the uploaded pixel values must satisfy the range contract. A future validator must inspect the final on-disk bytes, not only the in-memory model output. Normalize or clip valid in-footprint predictions only, reject NaN/Inf inside the footprint, verify the outside mask, write float32, reopen the file, and compare it to the official template. No candidate exists here, so this error has not been reproduced or fixed in code.</p>
+
+    <h2>Current next step</h2>
+    <p>Make the authorized competition data and shared template artifacts available, then run <code>python scripts/preflight.py</code>. The required shared evaluator, writer, and validator are intentionally not reimplemented in this repo. See <a href="docs/STATUS.md">review status</a> and <a href="docs/IRREGULARITIES.md">irregularities</a>.</p>
+  </main>
+  <footer class="site-footer"><div class="site-footer-inner"><span>GEMSDOE65 · status: blocked / no file</span><a href="index.html">Return to overview</a></div></footer>
+</body>
+</html>

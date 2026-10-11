@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Evidence-first research and safe submission workflow for the DOE GEMS fault-mapping challenge.">
+  <title>GEMSDOE65 | GEMS fault-mapping research</title>
+  <link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html">GEMSDOE65 <span>· GEMS research</span></a>
+      <nav class="nav" aria-label="Main navigation">
+        <a href="index.html" aria-current="page">Overview</a>
+        <a href="executive-summary.html">Executive summary</a>
+        <a href="hypotheses.html">Hypotheses</a>
+        <a href="research.html">Research &amp; score audit</a>
+        <a href="sources.html">Sources</a>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <p class="eyebrow">DOE GEMS Prize · evidence-first · selection-bias-aware PU lane</p>
+    <h1>Map faults with evidence.<br>Never guess at a submission.</h1>
+    <p class="lede">This project is a research and validation workflow for previously unmapped geological faults that may indicate geothermal resources. It does not predict geothermal vents directly, and it does not promise a leaderboard result.</p>
+
+    <section class="status-panel" aria-labelledby="submission-status">
+      <span class="status-label">NOT OK TO SUBMIT</span>
+      <h2 id="submission-status">No submission TIFF exists in this repository.</h2>
+      <p>There is no competition data, shared holdout evaluator, submission writer, validator, or prior-raster registry in this checkout. There is no file to download. <strong>Do not upload a placeholder or reuse another project's TIFF.</strong></p>
+      <p class="small">The download control is intentionally absent until the model beats the blocked-holdout incumbent, passes the uniqueness checks, and the written bytes pass the official-format validator.</p>
+    </section>
+
+    <div class="actions">
+      <a class="button" href="executive-summary.html">Open executive summary &amp; submission guide</a>
+      <a class="button secondary" href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">View live official leaderboard</a>
+    </div>
+
+    <div class="grid">
+      <section class="card">
+        <p class="kicker">Scientific lane</p>
+        <h2>SAR positive–unlabeled learning</h2>
+        <p>Model the chance a real fault is catalogued as covariate-dependent, then compare propensity-aware risk with nnPU using identical spatially blocked folds.</p>
+        <a href="hypotheses.html">Read the ranked hypotheses →</a>
+      </section>
+      <section class="card">
+        <p class="kicker">Data status</p>
+        <h2>Blocked at source access</h2>
+        <p>The official competition data page redirected this unauthenticated session to login. No files were fetched or credentials handled.</p>
+        <a href="sources.html#data">Review data-access evidence →</a>
+      </section>
+      <section class="card">
+        <p class="kicker">Current result</p>
+        <h2>Negative / not run</h2>
+        <p>No holdout score, confidence interval, uniqueness check, raster hash, or validator result exists. The run card records unknowns as null, not projections.</p>
+        <a href="evidence/run_card.json">Open the JSON run card →</a>
+      </section>
+    </div>
+
+    <section class="callout warning">
+      <strong>Score provenance alert.</strong> The user-provided association between the GEMSDOE32 H33 TIFF and a public score is not supported by the inspected file manifest: its receipt is null and its owner-generated note marks it unscored. The same displayed public-board value belongs to another participant. See the <a href="research.html">provenance audit</a>; no cause is invented.
+    </section>
+
+    <h2>Start with the evidence, not the filename</h2>
+    <p>The official task is fault prediction. Ground truth is incomplete, the label process may be biased, and the public board is not a substitute for a frozen, leakage-controlled holdout. Before any submission can be offered, the project must have the official sample grid, shared tools, a beaten holdout baseline, duplicate checks against the registry, and a read-back validator report.</p>
+    <ul class="checklist">
+      <li>Read the <a href="README.md">standing project brief</a> at the start of every session.</li>
+      <li>Inspect <a href="docs/IRREGULARITIES.md">known blockers and irregularities</a>.</li>
+      <li>Review <a href="docs/SOURCES.md">official sources and evidence boundaries</a>.</li>
+      <li>Run <code>python scripts/preflight.py</code> to see missing local prerequisites.</li>
+    </ul>
+  </main>
+  <footer class="site-footer">
+    <div class="site-footer-inner">
+      <span>GEMSDOE65 · no artifact offered until all gates pass</span>
+      <span><a href="README.md">Project charter</a> · <a href="docs/STATUS.md">Review status</a></span>
+    </div>
+  </footer>
+</body>
+</html>

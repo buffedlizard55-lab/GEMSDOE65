@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Official competition, USGS and primary research sources with claim boundaries.">
+  <title>Sources | GEMSDOE65</title>
+  <link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+  <header class="site-header"><div class="header-inner">
+    <a class="brand" href="index.html">GEMSDOE65 <span>· GEMS research</span></a>
+    <nav class="nav" aria-label="Main navigation"><a href="index.html">Overview</a><a href="executive-summary.html">Executive summary</a><a href="hypotheses.html">Hypotheses</a><a href="research.html">Research &amp; score audit</a><a href="sources.html" aria-current="page">Sources</a></nav>
+  </div></header>
+  <main>
+    <p class="eyebrow">Source register · scope and caveats</p>
+    <h1>Official sources for review</h1>
+    <p class="lede">Each link is paired with what it supports and what it does not prove. Scores and model claims are kept separate from primary-source facts.</p>
+    <section class="card" id="data">
+      <h2>Competition and submission</h2>
+      <ul class="source-list">
+        <li><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/">DrivenData problem description</a> — task, official feature families, metric, and GeoTIFF output contract. The predictor is geological fault presence, not vents themselves.</li>
+        <li><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/data/">DrivenData data page</a> — official files. In this review it redirected to login; no data were downloaded.</li>
+        <li><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">Live official leaderboard</a> — public results are time-sensitive, not private holdout or a submission receipt.</li>
+        <li><a href="https://docs.nlr.gov/docs/fy26osti/96647.pdf">DOE/NLR GEMS Prize official rules</a> — official contest rules for manual review.</li>
+        <li><a href="https://github.com/drivendataorg/gems-prize-reference-solution">DrivenData reference solution</a> — organizer baseline and workflow starting point, not evidence that this repo has run it.</li>
+      </ul>
+    </section>
+    <section class="card">
+      <h2>Primary literature and geology</h2>
+      <ul class="source-list">
+        <li><a href="https://proceedings.mlr.press/v94/bekker18a.html">Bekker &amp; Davis, PMLR 94 (2018)</a> — SAR PU assumption and EM method.</li>
+        <li><a href="https://arxiv.org/abs/1809.03207">Bekker, Robberechts &amp; Davis, arXiv:1809.03207</a> — propensity-aware empirical risk and unknown-selection discussion.</li>
+        <li><a href="https://pangea.stanford.edu/ERE/db/GeoConf/papers/SGW/2025/Giddens.pdf">Giddens &amp; Faulds (2025), SGP-TR-229</a> — Great Basin step-overs, range-front association, and explicit visibility-bias caveat. The study statistic is not a universal fault prevalence estimate.</li>
+      </ul>
+    </section>
+    <section class="card">
+      <h2>Official geospatial data</h2>
+      <ul class="source-list">
+        <li><a href="https://www.usgs.gov/data/geodawn-airborne-magnetic-and-radiometric-surveys-northwestern-great-basin-nevada-and">USGS GeoDAWN data release</a> — airborne magnetic/radiometric products and coordinated LiDAR coverage documentation; CC0-marked release.</li>
+        <li><a href="https://apps.nationalmap.gov/lidar-explorer/">USGS 3DEP Lidar Explorer</a> and <a href="https://data.usgs.gov/datacatalog/data/USGS:b7e353d2-325f-4fc6-8d95-01254705638a">3DEP Lidar Point Cloud catalog record</a> — public coverage/data source. No alignment was performed here.</li>
+        <li><a href="https://pubs.usgs.gov/ds/2007/249/downloads/pdf/DS-249pam_508.pdf">USGS Data Series 249, Geologic Map of Nevada</a> — includes 7.5-minute quadrangle geometry/index information; not a guarantee of exhaustive fault mapping.</li>
+        <li><a href="https://ngmdb.usgs.gov/">USGS National Geologic Map Database</a> — map publication records with area and scale metadata; a catalog is not a completeness certificate.</li>
+        <li><a href="https://mrdata.usgs.gov/catalog/cite-view.php?cite=61">USGS Nevada magnetic and gravity data (DS-234)</a> and <a href="https://www.usgs.gov/publications/great-basin-geoscience-data-base">USGS Great Basin geoscience data base</a> — official candidate sources if the gravity-derived basin-fill proxy is missing. No grids were downloaded or harmonized in this review.</li>
+      </ul>
+    </section>
+    <section class="callout warning">
+      <strong>Unverified mapping-coverage claim:</strong> “about 25% of the region has detailed 1:24,000 mapping” has not been substantiated by the official materials checked here. The quadrangle grid and map catalog are available, but completeness must be proven before they anchor propensity scale.
+    </section>
+    <p>Full claim-by-claim notes: <a href="docs/SOURCES.md">docs/SOURCES.md</a>. Provenance discrepancy: <a href="research.html#score-audit">research audit</a>.</p>
+  </main>
+  <footer class="site-footer"><div class="site-footer-inner"><span>Links are for manual source review.</span><a href="index.html">Return to overview</a></div></footer>
+</body>
+</html>

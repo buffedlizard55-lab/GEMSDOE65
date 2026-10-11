@@ -1,0 +1,41 @@
+{
+  "hypothesis": "Selection-bias-aware PU learning: estimate e(x)=P(labeled|fault,x) with SAR-EM from local relief, slope, gravity-derived basin-fill proxy, LiDAR coverage, and distance to range front; compare propensity-aware risk (weights clipped at 10) with nnPU on identical blocked folds.",
+  "mechanism": "Catalogue positives may be easier to map in steep, high-relief, LiDAR-covered range-front terrain; modeling the selection process may reduce label-selection bias and improve recovery of less-visible faults.",
+  "named_non_fault_process_that_could_mimic_it": "Lithologic contacts, density contrasts at basin margins, erosional scarps, and survey/access patterns can covary with the proposed terrain and gravity covariates without representing a fault.",
+  "holdout_dti": {
+    "evidence_class": "HOLDOUT-DTI",
+    "status": "NOT_RUN",
+    "evaluator_version": null,
+    "pooled_value": null,
+    "withheld_positive_count": null,
+    "ci95": null,
+    "reason": "Official data and shared holdout evaluator are absent from this checkout."
+  },
+  "highest_propensity_tercile_gate": {
+    "status": "NOT_RUN",
+    "reason": "No propensity surface or holdout labels are available."
+  },
+  "leakage_canary": {
+    "status": "NOT_RUN",
+    "reason": "No cached feature stack or holdout evaluator is available."
+  },
+  "registry_comparison": {
+    "status": "NOT_RUN",
+    "max_rank_correlation": null,
+    "max_fraction_candidate_dots_within_3px": null,
+    "reason": "No candidate raster, final dots, or registry rasters are present."
+  },
+  "raster_sha256": null,
+  "validator_output": {
+    "status": "NOT_RUN",
+    "no_nan_inside_footprint": null,
+    "values_in_range_0_1": null,
+    "crs_shape_transform_match": null,
+    "reason": "No candidate raster, official sample grid, or shared validator is present."
+  },
+  "submission_name": null,
+  "submission_note": "No candidate generated; do not upload.",
+  "download_permitted": false,
+  "verdict": "negative",
+  "verdict_reason": "The improvement gate was not measured. This is a blocked/NOT RUN result, not evidence that the scientific hypothesis failed. Do not use a submission slot."
+}

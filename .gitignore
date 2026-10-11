@@ -1,5 +1,9 @@
 # Keep local competition inputs, caches, runs, artifacts, and raster registry out of Git.
-/data/
+/data/*
+# ...except the two small pinned bridge grids that the shared template's grid
+# loader requires (2.0 MB total, mirrored from the family's public repositories).
+!/data/bridge/
+!/data/bridge/*.tif
 /cache/
 /runs/
 /artifacts/

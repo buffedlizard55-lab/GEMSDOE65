@@ -1,6 +1,31 @@
 # Preregistered candidates — SAR propensity lane only
 
-**Status:** proposals only. No model, holdout, or raster was run. The current repository has no model implementation, so each item differs from what is implemented here (there is nothing to compare against). The available sibling-site result list is user-provided and incomplete as an implementation inventory; therefore **novelty across all GEMSDOE projects is not established**. Do not describe these as proven-new methods.
+**Status:** the rank-1 candidate has been run and is measured; ranks 2–4 remain proposals. The repository now contains the lane implementation, the shared template, and the evidence artifacts. Novelty across all GEMSDOE projects is *not* established — the staged prior-raster registry is not a complete public inventory — so these are not described as proven-new methods.
+
+**Measured outcome (2026-10-11), evaluator `gems57-pooled-hide-v2`, four blocked folds, 11 321 withheld positives, 146 spatial clusters:**
+
+| arm | pooled blocked-hold-out DTI | 95 % CI |
+|---|---|---|
+| `nnpu` (matched baseline) | 0.00614 | [0.00096, 0.01189] |
+| `prop` — rank-1 candidate, SAR propensity-weighted ERM (weights clipped at 10) | 0.00790 | [0.00265, 0.01539] |
+| `wire` — declared splay-band × range-front rule (H65-1, below) | **0.01646** | [0.01201, 0.02113] |
+
+Paired `prop − nnpu` = +0.00176, 95 % CI [−0.00596, +0.01112] → **null**: the propensity-weighted
+estimator does **not** beat its matched nnPU baseline on this instrument, consistently with the
+near-constant propensity (p10–p90 = 0.838–0.849) that the five declared covariates produce
+(IR-65-015). The declared rule that the same folds *do* select is H65-1:
+
+> **H65-1 — splay-band × range-front emission (promoted).** The unmapped part of the fault
+> population sits at a measurable stand-off from the mapped part. The rule measures the
+> inter-component spacing of the **visible** catalogue (fold NW: p25 = 5.0 px, median = 8.94 px,
+> p75 = 16.3 px; whole catalogue median 7.25 px) and forms a Gaussian band around it, multiplied by
+> range-front proximity with the scale set to the catalogue's own median stand-off (1 217 m). It is
+> unfitted: no parameter of the rule is tuned on the withheld truth, so the blocked hold-out
+> measures it rather than selecting it. Non-fault mimics: any paired linear feature at that
+> stand-off (dune crests, pediment edges, canal and road pairs) and any coast-parallel shoreline
+> set. Measured: pooled DTI 0.01646, CI [0.01201, 0.02113]; blocked-hold-out band sensitivity across
+> the declared quantile family q ∈ {0.2, 0.35, 0.5, 0.65, 0.8} spans 0.0333–0.0406 on the single
+> selection fold (fold NW), i.e. the rule is not sensitive to that choice.
 
 All candidates stay inside the requested selection-bias-aware PU lane. They test how catalogue labels were selected or how that selection can be anchored; they are not permission to build a separate lineament/dot-placement model. Expected improvement is qualitative, explicitly unmeasured, and not a score projection.
 
@@ -24,4 +49,8 @@ Rank 1 is the only candidate authorized for the first experiment. It has the str
 5. Compare pooled holdout DTI (alpha 0.2, beta 0.8, 300 m triangular kernel), paired block-bootstrap 95% CI, and DTI in the highest-propensity tercile. Record withheld-positive counts and evaluator version. Do not substitute a projection or the public leaderboard.
 6. Proceed to surface/placement only if overall blocked DTI is higher than the incumbent holdout best and the highest-propensity tercile has no loss. Compare the surface and final dots against every registry raster before publishing. If any prerequisite is absent, record `NOT_RUN` / negative, not a fabricated result.
 
-**Current outcome:** NOT RUN. The requisite local data, shared tools, and registry are absent; see [`IRREGULARITIES.md`](IRREGULARITIES.md) and [`data/run-card.json`](data/run-card.json).
+**Current outcome:** RUN. The rank-1 candidate is a **null** against its matched nnPU baseline (see the table above); the promoted emission rule H65-1 is a positive. The shipped candidate is
+`gems65-h65-1-sarpu-bandrf-22726dots-64c0fa71-zeros.tif`, cleared by the gate, the on-disk
+validator and every discriminating uniqueness test — with the literal 3 px overlap rule reported as
+degenerate on this registry (IR-65-022; a random dot field trips it too). See
+[`IRREGULARITIES.md`](IRREGULARITIES.md) and [`data/run-card.json`](data/run-card.json).

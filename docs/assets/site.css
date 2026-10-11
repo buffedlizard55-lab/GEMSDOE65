@@ -87,3 +87,22 @@ pre { overflow-x: auto; padding: 15px; border-radius: 13px; background: #152d2a;
   .grid { grid-template-columns: 1fr; }
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+/* --- added by the GEMSDOE65 lane: generated status block + docs tables --- */
+.pill-ok { background:#0f5132; color:#fff; }
+.pill-danger { background:#842029; color:#fff; }
+.pill-warn { background:#664d03; color:#fff; }
+.callout.ok { border-left:5px solid #198754; background:#f2fbf6; padding:1rem 1.1rem; border-radius:6px; }
+.callout.danger { border-left:5px solid #dc3545; background:#fff5f5; padding:1rem 1.1rem; border-radius:6px; }
+.callout.warning { border-left:5px solid #ffc107; background:#fffbf0; padding:1rem 1.1rem; border-radius:6px; }
+table { border-collapse:collapse; width:100%; margin:1rem 0; font-size:.95rem; }
+th, td { border:1px solid #dee2e6; padding:.45rem .6rem; text-align:left; vertical-align:top; }
+th { background:#f6f8fa; }
+caption { caption-side:top; text-align:left; font-size:.85rem; color:#5a6672; padding-bottom:.4rem; }
+pre.code { background:#0f172a; color:#e2e8f0; padding:.9rem 1rem; border-radius:6px; overflow-x:auto; font-size:.85rem; line-height:1.45; }
+code { background:#f1f3f5; padding:.05rem .3rem; border-radius:3px; font-size:.92em; }
+pre.code code { background:none; color:inherit; }
+.steps li { margin-bottom:.6rem; }
+ul.small, ol.small { font-size:.9rem; }
+h2 { margin-top:2rem; }
+.site-footer { padding:1.5rem 0; color:#5a6672; font-size:.9rem; }

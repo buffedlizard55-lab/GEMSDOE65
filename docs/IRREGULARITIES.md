@@ -18,13 +18,52 @@
 | IR-65-012 | The merged upstream baseline included automated leaderboard monitoring that conflicts with the published Terms of Use. | The [DrivenData Terms of Use](https://www.drivendata.org/termsofuse/) page inspected (last modified 2014-08-07) prohibits automated access for monitoring/copying and manual monitoring/copying without prior written consent. The merged baseline had a scheduled scraper and mirrored rows. | This branch removes the scraper, parser tests, schedule, and copied rows. The site now links directly to the official page only. No permission or authorized API is established; do not reintroduce automation or snapshots. |
 | IR-65-013 | GitHub Pages deployment is not yet confirmed. | The Pages API was last observed in legacy `main:/` mode and the public URL served the old README page. This integration could not change the repository setting (HTTP 403); the Actions workflow now guards against deploying while the source remains legacy. | This branch adds a root redirect for legacy publishing and retains the `docs/` Actions artifact workflow. Verify the public URL after merge. If Actions deployment is desired, a repository admin must switch **Settings → Pages → Source** to **GitHub Actions**; use the Arena preview until publication is verified. |
 
-## Required before any future experiment
+## Session 2026-10-11 (second pass): resolutions and new findings
 
-1. Provide official training features, labels, and sample grid through authorized competition access, with provenance/checksums.
-2. Make the shared cached stack, exact evaluator, writer, validator, and full prior-raster registry available without a private reimplementation.
-3. Freeze identical buffered whole-segment spatial folds and run each feature-only leakage canary before fitting.
-4. Compare SAR-EM and nnPU on the same folds with inverse propensity weights clipped at 10; report HOLDOUT-DTI, evaluator version, withheld positives, and 95% CI. Require the overall and high-propensity-tercile gates to pass.
-5. Run registry rank-correlation and 3-pixel dot-overlap checks both before placement and on the final output; hash and validate the actual written GeoTIFF.
-6. Keep the download disabled and use no weekly slot unless every gate passes.
+The entries IR-65-002, IR-65-003, IR-65-008 and IR-65-011 were written when this checkout had no
+data or shared tools at all. They are now **partially resolved**:
 
-See [`STATUS.md`](STATUS.md), [`HYPOTHESES.md`](HYPOTHESES.md), [`SOURCES.md`](SOURCES.md), and the canonical [`docs/data/run-card.json`](data/run-card.json).
+* the shared template (`src/gems57/`) and the pinned inputs are present, so the evaluator, writer,
+  validator, dot allocator and registry comparison all exist and run here — but the inputs remain
+  owner-mirrored and integrity-pinned, **not** organizer-authenticated, so IR-65-002 stands in that
+  narrower form;
+* the four covariates the request names (relief, slope, basin-fill proxy, lidar coverage, plus a
+  morphometric range-front distance) were all constructed, so IR-65-008 is closed by construction —
+  with the caveat recorded below that they do not carry the selection signal;
+* format validation and the uniqueness comparison now run on real bytes, so IR-65-011 is closed
+  *for the files this repository writes*, not for any prior artifact.
+
+| ID | Irregularity | Evidence | Handling |
+|---|---|---|---|
+| IR-65-014 | The first blocked-hold-out run reported DTI 0.0 for both arms, which looked like a scientific result. | The cause was mechanical: the trained surfaces saturate over the scored domain, and the marginal-bar allocator then becomes a scan of near-equal candidates, so the emitted dots carry no ranking information. | Diagnosed by measuring the per-arm surface (exact AUC 0.5 for a boosted model; flat logistic fields), fixed with a declared monotone rank transform applied **identically to every arm** (`EMIT_RANK_POWER = 3`), and reported as a methodology finding, not as evidence about the SAR idea. |
+| IR-65-015 | The propensity estimated from the five declared covariates is nearly constant. | p10 = 0.838, median = 0.843, p90 = 0.849 over the folded training sample; the resulting inverse-propensity weights are ≈ 1.19 for every positive, so the SAR correction is close to the identity. | Report the propensity as a **sensitivity analysis only** (as the brief requires) and treat the propensity-weighted arm as informative about the estimator, not as a corrected detector. The covariate that expresses this dataset's actual mapping bias — distance to already-mapped traces — is label-derived and is deliberately kept out of the detector; it is used only by the declared, unfitted emission rule on the fold's *visible* catalogue. |
+| IR-65-016 | Catalogue-context channels (`catalogue_distance`, `catalogue_density`) are fold-safe when recomputed from the fold's visible catalogue, but they make the *trained* arms rank-degenerate: every scored cell beyond the collar receives an identical score. | Measured: a gradient-boosted model produced one constant probability over 30 000 sampled scored cells (std 2·10⁻¹⁹); the linear arms followed. | The trained comparison runs on the 19 morphology channels only; the catalogue-context information enters solely through the declared wire rule, whose band and range-front scale are read off the visible catalogue. Both choices are recorded in the run card. |
+| IR-65-017 | Three valid footprint masks disagree. | Direct measurement on this checkout: feature stack valid 5 165 852 px; template (sample submission) finite 5 167 373 px; DEM valid 5 167 187 px; DEM ∩ template 5 165 644 px; feature stack ∩ template 5 164 312 px. **3 061 template cells are nodata in the official feature stack and 1 540 feature cells are NaN in the template.** | The shipped raster fills the *template* mask: finite values (0 or 1) on all 5 167 373 template cells, NaN only on the 7 111 787 cells that the template itself marks NaN. Never mix the three masks in one measurement. |
+| IR-65-018 | `gems57.holdout.blocked_component_folds` does not exist in the pinned template. | `AttributeError` on first execution. | The real API is `buffered_component_draw(grid, seed, hide_frac, buffer_px, boundary_px)` plus per-fold `train` masks derived here; recorded so no future session re-invents the name. |
+| IR-65-019 | `gems57.uniqueness` has no `load_registry`/`check_candidate`. | The emit stage originally called those names and would have failed. | The real API is `records_from_index` + `compare_array_to_registry` against a JSON inventory; `scripts/build_registry_index.py` now writes that inventory from the staged rasters. |
+| IR-65-020 | Long-running experiment processes were restarted by the execution environment, discarding up to 25 minutes of work per restart. | Observed twice; process elapsed times reset to zero while the log stayed empty. | The blocked-fold runner now caches each completed fold under `evidence/lane_holdout_folds/<NAME>.json` and resumes from cache, so a restart costs one fold at most. |
+| IR-65-021 | The template's raw probability surface is not a valid allocator input at this scale. | A logistic surface over ≳10⁶ scored cells has p90 ≈ 1.0 and median ≈ 0.85; mass-matching it to the hidden-positive count is mathematically fine but the saturated ranking wastes the candidate list (full 800 000-candidate scan). | Declared monotone rank transform before calibration, applied to every arm, with the raw calibration still reported as a robustness number for the shipped rule. |
+
+## Session 2026-10-11 (final pass): the result and the degenerate stop rule
+
+| ID | Irregularity | Evidence | Handling |
+|---|---|---|---|
+| IR-65-022 | **The protocol's literal duplicate rule is degenerate on this registry.** The rule is "log a duplicate and stop if more than 70 % of the candidate's dots are within 3 px of one registry raster's dots". Four staged priors are dense lattices (192 231–272 853 dots); the union of **all 62** priors' 3 px neighbourhoods covers **5 167 342 of 5 167 373 footprint cells (99.9994 %)**. | `evidence/run_card.json → uniqueness.literal_test_demonstration`: a **uniformly random** dot field of the same size (22 726 dots, 5 draws) sits inside the union at 0.99996–1.0 and inside the single densest prior (`r11_greedy_mp.tif`) at 0.736. The candidate's own figure is 0.9998 — indistinguishable from random noise. | The rule cannot be *satisfied* by any dot field in this study area, so it is reported as degenerate rather than as a duplicate finding. The verdict turns on the discriminating tests, all of which the candidate passes: max Spearman ρ = 0.044, max Jaccard = 0.0046, byte-identity unique, pixel-identity unique, reverse overlap (their dots within 3 px of mine) ≤ 0.026. The raw flag count (4) and the demonstration are both on the card; nothing is hidden. |
+| IR-65-023 | The **mandated SAR comparison is a null** on this instrument while the declared rule is a clear positive. | Pooled blocked hold-out (`gems57-pooled-hide-v2`, 4 folds, 11 321 withheld positives, 146 spatial clusters): `nnpu` 0.00614 [0.00096, 0.01189]; `prop` (SAR propensity-weighted, weights clipped at 10) 0.00790 [0.00265, 0.01539]; `wire` (declared splay-band × range-front rule) **0.01646 [0.01201, 0.02113]**. Paired `prop − nnpu` = +0.00176, 95 % CI [−0.00596, +0.01112] → **crosses zero, no demonstrated improvement**. Paired `wire − nnpu` = +0.01033 [0.00324, 0.01751]. Top-propensity-tercile DTI (per-fold mean): `wire` 0.0266 vs `nnpu` 0.0034 → no loss. | Reported as a negative result for the propensity-weighted estimator *as specified here* (with a near-constant propensity from the five declared covariates, IR-65-015), and as a measured positive for the declared, unfitted reweighting rule that the same hold-out selects. Neither number is a leaderboard score. |
+| IR-65-024 | The SAR-EM class-prior estimate is **unstable across specifications** of the same fold. | `alpha_plug_in` values observed on fold NW under successive, documented harness revisions: 0.877, 0.901, 0.973; another configuration produced 0.247. | This is direct evidence for the brief's own warning that PU data alone do not identify the labelling mechanism. The propensity and prior are therefore reported only as a sensitivity analysis, never as calibrated quantities — and no result in this repository depends on their absolute scale. |
+
+## What is still required before any future experiment
+
+1. Re-verify the six input pins (`scripts/restore_inputs.py --check`) and the registry index
+   (`scripts/build_registry_index.py --check`) before fitting anything.
+2. Re-run the leakage canary whenever a channel is added; AUC > 0.90 is still leakage until explained.
+3. Keep every reported score labelled `HOLDOUT-DTI` (with evaluator version, withheld positives and
+   95 % CI) or `ORGANIZER-CONFIRMED` (with a submission receipt); a projection is never a score.
+4. Anchor the propensity with a real mapping-effort index before calling it calibrated; until then it
+   is a sensitivity analysis.
+5. Re-run the registry correlation/overlap checks on the final written bytes, and re-validate every
+   written file, before offering any download.
+6. Keep the download disabled whenever `verdict.download_cleared` is false in the run card.
+
+See [`STATUS.md`](STATUS.md), [`HYPOTHESES.md`](HYPOTHESES.md), [`SOURCES.md`](SOURCES.md), and the
+canonical [`docs/data/run-card.json`](data/run-card.json).

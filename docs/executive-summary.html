@@ -2,48 +2,48 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Executive summary and step-by-step instructions for submitting a validated GEMSDOE65 GeoTIFF to DrivenData.">
-  <title>Executive summary · how to submit · GEMSDOE65</title><link rel="stylesheet" href="assets/site.css">
+  <meta name="description" content="Exactly how to submit the GEMSDOE65 candidate GeoTIFF to the DOE GEMS Prize, step by step, with the download decision first.">
+  <title>Submit guide · GEMSDOE65</title><link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
 <header class="site-header"><div class="wrap nav-row">
   <a class="brand" href="index.html">GEMSDOE65<small>Evidence before submission</small></a>
-  <nav aria-label="Main navigation"><a href="index.html">Status</a><a aria-current="page" href="executive-summary.html">Submit guide</a><a href="hypotheses.html">Hypotheses</a><a href="competitive-context.html">Score audit</a><a href="research.html">Research</a><a href="irregularities.html">Irregularities</a></nav>
+  <nav aria-label="Main navigation"><a href="index.html">Status</a><a aria-current="page" href="executive-summary.html">Submit guide</a><a href="geology.html">Why this score</a><a href="competitive-context.html">Score audit</a><a href="hypotheses.html">Hypotheses</a><a href="research.html">Research</a><a href="irregularities.html">Irregularities</a></nav>
 </div></header>
 <main class="wrap">
-  <div class="page-title"><div class="kicker">Executive summary · DrivenData competition 306</div><h1>How to submit a validated fault-prediction GeoTIFF</h1>
-    <p class="lede">This page describes the upload steps and format checks. It does not submit anything on your behalf and does not imply that a candidate is ready.</p>
+  <div class="page-title"><div class="kicker">Executive summary · how to submit</div><h1>How to submit, in order, in about two minutes</h1></div>
+
+  <div class="callout danger" id="decision"><strong>Read the status page first.</strong>
+    <p>The download decision (cleared / not cleared) is stated at the very top of the <a href="index.html">status page</a> and is reproduced verbatim in <code>docs/data/run-card.json</code> under <code>verdict.one_line</code>. Do not upload any file from this project unless that line reads <b>DOWNLOAD AND SUBMIT</b>.</p>
   </div>
-  <div class="callout danger"><span class="pill pill-danger">Current status: do not submit</span><p><strong>There is currently no downloadable or approved GEMSDOE65 TIFF.</strong> No model was trained, no segment-blocked holdout was run, no uniqueness check was possible, and no validator was run. The submission gate is negative. Do not use an artifact from another GEMSDOE project as a substitute.</p></div>
 
-  <h2>Before opening the competition form</h2>
-  <ol>
-    <li>Return to the <a href="index.html">status page</a>. Proceed only if it presents an explicit green <strong>Promote / cleared to submit</strong> state and a unique download button for the candidate from that run card. A research note, projected score, old file, or format-only check is not promotion.</li>
-    <li>Check the run card. It must contain the holdout evaluator version, withheld-positive count, paired HOLDOUT-DTI and 95% CI, registry correlation and dot overlap, raster SHA-256, and passing validator results. The candidate must beat both the current holdout best and matched nnPU baseline overall, and not lose in the highest-propensity tercile; if the current best is unavailable, do not promote. Do not spend a weekly slot before those scientific and uniqueness gates pass; follow the current competition rules for caps and final selection.</li>
-    <li>Download the exact TIF shown next to the approved status. Do not rename a prior file to make it appear unique. Keep its SHA-256 and the exact short comment beside it.</li>
+  <h2>The five steps</h2>
+  <ol class="steps">
+    <li><b>Download the one file.</b> From the status page, use the single-click link to the <code>…-zeros.tif</code> candidate (a float32, EPSG:32611, 100 m, single-band GeoTIFF whose in-footprint values are all within [0, 1]). The repository's writer also produces a one-TIFF <code>.zip</code> with a byte-verified round trip — either form is a valid upload, and both encode the <i>same</i> prediction array. The <code>…-nan.tif</code> variant is a diagnostics encoding of the identical array (NaN outside the footprint); it exists so the footprint convention can be inspected, and it is not the recommended upload because an over-strict portal check can read NaN as out-of-range.</li>
+    <li><b>Open the official submission form.</b> Go to the <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/">DOE GEMS Prize competition page</a>, sign in with the account that accepted the competition rules, and open the <b>Submit</b> tab of the competition. Nothing on this site is an upload endpoint; the organizer's form is the only one.</li>
+    <li><b>Upload and name it.</b> Select the downloaded <code>.tif</code> (or the matching <code>.zip</code>). Where the form asks for a submission name, paste the exact unique name from the run card (<code>verdict_name</code> / <code>files[…].file</code> stem) so the artifact is identifiable later; where it asks for a note, paste the ≤ 140-character note recorded in the run card. Do not rename the file to reuse an earlier submission's name — the whole point is that this raster is new and unique.</li>
+    <li><b>Submit, then read the receipt honestly.</b> The portal returns an immediate score and a submission id. Copy that value into the run card only as <code>ORGANIZER-CONFIRMED</code>, tied to that id. A score shown anywhere else — a projection, a fold measurement, a user report — stays labelled as what it is.</li>
+    <li><b>Mind the submission cap and the deadline.</b> The competition permits a single submission for the prize evaluation; the same submission is rescored in the final round against an expert-expanded label set. Spend the slot deliberately, on the artifact whose evidence gate passed.</li>
   </ol>
 
-  <h2>Format checklist</h2>
-  <p>The official problem description requires a single-band float32 GeoTIFF in UTM zone 11N (EPSG:32611), at the training-grid resolution (100 m), with exactly the training bounds/geotransform. Values inside the footprint must be finite and between 0 and 1; outside-footprint cells must be null/NaN. The local validator must also check that no out-of-range nodata sentinel is being written inside the footprint.</p>
-  <p>These are format conditions only. Passing them does not show the candidate detects new faults or will score well.</p>
+  <h2>What "cleared" means here — and what it does not</h2>
+  <div class="grid">
+    <article class="card"><span class="card-number">Cleared means</span><h3>Local gates passed</h3><p>The candidate's numbers were produced by the shared evaluator with the whole-segment blocked hold-out and the documented dot budget; the SAR/propensity candidate met the promotion gate against its matched baseline and the highest-propensity tercile; the on-disk file re-passed the range/format validator; and the registry uniqueness test found no duplicate among the staged, hash-verified prior rasters.</p></article>
+    <article class="card"><span class="card-number">Cleared does not mean</span><h3>Predicted leaderboard performance</h3><p>No organizer score exists for this file until it is submitted. A <code>HOLDOUT-DTI</code> measurement is an internal instrument value with its own evaluator version and confidence interval, and it is not a leaderboard forecast. This project never writes a projection as a score, and no score is claimed here.</p></article>
+  </div>
 
-  <h2>Upload steps in DrivenData</h2>
-  <ol>
-    <li>Open the <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/">DOE GEMS competition page</a> and sign in to the competition account. Review the <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/">official problem description</a> and <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/rules/">rules entry point</a>.</li>
-    <li>Open the competition's submissions page: <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/submissions/">DrivenData submissions</a>. Choose <strong>New submission</strong>.</li>
-    <li>Under <strong>File to submit</strong>, choose the approved single-band GeoTIFF downloaded from this project's status page. The submission form may accept a single GeoTIFF or a ZIP containing one GeoTIFF; prefer the direct <code>.tif</code> when it is offered and do not upload extra files.</li>
-    <li>In <strong>Note (optional)</strong>, paste the short, unique note shown for that exact candidate. Keep the note under 140 characters for this project, even if the form permits more.</li>
-    <li>Before selecting submit, confirm the filename, note, checksum, and green gate all describe the same run. If the form reports that predictions are outside [0, 1], stop and report the error; do not clip a different file and re-upload without rerunning validation.</li>
-    <li>Submit only after the checks above. Save the organizer's submission-page receipt and resulting score record. Those receipt details are the only evidence used here to attribute an organizer score to a particular raster.</li>
-  </ol>
+  <h2>If the file is not cleared</h2>
+  <p>The run card records <code>verdict.download_cleared = false</code> with the failing field named (gate, validator, or uniqueness), together with the whole experiment as a <b>negative result</b>. In that state: do not download, do not upload, and do not spend the single submission slot on a placeholder. The site's status page will say exactly which gate failed and what evidence exists — that is the honest deliverable.</p>
 
-  <h2>How score evidence is reported</h2>
-  <ul>
-    <li><strong>HOLDOUT-DTI:</strong> report evaluator version, number of withheld positives, and a 95% CI; state clearly that it is a blocked catalogue hide-and-recover proxy, not an organizer score on unknown faults.</li>
-    <li><strong>ORGANIZER-CONFIRMED:</strong> copy from the submission-page receipt and tie it to the file hash. A live leaderboard entry without a receipt is not enough to identify the TIFF that produced it.</li>
-    <li><strong>Negative:</strong> if a gate is unrun or failed, record the reason and keep the download disabled. No score is inferred from a projection.</li>
-  </ul>
-  <div class="callout warning">The challenge has a two-round evaluation structure described on the official problem page. Check the current rules and submission interface for deadlines, slot limits, and final-selection requirements; this site does not assume that a format-valid upload is the correct competition entry.</div>
+  <h2>Reproduce every number before you trust it</h2>
+  <pre class="code">python3 scripts/restore_inputs.py --check          # verify the pinned input hashes
+python3 scripts/build_registry_index.py --check    # re-fingerprint the prior-raster registry
+python3 -m unittest discover -s tests -v           # policy + run-card + audit tests
+python3 scripts/audit_lane_readiness.py            # fail-closed presence audit
+python3 scripts/run_lane.py canary                 # leakage canary on the blocked folds
+python3 scripts/run_lane.py holdout --folds 0      # matched arms + declared wire rule
+python3 scripts/run_lane.py emit                   # gate-gated emission, then validate</pre>
+  <p class="small">Every command above writes a JSON artifact under <code>evidence/</code>; the run card is the single place where the verdict is asserted. Never edit a run card by hand.</p>
 </main>
-<footer class="footer"><div class="wrap"><a href="index.html">Status and download gate</a><a href="research.html">Verified sources</a><a href="data/run-card.json">Current JSON run card</a></div></footer>
+<footer class="wrap site-footer"><p>GEMSDOE65 · <a href="index.html">Status</a> · <a href="geology.html">Reasoning</a> · <a href="competitive-context.html">Score audit</a> · <a href="research.html">Sources</a></p></footer>
 </body></html>

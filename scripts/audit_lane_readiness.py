@@ -13,15 +13,20 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 DATA_ALIASES = {
-    "feature_stack": ("data/training_features.tif", "data/numeric_features.tif", "data/gems-geodawn-numerical-features.tif"),
-    "labels": ("data/labels.tif", "data/existing_faults.tif", "data/faults.tif"),
-    "sample_template": ("data/sample_submission.tif", "data/example_submission.tif"),
+    "feature_stack": ("data/training_features.tif", "data/numeric_features.tif",
+                      "data/gems-geodawn-numerical-features.tif",
+                      "data/official/training_features.tif"),
+    "labels": ("data/labels.tif", "data/existing_faults.tif", "data/faults.tif",
+               "data/bridge/existing_faults.tif"),
+    "sample_template": ("data/sample_submission.tif", "data/example_submission.tif",
+                        "data/bridge/sample_submission.tif"),
 }
 SHARED_TOOLS = ("evaluate_holdout.py", "submission_writer.py")
 RASTER_REGISTRY_CANDIDATES = (
     "registry/rasters.json",
     "registry/rasters.jsonl",
     "data/evidence/rasters.json",
+    "data/registry/registry_index.json",
 )
 
 

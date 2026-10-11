@@ -1,0 +1,128 @@
+{
+  "file": "gems65-h65-1-sarpu-bandrf-22726dots-64c0fa71-zeros.tif",
+  "sha256": "f3d964fb3e6932c82c759cb41c60474fc3ec92b617df934d269e7a70f550134c",
+  "bytes": 84077,
+  "submission_name": "gems65-h65-1-sarpu-bandrf-22726dots-64c0fa71",
+  "note": "SAR-PU propensity lane: measured splay band x range-front prior; calibrated marginal-bar dots",
+  "note_chars": 93,
+  "validator": {
+    "file": "/home/user/GEMSDOE65/docs/downloads/gems65-h65-1-sarpu-bandrf-22726dots-64c0fa71-zeros.tif",
+    "bytes": 84077,
+    "sha256": "f3d964fb3e6932c82c759cb41c60474fc3ec92b617df934d269e7a70f550134c",
+    "meta": {
+      "crs": "EPSG:32611",
+      "shape": [
+        3730,
+        3292
+      ],
+      "dtype": "float32",
+      "count": 1,
+      "nodata": null,
+      "transform": [
+        100.0,
+        0.0,
+        243350.0,
+        0.0,
+        -100.0,
+        4508550.0
+      ],
+      "profile_compress": "deflate"
+    },
+    "band_description": [
+      null
+    ],
+    "n_finite": 12279160,
+    "n_nan": 0,
+    "n_infinite": 0,
+    "min": 0.0,
+    "max": 1.0,
+    "mean": 0.0018507781205698848,
+    "emitted_positive_pixels": 22726,
+    "checks": {
+      "single_band": true,
+      "dtype_float32": true,
+      "dimensions_3730x3292": true,
+      "crs_epsg_32611": true,
+      "transform_matches_sample_submission": true,
+      "no_nan_anywhere": true,
+      "no_inf_anywhere": true,
+      "no_sentinel_values": true,
+      "range_0_1_guaranteed": true,
+      "min_ge_0": true,
+      "max_le_1": true,
+      "in_footprint_all_finite": true,
+      "in_footprint_range_0_1": true,
+      "outside_footprint_zero": true,
+      "zero_dots_on_mapped_catalogue": true
+    },
+    "all_checks_passed": true,
+    "validation_class": "local format/range preflight; not organizer acceptance or uniqueness clearance",
+    "on_catalogue_positive_pixels": 0,
+    "in_footprint_positive_pixels": 22726,
+    "footprint_fraction": 0.004397979398816381
+  },
+  "template_report": {
+    "path": "/home/user/GEMSDOE65/docs/downloads/gems65-h65-1-sarpu-bandrf-22726dots-64c0fa71-zeros.tif",
+    "bytes": 84077,
+    "sha256": "f3d964fb3e6932c82c759cb41c60474fc3ec92b617df934d269e7a70f550134c",
+    "bands": 1,
+    "dtype": "float32",
+    "crs": "EPSG:32611",
+    "width": 3292,
+    "height": 3730,
+    "bounds": [
+      243350.0,
+      4135550.0,
+      572550.0,
+      4508550.0
+    ],
+    "ref_bounds": [
+      243350.0,
+      4135550.0,
+      572550.0,
+      4508550.0
+    ],
+    "transform": [
+      100.0,
+      0.0,
+      243350.0,
+      0.0,
+      -100.0,
+      4508550.0
+    ],
+    "nodata": null,
+    "blocksize": [
+      256,
+      256
+    ],
+    "fixture_grid": false,
+    "has_validity_mask": false,
+    "nan_pixels": 0,
+    "infinity_pixels": 0,
+    "n_nan": 0,
+    "min": 0.0,
+    "max": 1.0,
+    "mean": 0.0018507781205698848,
+    "n_nonzero": 22726,
+    "mass": 22726.0,
+    "mass_outside_footprint": 0,
+    "problems": [],
+    "ok": true,
+    "validation_class": "local on-disk template/range check; not organizer upload acceptance"
+  },
+  "zip_file": "gems65-h65-1-sarpu-bandrf-22726dots-64c0fa71-zeros.zip",
+  "zip_sha256": "1c952d8efca2012f54892fb30531126678ce02829ceda180090c9c50b3b284b1",
+  "approved_for_weekly_slot": false,
+  "promoted": false,
+  "submission_slots_used": 0,
+  "status": "locally validated within separately recorded inventory scope; not organizer acceptance or slot approval",
+  "metadata": {
+    "lane": "gems65",
+    "rule": "band_rf",
+    "variant": "band_rf",
+    "dots": 22726,
+    "mass_assumed": 30000.0,
+    "gate_met": true,
+    "forced": false
+  }
+}

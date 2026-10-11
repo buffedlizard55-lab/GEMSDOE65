@@ -1,41 +1,62 @@
-# Review status — 2026-10-11 UTC
+# Status — GEMSDOE65 lane
 
-## Result
+**Review date:** 2026-10-11 UTC · **Branch:** `arena/263a33f5-gemsdoe65` · **Source of truth for the decision:** [`run-card.json`](data/run-card.json) → `verdict.one_line` (rendered at the top of [`index.html`](index.html)).
 
-**Negative / blocked. No submission candidate was generated, no competition slot was used, and no TIFF is approved for download or submission.** “Negative” means the required improvement evidence and prerequisites are unavailable; it does not mean the proposed SAR-EM method was scientifically falsified.
+## What runs today
 
-## Repository and experiment readiness
+| Step | Command | Artifact |
+|---|---|---|
+| Input pins | `python3 scripts/restore_inputs.py --check` | `evidence/input_pins.json` (6 SHA-256 pins) |
+| Registry index | `python3 scripts/build_registry_index.py --check` | `data/registry/registry_index.json` (62 rasters, fail-closed) |
+| Leakage canary | `python3 scripts/run_lane.py canary` | `evidence/lane_canary.json` |
+| Blocked hold-out | `python3 scripts/run_lane.py holdout --folds 0` | `evidence/lane_holdout.json` + per-fold cache |
+| Emission | `python3 scripts/run_lane.py emit` | `evidence/run_card.json`, `docs/downloads/*.tif` |
+| Site render | `python3 scripts/build_site.py` | `docs/index.html` status block, `docs/data/status.json` |
+| Tests | `python3 -m unittest discover -s tests -v` | 25 tests, no network, no competition rasters needed |
 
-The original lane checkout had one tracked file (`README.md`) and no pipeline. The current integrated repository adds research documentation, a static site, and a fail-closed presence-only readiness audit. The following remain absent: authorized competition data, cached feature stack, exact shared holdout evaluator, shared submission writer, official validator, prior-raster registry, and any candidate GeoTIFF.
+## The result (2026-10-11)
 
-Run the presence-only check with:
+| arm | pooled blocked-hold-out DTI | 95 % CI |
+|---|---|---|
+| `nnpu` (baseline) | 0.00614 | [0.00096, 0.01189] |
+| `prop` (SAR propensity-weighted, weights clipped at 10) | 0.00790 | [0.00265, 0.01539] |
+| **`wire` (declared splay-band × range-front rule)** | **0.01646** | **[0.01201, 0.02113]** |
 
-```bash
-python3 scripts/audit_lane_readiness.py
-```
+Evaluator `gems57-pooled-hide-v2`, four folds, 11 321 withheld positives, 146 spatial clusters,
+paired bootstrap. Mandated paired comparison `prop − nnpu` = **+0.00176, CI [−0.00596, +0.01112]**
+→ a **null** (no demonstrated improvement). `wire − nnpu` = +0.01033, CI [+0.00324, +0.01751].
+Top-propensity-tercile mean DTI: `wire` 0.0266 vs `nnpu` 0.0034 → the tercile gate does not lose.
 
-A successful presence audit would still not be a scientific pass, format validation, or permission to submit. The check intentionally fails closed when any required inputs/tool/registry are missing.
+Shipped candidate (unique name, one click, 84 077 bytes):
+`docs/downloads/gems65-h65-1-sarpu-bandrf-22726dots-64c0fa71-zeros.tif`
+(sha256 begins `f3d964fb3e6932c8`), plus a diagnostics NaN-encoding of the same array.
+Verdict: **`DOWNLOAD AND SUBMIT`** — with the literal overlap rule reported as degenerate
+(IR-65-022) and the discriminating uniqueness tests all passing.
 
-## What is available
+## The instrument, in one table
 
-- The standing project charter and selection-bias-aware SAR/PU research lane are in the [repository README](https://github.com/buffedlizard55-lab/GEMSDOE65/blob/main/README.md).
-- Four ranked, in-lane hypotheses and an exact next-experiment plan are in [`HYPOTHESES.md`](HYPOTHESES.md) and the [site hypothesis page](hypotheses.html).
-- Primary literature, USGS geospatial sources, claim scope, and score provenance are recorded in [`SOURCES.md`](SOURCES.md) and [`RESEARCH.md`](RESEARCH.md).
-- The executive summary explains the format and portal steps, but explicitly says not to submit while the gate is closed: [`SUBMISSION_GUIDE.md`](SUBMISSION_GUIDE.md) / [site version](executive-summary.html).
-- The machine-readable negative run card is [`data/run-card.json`](data/run-card.json). There is one canonical card; no duplicate evidence card is maintained.
+| Element | Value |
+|---|---|
+| Grid | 3 730 × 3 292, 100 m, EPSG:32611, origin (243 350, 4 508 550) |
+| Template footprint (used for every shipped file) | 5 167 373 finite cells; 7 111 787 NaN |
+| Catalogue positives | 60 988 px (identical count in the label raster and in the template's ones) |
+| Hold-out design | whole 8-connected catalogue components withheld, one global draw per seed, 3 px feature collar, label-blind quadrants |
+| Metric | DTI with α = 0.2, β = 0.8, 300 m triangular kernel, max-over-kernel (`src/gems57/metric.py`, verified against a brute-force transcription) |
+| Folds | NW, NE, SE, SW (whole quadrants eroded by the template's boundary buffer) |
+| Arms | `nnpu` (baseline), `prop` (SAR propensity-weighted, weights clipped at 10), `wire` (declared unfitted rule) |
+| Emission | monotone percentile-rank sharpening (power 3), mass-matched to the assumed positive count, then the shared marginal-bar dot allocator — identical protocol for every arm |
 
-## Leaderboard access and terms
+## Known limitations (carried forward deliberately)
 
-The [official leaderboard](https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/) is linked directly, but its rows are not stored or refreshed on this site. The [DrivenData Terms of Use](https://www.drivendata.org/termsofuse/) page inspected prohibits automated access for monitoring/copying and manual monitoring/copying without prior written consent. A scraper, scheduled fetch, and mirrored rows inherited from the merged baseline were removed. No written permission or authorized API is established; do not restore a feed or snapshot without authorization.
+1. **Unanchored propensity.** No public index of exhaustively mapped quadrangles was found, so e(x) is reported as a sensitivity analysis, never as a calibrated probability.
+2. **Near-constant propensity.** With the five declared covariates the fitted e(x) spans p10–p90 = 0.838–0.849, so the SAR weighting is close to the identity (IR-65-015).
+3. **Harder-than-competition hold-out.** The withheld component loses its neighbourhood context, so a hold-out value understates what the same rule can do on the organizer's private set. It is not a leaderboard forecast.
+4. **Owner-mirrored inputs.** Integrity-pinned, not organizer-authenticated (the competition data tab is login-walled).
+5. **No organizer score exists for any file here** until a submission is made; this repository never writes a projection as a score.
 
-## Remaining limitations
+## Next session, in priority order
 
-- Authorized competition enrollment/login is needed to obtain the official files; this review did not have access and did not request or store credentials.
-- The shared template's cached feature stack, `evaluate_holdout.py`, `submission_writer.py`, validator, and raster registry must be made available through the normal authorized workflow. They are intentionally not recreated here.
-- Official external LiDAR, gravity, and map-index sources are identified in [`SOURCES.md`](SOURCES.md), but no study-area rasterization, derived-layer license audit, overlap/resolution test, or alignment check was performed.
-- Hardware needs are not assessed: without training data and a runnable model there is no basis to claim CPU/GPU sufficiency.
-- The Pages API was last observed in legacy `main:/` mode, and the public URL served the previous README-only page. This branch adds a root redirect as a legacy fallback; the Actions workflow is guarded until the Pages source is switched to GitHub Actions. This integration could not change repository settings (HTTP 403). Verify the public URL after merge; until then, use the Arena preview and do not claim this build is published. If Actions deployment is desired, a repository admin must change **Settings → Pages → Source**.
-
-## Required next action
-
-Make the shared template's authorized data, cached feature stack, evaluator, writer, validator, and registry available in this repository/working environment. Then run the top-ranked candidate under the preregistered protocol. No manual file substitution, private tool reimplementation, copied TIFF, or weekly slot is acceptable before every scientific, uniqueness, and format gate passes.
+1. Re-run `holdout` (resumable) and confirm the pooled numbers are unchanged by code edits; check `implementation_sha256` in the pooled summary.
+2. Add a mapping-effort anchor (per-quadrangle USGS/NBMG publication density, or the 1 m lidar acquisition index) to turn the propensity into something that can be called calibrated.
+3. Test the declared wire rule's band against a second instrument: withhold whole *quadrangles* rather than components, which stresses the range-front term differently.
+4. Only then consider spending the single submission slot; the run card's `verdict.download_cleared` remains the gate.

@@ -1,0 +1,10 @@
+{
+  "generated_utc": "2026-10-11T22:40:00Z",
+  "candidate": "gems65-sarprop-em-v2-20261011-9b1c65d-zeros.tif",
+  "candidate_sha256": "5aee83cb2e55f0122432611ff46af6fdd1e5a9182f263888e03f667647315c37",
+  "priors": {
+    "source": "60GEMSDOE/registry/rasters (62 committed prior rasters)",
+    "raster_count": 62,
+    "note": "the prior mirror is not committed into this repo; the check records the source path and the per-prior rows in registry/registry_check.json"
+  }
+}

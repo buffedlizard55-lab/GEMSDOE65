@@ -1,0 +1,29 @@
+{
+  "purpose": "Execution provenance recorded before the pass-2 canary expansion; no additional geological experiment.",
+  "python": "3.11.2 (main, Apr  8 2026, 01:58:00) [GCC 12.2.0]",
+  "platform": "Linux-6.1.158+-x86_64-with-glibc2.36",
+  "packages": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "scikit-learn": "1.9.1",
+    "rasterio": "1.4.4",
+    "scikit-image": "0.26.0"
+  },
+  "training_command": "OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 .venv/bin/python -u scripts/run_experiments.py",
+  "fold_sampling_seeds": [
+    651100,
+    651101,
+    651102,
+    651103
+  ],
+  "bootstrap_seed": 651011,
+  "source_sha256": {
+    "scripts/run_experiments.py": "2a38cb743802f2fbea0b4fee8c7c28cd6e2d2760b50462ebc4c7a3091dec4683",
+    "scripts/prepare_data.py": "061ae3cba4b6e73164c3a1203030d41c634109f63e08d2e7af0239312acaaa4e",
+    "src/gems65/pu.py": "0438dc435dc917335363fd6e4324042d9638239f382d487fd6b79109035af377",
+    "research/preregistration.md": "55a1a01fd7d7c170fb39bb87ef8dc80d87e0092dcdb635075dd61fb1cec67838"
+  },
+  "experiments_completed": 3,
+  "model_input_prior_rasters": false,
+  "organizer_upload_performed": false
+}

@@ -1,34 +1,11 @@
 <!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Audit of the cited GEMSDOE32 artifact and limits of public leaderboard score provenance.">
-  <title>Score provenance · GEMSDOE65</title><link rel="stylesheet" href="assets/site.css">
-</head>
-<body>
-<header class="site-header"><div class="wrap nav-row">
-  <a class="brand" href="index.html">GEMSDOE65<small>Evidence before submission</small></a>
-  <nav aria-label="Main navigation"><a href="index.html">Status</a><a href="executive-summary.html">Submit guide</a><a href="hypotheses.html">Hypotheses</a><a aria-current="page" href="competitive-context.html">Score audit</a><a href="research.html">Research</a><a href="irregularities.html">Irregularities</a></nav>
-</div></header>
-<main class="wrap">
-  <div class="page-title"><div class="kicker">Competition results · evidence audit</div><h1>What can be established about the cited score?</h1>
-    <p class="lede">A public leaderboard observation is not enough to identify the TIFF that produced it. The available project records do not include a receipt connecting the named H33 artifact to a submission score.</p>
-  </div>
-  <div class="callout danger"><strong>Correction to the premise</strong><p>The <a href="https://buffedlizard55-lab.github.io/GEMSDOE32/docs/index.html">GEMSDOE32 page for its named H33 artifact</a> labels it “UNSCORED.” Its <a href="https://github.com/buffedlizard55-lab/GEMSDOE32/blob/main/docs/downloads/submissions_manifest.json">submission manifest</a> has no receipt for that file, and the related <a href="https://github.com/buffedlizard55-lab/GEMSDOE32/pull/9">PR #9</a> describes a projected / owner-reported development value rather than an organizer-confirmed score. None of these records ties the H33 TIFF to an official submission receipt.</p></div>
-
-  <h2>What the public board can and cannot prove</h2>
-  <p>The official <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">DrivenData leaderboard</a> is participant-level context, not a file-level provenance record. It does not, by itself, identify an uploaded filename, raster hash, model, or the run behind a row. Accordingly, this repository no longer stores or displays leaderboard rows and does not run a recurring fetch.</p>
-  <p>The <a href="https://www.drivendata.org/termsofuse/">DrivenData Terms of Use</a> prohibit automated access for monitoring/copying and manual monitoring/copying without prior written consent. No written permission or officially authorized API has been established here. The project therefore links to the organizer's live page without mirroring its content. Do not treat a user-reported value or an unlinked public row as receipt-backed evidence.</p>
-
-  <h2>Why the score cannot be explained from the H33 download</h2>
-  <p>The available H33 records mark the named artifact as unscored and provide no submission receipt. A public leaderboard row that lacks file attribution cannot establish that this TIFF generated the row. Therefore the answer to “why did this file get that score?” is <strong>unknown; the file-to-score premise is not verified</strong>. Explaining an unverified result from its raster would be speculation.</p>
-  <p>The official metric definition says distance-weighted Tversky rewards predictions near expert-labelled faults using a triangular distance kernel and weights false negatives more heavily than false positives. That describes the metric, not the training method or performance of this artifact. It cannot explain an unverified score.</p>
-
-  <h2>Can GEMSDOE65 exceed the cited value?</h2>
-  <p><strong>Possible in principle; not established here.</strong> This checkout has no experiment data, required shared hide-and-recover evaluator, submission writer, or prior-raster registry; it has no HOLDOUT-DTI or CI and no new TIFF. The only defensible project verdict is negative until the SAR candidate beats both the current holdout best and matched nnPU baseline overall, passes the highest-propensity-tercile gate, and the exact raster passes uniqueness and format checks. If the current holdout best cannot be established, promotion is blocked.</p>
-  <p>The project lane's scientific question is whether an explicit catalogue-inclusion propensity model improves blocked recovery of withheld fault segments, not whether it can imitate a prior dot pattern. This can address a plausible limitation in the training labels; only independent validation can show whether the correction helps.</p>
-  <div class="callout warning">Do not upload a TIF based on any value discussed here. The status page is authoritative and currently says no approved file.</div>
-  <p><a href="RESEARCH.md">Read the detailed research and score-provenance notes</a> · <a href="SOURCES.md">Open the source register</a>.</p>
-</main>
-<footer class="footer"><div class="wrap"><a href="index.html">Status</a><a href="research.html">Sources</a><a href="irregularities.html">Irregularities</a><a href="data/run-card.json">Current JSON run card</a></div></footer>
+<html lang="en"><head><meta http-equiv="refresh" content="0;url=research.html#why-did-the-cited-gemsdoe32-artifact-do-well"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Updated report · GEMSDOE65</title><meta name="description" content="Selection-bias-aware fault mapping research. Three sensitivity experiments, verified artifacts, and a fail-closed submission gate.">
+<link rel="stylesheet" href="assets/site.css"><link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<script src="assets/site.js" defer></script></head><body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar"><div class="nav"><a class="brand" href="index.html"><span class="mark" aria-hidden="true">G</span><span><strong>GEMSDOE<span style="color:#d9ad77">65</span></strong><small>Fault discovery lab</small></span></a><nav class="navlinks" aria-label="Main navigation"><a href="index.html">Overview</a><a href="executive-summary.html">Submission guide</a><a href="research.html">Research</a><a href="sources.html">Sources</a><a href="audit.html">Audit</a><a href="lane65/index.html">Lane 65 run</a></nav><a class="repo-link" href="https://github.com/buffedlizard55-lab/GEMSDOE65">Repository ↗</a></div></header>
+<div class="status-strip"><div class="status-inner"><span><span class="status-dot" aria-hidden="true"></span><strong>NOT CLEARED FOR SUBMISSION</strong> · Negative research result</span><span>No weekly slot used · <a href="executive-summary.html">Read the submission gate →</a></span></div></div>
+<main class="container" id="main"><section class="page-intro"><h1>The research report has moved.</h1><p>This earlier briefing is superseded by the completed negative experiment.</p><a href="research.html#why-did-the-cited-gemsdoe32-artifact-do-well">Open the current evidence →</a></section></main>
+<footer class="footer"><div><strong>GEMSDOE65</strong> · Selection-bias-aware PU lane<br>Evidence before optimism. Negative results are deliverables.</div><div class="footer-nav"><a href="data/run_card.json" download>Run card JSON</a><a href="lane65/index.html">Lane 65 run card + rasters</a><a href="https://github.com/buffedlizard55-lab/GEMSDOE65/blob/main/README.md">Original brief</a><a href="https://github.com/buffedlizard55-lab/GEMSDOE65">Source code ↗</a><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">Official leaderboard ↗</a><a href="https://www.drivendata.org/termsofuse/">Access terms ↗</a></div></footer>
 </body></html>

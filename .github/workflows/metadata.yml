@@ -1,0 +1,41 @@
+name: GitHub source metadata
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'evidence/repository_inventory.json'
+      - 'scripts/refresh_feed.py'
+      - '.github/workflows/metadata.yml'
+  schedule:
+    - cron: '22 7 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: metadata-feed
+  cancel-in-progress: false
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Use only the assigned research branch
+        uses: actions/checkout@v4
+        with:
+          ref: arena/f09c3103-gemsdoe65
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Refresh public GitHub commit metadata only
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python scripts/refresh_feed.py
+      - name: Publish only the dated metadata JSON on the assigned branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/data/feed.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'Refresh GitHub-only source metadata snapshot'
+            git push origin arena/f09c3103-gemsdoe65
+          fi

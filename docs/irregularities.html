@@ -1,43 +1,11 @@
 <!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Auditable discrepancies, blockers, and corrections recorded for GEMSDOE65.">
-  <title>Irregularities and blockers · GEMSDOE65</title><link rel="stylesheet" href="assets/site.css">
-</head>
-<body>
-<header class="site-header"><div class="wrap nav-row">
-  <a class="brand" href="index.html">GEMSDOE65<small>Evidence before submission</small></a>
-  <nav aria-label="Main navigation"><a href="index.html">Status</a><a href="executive-summary.html">Submit guide</a><a href="hypotheses.html">Hypotheses</a><a href="competitive-context.html">Score audit</a><a href="research.html">Research</a><a aria-current="page" href="irregularities.html">Irregularities</a></nav>
-</div></header>
-<main class="wrap">
-  <div class="page-title"><div class="kicker">Own the outcome · no silent assumptions</div><h1>Irregularities, corrections, and blockers</h1>
-    <p class="lede">Entries separate verified facts, user-reported claims, and unknowns. Source links are provided without reproducing a dynamic leaderboard.</p>
-  </div>
-  <div class="callout danger"><strong>Current verdict: negative.</strong> There is no candidate raster to validate, hash, compare with prior rasters, or download. No weekly slot was spent.</div>
-  <ol>
-    <li><strong>The experiment cannot run from this checkout.</strong> At the start of this lane the tracked tree contained only <code>README.md</code>; the merged repository now adds project docs, a static site, and a presence-only readiness audit. It still has no competition inputs or required shared evaluator/writer. The previously mentioned download command is not present. No model or TIFF was created.</li>
-    <li><strong>Required shared tool names are absent.</strong> The requested shared <code>evaluate_holdout.py</code> and <code>submission_writer.py</code> are not in this repository. A public sibling repository has differently named block/emission code, but it is not the mandated buffered whole-segment hide-and-recover evaluator. It was not silently substituted or copied into a private fork.</li>
-    <li><strong>The named H33 score attribution is unsupported.</strong> The <a href="https://buffedlizard55-lab.github.io/GEMSDOE32/docs/index.html">GEMSDOE32 page</a> labels its named H33 TIF “UNSCORED”; its <a href="https://github.com/buffedlizard55-lab/GEMSDOE32/blob/main/docs/downloads/submissions_manifest.json">manifest entry</a> has no receipt. The public leaderboard is participant-level and does not identify a file. Without an organizer receipt tying the exact artifact to a score, neither the attribution nor an explanation of that file's score is established.</li>
-    <li><strong>User-reported leaderboard values conflict and are not file receipts.</strong> The prompt includes different claims about current leaders and public scores, and some dates are later than this review date. This project does not publish a copy of leaderboard rows. Use only an authorized method to view the <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">official board</a>, and use a submission-page receipt for file-level score attribution.</li>
-    <li><strong>Leaderboard automation was removed after a Terms-of-Use review.</strong> The <a href="https://www.drivendata.org/termsofuse/">DrivenData Terms of Use</a> prohibit automated site access for monitoring/copying and manual monitoring/copying without prior written consent. No such permission or official API is available in this checkout. A scheduled fetch/parser and mirrored rows were removed; the site now links out only. Do not reintroduce polling, scraping, or a snapshot without authorization.</li>
-    <li><strong>The “about 25% at 1:24,000” literature statement is verified but narrowly scoped.</strong> Giddens &amp; Faulds (2025) says about 25% of its approximately 499,178 km² INGENIOUS study area was mapped in sufficient detail (e.g. 1:24,000). This is a study-specific mapping limitation, not a measurement of competition-footprint coverage or an exhaustive-map anchor.</li>
-    <li><strong>A quadrangle grid is not an exhaustive map-coverage mask.</strong> The USGS 7.5-minute map-index polygons describe map frames; NGMDB records publication footprints and scale. Neither by itself proves that all faults in a quadrangle were exhaustively mapped. No such complete mask has been audited against the exact competition footprint.</li>
-    <li><strong>Requested propensity bands may not be present in the official stack.</strong> The public task description lists elevation/slope, gravity, strain, conductivity, magnetic, and earthquake features, but does not explicitly guarantee a LiDAR-coverage mask, range-front distance, local-relief raster, or basin-depth proxy. No local stack exists to inspect.</li>
-    <li><strong>Gravity-source overlap is unresolved.</strong> A USGS CC0 Great Basin hydrogeologic data release includes a gravity-derived depth-to-basement surface, but its study is predominantly eastern Nevada and western Utah and its model nodes are one mile apart. No exact overlap, alignment, or suitability test against the GeoDAWN footprint/grid has been run; it remains a research lead.</li>
-    <li><strong>Several user-supplied dates are future-dated.</strong> The pasted result list includes 2026-10-12 entries, after this review date (2026-10-11 UTC). Treat them as unverified, not current evidence.</li>
-    <li><strong>No uniqueness, leakage, holdout, or format validation was run.</strong> There is no local prior-raster registry, candidate surface/dot set, evaluator, or TIFF. Correlation, 3-pixel overlap, one-feature AUC, HOLDOUT-DTI, CI, raster hash, and validator output are all not computed/not run.</li>
-    <li><strong>Published-site state is not yet confirmed.</strong> The Pages API was last observed in legacy `main:/` mode and the public URL served the old README page. This branch adds a root redirect for legacy publishing. The Actions workflow also has a guard and will only deploy after the Pages source is set to GitHub Actions. Verify the public URL after the PR update merges; use the working Arena preview in the meantime. This integration could not change repository settings.</li>
-  </ol>
-  <h2>Actions needed before a future experiment</h2>
-  <ol>
-    <li>Provide the shared template/cache through the authorized project workflow, including the exact evaluator, writer, and validator; preserve provenance and version.</li>
-    <li>Obtain the official feature stack, labels, sample grid, and their checksums through authorized competition access.</li>
-    <li>Expose the complete prior-raster registry and enough raster data or reproducible URLs for correlation, hash, and dot-overlap checks.</li>
-    <li>Audit any quadrangle-coverage candidate against the exact competition footprint; if exhaustive coverage is not proven, preregister propensity sensitivity rather than claiming an absolute scale.</li>
-    <li>Run the required feature-only leakage canaries and paired same-fold SAR-versus-nnPU holdout. Only after every gate passes may a unique TIFF be generated and offered.</li>
-  </ol>
-  <p><a href="IRREGULARITIES.md">Read the detailed irregularity register</a> · <a href="data/run-card.json">Open the negative run card</a>.</p>
-</main>
-<footer class="footer"><div class="wrap"><a href="index.html">Status</a><a href="research.html">Sources</a><a href="data/run-card.json">Current JSON run card</a></div></footer>
+<html lang="en"><head><meta http-equiv="refresh" content="0;url=audit.html"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Updated report · GEMSDOE65</title><meta name="description" content="Selection-bias-aware fault mapping research. Three sensitivity experiments, verified artifacts, and a fail-closed submission gate.">
+<link rel="stylesheet" href="assets/site.css"><link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<script src="assets/site.js" defer></script></head><body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar"><div class="nav"><a class="brand" href="index.html"><span class="mark" aria-hidden="true">G</span><span><strong>GEMSDOE<span style="color:#d9ad77">65</span></strong><small>Fault discovery lab</small></span></a><nav class="navlinks" aria-label="Main navigation"><a href="index.html">Overview</a><a href="executive-summary.html">Submission guide</a><a href="research.html">Research</a><a href="sources.html">Sources</a><a href="audit.html">Audit</a><a href="lane65/index.html">Lane 65 run</a></nav><a class="repo-link" href="https://github.com/buffedlizard55-lab/GEMSDOE65">Repository ↗</a></div></header>
+<div class="status-strip"><div class="status-inner"><span><span class="status-dot" aria-hidden="true"></span><strong>NOT CLEARED FOR SUBMISSION</strong> · Negative research result</span><span>No weekly slot used · <a href="executive-summary.html">Read the submission gate →</a></span></div></div>
+<main class="container" id="main"><section class="page-intro"><h1>The research report has moved.</h1><p>This earlier briefing is superseded by the completed negative experiment.</p><a href="audit.html">Open the current evidence →</a></section></main>
+<footer class="footer"><div><strong>GEMSDOE65</strong> · Selection-bias-aware PU lane<br>Evidence before optimism. Negative results are deliverables.</div><div class="footer-nav"><a href="data/run_card.json" download>Run card JSON</a><a href="lane65/index.html">Lane 65 run card + rasters</a><a href="https://github.com/buffedlizard55-lab/GEMSDOE65/blob/main/README.md">Original brief</a><a href="https://github.com/buffedlizard55-lab/GEMSDOE65">Source code ↗</a><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">Official leaderboard ↗</a><a href="https://www.drivendata.org/termsofuse/">Access terms ↗</a></div></footer>
 </body></html>

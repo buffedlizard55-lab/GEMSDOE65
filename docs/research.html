@@ -1,57 +1,213 @@
 <!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Evidence-led scientific rationale and official source links for the GEMSDOE65 SAR-EM lane.">
-  <title>Research and sources · GEMSDOE65</title><link rel="stylesheet" href="assets/site.css">
-</head>
-<body>
-<header class="site-header"><div class="wrap nav-row">
-  <a class="brand" href="index.html">GEMSDOE65<small>Evidence before submission</small></a>
-  <nav aria-label="Main navigation"><a href="index.html">Status</a><a href="executive-summary.html">Submit guide</a><a href="hypotheses.html">Hypotheses</a><a href="competitive-context.html">Score audit</a><a aria-current="page" href="research.html">Research</a><a href="irregularities.html">Irregularities</a></nav>
-</div></header>
-<main class="wrap">
-  <div class="page-title"><div class="kicker">Scientific basis · evidence classes kept separate</div><h1>Research notes and verified sources</h1>
-    <p class="lede">The evidence below supports the research design; it does not establish that a new raster will score better. Static scientific and government sources were reviewed on 2026-10-11 UTC. DrivenData's Terms of Use restrict automated and unauthorized manual monitoring/copying, so this site links to the official leaderboard without storing or refreshing its rows.</p>
-  </div>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Research · GEMSDOE65</title><meta name="description" content="Selection-bias-aware fault mapping research. Three sensitivity experiments, verified artifacts, and a fail-closed submission gate.">
+<link rel="stylesheet" href="assets/site.css"><link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<script src="assets/site.js" defer></script></head><body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar"><div class="nav"><a class="brand" href="index.html"><span class="mark" aria-hidden="true">G</span><span><strong>GEMSDOE<span style="color:#d9ad77">65</span></strong><small>Fault discovery lab</small></span></a><nav class="navlinks" aria-label="Main navigation"><a href="index.html">Overview</a><a href="executive-summary.html">Submission guide</a><a href="research.html" aria-current="page">Research</a><a href="sources.html">Sources</a><a href="audit.html">Audit</a><a href="lane65/index.html">Lane 65 run</a></nav><a class="repo-link" href="https://github.com/buffedlizard55-lab/GEMSDOE65">Repository ↗</a></div></header>
+<div class="status-strip"><div class="status-inner"><span><span class="status-dot" aria-hidden="true"></span><strong>NOT CLEARED FOR SUBMISSION</strong> · Negative research result</span><span>No weekly slot used · <a href="executive-summary.html">Read the submission gate →</a></span></div></div>
+<main class="container" id="main"><div class="page-intro"><p class="eyebrow">Research / a falsifiable geological hypothesis</p><h1>Account for what was mapped.<br>Not just what is there.</h1><p class="lead">Model fault occurrence and mapping selection separately. Keep the assumptions, non-fault mimics and failed tests in the record.</p></div><div class="callout green"><strong>Scope:</strong> fault detection in the competition footprint, not confirmed geothermal vents. Thermal resources require evidence beyond a fault-prediction raster.</div><section class="section"><h2>Highest-propensity-tercile check</h2><p class="compact">HOLDOUT-DTI on identical restricted domains; the training-population propensity quantile defines each stratum. Counts vary by sensitivity.</p><div class="table-wrap"><table><caption>HOLDOUT-DTI · evaluator gems57-pooled-hide-v2 · pooled terms · conditional 95% CI from 1,000 paired 20 km spatial-block bootstrap draws. Finite-iteration models; not organizer scores.</caption><thead><tr><th scope="col">Propensity scale</th><th scope="col">SAR-PU</th><th scope="col">nnPU</th><th scope="col">Paired difference</th><th scope="col">Withheld positives</th></tr></thead><tbody><tr class="row-primary"><td><strong>e(z=0) = 0.50</strong><small>Preregistered primary · assumption, not an estimate</small></td><td class="num">0.028454<small>95% CI [0.026646, 0.030418]</small></td><td class="num">0.036848<small>95% CI [0.034078, 0.040167]</small></td><td class="num bad">-0.008394<small>95% CI [-0.009847, -0.007253]</small></td><td class="num">34,174</td></tr><tr class=""><td><strong>e(z=0) = 0.25</strong><small>Sensitivity only · assumption, not an estimate</small></td><td class="num">0.042499<small>95% CI [0.039879, 0.045264]</small></td><td class="num">0.056377<small>95% CI [0.051845, 0.061350]</small></td><td class="num bad">-0.013879<small>95% CI [-0.016309, -0.011742]</small></td><td class="num">34,470</td></tr><tr class=""><td><strong>e(z=0) = 0.75</strong><small>Sensitivity only · assumption, not an estimate</small></td><td class="num">0.023148<small>95% CI [0.021500, 0.025055]</small></td><td class="num">0.028294<small>95% CI [0.026129, 0.030993]</small></td><td class="num bad">-0.005146<small>95% CI [-0.006041, -0.004468]</small></td><td class="num">32,534</td></tr></tbody></table></div></section><article class="prose"><h2 id="sar-pu-lane-preregistered-2026-10-11">SAR-PU lane — preregistered 2026-10-11</h2>
 
-  <h2>What the competition actually asks</h2>
-  <p>The official problem description says the target is fault presence as a structure indicative of geothermal resources. It explicitly notes that currently known public faults are incomplete and may contain inaccuracies, and that experts identified additional faults for evaluation. Therefore a hide-and-recover holdout against known catalogue faults is a necessary model-selection proxy, not direct evidence that the model finds truly unmapped faults.</p>
-  <p>The official submission contract requires a single-band float32 GeoTIFF, pixel confidence in [0, 1], the training grid's CRS/resolution/bounds, and null/NaN outside the study footprint. The metric is distance-weighted Tversky with alpha = 0.2, beta = 0.8, and a 300 m triangular support kernel. These are organizer-published task specifications—not a score for this project.</p>
+<p>Written before model fitting. No candidate is initialized from, blended with, or distilled from a prior submission. Prior rasters are read only by the audit/uniqueness process.</p>
 
-  <h2>Why model catalogue inclusion</h2>
-  <p>Giddens &amp; Faulds' 2025 Great Basin step-over study reports that approximately 91.9% of identified step-overs are associated with range-front faults, while warning that steep topographic gradients make range-front step-overs easier to identify. The paper also says only about 25% of its study area was mapped in sufficient detail (for example, at 1:24,000 scale) and that lack of high-resolution fault, lidar, and detailed mapping likely caused smaller step-overs to be missed. These are published observations about their inventory and study area; they do not prove the same propensity function for every fault in the competition footprint.</p>
-  <p>That combination motivates a selection model: <code>e(x)=P(S=1 | Y=1, X=x)</code>, where <code>Y</code> denotes an actual fault and <code>S</code> denotes inclusion in the labelled catalogue. Terrain relief/slope and DEM-source coverage describe observability; gravity-derived basin fill can describe burial/cover; range-front distance can describe a visibility regime. The paper's methods describe USGS one-meter lidar primarily over Walker Lane and an east-trending arm into north-central Nevada, with ten-meter 3DEP DEMs elsewhere in its study area. That motivates a source-coverage covariate, but does not verify which source or resolution covers each competition pixel; local coverage must be read from authoritative metadata. These covariates should model the chance an existing fault was mapped, not be mistaken for direct proof of a fault.</p>
+<h3 id="ranked-hypotheses-qualitative-expectations-not-projected-scores">Ranked hypotheses (qualitative expectations, not projected scores)</h3>
 
-  <h2>What PU theory does and does not identify</h2>
-  <p>Bekker &amp; Davis (PMLR, 2018) formalize the Selected At Random assumption and propose SAR-EM when propensity depends on a known subset of attributes. Their paper emphasizes that learning requires assumptions about class distributions and/or the labeling process. Bekker, Robberechts &amp; Davis (arXiv:1809.03207; ECML-PKDD 2019) introduce an empirical-risk method incorporating a labeling mechanism and discuss learning when that mechanism is incompletely known. This supports the proposed comparison, but does not make the Great Basin propensity identifiable from a positive–unlabeled catalogue without external anchoring or sensitivity assumptions.</p>
-  <p>The requested weight cap of 10 is a project protocol choice, not a result from these papers. It should be applied identically and logged. If a quadrangle anchor is not defensible, the output of SAR-EM must be reported as a sensitivity analysis, not a calibrated map of true fault probability.</p>
+<p>The repository was empty at intake. Novelty below is relative to the audited sibling code, not a claim of worldwide novelty. All four stay inside the requested selection-bias-aware PU lane. Ranking is an experimental priority, <strong>not a numerical DTI prediction</strong>.</p>
 
-  <h2>Map-coverage anchor: what is available</h2>
-  <p>A public USGS 7.5-minute map-index service exists and includes 1:24,000 map-frame polygons. It is a reference grid of quadrangle extents, <strong>not</strong> a record that each quadrangle has exhaustive detailed geologic mapping. Separately, the USGS National Geologic Map Database / MapView catalogue lets users search geologic maps and provides publication metadata. The USGS describes the NGMDB as a large archive, while also stating that detailed geologic mapping has not been completed everywhere. A defensible anchor would therefore require a footprint-and-scale audit of individual map records, not simply labeling every indexed quadrangle as exhaustively mapped.</p>
-  <p>Decision: the public index is available as a candidate source, but no exhaustive-mapping indicator has been verified in this checkout. Use it only after testing catalog completeness, scale, map extent, and intersection with the exact competition footprint; otherwise keep propensity scale unanchored and report sensitivity.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+  <th>Rank</th>
+  <th>Geological hypothesis and physical signature</th>
+  <th>Specific inputs</th>
+  <th>Why it may recover omitted faults</th>
+  <th>Non-fault mimic</th>
+  <th>Difference from reviewed code</th>
+  <th>Cost / viability</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>1</td>
+  <td>Concealed basin-margin splays are underrepresented where surface expression is weak. Learn magnetic/gravity edge evidence while separating mapping propensity from fault probability.</td>
+  <td>Cached GeoDAWN horizontal magnetic gradient (band 3), gravity horizontal/vertical gradients (18/11), isostatic gravity (13), basement surface (15), detrended elevation/slope (12/19); cached 3DEP relief, slope and lidar validity.</td>
+  <td>The selection model can reduce the dominance of steep, easily mapped terrain without pretending catalogue zeros are negatives.</td>
+  <td>Unfaulted alluvial basin margins and volcanic/lithologic contacts.</td>
+  <td>H20's actual nnPU risk has SCAR/prior assumptions; it is not this five-covariate, scale-constrained SAR-EM plus inverse-propensity empirical-risk comparison. H33-B2 only prunes an older dot field.</td>
+  <td>Moderate CPU; mirrored cached inputs obtainable and hash-checked here. <strong>Top experiment.</strong></td>
+</tr>
+<tr>
+  <td>2</td>
+  <td>Low-relief intrabasin scarps are selectively missed outside lidar coverage. Test a relief-by-coverage propensity interaction, keeping the fault detector unchanged.</td>
+  <td>Same five propensity covariates; cached lidar band 12 validity, not the scarp amplitude interpreted as coverage.</td>
+  <td>Conditions explicitly on whether high-resolution mapping was possible.</td>
+  <td>Shorelines, agricultural grading, and fluvial terraces.</td>
+  <td>Selection mechanism rather than the earlier raw lidar-scarp detector; no new emitter.</td>
+  <td>Low incremental cost; deferred to avoid exceeding the experiment cap.</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td>Topographic range-front visibility preferentially exposes footwall traces; buried hanging-wall strands have weaker apparent positives. Test nonlinear distance-to-terrain-front selection.</td>
+  <td>DEM-derived slope/relief front proxy, gravity low proxy, cached basement surface and gravity edges.</td>
+  <td>A label-free terrain-front proxy avoids using the full fault catalogue as a distance feature.</td>
+  <td>Erosional escarpments and unfaulted sedimentary contacts.</td>
+  <td>Not the H33 distance-to-catalogue exclusion or a borrowed flank buffer.</td>
+  <td>Moderate cost; front proxy is available, but is not a verified geological range-front map. Deferred.</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td>Map-completeness strata explain apparent differences in fault prevalence. Anchor propensity only in independently audited complete quadrangles.</td>
+  <td>Free official USGS NGMDB Map Catalog / Nevada Bureau of Mines and Geology map index, plus explicit field-completeness evidence.</td>
+  <td>Separates mapping effort from genuine fault absence.</td>
+  <td>Publication and access bias unrelated to geology.</td>
+  <td>Adds external identification evidence, not another fitted prior inferred solely from PU labels.</td>
+  <td><strong>Not viable here:</strong> official index access is outside sandbox allowlist and publication scale alone does not prove exhaustive mapping. Not proposed as ready.</td>
+</tr>
+</tbody>
+</table></div>
 
-  <h2>External data lead: gravity / basin fill</h2>
-  <p>The USGS published a free, CC0 data release for a three-dimensional hydrogeologic framework of the Great Basin that includes a gravity-based regional depth-to-basement surface. The official ScienceBase metadata lists a downloadable <a href="https://www.sciencebase.gov/catalog/file/get/68b1d2f6d4be024847d7b95a?f=__disk__be%2F69%2Ff0%2Fbe69f084e061a8913b9676f228b501345174059e">Surfaces.zip raster bundle</a>, so the source is obtainable; it has not been downloaded in this checkout. The release describes the study as predominantly eastern Nevada and western Utah, gives a broad geographic bounding box, and describes model nodes spaced at one mile. Bounding boxes alone do not establish raster overlap with the northwestern GeoDAWN submission footprint, and the grid is much coarser than the competition grid. It is therefore conditionally testable only after an exact footprint intersection and resolution/quality audit; it is not a viable predictor yet. The safer first test is a predeclared proxy from the competition-provided gravity bands—once those files and the shared evaluator are present.</p>
+<h3 id="fixed-experiment">Fixed experiment</h3>
 
-  <h2>Official / primary sources for manual review</h2>
-  <ul class="source-list">
-    <li><strong>Competition problem, task, dataset description, metric and output contract</strong><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/">DrivenData — DOE GEMS Prize Challenge, problem description</a><span class="meta">Official organizer page; inspected 2026-10-11 UTC. Includes alpha/beta, the triangular distance kernel, feature overview, and submission format.</span></li>
-    <li><strong>Official leaderboard — link only, not mirrored</strong><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">DrivenData — public leaderboard</a><span class="meta">Participant-level public context, not a receipt tying a score to a particular TIFF. No rows or snapshot are stored on this site.</span></li>
-    <li><strong>Access and copying restrictions</strong><a href="https://www.drivendata.org/termsofuse/">DrivenData Terms of Use</a><span class="meta">The page inspected lists its last modification as 2014-08-07 and prohibits automated access for monitoring/copying as well as manual monitoring/copying without prior written consent. Accordingly, the scheduled fetch and mirrored rows were removed; no authorized API or permission has been established.</span></li>
-    <li><strong>Selection bias and SAR-EM</strong><a href="https://proceedings.mlr.press/v94/bekker18a.html">Bekker &amp; Davis (2018), PMLR 94, pp. 8–22</a><span class="meta">Primary paper page and PDF linked there.</span></li>
-    <li><strong>Propensity-aware empirical risk under selection bias</strong><a href="https://arxiv.org/abs/1809.03207">Bekker, Robberechts &amp; Davis, arXiv:1809.03207</a><span class="meta">Abstract, author list, submission history, and ECML-PKDD journal reference.</span></li>
-    <li><strong>Great Basin step-overs, mapping limits, and range-front visibility caveat</strong><a href="https://pangea.stanford.edu/ERE/pdf/IGAstandard/SGW/2025/Giddens.pdf">Giddens &amp; Faulds (2025), SGP-TR-229, Stanford Geothermal Workshop proceedings PDF</a><span class="meta">Primary source. The percentages and limitations quoted above refer to the paper's own identified step-overs and study area.</span></li>
-    <li><strong>USGS 7.5-minute quadrangle index</strong><a href="https://carto.nationalmap.gov/arcgis/rest/services/map_indices/MapServer">The National Map map_indices service</a><span class="meta">Service description states that the 7.5-minute layer represents 1:24,000 map-index polygons. This is a map grid, not an exhaustive geologic-mapping certification.</span></li>
-    <li><strong>Public geological-map catalogue</strong><a href="https://ngmdb.usgs.gov/mapview/">USGS National Geologic Map Database MapView</a> · <a href="https://www.usgs.gov/faqs/what-national-geologic-map-database">USGS NGMDB FAQ</a><span class="meta">Search/catalogue availability is verified; complete quadrangle-level coverage is not.</span></li>
-    <li><strong>Official lidar availability and download paths</strong><a href="https://www.usgs.gov/faqs/what-coverage-3d-elevation-program-3dep-dems">USGS 3DEP DEM coverage FAQ</a> · <a href="https://www.usgs.gov/faqs/what-lidar-data-and-where-can-i-download-it">USGS lidar access FAQ</a> · <a href="https://usgs.gov/NationalMap/LidarExplorer">The National Map LidarExplorer</a><span class="meta">Official availability/delivery references. Actual study-area coverage must be computed from the downloaded coverage records.</span></li>
-    <li><strong>Gravity-based basin-depth research lead</strong><a href="https://www.usgs.gov/data/digital-input-data-and-model-output-a-three-dimensional-hydrogeologic-framework-great-basin">USGS Great Basin 3D hydrogeologic framework data release</a> · <a href="https://doi.org/10.5066/P13BAFSV">DOI 10.5066/P13BAFSV</a> · <a href="https://www.sciencebase.gov/catalog/item/68b1d2f6d4be024847d7b95a?format=json">ScienceBase files/metadata</a><span class="meta">USGS metadata identifies the CC0 license and lists the raster bundle. Actual download, footprint intersection, and suitability for the competition grid have not been tested.</span></li>
-    <li><strong>GeoDAWN data provenance</strong><a href="https://www.usgs.gov/data/geodawn-airborne-magnetic-and-radiometric-surveys-northwestern-great-basin-nevada-and">USGS GeoDAWN data release</a> · <a href="https://doi.org/10.5066/P93LGLVQ">DOI 10.5066/P93LGLVQ</a><span class="meta">Official source for survey context.</span></li>
-    <li><strong>Official competition data tab</strong><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/data/">DrivenData data page</a><span class="meta">Login-gated. No authenticated download or local placement is available in this checkout.</span></li>
-  </ul>
+<ul>
+<li>Primary scenario: assumed propensity <strong>at the training-covariate reference point</strong> e(z=0)=0.50. Sensitivities: 0.25 and 0.75. These are assumptions, not measured regional completeness or the user's quoted mapping percentage.</li>
+<li>At most three fits/experiments (one per scale scenario, each includes four folds and its nnPU comparator). Two-hour session budget. No parameter search and no selection of the best sensitivity after seeing results.</li>
+<li>Propensity covariates only: local relief, slope, negative isostatic gravity (basin-fill <strong>proxy</strong>, not depth), binary lidar data coverage, log distance to a label-free slope/relief terrain-front <strong>proxy</strong>.</li>
+<li>Outcome features: those five covariates plus cached physical bands 3, 18, 11, 12, 19, 15, 17. No coordinates, catalogue distances, map labels, prior predictions or hidden truth as features.</li>
+<li>Median imputation, robust scaling, and quadratic expansion fit on training pixels only. Missingness is disclosed; no template prediction values become a feature.</li>
+<li>Use the PMLR SAR-EM posterior q=1 for labeled positives, q=f(1-e)/(1-fe) otherwise; fit fractional-label logistic outcome and q-weighted selection models. Hold the propensity intercept at the assumed reference value to expose non-identifiability. No local-certainty claim; decay d=1. This is a constrained sensitivity variant, not an exact reproduction of every PMLR hyperparameter.</li>
+<li>Refit outcome using Bekker–Robberechts–Davis empirical risk E[loss0 + s min(1/e,10)(loss1-loss0)], logistic loss and fixed L2 regularization. Weight clipping deliberately introduces bias; log its prevalence. Compare with actual nonnegative PU risk, with marginal-population sampling and the same corrected positive mass as prior, on identical folds/features/regularization.</li>
+<li>Reuse the immutable shared template from 58GEMSDOE. Its <code>spatial.folds</code> withholds whole 8-connected catalogue components touching each label-blind spatial quadrant and excludes an 8 km training buffer. Components are raster proxies, not independently identified geological fault systems. Mask visible faults pixel-exactly. No catalogue-derived features are used.</li>
+<li>Leakage canary: each input alone against withheld positives and catalogue-zero proxies; test both directions, halt if AUC &gt;0.90. No AUC is a competition score.</li>
+<li>Primary HOLDOUT-DTI is the continuous normalized output (no placement tuning), pooled via shared <code>evaluate_holdout.py</code>: alpha .2, beta .8, triangular kernel 300 m. Paired 20 km block bootstrap, 1,000 draws, 95% CI. CI is conditional on these fits and does not capture catalogue selection bias.</li>
+<li>Highest-propensity tercile uses the training-population weighted 2/3 quantile of fitted e; identical restricted evaluation domain for both arms. It is a stratum-domain diagnostic, not an independently identified true propensity class.</li>
+<li>Promote only if primary pooled DTI is strictly higher than nnPU, its paired lower confidence bound is positive, and high-propensity-tercile difference and its lower confidence bound are nonnegative. Any missing comparable incumbent blocks promotion; no historical proxy/translated-truth number substitutes for a matched holdout best.</li>
+<li>Uniqueness uses the inherited literal gate (&gt;0.90 rank correlation or &gt;0.70 forward support overlap within 3 pixels). Check surface before any placement; stop immediately on a duplicate witness. A saturated continuous prior is NOT silently exempted. Incomplete registry cannot pass. Renaming/recompression/NaN changes cannot establish pixel uniqueness.</li>
+<li>No real competition upload. A qualifying candidate goes only to a separate selector; weekly cap must be checked on the submission page, not guessed. TIFF download is disabled on any failure.</li>
+</ul>
 
-  <h2>Interpretation boundary</h2>
-  <div class="callout warning">A format-valid raster can still be geologically wrong. A holdout against visible catalogue faults can still fail to generalize to genuinely new faults. A public leaderboard score cannot be attributed to a named file without a receipt. These evidence types must remain separate.</div>
-</main>
-<footer class="footer"><div class="wrap"><a href="index.html">Status</a><a href="hypotheses.html">Hypotheses</a><a href="irregularities.html">Irregularities</a><a href="SOURCES.md">Source register</a><a href="RESEARCH.md">Detailed research</a><a href="data/run-card.json">Current JSON run card</a></div></footer>
+<h3 id="sources-verified-limitations">Sources verified / limitations</h3>
+
+<p>Primary PMLR paper retrieved from the publisher's GitHub repository: https://github.com/mlresearch/v94/blob/gh-pages/bekker18a/bekker18a.pdf (Sections 3–4, Algorithms 1–2).</p>
+
+<p>Author implementation for arXiv:1809.03207: https://github.com/ML-KULeuven/SAR-PU . nnPU author implementation: https://github.com/kiryor/nnPUlearning/blob/master/pu_loss.py . Official competition reference code: https://github.com/drivendataorg/gems-prize-reference-solution . These are inspected sources, not proof that this model improves the organizer score.</p>
+
+<p>The Giddens–Faulds percentages in the user prompt remain <strong>user-supplied, not independently verified</strong> in this restricted environment. No exhaustively mapped quadrangle anchor has been verified. No organizer receipt or current weekly cap is available. The prompt's conflicting leaderboard targets cannot be resolved here.</p>
+<h2 id="repository-and-scientific-review-2026-10-11">Repository and scientific review — 2026-10-11</h2>
+
+<h3 id="intake-and-previous-session-next-steps">Intake and previous-session next steps</h3>
+
+<p>GEMSDOE65 at <code>90ca1cea667dc1427de27ef997634f3305a7c164</code> contained only <code>README.md</code> with its project title. There was no local cached stack, evaluator, writer, test suite, website, or previous-session log. Consequently the prompt's assertion that data placement was the <em>single</em> remaining blocker was not true for this checkout. This session restored owner-mirrored inputs, verified their hashes, and reused an immutable shared-template snapshot. CPU execution was sufficient; no GPU or DrivenData credential was needed for this constrained experiment.</p>
+
+<p><code>evidence/repository_inventory.json</code> inventories the pinned public Git trees of all 62 named repositories. <code>evidence/site_review.json</code> records inspection of their index-page source, not successful visits to their live GitHub Pages sites. Neither source inspection nor an owner-supplied score list constitutes an organizer submission receipt. The working registry has 751 distinct prediction-like Git blobs; its broad path filter can include non-submission rasters, and it excludes release-only, historical, unlinked, and private files. It is an inventory for review, not a completeness certificate.</p>
+
+<h3 id="why-did-the-cited-gemsdoe32-artifact-do-well">Why did the cited GEMSDOE32 artifact do well?</h3>
+
+<h4 id="what-the-bytes-and-code-establish">What the bytes and code establish</h4>
+
+<p>We downloaded the cited H33-2-B2 and its H27-4 base <strong>only for forensic learning</strong>, never as a feature or candidate initialization. Full-file SHA256 and pixel reads establish:</p>
+
+<ul>
+<li>Base: 40,199 positive pixels.</li>
+<li>H33-2-B2: 37,654 positive pixels, a strict subset of that base.</li>
+<li>Exactly 2,545 dots removed; their distances to the mapped catalogue span sqrt(2) to 2 pixels.</li>
+<li>Minimum retained distance is sqrt(5) pixels.</li>
+<li>The source generator calls <code>compute_h33_2_flank_sweep(..., buffers=(2,3))</code> and describes B2 as deleting dots at catalogue distance &lt;=2 pixels.</li>
+</ul>
+
+<p>These are <strong>RASTER-FORENSICS measurements, not DTI scores</strong>. Receipts and byte pins are in <code>evidence/h33_forensics.json</code>.</p>
+
+<p>Code: https://github.com/buffedlizard55-lab/GEMSDOE32/blob/b39e16ee85f83e3291951f56b615d657a071bb2b/scripts/run<em>h33</em>validation.py</p>
+
+<p>Artifact manifest: https://github.com/buffedlizard55-lab/GEMSDOE32/blob/b39e16ee85f83e3291951f56b615d657a071bb2b/evidence/h33<em>submission</em>bundles.json</p>
+
+<h4 id="a-defensible-mechanism-not-a-causal-attribution">A defensible mechanism, not a causal attribution</h4>
+
+<p>In the protocol's DTI, weighted true-positive credit saturates per truth pixel. Dense/redundant emissions can accumulate false-positive mass without providing additional truth coverage. Removing a redundant dot that contributes false-positive mass can therefore improve the ratio. A catalogue-flank exclusion can suppress mapped-fault continuations that receive no new-fault credit. That is a plausible reason the pruning helped; we cannot identify which removed dots were genuine organizer false positives without hidden truth or a receipt-backed controlled ablation.</p>
+
+<p>For binary dots, let T be total truth coverage, M total dot self-credit, n the dot count, and K the truth count. With alpha+beta=1, D = alpha(T+n-M)+beta K. Removing a dot loses truth credit deltaT and removes false-positive mass f.</p>
+
+<p><strong>Exact removal derivation:</strong> before removal, D=T+alpha<em>FP+beta</em>(K-T). After removal, T'=T-deltaT and FP'=FP-f, so <code>D'=D-(1-beta)*deltaT-alpha*f</code>. Provided the denominators are positive, the ratio improves exactly when</p>
+
+<p><code>alpha*f*DTI &gt; deltaT * (1-(1-beta)*DTI)</code>.</p>
+
+<p>This keeps loss of coverage separate from removal of FP mass. Keeping a redundant dot with deltaT=0 and f>0 lowers the score whenever T>0; removing it improves the ratio. The expression does not assume T=M or convert a claimed leaderboard number into a prediction.</p>
+
+<h4 id="what-cannot-be-concluded">What cannot be concluded</h4>
+
+<p>The prompt's cited leaderboard result is <strong>user-reported and unverified</strong>, not ORGANIZER-CONFIRMED. The sibling page/manifest also contains older UNSCORED/projection language. The three different current-leaderboard targets in the prompt conflict. None is used as a measured baseline, a claim about the live leaderboard, or a target the new method is said to have beaten.</p>
+
+<p>There is no defensible basis to promise a result above the cited artifact or the current leader. The SAR-PU experiment here failed its local comparison. A weak finite-iteration model is not evidence that selection correction can never help, but it is evidence against spending a slot on <em>this</em> implementation.</p>
+
+<h3 id="selection-bias-the-crucial-scientific-distinction">Selection bias: the crucial scientific distinction</h3>
+
+<p>With PU observations, <code>P(S=1|x) = e(x) * P(Y=1|x)</code>. Many pairs <code>(e,f)</code> can produce the same observed product. A small propensity feature set is a structural modeling restriction, not an empirical identification certificate. The PMLR paper additionally discusses local certainty; it is not established in these geophysical rasters. We therefore fixed the selection-model intercept at three preregistered reference values and made no claim that they estimate regional mapping coverage.</p>
+
+<p>The user's quoted Great Basin range-front/mapping percentages were not independently recovered from the primary Stanford paper. They motivate a question, not a fitted numerical anchor. A public map index describes map products; it does not automatically certify that all faults in a quadrangle were found. No verified exhaustive-quadrangle anchor exists in this run.</p>
+
+<p>The paper's exact E-step was implemented. Fractional-label outcome and posterior-weighted selection M-steps were used with an explicitly fixed reference propensity. A clipped inverse-propensity risk and genuine nnPU comparator used the same sampling weights, covariates, spatial folds, regularization, and corrected positive mass. Bounded logistic coefficients prevent unbounded signed-risk optimization. Clipping intentionally trades bias for stability. Tests verify analytic gradients, risk identities, nonnegative-risk clamping, and posterior probabilities.</p>
+
+<p>All twelve fold/scenario EM fits reached the fixed iteration cap. Inner optimizers converged, but the EM stopping criterion did not. Results are explicitly <strong>finite-iteration negative results</strong>, not converged propensity estimates. No extra model experiment or tuning was performed after the three-scenario budget. The executed numeric settings and the preregistration-detail gap are recorded in <code>research/implementation_details.md</code>.</p>
+
+<h3 id="validation-discipline-and-its-limits">Validation discipline and its limits</h3>
+
+<ul>
+<li>Four shared label-blind spatial quadrants; full 8-connected components touching the test quadrant are excluded from training, including their tails.</li>
+<li>An 8 km spatial training buffer; visible catalogue is masked pixel-exactly by the shared evaluator.</li>
+<li>No catalogue-derived predictors. Imputation/scaling fit only on training samples; stratified positive/unlabeled samples carry population-correcting weights.</li>
+<li>All twelve physical features individually tested in each fold before fitting; the canary did not trigger. Pass 2 also checked every standardized/quadratic basis (144 checks) on the same samples without refitting; this was an after-fit diagnostic on an already-negative result. Passing the canary is not proof that all leakage is impossible.</li>
+<li>Pooled distance-weighted terms, not a mean of fold ratios. Paired 20 km spatial-cluster bootstrap and conditional confidence intervals.</li>
+<li>Highest-propensity tercile defined by each training population, never by holdout label optimization. Restricting the spatial evaluation domain to this tercile can truncate a 300 m neighborhood; both arms use the same restriction, and it is a diagnostic rather than a globally additive decomposition.</li>
+<li>The observed catalogue is itself selection biased. Hide-and-recover validates recovery of mapped faults, not transport to the organizer's unmapped-fault population. Withheld catalogue zeros are unlabeled, not verified negatives.</li>
+<li>No portable comparable-incumbent holdout receipt was established. Historical shifted-truth/live-mirror projections cannot stand in for this evidence.</li>
+</ul>
+
+<h3 id="uniqueness-and-range-error-findings">Uniqueness and range-error findings</h3>
+
+<p>The new OOF research surface was serialized with the unmodified shared <code>submission_writer.py</code> and re-read by <code>scripts/validate_submission.py</code>. It is a float32, single-band, EPSG:32611, 100 m GeoTIFF matching the template's shape/transform. It has no NaN inside the footprint, NaN outside, no infinity, no nodata sentinel in the scored area, and all finite values in [0,1]. This is local format validation, not organizer acceptance.</p>
+
+<p>A common cause of the user's earlier range error is writing a finite negative nodata sentinel, a raw logit/feature value, or an unbounded rescaling into the scored area. We did not receive the exact rejected file, so we <strong>cannot diagnose its specific cause</strong>. The writer rejects bad input; it does not silently clip/fill it. A finite sentinel is never interpreted as a valid prediction.</p>
+
+<p>Pre-placement comparison checked the two requested historical rasters and a dense registry witness. The candidate's bytes and decoded pixels differ from all three. However the 17GEMSDOE continuous witness is positive at every footprint pixel. Its forward three-pixel coverage is complete. Under the inherited literal <code>finite &gt; 0</code> support definition, every nonempty candidate is therefore blocked. This is a degenerate rule for mixed dense/point registries, not scientific proof that the new model copied a lane. We did not redefine dots or grant a density exemption.</p>
+
+<p>The duplicate stop is honored: final dot placement and final-dot comparison were <strong>not run</strong>. The remaining registry entries were not cleared. The TIFF stays quarantined outside the public site; no download link, slot selection, or upload is offered.</p>
+
+<h3 id="three-review-passes">Three review passes</h3>
+
+<ol>
+<li><strong>Implementation:</strong> data restoration, primary-literature/code inspection, preregistration, three matched sensitivity experiments, quarantine writing, local validation, and pre-placement duplicate stop.</li>
+<li><strong>Bug/edge-case review:</strong> added gradient and posterior checks, population-weighted preprocessing checks, whole-component/buffer tests, pooled-bootstrap truth-count tests, NaN/range/grid failure tests, missing-evidence gate tests, and publication checks. Replaced an unsafe default-based validator summary with explicit named checks. No model/parameter selection was performed during code review.</li>
+<li><strong>Request reconciliation:</strong> verify report values against JSON evidence, distinguish finite-iteration results and owner mirrors from official confirmation, preserve original request in README, prevent negative TIFF exposure, build site/instructions/source ledger, run full tests and CI, open and merge the requested PR without switching branches.</li>
+</ol>
+
+<h3 id="prioritized-next-session-not-executed-experiments">Prioritized next session (not executed experiments)</h3>
+
+<ol>
+<li>Resolve support semantics through the separate selector/owner protocol, preserving the current literal failure until explicitly changed. It is mathematically impossible to pass the current rule against the confirmed dense witness.</li>
+<li>Obtain independently verifiable submission receipts and a same-evaluator incumbent holdout. Check the weekly cap on the actual submission page; do not infer it.</li>
+<li>Preregister a larger EM iteration budget and convergence analysis on a fresh locked holdout before any new sensitivity fits. Do not continue optimizing the already-consumed holdout as if it were new evidence.</li>
+<li>Verify original data provenance and external-data licensing against official downloads. Acquire mapping-completeness evidence, not just publication polygons. The blocked source ledger identifies official starting points.</li>
+<li>Only after those steps consider DTI-aware emission validated on the same folds. Do not extrapolate the continuous negative result to a dot field without evaluating the actual placement procedure.</li>
+<li>Treat geothermal relevance separately: fault geometry alone establishes neither heat, fluid supply, permeability at depth, nor a commercially viable resource. Independent field/thermal/hydrochemical evidence would be needed and must not be used to smuggle labels into this lane.</li>
+</ol>
+<h2 id="executed-configuration-recorded-after-the-run-not-retroactive-preregistration">Executed configuration (recorded after the run, not retroactive preregistration)</h2>
+
+<ul>
+<li>Three reference-propensity scenarios: primary 0.50, sensitivities 0.25 and 0.75.</li>
+<li>Four shared spatial folds; 80-pixel (8 km) training exclusion, including whole-component tails.</li>
+<li>Training sample per fold: up to 6,000 labeled positives and 30,000 catalogue-complement pixels, without replacement. Population-correcting weights make these a marginal-population expectation, not a balanced empirical prevalence.</li>
+<li>Sampler seeds: 651100–651103; identical samples/designs across scenarios and comparator.</li>
+<li>Twelve physical covariates; outcome basis: intercept, clipped robust-standardized covariates, and one-quarter squares (25 coefficients). Propensity basis: first five covariates only, with a fixed assumed intercept.</li>
+<li>EM initialization: constant class probability observed-positive fraction / reference propensity; propensity slopes initially zero.</li>
+<li>EM E-step: exact posterior with no local-certainty decay (d=1).</li>
+<li>Fixed 25-iteration EM cap; convergence requires at least five iterations and population-weighted mean absolute propensity change below 1e-4. This <strong>did not occur</strong> in any fold/scenario.</li>
+<li>M-step and risk optimization: SciPy L-BFGS-B, fixed L2 1e-4, coefficient bounds [-20,20], maximum 150 inner iterations, ftol 1e-10, gtol 1e-6. Inner optimizers succeeded.</li>
+<li>Final signed-risk target: s * min(1/e,10). nnPU prior is the same sample's population-weighted corrected positive mass. nnPU minimizes the nonnegative-risk objective directly; it does not implement the stochastic reverse-gradient training schedule.</li>
+<li>Inference: sigmoid confidence in [0,1], float32; no min–max stretch of the TIFF. Only the illustrative PNG is contrast-stretched.</li>
+<li>Pooled block bootstrap: 1,000 draws, seed 651011, 20 km cells, same block draws for both arms, integer truth-count equality checked.</li>
+<li>Original pre-fit canary: each of the twelve physical covariates in each fold. Pass-2 audit: 144 raw/standardized/quadratic checks with identical training samples, no refitting. Future runner now performs all of them before training.</li>
+</ul>
+
+<p>The preregistration prose fixed the mechanism/scenarios/folds/gates but did not spell out all numeric solver/sample settings. These were fixed in execution code before fitting, not tuned after seeing results. <code>evidence/execution_provenance.json</code> records the original runner/model hashes before the pass-2 safety edits. A future experiment should preregister a complete machine-readable configuration and enough iteration budget to establish convergence. These finite-iteration measurements must not be represented as converged SAR propensity estimates.</p>
+</article></main>
+<footer class="footer"><div><strong>GEMSDOE65</strong> · Selection-bias-aware PU lane<br>Evidence before optimism. Negative results are deliverables.</div><div class="footer-nav"><a href="data/run_card.json" download>Run card JSON</a><a href="lane65/index.html">Lane 65 run card + rasters</a><a href="https://github.com/buffedlizard55-lab/GEMSDOE65/blob/main/README.md">Original brief</a><a href="https://github.com/buffedlizard55-lab/GEMSDOE65">Source code ↗</a><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">Official leaderboard ↗</a><a href="https://www.drivendata.org/termsofuse/">Access terms ↗</a></div></footer>
 </body></html>

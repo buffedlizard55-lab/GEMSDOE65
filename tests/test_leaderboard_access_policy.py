@@ -25,3 +25,15 @@ class LeaderboardAccessPolicyTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def test_scheduled_metadata_is_github_only_and_never_writes_main():
+    workflow=(ROOT/'.github/workflows/metadata.yml').read_text()
+    script=(ROOT/'scripts/refresh_feed.py').read_text()
+    assert "cron: '22 7 * * *'" in workflow
+    assert 'git add docs/data/feed.json' in workflow
+    assert 'git push origin arena/f09c3103-gemsdoe65' in workflow
+    assert 'git push origin main' not in workflow
+    assert 'run_experiments.py' not in workflow
+    assert 'drivendata.org' not in workflow+script
+    assert "f'repos/{repo}/commits/main'" in script

@@ -22,7 +22,9 @@ def badge(text,kind='neutral'):
 
 
 def layout(title,active,body):
-    nav=[('index.html','Overview'),('executive-summary.html','Submission guide'),('research.html','Research'),('sources.html','Sources'),('audit.html','Audit')]
+    # Lane 65 (session 2026-10-11) is a second, independent implementation of the same lane; its
+    # pages live under docs/lane65/ so the canonical site stays canonical and both stay reachable.
+    nav=[('index.html','Overview'),('executive-summary.html','Submission guide'),('research.html','Research'),('sources.html','Sources'),('audit.html','Audit'),('lane65/index.html','Lane 65 run')]
     links=''.join(f'<a href="{p}"'+(' aria-current="page"' if p==active else '')+f'>{label}</a>' for p,label in nav)
     return f'''<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -33,7 +35,7 @@ def layout(title,active,body):
 <header class="topbar"><div class="nav"><a class="brand" href="index.html"><span class="mark" aria-hidden="true">G</span><span><strong>GEMSDOE<span style="color:#d9ad77">65</span></strong><small>Fault discovery lab</small></span></a><nav class="navlinks" aria-label="Main navigation">{links}</nav><a class="repo-link" href="{REPO}">Repository ↗</a></div></header>
 <div class="status-strip"><div class="status-inner"><span><span class="status-dot" aria-hidden="true"></span><strong>NOT CLEARED FOR SUBMISSION</strong> · Negative research result</span><span>No weekly slot used · <a href="executive-summary.html">Read the submission gate →</a></span></div></div>
 <main class="container" id="main">{body}</main>
-<footer class="footer"><div><strong>GEMSDOE65</strong> · Selection-bias-aware PU lane<br>Evidence before optimism. Negative results are deliverables.</div><div class="footer-nav"><a href="data/run_card.json" download>Run card JSON</a><a href="{REPO}/blob/main/README.md">Original brief</a><a href="{REPO}">Source code ↗</a><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">Official leaderboard ↗</a><a href="https://www.drivendata.org/termsofuse/">Access terms ↗</a></div></footer>
+<footer class="footer"><div><strong>GEMSDOE65</strong> · Selection-bias-aware PU lane<br>Evidence before optimism. Negative results are deliverables.</div><div class="footer-nav"><a href="data/run_card.json" download>Run card JSON</a><a href="lane65/index.html">Lane 65 run card + rasters</a><a href="{REPO}/blob/main/README.md">Original brief</a><a href="{REPO}">Source code ↗</a><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">Official leaderboard ↗</a><a href="https://www.drivendata.org/termsofuse/">Access terms ↗</a></div></footer>
 </body></html>'''
 
 

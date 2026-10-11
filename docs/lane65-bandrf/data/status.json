@@ -1,0 +1,144 @@
+{
+  "generated_utc": "2026-10-11T23:11:16Z",
+  "verdict": {
+    "download_cleared": true,
+    "literal_overlap_rule_degenerate": true,
+    "literal_overlap_flags": 4,
+    "literal_overlap_random_field_baseline": 0.9999911995071724,
+    "duplicate_basis": "no duplicate under the discriminating tests (max Spearman rho, max Jaccard, byte and pixel identity); the literal 3 px rule flags this candidate exactly as it flags a random field, because the staged priors cover 99.9994 % of the footprint",
+    "gate_met": true,
+    "forced": false,
+    "validator_passed": true,
+    "in_range_inside_footprint": true,
+    "uniqueness_duplicate_count": 4,
+    "uniqueness_worst_spearman": 0.04403754654328431,
+    "uniqueness_worst_dot_overlap": 0.999823990143448,
+    "uniqueness_inventory_certificate": false,
+    "uniqueness_note": "the staged inventory is not certified as the complete public owner-repository inventory, so uniqueness is reported as a measured comparison, not as a certificate",
+    "one_line": "DOWNLOAD AND SUBMIT \u2014 gate met, on-disk validator passed, and not a duplicate of any of the 62 hash-verified staged prior rasters under every discriminating test (max Spearman rho, max Jaccard, byte and pixel identity); the literal '>70 % within 3 px' rule is degenerate on this registry \u2014 the staged priors cover 99.999 % of the footprint, so a random dot field trips it too, and the demonstration is in this card."
+  },
+  "gate": {
+    "met": true,
+    "overall": {
+      "candidate_arm": "wire",
+      "baseline_arm": "nnpu",
+      "candidate_dti": 0.016463433393868396,
+      "baseline_dti": 0.006137240621711783,
+      "delta": 0.010326192772156613,
+      "delta_ci95": [
+        0.0032427551076477388,
+        0.01750652146009879
+      ],
+      "beats_two_se": false,
+      "higher_overall": true
+    },
+    "high_propensity_tercile": {
+      "candidate_mean_dti": 0.026608293837821203,
+      "baseline_mean_dti": 0.0033738618514817876,
+      "no_loss": true,
+      "definition": "DTI on the withheld truth pixels whose fitted propensity is in the top tercile, per fold, averaged"
+    },
+    "note": "pooled DTI is computed by the shared gems57 evaluator; the tercile readout is a restriction of the same emission, not a second metric",
+    "arm_definition": "declared, unfitted wire rule: measured splay band of the visible catalogue x range-front proximity (scale = the catalogue's own median stand-off from the morphometric front)",
+    "mandated_arm_comparison": {
+      "candidate_arm": "prop",
+      "baseline_arm": "nnpu",
+      "paired_delta_ci95": [
+        -0.005964123216556493,
+        0.011123663843839096
+      ],
+      "dti": {
+        "nnpu": 0.006137240621711783,
+        "prop": 0.007896987082712924
+      }
+    }
+  },
+  "candidate_files": [
+    "gems65-h65-1-sarpu-bandrf-22726dots-64c0fa71-nan.tif",
+    "gems65-h65-1-sarpu-bandrf-22726dots-64c0fa71-zeros.tif",
+    "gems65-h65-1-sarpu-bandrf-22726dots-64c0fa71-nan.zip"
+  ],
+  "holdout": {
+    "evaluator_version": "gems57-pooled-hide-v2",
+    "folds": [
+      "NW",
+      "NE",
+      "SW",
+      "SE"
+    ],
+    "pooled": {
+      "nnpu": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "dti": 0.006137240621711783,
+        "ci95": [
+          0.0009601223454074443,
+          0.011887515105107993
+        ],
+        "withheld_positive_pixels": 11321,
+        "tpw": 71.54634338107165,
+        "fpw": 12933.143795279426,
+        "fnw": 11249.453656618927
+      },
+      "prop": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "dti": 0.007896987082712924,
+        "ci95": [
+          0.0026459310346214275,
+          0.015387596939161172
+        ],
+        "withheld_positive_pixels": 11321,
+        "tpw": 94.70413609680698,
+        "fpw": 14583.491005466205,
+        "fnw": 11226.295863903195
+      }
+    },
+    "pooled_wire": {
+      "nnpu": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "dti": 0.006137240621711783,
+        "ci95": [
+          0.001206074899801573,
+          0.011640861296682068
+        ],
+        "withheld_positive_pixels": 11321,
+        "tpw": 71.54634338107165,
+        "fpw": 12933.143795279426,
+        "fnw": 11249.453656618927
+      },
+      "prop": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "dti": 0.007896987082712924,
+        "ci95": [
+          0.0022020193101155673,
+          0.015405285382572208
+        ],
+        "withheld_positive_pixels": 11321,
+        "tpw": 94.70413609680698,
+        "fpw": 14583.491005466205,
+        "fnw": 11226.295863903195
+      },
+      "wire": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "dti": 0.016463433393868396,
+        "ci95": [
+          0.012009780385775748,
+          0.021133716715534243
+        ],
+        "withheld_positive_pixels": 11321,
+        "tpw": 174.7952598971849,
+        "fpw": 7627.112070430768,
+        "fnw": 11146.204740102816
+      }
+    }
+  },
+  "canary": {
+    "flagged": [],
+    "n_pixels": 150000,
+    "threshold": 0.9
+  }
+}

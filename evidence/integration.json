@@ -1,0 +1,28 @@
+{
+  "checked_at": "2026-10-11T21:07:18.762053+00:00",
+  "merged_main_revision": "7275bde",
+  "predecessor_pull_requests": [
+    1,
+    2,
+    3
+  ],
+  "current_pull_request": 4,
+  "preserved": [
+    "Planning briefs under research/earlier-briefs",
+    "Original preflight card under evidence/history",
+    "No leaderboard scraping/mirroring policy",
+    "Presence audit and tests"
+  ],
+  "reconciled": [
+    "Completed-run site, canonical and hyphenated run-card aliases",
+    "Three legacy HTML redirects",
+    "Pages-mode guard and independent GitHub-only metadata workflow"
+  ],
+  "unchanged": [
+    "Three experiments and their scores",
+    "Research TIFF SHA256",
+    "Scientific negative verdict",
+    "No organizer upload"
+  ],
+  "current_ci": "https://github.com/buffedlizard55-lab/GEMSDOE65/pull/4/checks"
+}

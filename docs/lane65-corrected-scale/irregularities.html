@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Irregularities and scope limits — GEMSDOE65</title><style>body{margin:0;font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#14231f;background:#f6f7f4}
+header{background:#12332b;color:#f2fbf5;padding:18px 22px}header a{color:#cfe9d8;text-decoration:none;margin-right:14px;font-size:.94rem}
+header a[aria-current=page]{color:#fff;text-decoration:underline}
+main{max-width:1040px;margin:0 auto;padding:26px 20px 80px}
+h1{font-size:1.9rem;line-height:1.2;margin:.2em 0 .5em}h2{margin-top:1.9em;font-size:1.3rem}h3{font-size:1.05rem;margin-top:1.3em}
+.banner{border-radius:12px;padding:16px 18px;margin:18px 0;border:2px solid}
+.stop{border-color:#a11f1f;background:#fdecec}.stop strong{color:#8d1a1a}
+.warn{border-color:#a5730f;background:#fdf6e3}.ok{border-color:#1c6b45;background:#eaf6ee}
+.info{border-color:#24556e;background:#eaf3f8}
+table{border-collapse:collapse;width:100%;margin:1em 0;font-size:.92rem}th,td{border:1px solid #d6ddd6;padding:7px 9px;text-align:left;vertical-align:top}
+th{background:#eef2ec}
+code,pre{background:#eff2ee;border-radius:6px}code{padding:1px 4px}pre{padding:10px;overflow:auto}
+.small{font-size:.86rem;color:#4d5f59}.lede{font-size:1.08rem;color:#3a4a45}
+.card{border:1px solid #d8ded7;background:#fff;border-radius:12px;padding:14px 16px;margin:14px 0}
+.pill{display:inline-block;background:#e7efe8;border-radius:999px;padding:2px 10px;font-size:.8rem;margin-right:6px}
+footer{border-top:1px solid #d8ded7;color:#55655f;font-size:.85rem;padding:16px 22px;max-width:1040px;margin:0 auto}
+.callout.warning,.callout{border-left:4px solid #a5730f;background:#fdf6e3;padding:12px 14px;border-radius:8px;margin:14px 0}
+.meta{font-size:.84rem;color:#4d5f59;margin:.2em 0}
+.source-list{padding-left:1.1em}.source-list li{margin:.4em 0}
+</style></head>
+<body><header><strong>GEMSDOE65</strong> · corrected-scale SAR-propensity run · second, independent lane-65 run<br>
+<nav><a href="index.html">Status</a><a href="executive-summary.html">How to submit</a><a href="experiments.html">Experiments</a><a href="research.html">Research</a><a href="hypotheses.html">Hypotheses</a><a href="competitive-context.html">Why 0.2778</a><a href="sources.html">Sources</a><a href="irregularities.html" aria-current=page>Irregularities</a><a href="../index.html">← canonical site</a></nav></header>
+<main><p class="small">flags raised this session, with controls where available</p><h1>Irregularities and scope limits</h1><p class="lede">Thirteen findings, including two instruments that cannot do what a naive reading would assume they do, and one unit bug that silently disabled the whole correction.</p>
+
+<table><tr><th>ID</th><th>Finding</th><th>Disposition</th></tr>
+<tr><td>IR-65-101</td><td>No competition data in the original checkout; the ordinary data tab
+requires a login.</td><td>Resolved this session through the family's public data bridge; every
+sha256 verified against the bridge manifest. No credential use, no bypass.</td></tr>
+<tr><td>IR-65-102</td><td>A prior upload of a different project's raster was rejected with
+“Predicted values must be in range [0, 1]”.</td><td>Cause unproven. Mitigation: primary artifact is
+all-finite with zeros outside the footprint; NaN variant is diagnostics only.</td></tr>
+<tr><td>IR-65-103</td><td>The public GeoDAWN DEM mirror used as the survey-coverage covariate has an
+x-origin 0.034 m (2.9e−7 px) from the official grid.</td><td>Accepted below a 1 m tolerance and
+recorded in <code>data/derived/feature_meta.json</code>. It is a coverage mask, not a predictor of
+geology, so the sub-pixel offset cannot change any dot.</td></tr>
+<tr><td>IR-65-104</td><td>The coverage mirror is finite over 5 167 187 of 5 167 373 footprint cells
+(99.996 %).</td><td><strong>Flag:</strong> this mirror cannot discriminate where 1 m lidar exists, so
+the “lidar coverage” covariate carries almost no variance and the propensity effectively rests on
+four covariates. A finer coverage source (3DEP acquisition polygons) is required to use it
+properly.</td></tr>
+<tr><td>IR-65-105</td><td>The registered hide-and-recover instrument withholds segments uniformly at
+random.</td><td><strong>Flag:</strong> the instrument is SCAR by construction and therefore cannot
+detect a covariate-dependent selection bias. E1's tie is a property of the instrument. E2 was
+pre-registered with bias-matched withholding as the diagnostic; it is not yet the primary gate.</td></tr>
+<tr><td>IR-65-106</td><td>Fitted propensity is nearly flat among labelled positives (0.79–0.99).</td>
+<td><strong>Flag:</strong> no inverse weight reached the clip at 10, so the propensity-aware risk is
+close to the unweighted risk. Explains the small E2 effect and motivates the continuous SAR-EM
+next step.</td></tr>
+<tr><td>IR-65-107</td><td>The 70 % forward-overlap uniqueness rule trips (0.997) against a single
+5 px lattice prior whose own dots cover 99.87 % of the footprint within 3 px.</td>
+<td><strong>Flag with control:</strong> all 61 other priors and a random 28 218-dot field also score
+≈ 0.9987 against that witness, so the rule has no discriminating power there. Uniqueness is instead
+supported by |ρ| ≤ 0.037, no hash match, reverse overlap ≤ 0.019 and Jaccard ≤ 0.019.</td></tr>
+<tr><td>IR-65-108</td><td>Score attribution for the family's 0.2778 artifact is owner-reported; its
+own page says UNSCORED and its manifest carries <code>receipt: null</code>.</td><td>Recorded as
+OWNER-REPORT context only; no causal claim is presented as verified.</td></tr>
+<tr><td>IR-65-109</td><td>The public leaderboard moved during this project (0.2941 → 0.4133 across
+snapshots, and user-supplied values 0.2778/0.3195/0.3774 differ from both).</td><td>Any leaderboard
+number shown anywhere in this repo carries its observation date; none is presented as a receipt for
+one of our files.</td></tr>
+<tr><td>IR-65-111</td><td><strong>Unit bug in the EM:</strong> the labelled set is the complete
+catalogue while the unlabeled set is a 1/127.7 subsample of the pool, and the recursion compared
+them without a sampling-fraction weight, lowering the implied hidden-positive mass by 127.7× and
+pinning the fixed point near e(x) ≈ 1.</td><td><strong>Fixed this session</strong> at
+pixel-population scale (<code>pool_ratio</code>, <code>labelled_ratio</code>); the propensity is now
+non-degenerate (e_pos ∈ [0.44, 0.71]). E1/E2 are retained as the pre-fix ablation. The fix was made
+after E1/E2 were seen, so E3/E3b are reported as a corrected estimand requiring fresh-seed
+confirmation, and they are <em>not</em> called a gate pass.</td></tr>
+<tr><td>IR-65-112</td><td><strong>The holdout is a catalogue-recovery proxy.</strong> Withheld truth
+<em>is</em> catalogue geometry, so a lane designed to place mass where the catalogue is thin is
+penalised by construction; and the emission budget (28 047 dots) exceeds the family's owner-reported
+hidden mass estimate (K̂ ≈ 12 226 px).</td><td><strong>Flag:</strong> absolute holdout DTI from this
+lane is not comparable with live leaderboard anchors, and the family measured only ρ = +0.14 between
+that holdout and 12 owner-reported live scores. Reported as model-selection evidence only.</td></tr>
+<tr><td>IR-65-113</td><td>E3/E3b were run after the scale bug was found, i.e. after E1/E2 were
+visible.</td><td><strong>Flag:</strong> post-hoc fix. Recorded explicitly in the run card, the run
+report and the site; the promotion gate deliberately remains on the pre-registered registered
+instrument, and a fresh-seed replication is the top item on the next-steps list.</td></tr>
+<tr><td>IR-65-110</td><td>This lane has no established holdout incumbent to beat (“current holdout
+best” is NOT ESTABLISHED in this checkout).</td><td>The promotion gate is evaluated against the
+matched nnPU arm only, and that limitation is printed in the run card rather than hidden.</td></tr>
+</table>
+</main>
+<footer>Built by <code>scripts/build_site.py</code> from <code>registry/</code> on 2026-10-11T22:16:04Z.
+Scores are labelled HOLDOUT-DTI, REGISTRY-MEASUREMENT, OWNER-REPORT or NOT ESTABLISHED. No leaderboard scraping.</footer>
+</body></html>

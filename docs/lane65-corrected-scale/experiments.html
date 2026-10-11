@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Experiments E1–E2 — GEMSDOE65</title><style>body{margin:0;font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#14231f;background:#f6f7f4}
+header{background:#12332b;color:#f2fbf5;padding:18px 22px}header a{color:#cfe9d8;text-decoration:none;margin-right:14px;font-size:.94rem}
+header a[aria-current=page]{color:#fff;text-decoration:underline}
+main{max-width:1040px;margin:0 auto;padding:26px 20px 80px}
+h1{font-size:1.9rem;line-height:1.2;margin:.2em 0 .5em}h2{margin-top:1.9em;font-size:1.3rem}h3{font-size:1.05rem;margin-top:1.3em}
+.banner{border-radius:12px;padding:16px 18px;margin:18px 0;border:2px solid}
+.stop{border-color:#a11f1f;background:#fdecec}.stop strong{color:#8d1a1a}
+.warn{border-color:#a5730f;background:#fdf6e3}.ok{border-color:#1c6b45;background:#eaf6ee}
+.info{border-color:#24556e;background:#eaf3f8}
+table{border-collapse:collapse;width:100%;margin:1em 0;font-size:.92rem}th,td{border:1px solid #d6ddd6;padding:7px 9px;text-align:left;vertical-align:top}
+th{background:#eef2ec}
+code,pre{background:#eff2ee;border-radius:6px}code{padding:1px 4px}pre{padding:10px;overflow:auto}
+.small{font-size:.86rem;color:#4d5f59}.lede{font-size:1.08rem;color:#3a4a45}
+.card{border:1px solid #d8ded7;background:#fff;border-radius:12px;padding:14px 16px;margin:14px 0}
+.pill{display:inline-block;background:#e7efe8;border-radius:999px;padding:2px 10px;font-size:.8rem;margin-right:6px}
+footer{border-top:1px solid #d8ded7;color:#55655f;font-size:.85rem;padding:16px 22px;max-width:1040px;margin:0 auto}
+.callout.warning,.callout{border-left:4px solid #a5730f;background:#fdf6e3;padding:12px 14px;border-radius:8px;margin:14px 0}
+.meta{font-size:.84rem;color:#4d5f59;margin:.2em 0}
+.source-list{padding-left:1.1em}.source-list li{margin:.4em 0}
+</style></head>
+<body><header><strong>GEMSDOE65</strong> · corrected-scale SAR-propensity run · second, independent lane-65 run<br>
+<nav><a href="index.html">Status</a><a href="executive-summary.html">How to submit</a><a href="experiments.html" aria-current=page>Experiments</a><a href="research.html">Research</a><a href="hypotheses.html">Hypotheses</a><a href="competitive-context.html">Why 0.2778</a><a href="sources.html">Sources</a><a href="irregularities.html">Irregularities</a><a href="../index.html">← canonical site</a></nav></header>
+<main><p class="small">HOLDOUT-DTI · shared evaluator · identical folds for both arms</p><h1>Experiments E1–E2</h1><p class="lede">The propensity-corrected arm versus the matched nnPU arm, with the diagnosed reason the effect is small.</p>
+
+<div class="banner info">All scores on this page are <strong>HOLDOUT-DTI</strong>: pooled
+distance-weighted Tversky over whole withheld fault segments, computed by the shared evaluator
+<code>gems57-pooled-hide-v2</code> with implementation hashes
+<code>4afe10cbaa229948…</code> (metric),
+<code>7a0a84176986190b…</code> (holdout).</div>
+
+<h2>E1 — registered instrument</h2>
+<p>Whole segments withheld uniformly at random per quadrant (12 px domain erosion, 3 px buffer),
+2 seeds × 4 quadrants × {all, detached} = 16 cells. Both arms share features, sampler,
+optimiser, prior and emission rule; they differ only in the weights
+(<code>clip(1/e, 1, 10)</code> vs 1).</p>
+<table><tr><th>Cell</th><th>SAR DTI</th><th>nnPU DTI</th><th>SAR dots</th><th>nnPU dots</th></tr><tr><td>draw20_foldNW_all</td><td>0.025192</td><td>0.026096</td><td>28,260</td><td>28,486</td></tr><tr><td>draw20_foldNW_detached</td><td>0.025211</td><td>0.025275</td><td>27,931</td><td>28,020</td></tr><tr><td>draw20_foldNE_all</td><td>0.030627</td><td>0.029861</td><td>27,452</td><td>27,053</td></tr><tr><td>draw20_foldNE_detached</td><td>0.016268</td><td>0.016501</td><td>28,149</td><td>28,188</td></tr><tr><td>draw20_foldSW_all</td><td>0.017226</td><td>0.017145</td><td>28,672</td><td>28,450</td></tr><tr><td>draw20_foldSW_detached</td><td>0.024502</td><td>0.025100</td><td>28,756</td><td>28,364</td></tr><tr><td>draw20_foldSE_all</td><td>0.038526</td><td>0.038361</td><td>28,697</td><td>28,430</td></tr><tr><td>draw20_foldSE_detached</td><td>0.037789</td><td>0.037211</td><td>28,293</td><td>28,500</td></tr><tr><td>draw21_foldNW_all</td><td>0.016499</td><td>0.016198</td><td>28,477</td><td>27,685</td></tr><tr><td>draw21_foldNW_detached</td><td>0.023262</td><td>0.023654</td><td>28,021</td><td>27,500</td></tr><tr><td>draw21_foldNE_all</td><td>0.022708</td><td>0.023746</td><td>28,002</td><td>27,887</td></tr><tr><td>draw21_foldNE_detached</td><td>0.023992</td><td>0.023482</td><td>28,224</td><td>28,009</td></tr><tr><td>draw21_foldSW_all</td><td>0.011688</td><td>0.011835</td><td>28,370</td><td>28,643</td></tr><tr><td>draw21_foldSW_detached</td><td>0.022325</td><td>0.021498</td><td>28,558</td><td>28,568</td></tr><tr><td>draw21_foldSE_all</td><td>0.027559</td><td>0.027195</td><td>28,619</td><td>29,194</td></tr><tr><td>draw21_foldSE_detached</td><td>0.040001</td><td>0.041196</td><td>28,091</td><td>28,678</td></tr></table>
+<p>Pooled primary mode “all”: SAR <strong>0.023628</strong>
+(95 % CI 0.01890–0.02853)
+vs nnPU <strong>0.023671</strong>
+(95 % CI 0.01881–0.02848),
+paired Δ = −4.3e−05, 95 % CI [−3.9e−04, +3.2e−04]. Highest-propensity tercile:
+SAR 0.02510 vs nnPU 0.02493.
+Conservative “detached” mode: SAR 0.026831 vs
+nnPU 0.026937.</p>
+
+<h2>E2 — bias-matched instrument (diagnostic)</h2>
+<p>Identical geometry and scoring, but each eligible segment's withholding probability is
+proportional to <code>(1 − mean e(x))²</code>, i.e. the withheld set is enriched where the
+catalogue is sparse — the situation the lane exists to correct.</p>
+<p>SAR <strong>0.020985</strong> vs nnPU
+<strong>0.020816</strong>; paired Δ = +1.70e−04, 95 % CI
+[−9.3e−05, +4.1e−04]. Top tercile SAR 0.01731 vs
+nnPU 0.01729.</p>
+
+<h2>Why the effect is small (diagnosed, not excused)</h2>
+<p>The fitted propensity barely varies among labelled positives
+(mean 0.934, min 0.792,
+max 0.994), so <em>no</em> inverse weight reached the clip at 10
+and the correction is close to inert. This is the identifiability limit the protocol predicts for
+PU data: the scale of e(x) is not pinned down without an external completeness anchor, and a flat
+fit yields flat weights.</p>
+
+<h2>E3 — the scale bug, the fix, and the honest result</h2>
+<p>A unit audit of the EM recursion found the propensity degeneracy was <em>mathematical, not
+geological</em>: the labelled set is the complete catalogue while the unlabeled set is a 1/127.7
+subsample of the pool, and the published code compared them without a sampling-fraction weight. The
+implied hidden-positive mass was therefore 127.7× too small, and the EM fixed point was
+pinned near e(x) ≈ 1 whatever the covariates said. The corrected recursion runs on pixel-population
+counts:</p>
+<pre>n_pos(c) = labelled_ratio·n_S(c) + pool_ratio·pi·n_U(c)·e(c)      e(c) = n_S(c)/n_pos(c)</pre>
+<p>After the fix, in the scoring folds the fitted propensity is non-degenerate:
+e<sub>pos</sub> ∈ [0.436, 0.720], sd 0.055, pool ratio 127.7, clip fraction
+0.0000. In the whole-catalogue fit used for the published raster the inverse
+weights vary with mean 1.604, max 2.282,
+and a clipped fraction of 0.0000 — i.e. for the first time the
+correction is actually doing something.</p>
+<h3>E3 · registered instrument (identical folds to E1, 8 cells)</h3>
+<p>SAR <strong>0.023661</strong> vs nnPU <strong>0.023671</strong>; paired Δ =
+-1.05e-05 with 95 % CI [-5.38e-04, +5.99e-04].
+Top-propensity tercile: SAR 0.027027 vs nnPU 0.026940 (<code>passed=True</code>).
+<span class="pill">HOLDOUT-DTI</span></p>
+<p><strong>Interpretation.</strong> Uniform segment withholding makes the withheld positives
+exchangeable with the visible ones, so the instrument contains no selection bias for the correction
+to remove. A tie here is the expected outcome and is the control condition, not evidence against
+the mechanism.</p>
+<h3>E3b · bias-matched instrument (the discriminating test, 8 cells)</h3>
+<p>Withholding probability proportional to (1 − mean e(x))², i.e. the hidden set is enriched exactly
+where the catalogue is thin. SAR <strong>0.024682</strong> vs nnPU
+<strong>0.024648</strong>; paired Δ = +3.45e-05, 95 % CI
+[-3.12e-04, +3.86e-04]; tercile SAR 0.028117 vs nnPU
+0.028019 (<code>passed=True</code>). <span class="pill">HOLDOUT-DTI</span></p>
+<p><strong>Interpretation.</strong> This is the number that decides whether the mechanism is real,
+because it is the only instrument in the set that contains the bias the lane models. It is reported
+with its interval and nothing more.</p>
+<h2>Leakage canaries</h2>
+<p>E1: best single-feature holdout AUC 0.623
+(det_elev). E2: 0.668
+(dist_range_front_px). Both far below the 0.90 leakage flag; note the feature stack contains
+<strong>no catalogue-derived channel</strong> at all.</p>
+</main>
+<footer>Built by <code>scripts/build_site.py</code> from <code>registry/</code> on 2026-10-11T22:16:04Z.
+Scores are labelled HOLDOUT-DTI, REGISTRY-MEASUREMENT, OWNER-REPORT or NOT ESTABLISHED. No leaderboard scraping.</footer>
+</body></html>

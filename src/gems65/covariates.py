@@ -1,40 +1,49 @@
-"""The declared propensity covariate set of this lane.
+"""Propensity covariates x_e and classifier features, all non-catalogue by construction.
 
-Five covariates, each with a stated source and a stated limitation.  All of
-them are read on the pinned competition grid (3730 x 3292, EPSG:32611, 100 m)
-from mirrors that are hash-pinned by ``scripts/restore_inputs.py``; none is
-computed from the fault catalogue, so the set is label-free and safe to use
-inside the hide-and-recover folds.
+The lane's propensity model may only see the five covariates named in the brief
+(local relief, slope, gravity-derived basin-fill proxy, lidar coverage, distance to range
+front).  Every one of them is derived from terrain / gravity / survey-coverage data and NONE
+of them is derived from the fault catalogue, so a blocked holdout that hides whole catalogue
+segments cannot leak through the covariate set.  This is checked numerically by
+``scripts/05_leakage_canary.py`` (single-feature holdout AUC must stay below 0.90).
 
-==================  ==========================================================
-covariate           definition used here
-==================  ==========================================================
-``relief``          local relief: range (max - min) of the mirrored 100 m DEM in
-                    a 5 x 5 (500 m) window; where the DEM has no data the same
-                    statistic is taken from the official ``det_elev`` band.
-``slope``           official band 19 ``det_elev_slope`` ("gradient of elevation
-                    after detrending").
-``basinfill``       official band 15 ``depth_to_base_surf`` -- the competition
-                    stack's own "depth to basement surface / thickness of
-                    sedimentary cover", i.e. a gravity-derived basin-fill proxy.
-``lidar``           1 where the mirrored 1 m-lidar-derived
-                    ``lidar_scarp_features_u8`` band 12 (``valid``) is positive,
-                    else 0: a survey-coverage indicator, not a geological layer.
-``rangefront``      Euclidean distance (m) to a range front mapped from
-                    topography alone: mountain = (relief >= 100 m) & (slope >=
-                    5 deg); front = mountain pixels adjacent to non-mountain;
-                    distance transform on the front mask, capped at 3000 m.
-==================  ==========================================================
+Definitions, with the physical justification and the exact source of every input:
 
-None of these is claimed to be organizer-authenticated: ``relief`` comes from a
-mirrored USGS-style DEM and ``lidar`` from a mirrored derived layer.  The three
-official bands (``det_elev_slope``, ``depth_to_base_surf``, ``det_elev``) are
-read from the pinned 19-band competition mirror.
+relief  local relief = max - min of ``det_elev`` (band 12, tag description "Detrended
+        elevation - topography with regional trends removed") over a 5x5 px (500 m) window.
+        Detrending removes only the long-wavelength regional tilt, so a 500 m window of the
+        detrended surface retains the local relief that makes a scarp visible to a mapper.
 
-No public, exhaustive 1:24,000 quadrangle index for this footprint was found in
-this session, so the propensity **scale** is not anchored to an independent
-coverage measure and every downstream number that uses ``e(x)`` is reported as
-a sensitivity analysis (see the run card).
+slope   ``det_elev_slope`` (band 19, "Detrended elevation slope"), used as provided by the
+        organizers.  Steep relief is the single strongest observability driver: the brief's
+        own cited evidence is that ~92% of mapped step-overs sit on range-front faults
+        "partly because steep relief makes them easy to see".
+
+basin   Gravity-derived basin-fill proxy = -z( lowpass(iso_grav_anom, sigma=10 px) ), i.e.
+        high where the isostatic gravity anomaly (band 13, category ``gravity_data``,
+        "gravity after compensating for topographic mass") is low, which is the signature of
+        a thick, low-density sedimentary basin fill.  Validated in prep against
+        ``depth_to_base_surf`` (band 15, "Depth to basement surface - thickness of
+        sedimentary cover"): the two must correlate positively if the proxy is real, and the
+        measured Pearson r is written to ``evidence/covariates.json``.
+
+lidar   Survey coverage = band 12 (``valid``) of ``external/lidar_scarp_features_u8.tif`` > 0.
+        That product's own sidecar ``external/lidar_scarp_features.json`` names band 12
+        ``valid`` and states the quantisation rule "0 = no lidar".  The layer was derived by
+        the owner's CI from USGS 3DEP 1 m DEM tiles; the 716-tile index it used is mirrored
+        at ``external/dem_links.json`` and points at USGS ``prd-tnm`` S3 URLs (public domain).
+        Measured coverage inside the footprint is reported, and it is the observable stand-in
+        for the brief's "~25% of the region has detailed (~1:24,000) mapping".
+
+front   Distance to range front.  Range mask R = (relief >= q70(relief)) & (lowpass(det_elev,
+        sigma=5) >= median(lowpass)); the range front is the outer 2 px rim of R
+        (R & ~erode(R, 2)) and the covariate is the Euclidean distance transform to it, in
+        pixels (1 px = 100 m).  Basin-and-range geomorphology: the mountain front is where
+        range blocks meet basin fill, and it is where catalogue fault density peaks.
+
+Classifier features phi(x) are the 19 provided bands plus four derived terrain terms
+(relief, plan/profile-free curvature proxy, and two horizontal-gradient magnitudes).  All are
+standardised with statistics computed on the training population of each fold only.
 """
 
 from __future__ import annotations
@@ -43,132 +52,190 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
-import rasterio
-from scipy import ndimage as ndi
+from scipy.ndimage import (
+    binary_dilation,
+    binary_erosion,
+    distance_transform_edt,
+    gaussian_filter,
+    maximum_filter,
+    minimum_filter,
+)
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
-DATA = REPO_ROOT / "data"
+from . import grid as G
 
-#: Mirrored inputs, restored by ``scripts/restore_inputs.py`` (hash-pinned).
-PATHS = {
-    "dem": DATA / "mirrors" / "geodawn_dem_a2_100m.tif",
-    "lidar_scarp": DATA / "mirrors" / "lidar_scarp_features_u8.tif",
-    "training_features": DATA / "official" / "training_features.tif",
-}
-
-#: Official band names in the 19-band stack (order verified from the file tags).
-OFFICIAL_BANDS = {
-    "mag_anom": 1, "rtp": 2, "tmi_hg": 3, "geod_2ndinv": 4, "iso_grav_anom_slope": 5,
-    "tc": 6, "geod_shearrate": 7, "geod_dilaterate": 8, "tmi_vg": 9,
-    "deq_n100a15": 10, "iso_grav_anom_vg": 11, "det_elev": 12, "iso_grav_anom": 13,
-    "tmi": 14, "depth_to_base_surf": 15, "ieq_n100a15": 16, "cond_surf": 17,
-    "iso_grav_anom_hg": 18, "det_elev_slope": 19,
-}
-
-DEM_NODATA_BELOW = -1000.0     # the mirrored DEM flags void as -999999
-RELIF_WINDOW = 5               # 500 m at 100 m pixels
-RELIEF_MOUNTAIN_M = 100.0      # protocol threshold (metres of 500 m relief)
-SLOPE_MOUNTAIN_DEG = 5.0       # protocol threshold (degrees)
-FRONT_CAP_M = 3000.0           # distance cap for the range-front covariate
-
-COVARIATE_NAMES = ("relief", "slope", "basinfill", "lidar", "rangefront")
+RELIEF_WIN = 5           # px, 500 m
+BASIN_SIGMA = 10.0       # px, ~1 km sigma -> ~2-3 km effective wavelength
+FRONT_SMOOTH_SIGMA = 5.0
+FRONT_RELIEF_Q = 0.70
+FRONT_RIM_PX = 2
+DERIVED_NAMES = ("relief", "curv", "grad_det_elev", "grad_iso_grav")
+COVARIATE_NAMES = ("relief", "slope", "basin_fill", "lidar_cov", "dist_range_front")
 
 
-@dataclass
-class Covariates:
-    """The five named covariates on the competition grid, plus diagnostics."""
-
-    values: dict
-    shape: tuple
-    diagnostics: dict
-
-    def stack(self, names=COVARIATE_NAMES) -> np.ndarray:
-        return np.stack([self.values[n] for n in names], axis=-1)
-
-
-def read_band(path: Path, band: int = 1) -> np.ndarray:
-    with rasterio.open(path) as src:
-        return src.read(band)
+def _zn(a: np.ndarray, mask: np.ndarray) -> np.ndarray:
+    """Standardise inside a mask; NaN-safe; returns 0 where undefined."""
+    v = a[mask]
+    v = v[np.isfinite(v)]
+    if v.size == 0:
+        return np.zeros_like(a, dtype=np.float32)
+    mu, sd = float(np.mean(v)), float(np.std(v))
+    out = (a - mu) / (sd + 1e-9)
+    return np.nan_to_num(out, nan=0.0, posinf=0.0, neginf=0.0).astype(np.float32)
 
 
-def _window_range(a: np.ndarray, size: int) -> np.ndarray:
-    mx = ndi.maximum_filter(a, size=size, mode="nearest")
-    mn = ndi.minimum_filter(a, size=size, mode="nearest")
+def local_relief(det_elev: np.ndarray, win: int = RELIEF_WIN) -> np.ndarray:
+    a = np.nan_to_num(det_elev, nan=float(np.nanmedian(det_elev)))
+    mx = maximum_filter(a, size=win, mode="nearest")
+    mn = minimum_filter(a, size=win, mode="nearest")
     return (mx - mn).astype(np.float32)
 
 
-def build(footprint: np.ndarray, *, paths: dict | None = None) -> Covariates:
-    """Compute the five covariates on the full grid (NaN-free inside footprint).
+def curvature_proxy(det_elev: np.ndarray, sigma: float = 1.0) -> np.ndarray:
+    """Laplacian of a lightly smoothed detrended elevation: negative = crest, positive = base."""
+    a = np.nan_to_num(det_elev, nan=float(np.nanmedian(det_elev)))
+    s = gaussian_filter(a, sigma=sigma, mode="nearest")
+    gy, gx = np.gradient(s)
+    gyy = np.gradient(gy, axis=0)
+    gxx = np.gradient(gx, axis=1)
+    return (-(gyy + gxx)).astype(np.float32)
 
-    ``footprint`` is the scored study-region mask (``sample_submission`` finite
-    cells, which by construction contain every catalogue pixel).
-    """
-    p = dict(PATHS if paths is None else paths)
-    footprint = np.asarray(footprint, bool)
-    missing = [k for k, v in p.items() if not Path(v).is_file()]
-    if missing:
-        raise FileNotFoundError(
-            f"missing mirrored inputs {missing}; run scripts/restore_inputs.py first")
 
-    det_elev = read_band(p["training_features"], OFFICIAL_BANDS["det_elev"])
-    det_elev_slope = read_band(p["training_features"], OFFICIAL_BANDS["det_elev_slope"])
-    basinfill = read_band(p["training_features"], OFFICIAL_BANDS["depth_to_base_surf"])
+def grad_mag(a: np.ndarray) -> np.ndarray:
+    b = np.nan_to_num(a, nan=float(np.nanmedian(a)))
+    gy, gx = np.gradient(b)
+    return np.hypot(gy, gx).astype(np.float32)
 
-    dem = read_band(p["dem"])
-    dem_valid = dem > DEM_NODATA_BELOW
-    relief_dem = _window_range(np.where(dem_valid, dem, 0.0), RELIF_WINDOW)
-    relief_elev = _window_range(np.where(np.isfinite(det_elev), det_elev, 0.0), RELIF_WINDOW)
-    relief = np.where(dem_valid, relief_dem, relief_elev).astype(np.float32)
 
-    lidar_band = read_band(p["lidar_scarp"], 12)
-    lidar = (lidar_band > 0).astype(np.float32)
+def range_front_distance(det_elev: np.ndarray, relief: np.ndarray, footprint: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """Return (distance-to-range-front in px, range-front mask)."""
+    r = np.where(footprint, relief, np.nan)
+    q = float(np.nanquantile(r, FRONT_RELIEF_Q))
+    smooth = gaussian_filter(np.nan_to_num(det_elev, nan=float(np.nanmedian(det_elev))),
+                             FRONT_SMOOTH_SIGMA, mode="nearest")
+    med = float(np.median(smooth[footprint]))
+    rng_mask = footprint & (relief >= q) & (smooth >= med)
+    if not rng_mask.any():
+        return np.full(det_elev.shape, 999.0, np.float32), rng_mask
+    rim = rng_mask & ~binary_erosion(rng_mask, iterations=FRONT_RIM_PX)
+    if not rim.any():
+        rim = rng_mask
+    dist = distance_transform_edt(~rim).astype(np.float32)
+    dist[~footprint] = np.nan
+    return dist, rim
 
-    slope_deg = np.degrees(np.arctan(np.abs(det_elev_slope).astype(np.float64))).astype(np.float32)
-    mountain = (relief >= RELIEF_MOUNTAIN_M) & (slope_deg >= SLOPE_MOUNTAIN_DEG) & footprint
-    basin = (~mountain) & footprint
-    front = mountain & ndi.binary_dilation(basin, iterations=1)
-    distance_px = ndi.distance_transform_edt(~front)
-    rangefront = np.minimum(distance_px * 100.0, FRONT_CAP_M).astype(np.float32)
 
-    values = {"relief": relief, "slope": slope_deg, "basinfill": basinfill.astype(np.float32),
-              "lidar": lidar, "rangefront": rangefront}
-    diagnostics = {
-        "dem_valid_px": int((dem_valid & footprint).sum()),
-        "footprint_px": int(footprint.sum()),
-        "relief_from_det_elev_px": int((~dem_valid & footprint).sum()),
-        "mountain_fraction": float(mountain.sum() / max(footprint.sum(), 1)),
-        "lidar_fraction": float((lidar[footprint] > 0).mean()),
-        "rangefront_front_px": int(front.sum()),
-        "relief_threshold_m": RELIEF_MOUNTAIN_M,
-        "slope_threshold_deg": SLOPE_MOUNTAIN_DEG,
-        "relief_window_px": RELIF_WINDOW,
-        "rangefront_cap_m": FRONT_CAP_M,
-        "sources": {k: str(v) for k, v in p.items()},
+def basin_fill_proxy(iso_grav: np.ndarray, footprint: np.ndarray) -> np.ndarray:
+    a = np.where(footprint, iso_grav, np.nan)
+    fill = np.nanmedian(a)
+    sm = gaussian_filter(np.nan_to_num(a, nan=fill), BASIN_SIGMA, mode="nearest")
+    z = _zn(sm, footprint)
+    return (-z).astype(np.float32)   # high == thick, light basin fill (low isostatic anomaly)
+
+
+@dataclass
+class CovariateStack:
+    """The five propensity covariates, on the competition grid, plus provenance stats."""
+    relief: np.ndarray
+    slope: np.ndarray
+    basin_fill: np.ndarray
+    lidar_cov: np.ndarray
+    dist_range_front: np.ndarray
+    stats: dict
+
+    def matrix(self, idx: np.ndarray) -> np.ndarray:
+        """Row-major flat pixel indices -> (n, 5) float64 design matrix in COVARIATE_NAMES order."""
+        return np.column_stack([
+            self.relief.ravel()[idx].astype(np.float64),
+            self.slope.ravel()[idx].astype(np.float64),
+            self.basin_fill.ravel()[idx].astype(np.float64),
+            self.lidar_cov.ravel()[idx].astype(np.float64),
+            self.dist_range_front.ravel()[idx].astype(np.float64),
+        ])
+
+    def as_dict(self):
+        return {
+            "relief": self.relief, "slope": self.slope, "basin_fill": self.basin_fill,
+            "lidar_cov": self.lidar_cov, "dist_range_front": self.dist_range_front,
+        }
+
+
+def build_covariates(ddir: Path | None = None, footprint: np.ndarray | None = None) -> CovariateStack:
+    """Compute the five covariates from the pinned rasters.  Deterministic, no randomness."""
+    ddir = ddir or G.data_dir()
+    foot = footprint if footprint is not None else G.read_footprint(ddir)
+
+    det_elev = G.read_band("det_elev", ddir)
+    slope = G.read_band("det_elev_slope", ddir)
+    iso_grav = G.read_band("iso_grav_anom", ddir)
+    depth_base = G.read_band("depth_to_base_surf", ddir)
+
+    relief = local_relief(det_elev)
+    basin = basin_fill_proxy(iso_grav, foot)
+    dist_front, rim = range_front_distance(det_elev, relief, foot)
+
+    lid = G.read_lidar_band(G.LIDAR_VALID_BAND, ddir) > 0
+    lidar_cov = (lid & foot).astype(np.float32)
+
+    # Every covariate must be FINITE inside the footprint.  The source bands carry the float32
+    # sentinel (-3.4028234663852886e+38 -> NaN) at 3,061-3,073 pixels INSIDE the footprint
+    # (mechanism M1 of the range-error root cause), so a raw pass-through of det_elev_slope would
+    # poison the propensity model with NaNs.  Fill with the in-footprint median, then mask outside.
+    filled = {}
+    for nm, arr in (("relief", relief), ("slope", slope), ("basin_fill", basin),
+                    ("dist_range_front", dist_front)):
+        bad = foot & ~np.isfinite(arr)
+        good = foot & np.isfinite(arr)
+        med = float(np.median(arr[good])) if good.any() else 0.0
+        arr[bad] = med
+        arr[~foot] = np.nan
+        filled[nm] = {"in_footprint_nan_filled": int(bad.sum()), "fill_value": med}
+    bad_lid = foot & ~np.isfinite(lidar_cov)
+    lidar_cov[bad_lid] = 0.0
+    lidar_cov[~foot] = np.nan
+    filled["lidar_cov"] = {"in_footprint_nan_filled": int(bad_lid.sum()), "fill_value": 0.0}
+
+    # validity check of the basin-fill proxy against an independent subsurface band
+    m = foot & np.isfinite(basin) & np.isfinite(depth_base)
+    r_depth = float(np.corrcoef(basin[m], np.log1p(np.clip(depth_base[m], 0, None)))[0, 1])
+    lab = G.read_labels(ddir)
+    stats = {
+        "relief_win_px": RELIEF_WIN,
+        "basin_sigma_px": BASIN_SIGMA,
+        "front_relief_quantile": FRONT_RELIEF_Q,
+        "front_rim_px": FRONT_RIM_PX,
+        "lidar_band_used": G.LIDAR_VALID_BAND,
+        "footprint_px": int(foot.sum()),
+        "lidar_coverage_frac_of_footprint": float(lidar_cov[foot].mean()),
+        "lidar_coverage_frac_of_grid": float(lid.mean()),
+        "range_front_px": int(rim.sum()),
+        "range_mask_px": int((foot & (relief >= np.nanquantile(relief[foot], FRONT_RELIEF_Q))).sum()),
+        "basin_fill_vs_log_depth_to_base_pearson_r": r_depth,
+        "label_share_in_lidar_covered": float(lab[lidar_cov > 0].sum() / max(int(lab.sum()), 1)),
+        "in_footprint_nan_fill": filled,
+        "covariate_quantiles": {
+            name: {f"p{int(q*100)}": float(np.nanquantile(arr[foot], q))
+                   for q in (0.05, 0.25, 0.5, 0.75, 0.95)}
+            for name, arr in (("relief", relief), ("slope", slope), ("basin_fill", basin),
+                              ("dist_range_front", dist_front))
+        },
     }
-    for name, arr in values.items():
-        v = arr[footprint]
-        diagnostics[f"{name}_p05"] = float(np.percentile(v, 5))
-        diagnostics[f"{name}_p50"] = float(np.percentile(v, 50))
-        diagnostics[f"{name}_p95"] = float(np.percentile(v, 95))
-    return Covariates(values=values, shape=footprint.shape, diagnostics=diagnostics)
+    return CovariateStack(relief, slope, basin, lidar_cov, dist_front, stats)
 
 
-def design_matrix(cov: Covariates, rows: tuple[np.ndarray, np.ndarray],
-                  names=COVARIATE_NAMES) -> np.ndarray:
-    """Covariate values at ``rows`` as a float64 matrix (n_rows x n_names)."""
-    ys, xs = rows
-    return np.stack([cov.values[n][ys, xs] for n in names], axis=1).astype(np.float64)
+def save_covariates(cv: CovariateStack, out: Path) -> None:
+    out.parent.mkdir(parents=True, exist_ok=True)
+    np.savez_compressed(
+        out,
+        relief=cv.relief.astype(np.float32), slope=cv.slope.astype(np.float32),
+        basin_fill=cv.basin_fill.astype(np.float32), lidar_cov=cv.lidar_cov.astype(np.float32),
+        dist_range_front=cv.dist_range_front.astype(np.float32),
+    )
 
 
-def standardize_fit(X: np.ndarray) -> dict:
-    """Robust (median/IQR) scaling fitted on the training rows only."""
-    med = np.median(X, axis=0)
-    q1 = np.percentile(X, 25, axis=0)
-    q3 = np.percentile(X, 75, axis=0)
-    scale = np.where((q3 - q1) > 0, q3 - q1, 1.0)
-    return dict(median=med, scale=scale)
-
-
-def standardize(X: np.ndarray, stats: dict, clip: float = 6.0) -> np.ndarray:
-    Z = (np.asarray(X, np.float64) - stats["median"]) / stats["scale"]
-    return np.clip(Z, -clip, clip)
+def load_covariates(path: Path, stats: dict | None = None) -> CovariateStack:
+    z = np.load(path)
+    return CovariateStack(
+        z["relief"].astype(np.float32), z["slope"].astype(np.float32),
+        z["basin_fill"].astype(np.float32), z["lidar_cov"].astype(np.float32),
+        z["dist_range_front"].astype(np.float32), stats or {},
+    )

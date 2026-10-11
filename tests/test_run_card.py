@@ -1,80 +1,36 @@
-"""Run-card contract: the card is machine-readable, self-consistent and honest.
-
-The tests no longer assert a frozen *negative* verdict (that was correct only while
-the lane had no candidate).  They now assert the invariants that must hold for any
-verdict: the decision is derivable from the fields, the evidence labels are
-explicit, the submission note respects the 140-character limit, and a cleared
-verdict is impossible without a passing validator and a duplicate basis.
-"""
-
-from __future__ import annotations
-
+"""Preserve legacy URLs while replacing the superseded no-data state truthfully."""
 import json
-import sys
-import unittest
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
-RUN_CARD = ROOT / "docs" / "data" / "run-card.json"
-sys.path.insert(0, str(ROOT / "scripts"))
+ROOT=Path(__file__).resolve().parents[1]
 
 
-class RunCardTests(unittest.TestCase):
-    def setUp(self) -> None:
-        self.card = json.loads(RUN_CARD.read_text(encoding="utf-8"))
-
-    def test_verdict_is_machine_readable_and_self_consistent(self) -> None:
-        card = self.card
-        verdict = card["verdict"]
-        self.assertIn("download_cleared", verdict)
-        self.assertIn("one_line", verdict)
-        self.assertTrue(verdict["one_line"].startswith(("DOWNLOAD AND SUBMIT", "DO NOT SUBMIT")))
-        if verdict["download_cleared"]:
-            self.assertTrue(verdict["gate_met"])
-            self.assertTrue(verdict["validator_passed"])
-            self.assertEqual(verdict["literal_overlap_flags"] > 0,
-                             verdict["literal_overlap_rule_degenerate"])
-            self.assertLessEqual(verdict["uniqueness_worst_spearman"] or 0.0, 0.90)
-            self.assertTrue(any(name.endswith("-zeros.tif") for name in card["files"]))
-            zero = next(rec for name, rec in card["files"].items() if name.endswith("-zeros.tif"))
-            self.assertTrue(zero["validator_passed"])
-            self.assertTrue(zero["in_range_inside_footprint"])
-            self.assertEqual(zero["nan_inside_footprint"], 0)
-            self.assertEqual(zero["positive_on_catalogue"], 0)
-        else:
-            self.assertTrue(any(token in verdict["one_line"].lower()
-                                for token in ("did not clear", "not met", "do not submit")))
-
-    def test_gate_records_both_conditions_and_the_mandated_comparison(self) -> None:
-        gate = self.card["gate"]
-        self.assertTrue(gate["overall"]["higher_overall"])
-        self.assertIn("no_loss", gate["high_propensity_tercile"])
-        self.assertTrue(gate["met"] == (gate["overall"]["higher_overall"]
-                                        and gate["high_propensity_tercile"]["no_loss"]))
-        self.assertIn("paired_delta_ci95", gate["mandated_arm_comparison"])
-
-    def test_submission_note_respects_the_140_character_limit(self) -> None:
-        receipt = self.card.get("writer_receipt") or {}
-        note = receipt.get("note")
-        if note is None:
-            note = (self.card.get("emission") or {}).get("note", "")
-        self.assertLessEqual(len(note), 140)
-
-    def test_uniqueness_section_carries_the_measured_comparison(self) -> None:
-        uniq = self.card.get("uniqueness") or {}
-        self.assertIn("worst_spearman_full_footprint", uniq)
-        self.assertIn("registry_rasters_checked", uniq)
-        demo = uniq.get("literal_test_demonstration") or {}
-        self.assertGreater(demo.get("random_dots_inside_union_mean", 0.0), 0.0)
-
-    def test_every_reported_number_carries_a_holdout_label(self) -> None:
-        holdout = json.loads((ROOT / "evidence" / "lane_holdout.json").read_text())
-        self.assertEqual(holdout["evidence_class"], "HOLDOUT-DTI")
-        for arm, score in holdout["pooled_wire"]["scores"].items():
-            self.assertEqual(score["evidence_class"], "HOLDOUT-DTI")
-            self.assertEqual(len(score["ci95"]), 2)
-            self.assertGreater(score["withheld_positive_pixels"], 0)
+def test_current_and_legacy_card_urls_are_identical():
+    assert (ROOT/'docs/data/run-card.json').read_bytes()==(ROOT/'evidence/run_card.json').read_bytes()
+    assert (ROOT/'docs/data/run_card.json').read_bytes()==(ROOT/'evidence/run_card.json').read_bytes()
 
 
-if __name__ == "__main__":
-    unittest.main()
+def test_current_card_is_negative_despite_completed_experiments_and_format_pass():
+    card=json.loads((ROOT/'docs/data/run-card.json').read_text())
+    assert card['verdict']=='negative'
+    assert card['eligible_for_download'] is False
+    assert card['approved_for_weekly_slot'] is False
+    assert card['experiments_completed']==3 and card['submission_slots_used']==0
+    assert card['evidence_class']=='HOLDOUT-DTI'
+    assert card['holdout']['sar']['dti'] is not None
+    assert card['validator']['status']=='PASS'
+    assert card['registry']['complete'] is False
+    assert card['registry']['literal_gate_passed'] is False
+    assert card['em_converged'] is False
+    assert len(card['raster_sha256'])==64
+    assert len(card['note'])<=140
+
+
+def test_original_preflight_card_is_preserved_as_history_not_current_state():
+    card=json.loads((ROOT/'evidence/history/preflight-run-card-main-7275bde.json').read_text())
+    assert card['verdict']=='negative'
+    assert card['submission']['name'] is None
+    assert card['holdout_dti']['score'] is None
+    assert card['model_comparison']['status']=='NOT RUN'
+    assert card['raster_sha256'] is None
+    assert len(card['submission']['note'])<=140

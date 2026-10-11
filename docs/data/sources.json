@@ -1,0 +1,170 @@
+{
+  "checked_at": "2026-10-11T20:31:38.490184+00:00",
+  "sources": [
+    {
+      "id": "PMLR94",
+      "title": "Bekker & Davis (2018): Learning from PU Data under SAR",
+      "url": "https://proceedings.mlr.press/v94/bekker18a.html",
+      "review_url": "https://github.com/mlresearch/v94/blob/32cd7c55a80a5adb3ba0712b271f57c7f5c2d985/bekker18a/bekker18a.pdf",
+      "kind": "Primary publication / publisher repository",
+      "status": "Verified publisher PDF via GitHub",
+      "claims": "SAR definition, posterior E-step, weighted M-steps, local-certainty identifiability caveat. Sections 3\u20134.",
+      "sha256": "1247ab3a916205cd3a6282b6cd40de485bb78098c90aaeacc71fd66ecef7610a",
+      "used": true,
+      "checked_at": "2026-10-11T20:31:38.490184+00:00"
+    },
+    {
+      "id": "SARAUTHOR",
+      "title": "Bekker\u2013Robberechts\u2013Davis: SAR-PU author implementation",
+      "url": "https://arxiv.org/abs/1809.03207",
+      "review_url": "https://github.com/ML-KULeuven/SAR-PU/tree/6e4fc3d8c84ac3512669a4e36ffcb5086f5b42a7",
+      "kind": "Primary authors / source code",
+      "status": "Verified author code via GitHub",
+      "claims": "README links arXiv paper; pu_learning.py posterior; PUmodels.py weights s/e and 1-s/e. ArXiv PDF itself not retrieved.",
+      "sha256": "6d929a4db0555b2d2e1ef05686618d819decc0bdfa3bbdcab59fec8ba4261b43",
+      "used": true,
+      "checked_at": "2026-10-11T20:31:38.490184+00:00"
+    },
+    {
+      "id": "NNPU",
+      "title": "Kiryo et al.: nnPU author implementation",
+      "url": "https://github.com/kiryor/nnPUlearning/blob/3d9769e60dd275e8e4dcf91e1853f3b76c69f39f/pu_loss.py",
+      "kind": "Primary authors / source code",
+      "status": "Verified author code via GitHub",
+      "claims": "Positive risk plus nonnegative negative-risk estimator. Our full-batch solver minimizes the clamped risk, not the paper\u2019s minibatch reverse-gradient schedule.",
+      "used": true,
+      "checked_at": "2026-10-11T20:31:38.490184+00:00"
+    },
+    {
+      "id": "DDREF",
+      "title": "DrivenData GEMS reference solution",
+      "url": "https://github.com/drivendataorg/gems-prize-reference-solution/tree/aebe92f7c8a990f0e3443451b7a825d9afd6336b",
+      "kind": "Official competition code",
+      "status": "Verified official GitHub repository",
+      "claims": "Fault detection target, data-page input dependency, U-Net baseline, Tversky loss weights. Notebook is not an organizer submission receipt or an exact DTI evaluator.",
+      "used": true,
+      "checked_at": "2026-10-11T20:31:38.490184+00:00"
+    },
+    {
+      "id": "DDPROBLEM",
+      "title": "DrivenData: problem description and submission format",
+      "url": "https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/",
+      "kind": "Official competition page",
+      "status": "Not accessed: host outside sandbox allowlist",
+      "claims": "Manual-review source for current rules; not independently verified in this session.",
+      "used": false,
+      "checked_at": "2026-10-11T20:31:38.490184+00:00"
+    },
+    {
+      "id": "DDDATA",
+      "title": "DrivenData: competition data",
+      "url": "https://www.drivendata.org/competitions/306/competition-doe-gems/data/",
+      "kind": "Official data portal",
+      "status": "Not accessed: host outside sandbox allowlist",
+      "claims": "Official origin authentication outstanding. Prompt reports login required; no live authentication test claimed here.",
+      "used": false,
+      "checked_at": "2026-10-11T20:31:38.490184+00:00"
+    },
+    {
+      "id": "DDLEADER",
+      "title": "DrivenData: leaderboard and submission receipts",
+      "url": "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/",
+      "kind": "Official competition results",
+      "status": "Not accessed: no organizer receipt",
+      "claims": "Current score, rank, and weekly cap remain unknown. Prompt claims conflict and are not imported as confirmed scores.",
+      "used": false,
+      "checked_at": "2026-10-11T20:31:38.490184+00:00"
+    },
+    {
+      "id": "USGS",
+      "title": "USGS GeoDAWN magnetic/radiometric data release",
+      "url": "https://www.usgs.gov/data/geodawn-airborne-magnetic-and-radiometric-surveys-northwestern-great-basin-nevada-and",
+      "kind": "Official geophysical data",
+      "status": "Official page not accessed; cached owner mirror used",
+      "claims": "Starting point for independent source/license checks; bridge provenance alone is not verification of original release.",
+      "used": true,
+      "checked_at": "2026-10-11T20:31:38.490184+00:00"
+    },
+    {
+      "id": "3DEP",
+      "title": "USGS 3D Elevation Program",
+      "url": "https://www.usgs.gov/3d-elevation-program",
+      "kind": "Official elevation program",
+      "status": "Official page not accessed; cached derivatives used",
+      "claims": "Topo/lidar derivative manifests and hashes checked. Full acquisition coverage and legal terms not independently reverified.",
+      "used": true,
+      "checked_at": "2026-10-11T20:31:38.490184+00:00"
+    },
+    {
+      "id": "NGMDB",
+      "title": "USGS National Geologic Map Database",
+      "url": "https://ngmdb.usgs.gov/ngmdb/ngmdb_home.html",
+      "kind": "Official geologic mapping index",
+      "status": "Not accessed; not an available completeness anchor",
+      "claims": "Map-product index is a starting point only. Map scale/publication does not prove exhaustive fault mapping.",
+      "used": false,
+      "checked_at": "2026-10-11T20:31:38.490184+00:00"
+    },
+    {
+      "id": "STANFORD",
+      "title": "Stanford Geothermal Workshop proceedings index",
+      "url": "https://pangea.stanford.edu/ERE/db/GeoConf/",
+      "kind": "Primary geological literature starting point",
+      "status": "Not accessed: Giddens\u2013Faulds statistics unverified",
+      "claims": "The quoted range-front and detailed-mapping percentages remain user-supplied; they do not anchor this run.",
+      "used": false,
+      "checked_at": "2026-10-11T20:31:38.490184+00:00"
+    },
+    {
+      "id": "NLR",
+      "title": "GEMS prize guidelines, report 96647",
+      "url": "https://docs.nlr.gov/docs/fy26osti/96647.pdf",
+      "kind": "Official guidelines PDF named in prompt",
+      "status": "Not accessed: host outside sandbox allowlist",
+      "claims": "No assertion of current rule compliance based on this unaccessed PDF.",
+      "used": false,
+      "checked_at": "2026-10-11T20:31:38.490184+00:00"
+    },
+    {
+      "id": "GDR1391",
+      "title": "Geothermal Data Repository submission 1391",
+      "url": "https://gdr.openei.org/submissions/1391",
+      "kind": "Official external-data starting point",
+      "status": "Not accessed; not used in the fitted model",
+      "claims": "Potential future thermal/geological corroboration; availability and licensing require primary verification.",
+      "used": false,
+      "checked_at": "2026-10-11T20:31:38.490184+00:00"
+    },
+    {
+      "id": "INGENIOUS",
+      "title": "INGENIOUS project",
+      "url": "https://gbcge.org/current-projects/ingenious/",
+      "kind": "Project information named in prompt",
+      "status": "Not accessed; no new features imported",
+      "claims": "Manual-review context only; no claims of confirmed vents or reservoirs.",
+      "used": false,
+      "checked_at": "2026-10-11T20:31:38.490184+00:00"
+    },
+    {
+      "id": "MIRROR",
+      "title": "Owner bridge: 19-band stack and sample grid",
+      "url": "https://github.com/buffedlizard55-lab/GEMSDOE/blob/c0c06ac82178f26b94fce3397036ef8f12a2f3a0/data/bridge/manifest.json",
+      "kind": "Third-party owner mirror, not official",
+      "status": "File SHA256 and grid independently checked",
+      "claims": "Input integrity, not organizer identity. Derived metadata may contain owner interpretations of band semantics.",
+      "used": true,
+      "checked_at": "2026-10-11T20:31:38.490184+00:00"
+    },
+    {
+      "id": "TEMPLATE",
+      "title": "Shared evaluation, writer, and literal uniqueness tools",
+      "url": "https://github.com/buffedlizard55-lab/58GEMSDOE/tree/main/src/gems57",
+      "kind": "Shared owner template",
+      "status": "Unmodified Git-blob snapshot verified locally",
+      "claims": "See shared_template_pin.json for immutable file hashes. Exact protocol formula unit-tested against brute force, not an organizer server execution.",
+      "used": true,
+      "checked_at": "2026-10-11T20:31:38.490184+00:00"
+    }
+  ],
+  "policy": "Primary verification, owner-mirror consistency, and unavailable sources are separate states."
+}

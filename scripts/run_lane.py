@@ -1,20 +1,19 @@
-#!/usr/bin/env python3
-"""Run the GEMSDOE65 lane: canaries, matched holdout, gated emission.
+"""GEMSDOE65 lane runner: SAR-propensity PU vs nnPU on identical blocked folds.
 
-Subcommands
------------
-``canary``   per-channel single-feature AUC on the blocked holdout (protocol
-             rule 4: AUC > 0.90 means leakage until proven otherwise).
-``holdout``  the matched comparison: nnPU vs the propensity-weighted estimator
-             on identical folds, with the overall and high-propensity-tercile
-             gates of this lane.
-``emit``     only after the gate passes: train on the whole visible catalogue,
-             emit dots with the shared allocator, write and validate the
-             candidate GeoTIFFs, run the registry uniqueness check, and write
-             the run card.
+Registered before results (see docs/PRE_REGISTRATION.md):
 
-Every artifact is written under ``evidence/``; no competition slot is used by
-this script and nothing is uploaded anywhere.
+1. Instrument: the shared ``gems57.holdout.build_holdout`` hide-and-recover
+   design (whole fault segments withheld per quadrant with a 12 px domain
+   erosion and 3 px truth buffer, catalogue features would be derived from
+   visible faults only -- this lane uses no catalogue-derived feature at all),
+   scored by the shared pooled DTI (alpha 0.2, beta 0.8, 300 m triangular).
+2. Arms: ``sar`` = propensity-weighted empirical risk with
+   ``clip(1/e(x), 1, 10)``; ``nnpu`` = the same risk with unit weights
+   (constant propensity).  Identical features, sampler, optimiser, prior, folds.
+3. Gate: pooled holdout DTI(sar) > DTI(nnpu) on the primary ``all`` folds AND
+   DTI(sar) >= DTI(nnpu) in the highest-propensity tercile of the scored domain.
+4. Budget: one feature build + one arm sweep; no arm is re-tuned after seeing
+   a gate value.
 """
 
 from __future__ import annotations
@@ -22,435 +21,314 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import subprocess
+import platform
 import sys
 import time
 from pathlib import Path
 
 import numpy as np
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO_ROOT / "src"))
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "vendor"))
+sys.path.insert(0, str(ROOT / "scripts"))
 
-from gems57 import evaluate_holdout, grid as shared_grid, holdout as shared_holdout  # noqa: E402
-from gems65 import lane  # noqa: E402
+from gems57 import evaluate_holdout as EH  # noqa: E402
+from gems57 import grid as G  # noqa: E402
+from gems57 import holdout as H  # noqa: E402
+from gems57 import metric  # noqa: E402
+from holdout_biased import build_biased_holdout, withheld_mean_propensity  # noqa: E402
+from sar_pu import (CLIP, emit_cell, fit_head, fit_sar_em, fit_sar_em_rbf, phi,  # noqa: E402
+                    pooled_from_terms, predict_surface, standardizer, terms_with_mask)
 
-DATA = REPO_ROOT / "data"
-EVIDENCE = REPO_ROOT / "evidence"
-EVIDENCE.mkdir(exist_ok=True)
-
-ARMS = ("nnpu", "prop", "wire")
-TRAINED_ARMS = ("nnpu", "prop")
-
-
-def res_channels(name: str) -> list:
-    return [c["key"] for c in lane.channel_set(name)]
-
-
-def _load_or_build_folds():
-    """Pinned-template hide-and-recover folds, plus the lane's training mask.
-
-    The withhold draw is ``gems57.holdout.buffered_component_draw`` exactly as
-    shipped in the pinned template: whole 8-connected catalogue components,
-    one globally hidden draw per seed, a label-blind quadrant domain and a 3 px
-    feature collar.  The only thing added here is the per-fold *training* mask
-    (region interior minus every component that touches the fold's region, and
-    minus the collar), which the lane needs because it fits a model rather than
-    reusing a cached stack.
-    """
-    import numpy as _np
-    from scipy import ndimage as _ndi
-
-    g = shared_grid.load_grid()
-    folds, _quad = shared_holdout.buffered_component_draw(
-        g, seed=20, hide_frac=shared_holdout.HIDE_FRAC, buffer_px=3,
-        boundary_px=shared_holdout.DOMAIN_ERODE)
-    lab, _n = _ndi.label(g.catalogue, structure=_np.ones((3, 3), bool))
-    for fold in folds:
-        region = fold["region"]
-        interior = _ndi.distance_transform_edt(~region) > 30
-        # the collar: every footprint cell within the 3 px feature buffer of ANY
-        # withheld component of the global draw (not just this quadrant's)
-        collar = _ndi.distance_transform_edt(~fold["hidden_all"]) <= 3
-        touched = _np.unique(lab[region & g.catalogue])
-        touched = touched[touched != 0]
-        fold["train"] = (g.footprint & interior & ~_np.isin(lab, touched) & ~collar)
-    return g, folds
+STACK = ROOT / "data" / "derived" / "feature_stack.npy"
+META = ROOT / "data" / "derived" / "feature_meta.json"
+EVID = ROOT / "registry"
+POS_CAP = 6000
+UNL_CAP = 40000
+STEPS = 800
+LR = 0.05
+SEED = 20261011
+TERCILE_Q = 2.0 / 3.0
 
 
-def cmd_canary(args) -> int:
-    g, folds = _load_or_build_folds()
-    truth_any = np.zeros_like(g.catalogue)
-    active_any = np.zeros_like(g.catalogue)
-    for fold in folds:
-        truth_any |= fold["truth"]
-        active_any |= fold["region"] & g.footprint & ~fold["masked_known"]
-    ys, xs = np.nonzero(active_any)
-    rng = np.random.default_rng(lane.ROW_SEED)
-    keep = rng.choice(ys.size, size=min(args.pixels, ys.size), replace=False)
-    rows = (ys[keep], xs[keep])
-    auc = lane.canary(rows, truth_any, max_negative=args.pixels)
-    payload = dict(
-        evidence_class="LEAKAGE-CANARY (no score; a diagnostic)",
-        evaluator_version=evaluate_holdout.VERSION,
-        definition="single-channel ROC-AUC separating withheld catalogue pixels from the "
-                   "fold-active pixels that are not withheld truth; pooled over the four "
-                   "blocked folds, sampled as declared",
-        n_pixels=int(rows[0].size),
-        threshold=0.90,
-        per_channel_auc=auc,
-        flagged=[k for k, v in auc.items() if v is not None and v > 0.90],
-        protocol="rule 4 of the parallel-run protocol: AUC > 0.90 means leakage until "
-                 "proven otherwise; no channel is trusted before this test",
-    )
-    (EVIDENCE / "lane_canary.json").write_text(json.dumps(payload, indent=2) + "\n")
-    print(json.dumps({k: v for k, v in sorted(auc.items(), key=lambda kv: -(kv[1] or 0))},
-                     indent=2))
-    print("flagged:", payload["flagged"])
-    return 0
+def _stack():
+    meta = json.loads(META.read_text())
+    return np.load(STACK, mmap_mode="r"), meta
 
 
-def cmd_holdout(args) -> int:
-    """Matched blocked-fold comparison; each fold is cached so a restart resumes."""
-    t0 = time.time()
-    g, folds = _load_or_build_folds()
-    folds = folds[: args.folds] if args.folds else folds
-    fold_dir = EVIDENCE / "lane_holdout_folds"
-    fold_dir.mkdir(exist_ok=True)
-    per_fold, terms_by_arm = [], {a: None for a in ARMS}
-    for fold in folds:
-        cache = fold_dir / f"{fold['name']}.json"
-        if cache.is_file() and not args.redo:
-            res = json.loads(cache.read_text())
-            res["resumed_from_cache"] = True
-            print(f"[fold {fold['name']}] cached: " + " ".join(
-                f"{a}: dti={res['per_fold'][a]['dti']:.4f}" for a in ARMS if a in res["per_fold"]),
-                flush=True)
-        else:
-            t = time.time()
-            res = lane.run_fold(fold, g, arms=ARMS, max_dots=args.max_dots,
-                                channels=args.channels, wire_variant=args.wire_variant,
-                                rf_quantile=args.rf_quantile)
-            res["seconds"] = round(time.time() - t, 1)
-            stored = dict(res)
-            stored["_terms"] = {a: np.asarray(v).tolist() for a, v in res["_terms"].items()}
-            cache.write_text(json.dumps(stored, indent=2))
-            print(f"[fold {fold['name']}] " + " ".join(
-                f"{a}: dti={res['per_fold'][a]['dti']:.4f} dots={res['per_fold'][a]['dots']}"
-                for a in ARMS) + f"  ({res['seconds']}s)", flush=True)
-        terms = {a: np.asarray(v, float) for a, v in res["_terms"].items()}
-        for arm, terms_arr in terms.items():
-            terms_by_arm[arm] = (terms_arr if terms_by_arm[arm] is None
-                                 else terms_by_arm[arm] + terms_arr)
-        pruned = {k: v for k, v in res.items() if k != "_terms"}
-        per_fold.append(pruned)
-
-    pooled = evaluate_holdout.pooled_summary({a: terms_by_arm[a] for a in TRAINED_ARMS},
-                                             candidate="prop")
-    pooled_wire = evaluate_holdout.pooled_summary({a: terms_by_arm[a] for a in ARMS},
-                                                  candidate="wire")
-    out = dict(evidence_class="HOLDOUT-DTI",
-               evaluator_version=evaluate_holdout.VERSION,
-               protocol=dict(buffer_px=3, folds=[f["name"] for f in folds],
-                             channels=res_channels(args.channels),
-                             max_dots_per_fold=args.max_dots,
-                             wire_variant=args.wire_variant,
-                             rf_quantile=args.rf_quantile,
-                             emission="monotone percentile-rank sharpening (power "
-                                      + str(lane.EMIT_RANK_POWER) + ") of each arm's own score, "
-                                      "mass-matched to the fold's hidden-positive count, then the "
-                                      "shared marginal-bar dot allocator; identical for every arm",
-                             train_unlabeled=lane.TRAIN_UNLABELED,
-                             weight_clip=10.0,
-                             arms=list(ARMS)),
-               per_fold=per_fold,
-               pooled=pooled,
-               pooled_wire=pooled_wire,
-               elapsed_seconds=round(time.time() - t0, 1))
-    (EVIDENCE / "lane_holdout.json").write_text(json.dumps(out, indent=2) + "\n")
-    print(json.dumps(pooled["scores"], indent=2), flush=True)
-    print("paired prop-vs-nnpu:", json.dumps(pooled["paired_differences"], indent=2), flush=True)
-    print(json.dumps(pooled_wire["scores"], indent=2), flush=True)
-    print("paired wire-vs-arms:", json.dumps(pooled_wire["paired_differences"], indent=2), flush=True)
-    return 0
+def _x_at(stack, rows, cols) -> np.ndarray:
+    """Feature rows for (rows, cols) global indices, NaN-safe (sentinel -> NaN -> 0)."""
+    out = np.empty((len(rows), stack.shape[0]), np.float32)
+    for b in range(stack.shape[0]):
+        out[:, b] = stack[b][rows, cols]
+    out[~np.isfinite(out)] = 0.0
+    return out
 
 
-def cmd_emit(args) -> int:
-    """Gate on the recorded holdout, then emit / write / validate / uniqueness.
-
-    The emitted surface is the lane's declared wire rule (splay band x range-front
-    proximity, see :func:`gems65.lane.wire_surface`) -- an *unfitted, declared*
-    prior whose holdout behaviour is measured by the ``holdout`` subcommand.  It
-    is not scored by anything here; the numbers on the card come from the fold
-    artifacts.  Writing is refused unless the recorded gate is met, or unless
-    ``--force`` records the override explicitly.
-    """
-    import rasterio
-    from gems57 import grid as sh_grid, submission_writer, validate
-    from gems57.uniqueness import compare_array_to_registry
-
-    g = sh_grid.load_grid()
-    holdout = json.loads((EVIDENCE / "lane_holdout.json").read_text())
-    pooled_wire = holdout.get("pooled_wire") or holdout["pooled"]
-    gate = gate_decision(pooled_wire, holdout["per_fold"], arm=args.arm,
-                         baseline=args.baseline)
-    gate["arm_definition"] = ("declared, unfitted wire rule: measured splay band of the "
-                              "visible catalogue x range-front proximity (scale = the "
-                              "catalogue's own median stand-off from the morphometric front)")
-    gate["mandated_arm_comparison"] = holdout["pooled"]["paired_differences"].get(
-        "nnpu", {}) and {
-        "candidate_arm": "prop", "baseline_arm": "nnpu",
-        "paired_delta_ci95": holdout["pooled"]["paired_differences"]["nnpu"].get("ci95"),
-        "dti": {k: v["dti"] for k, v in holdout["pooled"]["scores"].items()},
-    }
-    stamp = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
-    payload = dict(gate=gate, generated_utc=stamp)
-    if not gate["met"] and not args.force:
-        payload["action"] = ("negative: the promotion gate is not met, so no candidate "
-                             "GeoTIFF is written and no download is offered")
-        payload["verdict"] = _verdict(payload)
-        card = json.dumps(payload, indent=2, default=str) + "\n"
-        (EVIDENCE / "run_card.json").write_text(card)
-        site_card = REPO_ROOT / "docs" / "data" / "run-card.json"
-        site_card.parent.mkdir(parents=True, exist_ok=True)
-        site_card.write_text(card)
-        print(json.dumps(gate, indent=2))
-        print("NEGATIVE — no file written.")
-        return 0
-    payload["forced"] = bool(not gate["met"])
-
-    cov = lane.build_covariates_cached(g.footprint)
-    surface, wire_info = lane.wire_surface(
-        g.catalogue, g.footprint, variant=args.wire_variant,
-        rangefront=cov.values["rangefront"], rf_quantile=args.rf_quantile)
-    allowed = g.footprint & ~g.catalogue
-    mass = float(args.mass if args.mass else lane.EMIT_MASS_ASSUMED)
-    alloc = lane.emit_for_arm(surface, allowed, int(mass), max_dots=args.max_dots, mass=mass)
-    emitted = alloc.emitted
-    print(f"[emit] dots={alloc.n_dots} mass_assumed={mass:.0f} "
-          f"surrogate_dti={alloc.surrogate_dti:.4f}", flush=True)
-    payload["rule"] = dict(variant=args.wire_variant, rf_quantile=args.rf_quantile,
-                           band_center_px=wire_info["center_px"],
-                           band_half_width_px=wire_info["half_width_px"],
-                           rangefront_scale_m=wire_info.get("rangefront_scale_m"),
-                           band_source="splay_band() of the full visible catalogue "
-                                       "(inter-component distance quantiles)")
-    payload["emission"] = dict(dots=int(alloc.n_dots), mass_assumed=mass,
-                               assumed_positive_pixels_note=(
-                                   "the organizer's private new-fault extent is unknown; the "
-                                   "allocator is calibrated to this declared mass, and the "
-                                   "blocked-holdout runs used the fold's true hidden count"),
-                               surrogate_dti=float(alloc.surrogate_dti),
-                               on_catalogue=int((emitted & g.catalogue).sum()),
-                               outside_footprint=int((emitted & ~g.footprint).sum()),
-                               allowed_px=int(allowed.sum()))
-
-    values = emitted.astype(np.float32)
-    values[~g.footprint] = 0.0
-    # content-addressed name: re-running the identical rule is idempotent and a
-    # changed rule can never silently reuse an earlier submission's name
-    support_digest = hashlib.sha256(np.packbits(emitted).tobytes()).hexdigest()[:8]
-    name = args.name or f"gems65-h65-1-sarpu-bandrf-{alloc.n_dots}dots-{support_digest}"
-    note = (args.note or "SAR-PU propensity lane: measured splay band x range-front prior; "
-                         "calibrated marginal-bar dots")[:140]
-    outdir = REPO_ROOT / "docs" / "downloads"
-    outdir.mkdir(parents=True, exist_ok=True)
-
-    # primary encoding: finite zeros outside the footprint (the format the
-    # organizer portal has accepted for the sibling lanes' shipped artifacts)
-    tif_zero = outdir / f"{name}-zeros.tif"
-    receipt_path = None
-    if not tif_zero.exists():
-        submission_writer.write_submission(
-            tif_zero, values, sample=DATA / "bridge" / "sample_submission.tif",
-            footprint=g.footprint, note=note, name=name, catalogue=g.catalogue,
-            metadata=dict(lane="gems65", rule="band_rf", variant=args.wire_variant,
-                          dots=int(alloc.n_dots), mass_assumed=mass,
-                          gate_met=bool(gate["met"]), forced=bool(payload["forced"])))
-        receipt_path = tif_zero.with_suffix(".json")
-    print(f"[write] {tif_zero.relative_to(REPO_ROOT)}", flush=True)
-
-    # diagnostic encoding: NaN only outside the footprint, exactly as the lane
-    # brief words the deliverable; same prediction, no positive mass differs
-    tif_nan = outdir / f"{name}-nan.tif"
-    arr_nan = values.astype(np.float32).copy()
-    arr_nan[~g.footprint] = np.nan
-    if not tif_nan.exists():
-        sh_grid.write_submission(tif_nan, arr_nan, mode="nan")
-    print(f"[write] {tif_nan.relative_to(REPO_ROOT)}", flush=True)
-
-    # ---- on-disk receipts and validation ---------------------------------
-    receipts = {}
-    for path in (tif_zero, tif_nan):
-        with rasterio.open(path) as src:
-            arr = src.read(1)
-            meta = dict(crs=str(src.crs), shape=[src.height, src.width],
-                        dtype=src.dtypes[0], bands=src.count,
-                        nodata=None if src.nodata is None else str(src.nodata),
-                        transform=[float(v) for v in tuple(src.transform)[:6]])
-        rec = validate.validate(path, footprint=g.footprint, catalogue=g.catalogue)
-        rec.pop("meta", None)
-        inside = g.footprint
-        receipts[path.name] = dict(
-            file=str(path.relative_to(REPO_ROOT)),
-            sha256=sh_grid.read_geotiff(path)["sha256"],
-            bytes=path.stat().st_size, **meta,
-            finite=int(np.isfinite(arr).sum()),
-            nan_inside_footprint=int((~np.isfinite(arr) & inside).sum()),
-            nan_outside_footprint=int((~np.isfinite(arr) & ~inside).sum()),
-            min=float(np.nanmin(arr)), max=float(np.nanmax(arr)),
-            in_range_inside_footprint=bool(np.all((arr[inside] >= 0.0) & (arr[inside] <= 1.0))),
-            positive_pixels=int(np.nansum(arr > 0)),
-            positive_on_catalogue=int((np.nan_to_num(arr) > 0)[g.catalogue].sum()),
-            validator=rec, validator_passed=bool(rec["all_checks_passed"]))
-    payload["files"] = receipts
-    if receipt_path and receipt_path.is_file():
-        payload["writer_receipt"] = json.loads(receipt_path.read_text())
-
-    # ---- registry uniqueness ---------------------------------------------
-    index_path = DATA / "registry" / "registry_index.json"
-    uniq = {"status": "NO_INDEX", "index": str(index_path)}
-    if index_path.is_file():
-        # no ``expected_grid`` here: the shared comparator already enforces
-        # EPSG:32611 + the pinned transform for this grid size, and passing a
-        # string CRS would trip its stricter tuple comparison on every raster.
-        uniq = compare_array_to_registry(
-            values, json.loads(index_path.read_text()), g.footprint,
-            file_sha256=receipts[tif_zero.name]["sha256"])
-    if isinstance(uniq, dict) and uniq.get("rows"):
-        uniq["literal_test_demonstration"] = lane.literal_overlap_test_demonstration(
-            index_path, g.footprint, g.catalogue, n_dots=int(alloc.n_dots))
-    payload["uniqueness"] = uniq
-    payload["verdict"] = _verdict(payload)
-    card = json.dumps(payload, indent=2, default=str) + "\n"
-    (EVIDENCE / "run_card.json").write_text(card)
-    site_card = REPO_ROOT / "docs" / "data" / "run-card.json"
-    site_card.parent.mkdir(parents=True, exist_ok=True)
-    site_card.write_text(card)
-    print(json.dumps(payload["verdict"], indent=2), flush=True)
-    return 0
+def _crop_x(stack, sl) -> np.ndarray:
+    return np.asarray(stack[:, sl[0], sl[1]], np.float32)
 
 
-def _verdict(payload: dict) -> dict:
-    """The one-line answer the site and the README quote."""
-    gate = payload["gate"]
-    files = payload.get("files", {})
-    zero = next((v for k, v in files.items() if k.endswith("-zeros.tif")), {})
-    uniq = payload.get("uniqueness") or {}
-    duplicates = uniq.get("duplicate_count")
-    if duplicates is None:
-        duplicates = len(uniq.get("duplicates") or [])
-    identical = bool(uniq.get("byte_unique_among_checked") is False
-                     or uniq.get("pixel_unique_among_checked") is False)
-    rho = uniq.get("worst_spearman_full_footprint")
-    jac = uniq.get("worst_jaccard_dot_sets")
-    demo = uniq.get("literal_test_demonstration") or {}
-    literal_degenerate = bool(
-        demo.get("random_dots_inside_union_mean", 0.0) > 0.70
-        and demo.get("random_dots_inside_densest_mean", 0.0) > 0.70)
-    # The literal stop rule (any prior with >70 % of *my* dots within 3 px) is
-    # evaluated exactly, but on this registry it is provably degenerate: the
-    # staged priors cover 99.999 % of the footprint and a random field trips it.
-    # The verdict therefore turns on the discriminating tests, and the raw flag
-    # count is carried in the card either way.
-    discriminating_ok = (not identical
-                         and (rho is None or rho <= 0.90)
-                         and (jac is None or jac <= 0.50)
-                         and float(zero.get("in_range_inside_footprint", False)) > 0)
-    cleared = (bool(gate["met"]) and bool(zero.get("validator_passed"))
-               and discriminating_ok
-               and (duplicates == 0 or literal_degenerate))
-    certificate = bool(uniq.get("complete_accessible_scan"))
-    return dict(
-        download_cleared=cleared,
-        literal_overlap_rule_degenerate=literal_degenerate,
-        literal_overlap_flags=duplicates,
-        literal_overlap_random_field_baseline=demo.get("random_dots_inside_union_mean"),
-        duplicate_basis=("no duplicate under the discriminating tests "
-                         "(max Spearman rho, max Jaccard, byte and pixel identity); the "
-                         "literal 3 px rule flags this candidate exactly as it flags a random "
-                         "field, because the staged priors cover "
-                         f"{100.0 * float(demo.get('union_coverage_fraction') or 0.0):.4f} % "
-                         "of the footprint"
-                         if literal_degenerate else
-                         "duplicate flags exist and the literal rule is not degenerate here"),
-        gate_met=bool(gate["met"]),
-        forced=bool(payload.get("forced")),
-        validator_passed=bool(zero.get("validator_passed")),
-        in_range_inside_footprint=bool(zero.get("in_range_inside_footprint")),
-        uniqueness_duplicate_count=duplicates,
-        uniqueness_worst_spearman=uniq.get("worst_spearman_full_footprint"),
-        uniqueness_worst_dot_overlap=uniq.get("worst_dot_overlap"),
-        uniqueness_inventory_certificate=certificate,
-        uniqueness_note=("the staged inventory is not certified as the complete public "
-                         "owner-repository inventory, so uniqueness is reported as a "
-                         "measured comparison, not as a certificate" if not certificate else
-                         "complete accessible inventory certified"),
-        one_line=(
-            "DOWNLOAD AND SUBMIT — gate met, on-disk validator passed, and not a duplicate of any "
-            f"of the {uniq.get('registry_rasters_checked', 0)} hash-verified staged prior rasters "
-            "under every discriminating test (max Spearman rho, max Jaccard, byte and pixel "
-            "identity); the literal '>70 % within 3 px' rule is degenerate on this registry — the "
-            "staged priors cover 99.999 % of the footprint, so a random dot field trips it too, "
-            "and the demonstration is in this card."
-            if cleared else
-            "DO NOT SUBMIT — the recorded gate, on-disk validator, range check or duplicate "
-            "comparison did not clear; the failing field is named in this card."),
-    )
+def _auc(score, truth) -> float:
+    from sklearn.metrics import roc_auc_score
+    if truth.sum() == 0 or truth.sum() == truth.size:
+        return float("nan")
+    return float(roc_auc_score(truth, score))
 
 
-def gate_decision(pooled: dict, per_fold: list, arm: str = "prop",
-                  baseline: str = "nnpu") -> dict:
-    """Lane gate: higher pooled blocked-holdout DTI than matched nnPU, and no
-    loss in the highest-propensity tercile of the withheld truth."""
-    scores = pooled["scores"]
-    diff = pooled["paired_differences"].get(baseline, {})
-    overall = dict(candidate_arm=arm, baseline_arm=baseline,
-                   candidate_dti=scores[arm]["dti"], baseline_dti=scores[baseline]["dti"],
-                   delta=diff.get("delta"), delta_ci95=diff.get("ci95"),
-                   beats_two_se=bool(diff.get("beats_two_se")),
-                   higher_overall=bool(scores[arm]["dti"] > scores[baseline]["dti"]))
-    hi_c = np.mean([f["per_fold"][arm]["high_propensity_tercile"]["dti"] for f in per_fold])
-    hi_b = np.mean([f["per_fold"][baseline]["high_propensity_tercile"]["dti"]
-                    for f in per_fold])
-    tercile = dict(candidate_mean_dti=float(hi_c), baseline_mean_dti=float(hi_b),
-                   no_loss=bool(hi_c >= hi_b),
-                   definition="DTI on the withheld truth pixels whose fitted propensity is "
-                              "in the top tercile, per fold, averaged")
-    met = bool(overall["higher_overall"] and tercile["no_loss"])
-    return dict(met=met, overall=overall, high_propensity_tercile=tercile,
-                note="pooled DTI is computed by the shared gems57 evaluator; the tercile "
-                     "readout is a restriction of the same emission, not a second metric")
+def run_cell(grid, ctx, cell, stack, meta, pi, arms=("sar", "nnpu"), seed=SEED,
+             propensity="grid"):
+    """One fold cell: fit both arms, emit, return per-arm terms and diagnostics."""
+    sl = cell.bbox
+    rng = np.random.default_rng(seed + 7919 * cell.fold + (0 if cell.mode == "all" else 1))
+    hidden = ctx.hidden_by_cell[cell.key]
+    visible = grid.catalogue & ~hidden
+    fp = grid.footprint
+
+    # --- training sample (identical for both arms) -------------------------
+    vpos = np.flatnonzero(visible.ravel()[fp.ravel()])  # placeholder to keep dtypes honest
+    del vpos
+    pos_r, pos_c = np.nonzero(visible)
+    if pos_r.size > POS_CAP:
+        sel = rng.choice(pos_r.size, POS_CAP, replace=False)
+        pos_r, pos_c = pos_r[sel], pos_c[sel]
+    unl_pool = fp & ~visible
+    n_unl_pool = int(unl_pool.sum())
+    unl_r, unl_c = np.nonzero(unl_pool)
+    if unl_r.size > UNL_CAP:
+        sel = rng.choice(unl_r.size, UNL_CAP, replace=False)
+        unl_r, unl_c = unl_r[sel], unl_c[sel]
+    Xp = _x_at(stack, pos_r, pos_c)
+    Xu = _x_at(stack, unl_r, unl_c)
+    w_unl = np.full(Xu.shape[0], n_unl_pool / max(Xu.shape[0], 1))
+    # both samples are drawn from a finite population: the EM must see pixel-population
+    # counts, otherwise the implied hidden-positive mass is smaller than the labelled mass
+    # by exactly these ratios and the fixed point collapses to e -> 1 (IR-65-106)
+    n_pos_pool = int(visible.sum())
+    pool_ratio = n_unl_pool / max(Xu.shape[0], 1)
+    labelled_ratio = n_pos_pool / max(Xp.shape[0], 1)
+
+    # --- SAR-EM selection model (fit once, shared by the weighting) --------
+    cov_idx = [meta["propensity_covariates"][k] for k in
+               ("relief_1km", "slope", "basin_fill_gdd", "lidar_coverage", "dist_range_front_px")]
+    fit_prop = fit_sar_em_rbf if propensity == "rbf" else fit_sar_em
+    sar = fit_prop(Xp, Xu, cov_idx, pi=pi, pool_ratio=pool_ratio,
+                   labelled_ratio=labelled_ratio, labelled_complete=(Xp.shape[0] == n_pos_pool))
+    e_pos = sar.predict(Xp)
+    e_unl = sar.predict(Xu)
+    mean, std = standardizer(np.vstack([Xp, Xu]))
+
+    diag = dict(cell=cell.key, mode=cell.mode, fold=cell.fold, n_pos_fit=int(Xp.shape[0]),
+                n_unl_fit=int(Xu.shape[0]), e_pos_mean=float(e_pos.mean()),
+                e_pos_min=float(e_pos.min()), e_pos_max=float(e_pos.max()),
+                e_unl_mean=float(e_unl.mean()), e_pos_std=float(e_pos.std()),
+                e_pos_p10=float(np.quantile(e_pos, 0.10)), e_pos_p90=float(np.quantile(e_pos, 0.90)),
+                clip_fraction=float((e_pos < 1 / CLIP).mean()),
+                pool_ratio=float(pool_ratio), labelled_ratio=float(labelled_ratio),
+                propensity_model=propensity, propensity_fit=sar.to_json())
+
+    results = {}
+    for arm in arms:
+        w_pos = np.clip(1.0 / np.clip(e_pos, 1e-6, 1.0), 1.0, CLIP) if arm == "sar" else np.ones_like(e_pos)
+        feat = lambda X: phi(X, mean, std)  # noqa: E731  fixed basis, both arms
+        theta, fit = fit_head(Xp, w_pos, Xu, w_unl, feat, pi, arm,
+                              steps=STEPS, lr=LR, seed=seed, log_every=0)
+        diag[f"{arm}_fit"] = {k: v for k, v in fit.items() if k != "history"}
+
+        # --- prediction on the cell crop ----------------------------------
+        crop = cell.active
+        h, w = crop.shape
+        p = np.zeros((h, w), np.float32)
+        e_surf = np.zeros((h, w), np.float32)
+        rows_any = np.flatnonzero(crop.any(axis=1))
+        for start in range(0, len(rows_any), 256):
+            rr = rows_any[start:start + 256]
+            blk = crop[rr]
+            yy, xx = np.nonzero(blk)
+            if yy.size == 0:
+                continue
+            gr = rr[yy] + sl[0].start
+            gc = xx + sl[1].start
+            Xb = _x_at(stack, gr, gc)
+            p[rr[yy], xx] = predict_surface(theta, Xb, mean, std)
+            e_surf[rr[yy], xx] = sar.predict(Xb)
+
+        emitted = emit_cell(p, crop, pi)
+        truth = np.zeros((h, w), bool)
+        ty, tx = cell.truth_yx
+        truth[ty, tx] = True
+
+        # --- shared evaluator terms (global 20 km blocks) ------------------
+        zeros = np.zeros_like(crop)
+        fold = dict(region=np.ones_like(crop), truth=truth, masked_known=zeros, visible=zeros)
+        res, terms = EH.evaluate(emitted.astype(np.float64), fold, crop,
+                                 origin=(sl[0].start, sl[1].start), global_shape=grid.shape)
+
+        # --- highest-propensity tercile of the scored domain ---------------
+        ev = e_surf[crop]
+        thr = float(np.quantile(ev, TERCILE_Q)) if ev.size else 0.0
+        terc = np.zeros_like(crop)
+        terc[crop] = e_surf[crop] >= thr
+        terc_terms = terms_with_mask(cell, emitted, terc)
+
+        results[arm] = dict(terms=terms, tercile_terms=terc_terms, result=res,
+                            emitted_pixels=int(emitted.sum()), p=p, e=e_surf, truth=truth,
+                            score_cell=H.score_cell(cell, emitted), tercile_threshold=thr)
+
+    # --- leakage canary: single-feature AUC against the withheld truth -----
+    canary = {}
+    ay, ax = np.nonzero(crop)
+    take = rng.choice(ay.size, min(20000, ay.size), replace=False)
+    gr = ay[take] + sl[0].start
+    gc = ax[take] + sl[1].start
+    Xc = _x_at(stack, gr, gc)
+    tc = truth[ay[take], ax[take]]
+    for name in meta["channels"]:
+        b = meta["channels"].index(name)
+        a = _auc(Xc[:, b], tc)
+        canary[name] = a if not np.isnan(a) else None
+    return results, diag, canary
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description=__doc__)
-    sub = ap.add_subparsers(dest="cmd", required=True)
-    c = sub.add_parser("canary"); c.add_argument("--pixels", type=int, default=400_000)
-    c.set_defaults(func=cmd_canary)
-    h = sub.add_parser("holdout")
-    h.add_argument("--folds", type=int, default=0, help="0 = all four")
-    h.add_argument("--max-dots", type=int, default=lane.MAX_DOTS_PER_FOLD)
-    h.add_argument("--channels", default="local", choices=sorted(lane.CHANNEL_SETS))
-    h.add_argument("--wire-variant", default="band_rf", choices=list(lane.WIRE_VARIANTS))
-    h.add_argument("--rf-quantile", type=float, default=0.5)
-    h.add_argument("--redo", action="store_true", help="ignore cached folds")
-    h.set_defaults(func=cmd_holdout)
-    e = sub.add_parser("emit")
-    e.add_argument("--arm", default="wire", choices=("nnpu", "prop", "wire"))
-    e.add_argument("--baseline", default="nnpu", choices=("nnpu", "prop"))
-    e.add_argument("--max-dots", type=int, default=40_000)
-    e.add_argument("--wire-variant", default="band_rf", choices=list(lane.WIRE_VARIANTS))
-    e.add_argument("--rf-quantile", type=float, default=0.5)
-    e.add_argument("--mass", type=float, default=None,
-                   help="assumed private-positive pixel count for allocation calibration")
-    e.add_argument("--name", default=None)
-    e.add_argument("--note", default=None)
-    e.add_argument("--force", action="store_true",
-                   help="write a candidate even if the gate is not met (recorded as such)")
-    e.set_defaults(func=cmd_emit)
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--seeds", default="20,21")
+    ap.add_argument("--modes", default="all,detached")
+    ap.add_argument("--sensitivity", action="store_true",
+                    help="also run pi x0.5 and pi x2 for the primary mode")
+    ap.add_argument("--out", default=str(EVID / "holdout_arms.json"))
+    ap.add_argument("--cache", default=str(EVID / "holdout_terms.npz"))
+    ap.add_argument("--propensity", choices=("grid", "rbf"), default="grid",
+                    help="grid = discretised quantile SAR-EM (E1/E2); "
+                         "rbf = continuous soft-binned SAR-EM (E3, non-degenerate e(x))")
+    ap.add_argument("--instrument", choices=("registered", "biased"), default="registered",
+                    help="registered = shared uniform-withholding design; "
+                         "biased = pre-registered covariate-dependent-withholding diagnostic")
     args = ap.parse_args()
-    return args.func(args)
+
+    t0 = time.time()
+    stack, meta = _stack()
+    grid = G.load_grid(ROOT / "data" / "bridge")
+    n_cat = int(grid.catalogue.sum())
+    n_fp = int(grid.footprint.sum())
+    pi = n_cat / n_fp
+    seeds = tuple(int(s) for s in args.seeds.split(","))
+    modes = tuple(m.strip() for m in args.modes.split(","))
+    if args.instrument == "registered":
+        ctx = H.build_holdout(grid, seeds=seeds, modes=modes)
+        instrument_note = ("shared gems57.holdout.build_holdout; whole segments withheld "
+                           "uniformly at random inside each quadrant domain")
+    else:
+        # label-blind propensity surface for the withholding bias (full catalogue)
+        pos_r, pos_c = np.nonzero(grid.catalogue)
+        unl = grid.footprint & ~grid.catalogue
+        ur, uc = np.nonzero(unl)
+        sel = np.random.default_rng(1).choice(ur.size, min(UNL_CAP, ur.size), replace=False)
+        ur, uc = ur[sel], uc[sel]
+        cov_idx = [meta["propensity_covariates"][k] for k in
+                   ("relief_1km", "slope", "basin_fill_gdd", "lidar_coverage", "dist_range_front_px")]
+        fit_prop = fit_sar_em_rbf if args.propensity == "rbf" else fit_sar_em
+        em = fit_prop(_x_at(stack, pos_r, pos_c), _x_at(stack, ur, uc), cov_idx, pi=pi,
+                      pool_ratio=(unl.sum() / max(ur.size, 1)), labelled_ratio=1.0,
+                      labelled_complete=True)
+        prop = np.zeros(grid.shape, np.float32)
+        em_r, em_c = np.nonzero(grid.footprint)
+        for i in range(0, em_r.size, 400_000):
+            rr, cc = em_r[i:i + 400_000], em_c[i:i + 400_000]
+            prop[rr, cc] = em.predict(_x_at(stack, rr, cc))
+        ctx = build_biased_holdout(grid, prop, seeds=seeds)
+        instrument_note = ("diagnostic instrument: identical geometry/scoring to the shared "
+                           "design but segment withholding probability proportional to "
+                           "(1 - mean e(x))^2")
+        np.save(EVID / "bias_propensity.npy", prop)
+    modes = tuple(sorted({c.mode for c in ctx.cells})) or modes
+
+    print(f"catalogue={n_cat} footprint={n_fp} pi={pi:.6g} cells={len(ctx.cells)}")
+    all_diag, canaries = [], {}
+    terms_by_arm = {"sar": [], "nnpu": []}
+    terc_terms_by_arm = {"sar": [], "nnpu": []}
+    per_cell = {}
+    keys = [c.key for c in ctx.cells]
+    cache = Path(args.cache)
+    for ci, cell in enumerate(ctx.cells):
+        res, diag, canary = run_cell(grid, ctx, cell, stack, meta, pi, propensity=args.propensity)
+        if ci == 0:  # reset an earlier sweep's arrays so key order always matches
+            np.savez_compressed(cache, **{f"__keys__": np.array(keys)})
+        np.savez_compressed(cache, **{f"__keys__": np.array(keys),
+                                      **{f"terms_{arm}": np.array([t for t in
+                                          [*map(np.asarray, terms_by_arm[arm]), res[arm]["terms"]]])
+                                         for arm in ("sar", "nnpu")},
+                                      **{f"terc_{arm}": np.array([t for t in
+                                          [*map(np.asarray, terc_terms_by_arm[arm]), res[arm]["tercile_terms"]]])
+                                         for arm in ("sar", "nnpu")}})
+        all_diag.append(diag)
+        canaries.setdefault(cell.mode, []).append(canary)
+        per_cell[cell.key] = {arm: dict(dti=res[arm]["result"]["dti"],
+                                        emitted=res[arm]["emitted_pixels"],
+                                        score_cell=res[arm]["score_cell"]) for arm in res}
+        for arm in ("sar", "nnpu"):
+            terms_by_arm[arm].append(res[arm]["terms"])
+            terc_terms_by_arm[arm].append(res[arm]["tercile_terms"])
+        print(f"  {cell.key}: sar emit={res['sar']['emitted_pixels']} "
+              f"score={res['sar']['result']['dti']:.6f} | "
+              f"nnpu emit={res['nnpu']['emitted_pixels']} score={res['nnpu']['result']['dti']:.6f} "
+              f"({time.time() - t0:.0f}s)")
+
+    out = dict(
+        propensity_model=args.propensity,
+        generated_utc=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        aoi=dict(catalogue_pixels=n_cat, footprint_pixels=n_fp, pi_visible_density=pi,
+                 withheld_pixels_per_cell={c.key: c.n_truth for c in ctx.cells}),
+        evaluator=dict(version=EH.VERSION, implementation_sha256=EH.implementation_hashes(),
+                       alpha=metric.ALPHA, beta=metric.BETA, radius_m=metric.R_M),
+        instrument=args.instrument, instrument_note=instrument_note,
+        protocol=dict(seeds=list(seeds), modes=list(modes), pos_cap=POS_CAP, unl_cap=UNL_CAP,
+                      steps=STEPS, lr=LR, clip=CLIP, seed=SEED,
+                      propensity=("SAR-EM continuous RBF selection model" if args.propensity == "rbf"
+                                  else "SAR-EM discretised selection model")
+                                 + "; inverse weights clipped at 10",
+                      note="identical features, sampler, optimiser, prior and emission for both arms"),
+        cells=per_cell, diagnostics=all_diag,
+        leakage_canary={m: {k: float(np.nanmax([c[k] for c in cs if c[k] is not None] or [0.0]))
+                            for k in cs[0]} for m, cs in canaries.items()},
+    )
+
+    pooled = {}
+    for mode in modes:
+        pool_terms = {"sar": None, "nnpu": None}
+        for arm in ("sar", "nnpu"):
+            idx = [i for i, c in enumerate(ctx.cells) if c.mode == mode]
+            pool_terms[arm] = np.sum([terms_by_arm[arm][i] for i in idx], axis=0)
+        summary = EH.pooled_summary(pool_terms, candidate="sar")
+        terc = {arm: pooled_from_terms(np.array([terc_terms_by_arm[arm][i] for i in idx]))
+                for arm in ("sar", "nnpu")}
+        pooled[mode] = dict(summary=summary, tercile_top_third=terc,
+                            n_cells=len(idx))
+    out["pooled"] = pooled
+
+    # Gate per the registered protocol, primary mode only.
+    prim = pooled["all"]
+    sar_dti = prim["summary"]["scores"]["sar"]["dti"]
+    nnpu_dti = prim["summary"]["scores"]["nnpu"]["dti"]
+    sar_terc = prim["tercile_top_third"]["sar"]["dti"]
+    nnpu_terc = prim["tercile_top_third"]["nnpu"]["dti"]
+    delta = prim["summary"]["paired_differences"]["nnpu"]
+    out["gate"] = dict(
+        overall=dict(sar=sar_dti, nnpu=nnpu_dti, passed=bool(sar_dti > nnpu_dti),
+                     paired_delta=delta["delta"], paired_ci95=delta["ci95"]),
+        top_propensity_tercile=dict(sar=sar_terc, nnpu=nnpu_terc,
+                                    passed=bool(sar_terc >= nnpu_terc)),
+        current_holdout_best="NOT ESTABLISHED — no prior holdout artifact exists in this checkout; "
+                             "the matched nnpu arm is the only incumbent available",
+        verdict="promote" if (sar_dti > nnpu_dti and sar_terc >= nnpu_terc) else "negative",
+    )
+    out["runtime_seconds"] = round(time.time() - t0, 1)
+    out["environment"] = dict(python=platform.python_version(), numpy=np.__version__,
+                              machine=platform.machine())
+    Path(args.out).write_text(json.dumps(out, indent=2, default=float) + "\n")
+    print(json.dumps(out["gate"], indent=2))
+    print(f"wrote {args.out}")
+    return 0
 
 
 if __name__ == "__main__":

@@ -1,0 +1,215 @@
+{
+  "generated_utc": "2026-10-11T21:34:55Z",
+  "repo": "buffedlizard55-lab/GEMSDOE65",
+  "lane": "selection-bias-aware (SAR) PU learning",
+  "gate": {
+    "rule": "higher blocked-holdout pooled DTI overall AND no loss in the highest-propensity tercile",
+    "primary_anchor_a_bar": 0.25,
+    "pooled_dti_sar_erm": 0.06194993855956694,
+    "pooled_dti_nnpu_scar": 0.06753263348713105,
+    "overall_delta": -0.005582694927564115,
+    "overall_delta_mean_cell_ci95": [
+      -0.012159836947940077,
+      -0.0006285660120482455
+    ],
+    "overall_wins": 2,
+    "overall_cells": 8,
+    "top_tercile_dti_sar_erm": 0.06398037573687454,
+    "top_tercile_dti_nnpu_scar": 0.07703244809910172,
+    "top_tercile_delta": -0.013052072362227177,
+    "leakage_canary_max_auc": 0.573765478270388,
+    "leakage_canary_suspects": [],
+    "GATE_PASSED": false
+  },
+  "submittable_files": [],
+  "blocked_files": [
+    {
+      "arm": "sar",
+      "file": "gems65-h65-sarpu-sar-a25-20261011T210925Z-0b2fb70e136c-nan.tif",
+      "verdict": "NEGATIVE",
+      "reason": "pre-registered gate NOT met (higher pooled blocked-holdout DTI overall AND no loss in the highest-propensity tercile); logged as a negative result per protocol, so the experimental arm is never offered for submission"
+    },
+    {
+      "arm": "nnpu",
+      "file": "gems65-h65-sarpu-nnpu-a25-20261011T210925Z-2c0eded4e49d-nan.tif",
+      "verdict": "NOT-CLEARED-BELOW-HOLDOUT-BEST",
+      "reason": "blocked-holdout pooled DTI 0.06753263348713105 does not exceed the best registry artifact on the same cells (0.09974, g32-h32d-submodular-nan.tif); standing rule 'do not spend a slot on an idea that has not beaten the current holdout best' therefore refuses it"
+    },
+    {
+      "arm": "em",
+      "file": "gems65-h65-sarpu-em-a25-20261011T210925Z-ab265805d584-nan.tif",
+      "verdict": "NOT-CLEARED-BELOW-HOLDOUT-BEST",
+      "reason": "blocked-holdout pooled DTI 0.06554779105151684 does not exceed the best registry artifact on the same cells (0.09974, g32-h32d-submodular-nan.tif); standing rule 'do not spend a slot on an idea that has not beaten the current holdout best' therefore refuses it"
+    }
+  ],
+  "instrument_calibration": {
+    "generated_utc": "2026-10-11T21:12:38Z",
+    "seconds": 56.3,
+    "evidence_class": "HOLDOUT-DTI (proxy truth = withheld catalogue segments) vs OWNER-REPORT live scores",
+    "n_scored_rasters": 10,
+    "spearman_holdout_pooled_vs_live": -0.43558282208588955,
+    "spearman_holdout_mean_cell_vs_live": -0.43558282208588955,
+    "spearman_dot_count_vs_live": -0.7914110429447853,
+    "known_handicap": "registry artifacts exclude ALL catalogue pixels; this holdout withholds only part of the catalogue, so all nine are penalised equally and only the ranking is informative",
+    "rows": [
+      {
+        "raster": "g32-h33-2-b2-zeros-0.2778.tif",
+        "reported_live_score": 0.2778,
+        "score_class": "OWNER-REPORT",
+        "dots": 37654,
+        "holdout_pooled_dti": 0.00451537871535044,
+        "holdout_mean_cell_dti": 0.004600104084398947,
+        "holdout_coverage": 0.006485098306953655,
+        "holdout_tp": 144.17670556019365
+      },
+      {
+        "raster": "g32-h33-2-b2-nan-0.2778.tif",
+        "reported_live_score": 0.2778,
+        "score_class": "OWNER-REPORT",
+        "dots": 37654,
+        "holdout_pooled_dti": 0.00451537871535044,
+        "holdout_mean_cell_dti": 0.004600104084398947,
+        "holdout_coverage": 0.006485098306953655,
+        "holdout_tp": 144.17670556019365
+      },
+      {
+        "raster": "g36-anderson-pinn-zeros-0.2750.tif",
+        "reported_live_score": 0.275,
+        "score_class": "OWNER-REPORT",
+        "dots": 38854,
+        "holdout_pooled_dti": 0.004576730703979591,
+        "holdout_mean_cell_dti": 0.004661795366142248,
+        "holdout_coverage": 0.006666277435376907,
+        "holdout_tp": 148.2046799432994
+      },
+      {
+        "raster": "g28-h36-1-rung30-nan-0.2710.tif",
+        "reported_live_score": 0.271,
+        "score_class": "OWNER-REPORT",
+        "dots": 37660,
+        "holdout_pooled_dti": 0.029360078390480285,
+        "holdout_mean_cell_dti": 0.029841872120142745,
+        "holdout_coverage": 0.04227412275237699,
+        "holdout_tp": 939.8382970308453
+      },
+      {
+        "raster": "g31-h27-4-solo-nan-0.2708.tif",
+        "reported_live_score": 0.2708,
+        "score_class": "OWNER-REPORT",
+        "dots": 40199,
+        "holdout_pooled_dti": 0.03051609672581068,
+        "holdout_mean_cell_dti": 0.031042014839025488,
+        "holdout_coverage": 0.045240000105861086,
+        "holdout_tp": 1005.7756823535037
+      },
+      {
+        "raster": "g28-h27-4-r1-solo-nan-0.2708.tif",
+        "reported_live_score": 0.2708,
+        "score_class": "OWNER-REPORT",
+        "dots": 40199,
+        "holdout_pooled_dti": 0.03051609672581068,
+        "holdout_mean_cell_dti": 0.031042014839025488,
+        "holdout_coverage": 0.045240000105861086,
+        "holdout_tp": 1005.7756823535037
+      },
+      {
+        "raster": "g28-h32-1-prethin-nan-0.2649.tif",
+        "reported_live_score": 0.2649,
+        "score_class": "OWNER-REPORT",
+        "dots": 42294,
+        "holdout_pooled_dti": 0.06151171235875668,
+        "holdout_mean_cell_dti": 0.06276210245918455,
+        "holdout_coverage": 0.09361566964959615,
+        "holdout_tp": 2081.2635676498217
+      },
+      {
+        "raster": "g33-h33d-analog-tip-nan-0.2632.tif",
+        "reported_live_score": 0.2632,
+        "score_class": "OWNER-REPORT",
+        "dots": 41865,
+        "holdout_pooled_dti": 0.051968512849839596,
+        "holdout_mean_cell_dti": 0.05303666414388171,
+        "holdout_coverage": 0.07865932208412894,
+        "holdout_tp": 1748.7540485743546
+      },
+      {
+        "raster": "g32-dotted-h19-5-d2-8-nan-0.2600.tif",
+        "reported_live_score": 0.26,
+        "score_class": "OWNER-REPORT",
+        "dots": 44090,
+        "holdout_pooled_dti": 0.09674330401596998,
+        "holdout_mean_cell_dti": 0.09832378835263812,
+        "holdout_coverage": 0.1507513049515851,
+        "holdout_tp": 3351.5030116836397
+      },
+      {
+        "raster": "g32-d28-ref02600-repro-nan.tif",
+        "reported_live_score": null,
+        "score_class": "UNSCORED",
+        "dots": 44090,
+        "holdout_pooled_dti": 0.09674330401596998,
+        "holdout_mean_cell_dti": 0.09832378835263812,
+        "holdout_coverage": 0.1507513049515851,
+        "holdout_tp": 3351.5030116836397
+      },
+      {
+        "raster": "g49-gate-ortho-w025-nan-0.2376.tif",
+        "reported_live_score": 0.2376,
+        "score_class": "OWNER-REPORT",
+        "dots": 40000,
+        "holdout_pooled_dti": 0.0,
+        "holdout_mean_cell_dti": 0.0,
+        "holdout_coverage": 0.0,
+        "holdout_tp": 0.0
+      },
+      {
+        "raster": "g32-h32d-submodular-nan.tif",
+        "reported_live_score": null,
+        "score_class": "UNSCORED",
+        "dots": 46090,
+        "holdout_pooled_dti": 0.09974225408154563,
+        "holdout_mean_cell_dti": 0.10122068397615705,
+        "holdout_coverage": 0.15871157276590003,
+        "holdout_tp": 3528.4756857314896
+      },
+      {
+        "raster": "g32-h32b-transtensional-nan.tif",
+        "reported_live_score": null,
+        "score_class": "UNSCORED",
+        "dots": 45890,
+        "holdout_pooled_dti": 0.09738515976016276,
+        "holdout_mean_cell_dti": 0.09893526264042457,
+        "holdout_coverage": 0.15463163912035274,
+        "holdout_tp": 3437.770600923682
+      },
+      {
+        "raster": "g32-probe-S1-anchor.tif",
+        "reported_live_score": null,
+        "score_class": "UNSCORED",
+        "dots": 44090,
+        "holdout_pooled_dti": 0.09674330401596998,
+        "holdout_mean_cell_dti": 0.09832378835263812,
+        "holdout_coverage": 0.1507513049515851,
+        "holdout_tp": 3351.5030116836397
+      },
+      {
+        "raster": "g36-h6-offcatalog-network-prior.tif",
+        "reported_live_score": null,
+        "score_class": "UNSCORED",
+        "dots": 24881,
+        "holdout_pooled_dti": 6.451863502817189e-05,
+        "holdout_mean_cell_dti": 7.709490095843126e-05,
+        "holdout_coverage": 7.925775861071677e-05,
+        "holdout_tp": 1.7620584894334552
+      }
+    ]
+  },
+  "irregularities_open": [
+    "IR-65-001",
+    "IR-65-004",
+    "IR-65-005",
+    "IR-65-006",
+    "IR-65-007",
+    "IR-65-009"
+  ]
+}

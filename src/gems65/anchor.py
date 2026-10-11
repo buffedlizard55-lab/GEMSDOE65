@@ -21,9 +21,9 @@ Two independent public fault inventories of the same ground are available in
 this sandbox, both hash-pinned:
 
 * the competition catalogue ``labels.tif`` / ``existing_faults.tif`` -- verified
-  here to be the USGS QFaults/INGENIOUS compilation: 89.25 % of its pixels are
+  here to be the USGS QFaults/INGENIOUS compilation: 96.54 % of its pixels are
   covered by rasterised QFaults trace segments at median distance 0 px
-  (``evidence/catalogue_identity.json``);
+  (max 1 px, ``evidence/catalogue_identity.json``);
 * the mirrored state-geologic-map fault raster ``sgmc_faults_100m.tif``, whose
   pixels overlap the catalogue by only 4.5 %.
 

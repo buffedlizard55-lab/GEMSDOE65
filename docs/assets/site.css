@@ -1,0 +1,34 @@
+
+:root{--ink:#12212e;--mut:#5a6b7b;--line:#dfe6ec;--bg:#f6f8fa;--ok:#0f7b3f;--okbg:#e7f6ec;
+--bad:#a3161b;--badbg:#fdecec;--warn:#8a5a00;--warnbg:#fff6e0;--acc:#0b5fa5}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+color:var(--ink);background:#fff}
+header{background:var(--bg);border-bottom:1px solid var(--line);padding:18px 24px}
+header .wrap{max-width:1080px;margin:0 auto}
+h1{font-size:22px;margin:0 0 4px}h2{font-size:19px;margin:34px 0 10px;border-bottom:1px solid var(--line);padding-bottom:6px}
+h3{font-size:16px;margin:22px 0 6px}
+main{max-width:1080px;margin:0 auto;padding:20px 24px 60px}
+p{margin:8px 0}a{color:var(--acc)}
+.mut{color:var(--mut);font-size:14px}
+.banner{border-radius:10px;padding:18px 20px;margin:16px 0;border:2px solid}
+.banner.ok{background:var(--okbg);border-color:var(--ok)}
+.banner.bad{background:var(--badbg);border-color:var(--bad)}
+.banner h2{border:0;margin:0 0 6px;font-size:22px}
+.banner.ok h2{color:var(--ok)}.banner.bad h2{color:var(--bad)}
+.btn{display:inline-block;background:var(--acc);color:#fff;text-decoration:none;padding:12px 18px;
+border-radius:8px;font-weight:600;margin:6px 8px 6px 0}
+.btn.sec{background:#fff;color:var(--acc);border:1px solid var(--acc)}
+.btn.dis{background:#7a8794}
+table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px}
+th,td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}
+th{background:var(--bg)}
+code{background:var(--bg);padding:1px 5px;border-radius:4px;font-size:13px}
+pre{background:var(--bg);padding:12px;border-radius:8px;overflow:auto;font-size:13px}
+.card{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:12px 0;background:#fff}
+.tag{display:inline-block;font-size:11px;letter-spacing:.04em;text-transform:uppercase;
+border:1px solid var(--line);border-radius:999px;padding:2px 8px;color:var(--mut);background:var(--bg)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:800px){.grid2{grid-template-columns:1fr}}
+ol li,ul li{margin:5px 0}
+footer{border-top:1px solid var(--line);padding:18px 24px;color:var(--mut);font-size:13px}

@@ -76,8 +76,8 @@ while state geologic maps are bedrock-exposure maps.
   <https://gdr.openei.org/submissions/1391> (INGENIOUS, DOI 10.15121/1881483).
 * **Obtainable here:** yes — both inventories are local and hash-pinned. Verified
   in this run: rasterising `trace_segments_utm11.csv` (1,126 QFaults/INGENIOUS
-  lines, 84,268 of 84,331 segments inside the grid) covers **89.25 %** of the
-  catalogue at median distance **0 px** (p90 1 px), so the catalogue *is* the
+  segment rows, all 84,331 rasterised) covers **96.54 %** of the
+  catalogue at median distance **0 px** (max 1 px), so the catalogue *is* the
   QFaults/INGENIOUS compilation (`evidence/catalogue_identity.json`).
 * **Cost:** low (one logistic fit per fold). **Expected gain:** the whole lane.
 

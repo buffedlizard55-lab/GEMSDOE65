@@ -1,0 +1,37 @@
+{
+  "evidence_class": "MEASURED",
+  "question": "is the competition catalogue the USGS QFaults / INGENIOUS compilation?",
+  "answer": "yes: rasterised QFaults/INGENIOUS traces cover most catalogue pixels at zero distance",
+  "trace_csv": "/home/user/GEMSDOE65/.cache/external/trace_segments_utm11.csv",
+  "trace_csv_sha256": "c5edf9df3e0e1413c52784884fc38e5b9ca54627b27c6f8baf7713e908f48513",
+  "geometry_encoding": "segment endpoints x0,y0,x1,y1 in EPSG:32611 metres",
+  "n_trace_segments": 84331,
+  "slip_rate_columns_present": [
+    "slip_mm_yr",
+    "slip_text",
+    "sense"
+  ],
+  "trace_pixels_total": 225689,
+  "trace_pixels_inside_footprint": 82871,
+  "trace_pixels_inside_footprint_also_in_catalogue": 58876,
+  "trace_footprint_fraction_in_catalogue": 0.7104535965536798,
+  "catalogue_pixels": 60988,
+  "catalogue_covered_by_traces": 0.9653702367678888,
+  "catalogue_to_trace_distance_px": {
+    "median": 0.0,
+    "mean": 0.034629763232111234,
+    "p90": 0.0,
+    "p99": 1.0,
+    "max": 1.0
+  },
+  "catalogue_morphology": {
+    "n_components_8connected": 3199,
+    "component_size_median_px": 12.0,
+    "component_size_max_px": 360,
+    "pixels_surviving_3x3_erosion": 24,
+    "erosion_survival_fraction": 0.0003935200367285368,
+    "interpretation": "1-pixel-wide thin lines, not areas: a compiled trace map"
+  },
+  "mannwhitney_p_catalogue_closer_than_off_catalogue": 0.0,
+  "seconds": 2.6
+}

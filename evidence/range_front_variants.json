@@ -1,0 +1,48 @@
+{
+  "evidence_class": "MEASURED",
+  "question": "which range-front operationalization carries the two-inventory differential best?",
+  "criterion": "AUC of negative distance-to-front separating catalogue pixels from state-map-only fault pixels (>0.5 = the catalogue sits CLOSER to that front than the state maps do)",
+  "variants": {
+    "A_h50_isoline_over_5km_local_min": {
+      "set_pixels": 3616040,
+      "pixels": 160275,
+      "is_the_stored_covariate": true,
+      "identical_to_stored_range_front": true,
+      "median_distance_px_inside_footprint": 28.600699292150182,
+      "bias_auc_catalogue_vs_sgmc_offcat": 0.6607934903258958,
+      "auc_vs_sgmc_offcat_truth": 0.35610988974455143
+    },
+    "B_toe_of_front": {
+      "set_pixels": 260866,
+      "pixels": 78466,
+      "is_the_stored_covariate": false,
+      "identical_to_stored_range_front": false,
+      "median_distance_px_inside_footprint": 31.304951684997057,
+      "bias_auc_catalogue_vs_sgmc_offcat": 0.6144157366586958,
+      "auc_vs_sgmc_offcat_truth": 0.40674711759592624
+    },
+    "C_mid_slope_band": {
+      "set_pixels": 2572243,
+      "pixels": 221096,
+      "is_the_stored_covariate": false,
+      "identical_to_stored_range_front": false,
+      "median_distance_px_inside_footprint": 10.63014581273465,
+      "bias_auc_catalogue_vs_sgmc_offcat": 0.5542995042877596,
+      "auc_vs_sgmc_offcat_truth": 0.5311672616139737
+    },
+    "D_basin_edge": {
+      "set_pixels": 1078921,
+      "pixels": 119209,
+      "is_the_stored_covariate": false,
+      "identical_to_stored_range_front": false,
+      "median_distance_px_inside_footprint": 33.61547262794322,
+      "bias_auc_catalogue_vs_sgmc_offcat": 0.6396744702947748,
+      "auc_vs_sgmc_offcat_truth": 0.33311349439656657
+    }
+  },
+  "kept": "A_h50_isoline_over_5km_local_min",
+  "kept_as": "documented proxy of limited geomorphic fidelity: its job is to carry the two-inventory differential, not to be a mapped front",
+  "catalogue_px": 60988,
+  "sgmc_offcat_px": 59012,
+  "seconds": 18.4
+}

@@ -42,7 +42,7 @@ from gems57 import submission_writer, uniqueness, validate  # noqa: E402
 from gems57.grid import load_grid  # noqa: E402
 from gems65 import lane  # noqa: E402
 from gems65.paths import (CACHE, COVARIATE_CACHE, DOWNLOADS, EVIDENCE, EXTERNAL,  # noqa: E402
-                          REGISTRY, SAMPLE_SUBMISSION, ensure_dirs)
+                          ROOT, SAMPLE_SUBMISSION, ensure_dirs)
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from run_lane import (BUDGET, EPOCHS, BATCH, HIDDEN, LR, N_UNL, EM_ITERS,  # noqa: E402
@@ -59,13 +59,14 @@ REGISTRY_INDEX = Path("/home/user/ref_repos/60GEMSDOE/registry/registry_index.js
 
 def ship_rule(e1: dict) -> dict:
     """Apply the pre-registered ship rule to the E1 receipt.  No discretion."""
-    pre = json.loads((REGISTRY / "preregistration.json").read_text())
+    pre = json.loads((ROOT / "registry" / "preregistration.json").read_text())
     i1 = e1["I1_hide_recover"]["scores"]
     i2 = e1["I2_sgmc_offcat"]["scores"]
-    terc = e1["I1_tercile_gate"]["scores"]
+    terc_block = e1["I1_tercile_gate"]
+    terc = terc_block["scores"]
     d_nb = e1["I1_hide_recover"]["paired_differences"].get("B_nnpu")
     d_12 = e1["I1_hide_recover"]["paired_differences"].get("A2_sar_1me")
-    d_terc = terc["paired_differences"].get("B_nnpu")
+    d_terc = terc_block["paired_differences"].get("B_nnpu")
 
     def lo(d):
         return float(d["ci95"][0]) if d else float("-inf")
@@ -179,7 +180,7 @@ def main() -> None:
                                     basis_kind=e_kind)
         arms[arm] = {"p": p, "e": e, "fit": f}
         print(f"[fit {arm}] pi {f['pi']:.5f} rho {f['rho']:.6f} ebar {f['ebar']:.4f} "
-              f"risk {f['risk']:.5f} {f['seconds']} s")
+              f"risk {f['risk']['risk']:.5f} {f['seconds']} s")
 
     score = {"A1_sar": arms["sar"]["p"],
              "A2_sar_1me": arms["sar"]["p"] * (1.0 - arms["sar"]["e"]),

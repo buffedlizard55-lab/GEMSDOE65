@@ -24,7 +24,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 import _bootstrap  # noqa: F401,E402
 
-from gems65.paths import DOWNLOADS, EVIDENCE, REGISTRY, ensure_dirs  # noqa: E402
+from gems65.paths import DOWNLOADS, EVIDENCE, ROOT, ensure_dirs  # noqa: E402
 
 DOCS = ROOT / "docs"
 SITE = "https://buffedlizard55-lab.github.io/GEMSDOE65"
@@ -135,33 +135,48 @@ def fmt(x, n=6):
     return str(x)
 
 
-def dti_row(label: str, s: dict, arm: str) -> str:
+def dti_row(label: str, s: dict, arm: str, emitted: dict) -> str:
     r = s[arm]
     ci = r["ci95"]
-    return (f"<tr><td>{label}</td><td>{arm}</td><td><b>{r['dti']:.6f}</b></td>"
-            f"<td>[{ci[0]:.6f}, {ci[1]:.6f}]</td><td>{r['withheld_positive_pixels']}</td>"
-            f"<td>{r['n_emitted']}</td><td><span class='tag'>HOLDOUT-DTI</span> "
-            f"{r['evaluator_version']}</td></tr>")
+    n = emitted.get(arm)
+    credit = (r["tpw"] / n) if n else float("nan")
+    return (f"<tr><td>{label}</td><td><code>{arm}</code></td><td><b>{r['dti']:.6f}</b></td>"
+            f"<td>[{ci[0]:.6f}, {ci[1]:.6f}]</td><td>{r['withheld_positive_pixels']:,}</td>"
+            f"<td>{n:,}</td><td>{credit:.4f}</td>"
+            f"<td><span class='tag'>HOLDOUT-DTI</span> {r['evaluator_version']}</td></tr>")
 
 
 def scores_table(block: dict, title: str) -> str:
     s = block["scores"]
-    rows = "".join(dti_row(title, s, a) for a in sorted(s))
+    emitted = block.get("emitted_pixels", {})
+    order = [a for a in ("A2_sar_1me", "A1_sar", "A3_sar_em_1me", "B_nnpu",
+                         "C_distance_only") if a in s]
+    order += [a for a in sorted(s) if a not in order]
+    rows = "".join(dti_row(title, s, a, emitted) for a in order)
     paired = block.get("paired_differences") or {}
     prows = "".join(
         f"<tr><td>paired Δ {k}</td><td colspan=2>{v['delta']:+.6f}</td>"
         f"<td>[{v['ci95'][0]:+.6f}, {v['ci95'][1]:+.6f}]</td><td colspan=3>"
         f"{'CI excludes 0' if v['ci95'][0] > 0 or v['ci95'][1] < 0 else 'CI includes 0'}</td></tr>"
         for k, v in sorted(paired.items()))
-    return (f"<h3>{title}</h3><table><tr><th>quantity</th><th>arm</th><th>DTI</th>"
-            f"<th>95% CI (20 km block bootstrap)</th><th>withheld positives</th>"
-            f"<th>emitted</th><th>evidence class</th></tr>{rows}{prows}</table>")
+    return (f"<h3>{title}</h3><table><tr><th>instrument</th><th>arm</th><th>DTI</th>"
+            f"<th>95% CI (20 km block bootstrap)</th><th>withheld<br>positives</th>"
+            f"<th>dots<br>emitted</th><th>credit<br>per dot</th><th>evidence class</th></tr>"
+            f"{rows}{prows}</table>"
+            f"<p class='mut'>credit per dot = TP weight / dots emitted; the family's ladder "
+            f"arithmetic says a dot pays only if its expected credit exceeds "
+            f"alpha x DTI (0.0556 at DTI 0.2778). Arms that cannot fill the budget found fewer "
+            f"strict local maxima than the budget inside the allowed mask.</p>")
 
 
 def build() -> None:
     ensure_dirs()
     rc = _load(EVIDENCE / "live_run_card.json")
-    e1 = _load(EVIDENCE / "e1_px5.json")
+    # the gated experiment is the post-amendment one (IR-65-PROP-01)
+    e1_name = next((n for n in ("e1b_px5.json", "e1_px5.json")
+                    if (EVIDENCE / n).exists()), None)
+    e1 = _load(EVIDENCE / e1_name) if e1_name else None
+    e1_pre = _load(EVIDENCE / "e1_px5.json")
     e2 = _load(EVIDENCE / "e2_px7.json")
     bias = _load(EVIDENCE / "mapping_bias_two_inventory.json")
     canary = _load(EVIDENCE / "leakage_canary.json")
@@ -169,7 +184,7 @@ def build() -> None:
     sgmc = _load(EVIDENCE / "sgmc_instrument_receipt.json")
     catid = _load(EVIDENCE / "catalogue_identity.json")
     fronts = _load(EVIDENCE / "range_front_variants.json")
-    pre = _load(REGISTRY / "preregistration.json")
+    pre = _load(ROOT / "registry" / "preregistration.json")
     if rc is None:
         raise SystemExit("evidence/live_run_card.json missing; run scripts/make_submission.py")
     if e1 is None:
@@ -188,12 +203,23 @@ def build() -> None:
     (DOCS / "assets").mkdir(parents=True, exist_ok=True)
     (DOCS / "assets" / "site.css").write_text(CSS)
     copied = []
+    same_dir = dst_dir.resolve() == DOWNLOADS.resolve()
     for p in sorted(DOWNLOADS.glob(art.stem + "*")):
-        shutil.copy2(p, dst_dir / p.name)
+        if not same_dir:
+            shutil.copy2(p, dst_dir / p.name)
         copied.append(p.name)
     shutil.copy2(EVIDENCE / "live_run_card.json", dst_dir / f"{art.stem}-runcard.json")
+    # paths.DOWNLOADS already IS docs/downloads, so artefacts need no copying;
+    # this line only adds the run card next to them
     copied.append(f"{art.stem}-runcard.json")
     checks = EVIDENCE / "live_run_card.json"
+
+    i1s, i1pd = e1["I1_hide_recover"]["scores"], e1["I1_hide_recover"]["paired_differences"]
+    i2s, i2pd = e1["I2_sgmc_offcat"]["scores"], e1["I2_sgmc_offcat"]["paired_differences"]
+    tpd = e1["I1_tercile_gate"]["paired_differences"]
+    i1d, i2d, i2d2, tercd = i1pd["B_nnpu"], i2pd["B_nnpu"], i2pd["A2_sar_1me"], tpd["B_nnpu"]
+    i2n = i2s["A2_sar_1me"]["withheld_positive_pixels"]
+    i2auc = e1["I2_auc_pooled"]
 
     banner = f"""
 <div class="banner {'ok' if ok else 'bad'}">
@@ -260,6 +286,43 @@ The pre-registered decision rule (<code>registry/preregistration.json</code>,
 id <code>{pre.get('id','GEMSDOE65-PREREG-1')}</code>) was written before any holdout number
 existed and is applied mechanically by <code>scripts/make_submission.py</code>.</div>
 
+<h2>0. Why this verdict — and the one decision only the owner can make</h2>
+<div class="card">
+<p><b>The pre-registered gate is keyed to instrument I1, and the lane fails it.</b>
+Paired Δ(A1_sar − B_nnpu) on I1 = <b>{i1d['delta']:+.6f}</b>, 95% CI
+[{i1d['ci95'][0]:+.6f}, {i1d['ci95'][1]:+.6f}] — the CI excludes zero in the
+<i>losing</i> direction, so this is not a coin flip. The secondary tercile condition also fails
+(Δ {tercd['delta']:+.6f}, CI [{tercd['ci95'][0]:+.6f}, {tercd['ci95'][1]:+.6f}]). The ship rule
+therefore returns <code>DO-NOT-SUBMIT</code> and this session does not override it.</p>
+<p><b>On the instrument that matches the live task, the same lane wins clearly.</b> I2's truth is
+mapped faults the catalogue does <i>not</i> contain ({i2n:,} px):
+A2_sar_1me <b>{i2s['A2_sar_1me']['dti']:.6f}</b>
+[{i2s['A2_sar_1me']['ci95'][0]:.6f}, {i2s['A2_sar_1me']['ci95'][1]:.6f}] vs nnPU
+{i2s['B_nnpu']['dti']:.6f} [{i2s['B_nnpu']['ci95'][0]:.6f}, {i2s['B_nnpu']['ci95'][1]:.6f}] and
+vs the proximity control {i2s['C_distance_only']['dti']:.6f}
+[{i2s['C_distance_only']['ci95'][0]:.6f}, {i2s['C_distance_only']['ci95'][1]:.6f}]. Paired
+Δ(A1_sar − B_nnpu) on I2 = {i2d['delta']:+.6f} [{i2d['ci95'][0]:+.6f}, {i2d['ci95'][1]:+.6f}] and
+Δ(A1_sar − A2_sar_1me) = {i2d2['delta']:+.6f} [{i2d2['ci95'][0]:+.6f}, {i2d2['ci95'][1]:+.6f}],
+both CIs excluding zero in the winning direction. Pooled ranking AUC against I2 truth:
+A2 {i2auc['A2_sar_1me']:.4f} &gt; A1 {i2auc['A1_sar']:.4f} &gt; B {i2auc['B_nnpu']:.4f} &gt;
+A3(EM) {i2auc['A3_sar_em_1me']:.4f} &gt; proximity {i2auc['C_distance_only']:.4f}.</p>
+<p><b>The two instruments have opposite sign on the same question, and the reason is structural,
+not statistical.</b> I1's withheld truth is made of <i>catalogue</i> components contiguous with
+visible catalogue trace, and the organizer masks known USGS/INGENIOUS fault pixels out of scoring
+(staff answer, community thread 11516) — so I1 rewards exactly the pixels that cannot score live.
+Consistently, the trivial proximity control is the <i>best</i> arm on I1
+({i1s['C_distance_only']['dti']:.6f}) and the <i>worst</i> on I2
+({i2s['C_distance_only']['dti']:.6f}). The family's own ladder points the same way: deleting dots
+1–2 px from the catalogue <i>raised</i> the live score twice (+0.0108, +0.0070, owner-report).</p>
+<p><b>Decision required from the owner (not made here):</b> re-key the primary gate from I1 to I2
+—or better, to a new I3 that holds out whole <i>state-map</i> segments with the catalogue fully
+masked — and re-run the ship rule. That is an amendment to a pre-registration after results are
+known, so it is an owner decision, not an agent one. Until then the artefact below is
+<b>research-only</b>: downloadable, fully validated, uniquely ranked
+(worst Spearman ρ vs 62 prior rasters = {fmt(uniq['worst_spearman_full_footprint'], 4)}), and
+marked <code>{verdict}</code>.</p>
+</div>
+
 <h2>1. What was built</h2>
 <p>Lane: <b>selection-bias-aware PU learning under SAR (selected at random given
 covariates), not SCAR</b>. The competition catalogue is treated as
@@ -310,7 +373,9 @@ fixes: an unweighted subsample gave π = 0.867 against a truth of ≈0.03).</p>
 {results}
 <h3>Ranking quality (AUC of the emitted score field against each instrument's truth)</h3>
 {auc}
-<p class="mut">Folds: <code>{folds['per_fold'][0]['split_version']}</code>, seed
+<p class="mut">Source receipt: <code>evidence/{e1_name}</code> (gated experiment; the
+pre-amendment receipt <code>evidence/e1_px5.json</code> is retained for IR-65-PROP-01).
+Folds: <code>{folds['per_fold'][0]['split_version']}</code>, seed
 {folds['seed']}, hide_frac {folds['hide_frac']}, feature buffer {folds['feature_buffer_px']} px,
 {folds['withheld_positive_pixels_total']:,} withheld positive pixels over
 {folds['n_folds']} folds, nearest visible catalogue pixel

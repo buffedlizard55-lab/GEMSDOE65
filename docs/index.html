@@ -1,0 +1,288 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GEMSDOE65 — SAR-PU submission</title><link rel="stylesheet" href="assets/site.css"></head>
+<body><header><div class="wrap"><h1>GEMSDOE65 — selection-bias-aware PU learning (SAR)
+for the DOE GEMS Prize</h1>
+<div class="mut"><a href="index.html"><b>Submission & results</b></a> · <a href="executive-summary.html">How to submit</a> · <a href="research/hypotheses.html">Hypotheses</a> ·
+<a href="research/why-02778.html">Why 0.2778</a> ·
+<a href="../README.md">README / standing brief</a> ·
+<a href="https://buffedlizard55-lab.github.io/GEMSDOE65">site root</a></div></div></header>
+<main>
+
+<div class="banner bad">
+<h2>DO NOT SUBMIT — research artefact only</h2>
+<p><b>Verdict:</b> <code>DO-NOT-SUBMIT</code> · <b>shipped arm:</b>
+<code>none</code> · <b>reason:</b> primary gate failed: A1_sar did not beat B_nnpu on I1</p>
+<p><b>Submission name:</b> <code>gems65-sar2inv-a2-38k</code><br>
+<b>Note field (≤140 chars):</b> <code>SAR-PU, propensity anchored on 2 public fault inventories; rank P(y|x)*(1-e(x)); 38k dots, 300m NMS, 300m peel</code> (110 characters)</p>
+<p><a class="btn dis" href="downloads/gemsdoe65-gems65-sar2inv-a2-38k-20261011T220214Z-296a58fcf2a6-zeros.tif">⬇ Download
+gemsdoe65-gems65-sar2inv-a2-38k-20261011T220214Z-296a58fcf2a6-zeros.tif</a>
+<a class="btn sec" href="downloads/gemsdoe65-gems65-sar2inv-a2-38k-20261011T220214Z-296a58fcf2a6-zeros.zip">ZIP</a>
+<a class="btn sec" href="downloads/gemsdoe65-gems65-sar2inv-a2-38k-20261011T220214Z-296a58fcf2a6-zeros.json">writer receipt</a>
+<a class="btn sec" href="downloads/gemsdoe65-gems65-sar2inv-a2-38k-20261011T220214Z-296a58fcf2a6-zeros-runcard.json">run card</a>
+<a class="btn sec" href="executive-summary.html">How to submit (step by step)</a></p>
+<p class="mut">sha256 <code>9cd84cbe98fcc4eebfdabd497c2b69c79cc293563b91a353d45ecdffbc7e2582</code> · 150,442 bytes ·
+38,000 positive pixels · float32 · EPSG:32611 ·
+3730×3292 ·
+local format checks: <b>ALL PASSED</b>
+(0 NaN, 0 inf, min 0.0, max 1.0).
+A local format check is not organizer acceptance.</p>
+</div>
+
+<div class="card"><b>Read this first.</b> This page reports a local, spatially blocked
+holdout measurement. It is <u>not</u> a leaderboard score and it is not a projection of one.
+Nothing here was uploaded to DrivenData; this session used
+<b>0</b> submission slots, because
+promotion to a real weekly slot is a separate selector step.
+The pre-registered decision rule (<code>registry/preregistration.json</code>,
+id <code>GEMSDOE65-PREREG-1</code>) was written before any holdout number
+existed and is applied mechanically by <code>scripts/make_submission.py</code>.</div>
+
+<h2>0. Why this verdict — and the one decision only the owner can make</h2>
+<div class="card">
+<p><b>The pre-registered gate is keyed to instrument I1, and the lane fails it.</b>
+Paired Δ(A1_sar − B_nnpu) on I1 = <b>-0.014874</b>, 95% CI
+[-0.023885, -0.005936] — the CI excludes zero in the
+<i>losing</i> direction, so this is not a coin flip. The secondary tercile condition also fails
+(Δ -0.014073, CI [-0.036482, +0.003093]). The ship rule
+therefore returns <code>DO-NOT-SUBMIT</code> and this session does not override it.</p>
+<p><b>On the instrument that matches the live task, the same lane wins clearly.</b> I2's truth is
+mapped faults the catalogue does <i>not</i> contain (59,012 px):
+A2_sar_1me <b>0.140842</b>
+[0.132499, 0.148127] vs nnPU
+0.101953 [0.091793, 0.113242] and
+vs the proximity control 0.021906
+[0.017568, 0.027346]. Paired
+Δ(A1_sar − B_nnpu) on I2 = +0.024246 [+0.014802, +0.032843] and
+Δ(A1_sar − A2_sar_1me) = -0.014643 [-0.022646, -0.007147],
+both CIs excluding zero in the winning direction. Pooled ranking AUC against I2 truth:
+A2 0.7145 &gt; A1 0.6311 &gt; B 0.5098 &gt;
+A3(EM) 0.4976 &gt; proximity 0.4806.</p>
+<p><b>The two instruments have opposite sign on the same question, and the reason is structural,
+not statistical.</b> I1's withheld truth is made of <i>catalogue</i> components contiguous with
+visible catalogue trace, and the organizer masks known USGS/INGENIOUS fault pixels out of scoring
+(staff answer, community thread 11516) — so I1 rewards exactly the pixels that cannot score live.
+Consistently, the trivial proximity control is the <i>best</i> arm on I1
+(0.090711) and the <i>worst</i> on I2
+(0.021906). The family's own ladder points the same way: deleting dots
+1–2 px from the catalogue <i>raised</i> the live score twice (+0.0108, +0.0070, owner-report).</p>
+<p><b>Decision required from the owner (not made here):</b> re-key the primary gate from I1 to I2
+—or better, to a new I3 that holds out whole <i>state-map</i> segments with the catalogue fully
+masked — and re-run the ship rule. That is an amendment to a pre-registration after results are
+known, so it is an owner decision, not an agent one. Until then the artefact below is
+<b>research-only</b>: downloadable, fully validated, uniquely ranked
+(worst Spearman ρ vs 62 prior rasters = 0.0140), and
+marked <code>DO-NOT-SUBMIT</code>.</p>
+</div>
+
+<h2>1. What was built</h2>
+<p>Lane: <b>selection-bias-aware PU learning under SAR (selected at random given
+covariates), not SCAR</b>. The competition catalogue is treated as
+<i>positives selected with a covariate-dependent probability</i>
+<code>e(x) = P(labeled | fault, x)</code>. The model is trained with the
+propensity-aware empirical risk of Bekker, Robberechts &amp; Davis (arXiv:1809.03207),
+weights <code>w = min(1/e, 10)</code> and
+<code>v = min((1−e)/e, 10)</code>, against a non-negative PU (nnPU, Kiryo et al. 2017)
+baseline on <b>identical folds, identical architecture, identical seed and an identical
+38,000-dot budget</b>. The shipped ranking multiplies the
+class posterior by <code>(1 − e(x))</code>, which pushes mass into environments the
+catalogue under-samples.</p>
+
+<h3>The identifiability problem, and how this run handles it</h3>
+<p>The observed-data likelihood of a SAR PU model is
+<code>L = Σ<sub>labeled</sub> log(g·e) + Σ<sub>unlabeled</sub> log(1 − g·e)</code>:
+it depends only on the <b>product</b> <code>g(x)e(x) = P(s=1|x)</code>. The propensity is
+therefore <b>not identified from PU data alone</b> — the brief anticipates exactly this.
+<code>tests/test_anchor.py::test_em_direction_is_not_identified</code> demonstrates it
+numerically: the Bekker &amp; Davis EM returns both a correct-direction and a mirrored
+solution on synthetic data with a known propensity, and their observed-data log-likelihoods
+differ by less than 2&nbsp;%. This run resolves it two ways, both pre-registered:</p>
+<ol>
+<li><b>A second public inventory anchors the direction.</b> The catalogue is compared with
+the mirrored state-geologic-map fault inventory
+(82,151 state-map pixels inside the footprint, of which only
+3,718 are in the catalogue). Fitting
+<code>q(x) = P(in catalogue | in catalogue ∪ state-map-only, x)</code> and inverting
+<code>q = e/(e + c(1−e))</code> gives <code>e(x;c) = c·q/(1 − q + c·q)</code>: the ordering
+is identified by data and one documented parameter <code>c</code> (reference-inventory
+completeness) sets the scale. <code>c = 1.0</code> was used; the c-grid
+<code>[0.25, 0.5, 1.0]</code> is the sensitivity analysis the brief asks for.</li>
+<li><b>The EM is still run</b> (but rejected for direction).
+Spearman(EM ordering, anchor ordering) on the pooled two-inventory sample =
+<b>0.5983</b>; the pre-registered rule is "use the EM only
+if that is &gt; 0". Chosen source: <code>anchor</code>. anchor primary per the brief (a public reference index exists); the EM is reported as a sensitivity arm. EM diagnostics: Spearman vs anchor +0.598, std(e) 0.00140 vs anchor std(e) 0.25147</li>
+</ol>
+<p>Measured propensity: mean <code>e</code> on catalogue pixels
+<b>0.6329</b> vs
+<b>0.3789</b> on independent-inventory
+off-catalogue fault pixels — the direction the hypothesis requires. Class prior
+π = 0.02322 (MEASURED: the union of both public inventories is a lower
+bound on fault-pixel prevalence); ρ = P(s=1) is computed from population counts, never from
+the unlabeled subsample (<code>tests/test_propensity_subsample.py</code> pins the bug this
+fixes: an unweighted subsample gave π = 0.867 against a truth of ≈0.03).</p>
+
+<h2>2. Results — HOLDOUT-DTI, not scores</h2>
+<h3>I1 — hide-and-recover blocked holdout (the gate)</h3><table><tr><th>instrument</th><th>arm</th><th>DTI</th><th>95% CI (20 km block bootstrap)</th><th>withheld<br>positives</th><th>dots<br>emitted</th><th>credit<br>per dot</th><th>evidence class</th></tr><tr><td>I1 — hide-and-recover blocked holdout (the gate)</td><td><code>A2_sar_1me</code></td><td><b>0.058766</b></td><td>[0.049599, 0.067893]</td><td>11,321</td><td>38,000</td><td>0.0252</td><td><span class='tag'>HOLDOUT-DTI</span> gems57-pooled-hide-v2</td></tr><tr><td>I1 — hide-and-recover blocked holdout (the gate)</td><td><code>A1_sar</code></td><td><b>0.071082</b></td><td>[0.060045, 0.081551]</td><td>11,321</td><td>38,000</td><td>0.0305</td><td><span class='tag'>HOLDOUT-DTI</span> gems57-pooled-hide-v2</td></tr><tr><td>I1 — hide-and-recover blocked holdout (the gate)</td><td><code>A3_sar_em_1me</code></td><td><b>0.086740</b></td><td>[0.075842, 0.097151]</td><td>11,321</td><td>38,000</td><td>0.0373</td><td><span class='tag'>HOLDOUT-DTI</span> gems57-pooled-hide-v2</td></tr><tr><td>I1 — hide-and-recover blocked holdout (the gate)</td><td><code>B_nnpu</code></td><td><b>0.085955</b></td><td>[0.074544, 0.095856]</td><td>11,321</td><td>38,000</td><td>0.0369</td><td><span class='tag'>HOLDOUT-DTI</span> gems57-pooled-hide-v2</td></tr><tr><td>I1 — hide-and-recover blocked holdout (the gate)</td><td><code>C_distance_only</code></td><td><b>0.090711</b></td><td>[0.077612, 0.104595]</td><td>11,321</td><td>27,451</td><td>0.0472</td><td><span class='tag'>HOLDOUT-DTI</span> gems57-pooled-hide-v2</td></tr><tr><td>paired Δ A2_sar_1me</td><td colspan=2>+0.012316</td><td>[+0.005397, +0.019568]</td><td colspan=3>CI excludes 0</td></tr><tr><td>paired Δ A3_sar_em_1me</td><td colspan=2>-0.015658</td><td>[-0.024745, -0.006594]</td><td colspan=3>CI excludes 0</td></tr><tr><td>paired Δ B_nnpu</td><td colspan=2>-0.014874</td><td>[-0.023885, -0.005936]</td><td colspan=3>CI excludes 0</td></tr><tr><td>paired Δ C_distance_only</td><td colspan=2>-0.019629</td><td>[-0.035698, -0.002337]</td><td colspan=3>CI excludes 0</td></tr></table><p class='mut'>credit per dot = TP weight / dots emitted; the family's ladder arithmetic says a dot pays only if its expected credit exceeds alpha x DTI (0.0556 at DTI 0.2778). Arms that cannot fill the budget found fewer strict local maxima than the budget inside the allowed mask.</p><h3>I1b — highest-propensity tercile only (secondary gate)</h3><table><tr><th>instrument</th><th>arm</th><th>DTI</th><th>95% CI (20 km block bootstrap)</th><th>withheld<br>positives</th><th>dots<br>emitted</th><th>credit<br>per dot</th><th>evidence class</th></tr><tr><td>I1b — highest-propensity tercile only (secondary gate)</td><td><code>A2_sar_1me</code></td><td><b>0.001645</b></td><td>[0.000000, 0.004063]</td><td>3,107</td><td>38,000</td><td>0.0001</td><td><span class='tag'>HOLDOUT-DTI</span> gems57-pooled-hide-v2</td></tr><tr><td>I1b — highest-propensity tercile only (secondary gate)</td><td><code>A1_sar</code></td><td><b>0.046314</b></td><td>[0.030901, 0.064088]</td><td>3,107</td><td>38,000</td><td>0.0035</td><td><span class='tag'>HOLDOUT-DTI</span> gems57-pooled-hide-v2</td></tr><tr><td>I1b — highest-propensity tercile only (secondary gate)</td><td><code>A3_sar_em_1me</code></td><td><b>0.065533</b></td><td>[0.047834, 0.084365]</td><td>3,107</td><td>38,000</td><td>0.0060</td><td><span class='tag'>HOLDOUT-DTI</span> gems57-pooled-hide-v2</td></tr><tr><td>I1b — highest-propensity tercile only (secondary gate)</td><td><code>B_nnpu</code></td><td><b>0.060386</b></td><td>[0.038781, 0.084686]</td><td>3,107</td><td>38,000</td><td>0.0052</td><td><span class='tag'>HOLDOUT-DTI</span> gems57-pooled-hide-v2</td></tr><tr><td>I1b — highest-propensity tercile only (secondary gate)</td><td><code>C_distance_only</code></td><td><b>0.094519</b></td><td>[0.070742, 0.118129]</td><td>3,107</td><td>27,451</td><td>0.0142</td><td><span class='tag'>HOLDOUT-DTI</span> gems57-pooled-hide-v2</td></tr><tr><td>paired Δ A2_sar_1me</td><td colspan=2>+0.044669</td><td>[+0.029456, +0.061553]</td><td colspan=3>CI excludes 0</td></tr><tr><td>paired Δ A3_sar_em_1me</td><td colspan=2>-0.019219</td><td>[-0.037648, -0.003571]</td><td colspan=3>CI excludes 0</td></tr><tr><td>paired Δ B_nnpu</td><td colspan=2>-0.014073</td><td>[-0.036482, +0.003093]</td><td colspan=3>CI includes 0</td></tr><tr><td>paired Δ C_distance_only</td><td colspan=2>-0.048206</td><td>[-0.076249, -0.016518]</td><td colspan=3>CI excludes 0</td></tr></table><p class='mut'>credit per dot = TP weight / dots emitted; the family's ladder arithmetic says a dot pays only if its expected credit exceeds alpha x DTI (0.0556 at DTI 0.2778). Arms that cannot fill the budget found fewer strict local maxima than the budget inside the allowed mask.</p><h3>I2 — state-map-only faults (mapped, not in catalogue)</h3><table><tr><th>instrument</th><th>arm</th><th>DTI</th><th>95% CI (20 km block bootstrap)</th><th>withheld<br>positives</th><th>dots<br>emitted</th><th>credit<br>per dot</th><th>evidence class</th></tr><tr><td>I2 — state-map-only faults (mapped, not in catalogue)</td><td><code>A2_sar_1me</code></td><td><b>0.140842</b></td><td>[0.132499, 0.148127]</td><td>59,012</td><td>38,000</td><td>0.2068</td><td><span class='tag'>HOLDOUT-DTI</span> gems57-pooled-hide-v2</td></tr><tr><td>I2 — state-map-only faults (mapped, not in catalogue)</td><td><code>A1_sar</code></td><td><b>0.126200</b></td><td>[0.117299, 0.134967]</td><td>59,012</td><td>38,000</td><td>0.1850</td><td><span class='tag'>HOLDOUT-DTI</span> gems57-pooled-hide-v2</td></tr><tr><td>I2 — state-map-only faults (mapped, not in catalogue)</td><td><code>A3_sar_em_1me</code></td><td><b>0.103697</b></td><td>[0.092933, 0.114972]</td><td>59,012</td><td>38,000</td><td>0.1515</td><td><span class='tag'>HOLDOUT-DTI</span> gems57-pooled-hide-v2</td></tr><tr><td>I2 — state-map-only faults (mapped, not in catalogue)</td><td><code>B_nnpu</code></td><td><b>0.101953</b></td><td>[0.091793, 0.113242]</td><td>59,012</td><td>38,000</td><td>0.1489</td><td><span class='tag'>HOLDOUT-DTI</span> gems57-pooled-hide-v2</td></tr><tr><td>I2 — state-map-only faults (mapped, not in catalogue)</td><td><code>C_distance_only</code></td><td><b>0.021906</b></td><td>[0.017568, 0.027346]</td><td>59,012</td><td>26,890</td><td>0.0429</td><td><span class='tag'>HOLDOUT-DTI</span> gems57-pooled-hide-v2</td></tr><tr><td>paired Δ A2_sar_1me</td><td colspan=2>-0.014643</td><td>[-0.022646, -0.007147]</td><td colspan=3>CI excludes 0</td></tr><tr><td>paired Δ A3_sar_em_1me</td><td colspan=2>+0.022502</td><td>[+0.013015, +0.031173]</td><td colspan=3>CI excludes 0</td></tr><tr><td>paired Δ B_nnpu</td><td colspan=2>+0.024246</td><td>[+0.014802, +0.032843]</td><td colspan=3>CI excludes 0</td></tr><tr><td>paired Δ C_distance_only</td><td colspan=2>+0.104294</td><td>[+0.094647, +0.114261]</td><td colspan=3>CI excludes 0</td></tr></table><p class='mut'>credit per dot = TP weight / dots emitted; the family's ladder arithmetic says a dot pays only if its expected credit exceeds alpha x DTI (0.0556 at DTI 0.2778). Arms that cannot fill the budget found fewer strict local maxima than the budget inside the allowed mask.</p>
+<h3>Ranking quality (AUC of the emitted score field against each instrument's truth)</h3>
+<table><tr><th>instrument</th><th>A1_sar</th><th>A2_sar_1me</th><th>B_nnpu</th></tr><tr><td>I1 (withheld catalogue components)</td><td>0.6417</td><td>0.5897</td><td>0.6671</td></tr><tr><td>I2 (state-map-only pixels)</td><td>0.6311</td><td>0.7145</td><td>0.5098</td></tr></table>
+<p class="mut">Source receipt: <code>evidence/e1b_px5.json</code> (gated experiment; the
+pre-amendment receipt <code>evidence/e1_px5.json</code> is retained for IR-65-PROP-01).
+Folds: <code>buffered-whole-components-loqo-v2</code>, seed
+20, hide_frac 0.2, feature buffer 3 px,
+11,321 withheld positive pixels over
+4 folds, nearest visible catalogue pixel
+3.1622776601683795 px from withheld truth.
+I2 truth: 59,012 state-map-only pixels, scored leave-one-quadrant-out so the
+anchor never sees the pixels it is scored on.</p>
+
+<h2>3. The measurable mapping bias this lane exploits</h2>
+<p>Bias AUC &gt; 0.5 means the catalogue sits closer to (over-represents) HIGH values of that
+covariate relative to an independent inventory of the same physical objects.</p>
+<table><tr><th>covariate</th><th>bias AUC<br>(catalogue vs state-map-only)</th>
+<th>AUC vs state-map-only truth</th><th>AUC vs catalogue</th><th>reading</th></tr><tr><td><code>depth_to_base_surf</code></td><td>0.6935</td><td>0.3290</td><td>0.5119</td><td>catalogue over-represents HIGH</td></tr><tr><td><code>iso_grav_anom_slope</code></td><td>0.6101</td><td>0.4211</td><td>0.5336</td><td>catalogue over-represents HIGH</td></tr><tr><td><code>lidar_cover</code></td><td>0.5778</td><td>0.4419</td><td>0.5205</td><td>catalogue over-represents HIGH</td></tr><tr><td><code>grav_basin_fill</code></td><td>0.3446</td><td>0.6175</td><td>0.4593</td><td>catalogue over-represents LOW</td></tr><tr><td><code>dist_range_front</code></td><td>0.3391</td><td>0.6440</td><td>0.4796</td><td>catalogue over-represents LOW</td></tr><tr><td><code>slope</code></td><td>0.2546</td><td>0.7617</td><td>0.5577</td><td>catalogue over-represents LOW</td></tr><tr><td><code>relief_local</code></td><td>0.2464</td><td>0.7740</td><td>0.5633</td><td>catalogue over-represents LOW</td></tr><tr><td><code>height_above_base</code></td><td>0.2011</td><td>0.7687</td><td>0.5228</td><td>catalogue over-represents LOW</td></tr></table>
+<p><b>The catalogue over-represents low-relief, low-slope, deep-basin-fill ground far from the
+range front; the state geologic maps over-represent exposed, high-relief, steep ground.</b>
+That is the inverse of the naive "steep scarps are easy to see" intuition, because
+QFaults/INGENIOUS is a geophysics-informed compilation carrying many <i>Inferred</i> basin
+faults while state geologic maps are bedrock-exposure maps.
+<span class="tag">MEASURED</span> <code>evidence/mapping_bias_two_inventory.json</code></p>
+
+<h2>4. Irregularities found and how they were resolved</h2>
+<div class="grid2">
+<div class="card"><b>(B) Is the catalogue really the known-fault compilation?</b>
+Yes. Rasterising the mirrored QFaults/INGENIOUS trace segments covers
+<b>96.54&nbsp;%</b> of
+catalogue pixels at median distance
+<b>0.0 px</b>
+(p90 0.0 px) from
+84,331 segments. Morphology:
+3199
+8-connected components, median
+12.0 px,
+and only 0.04&nbsp;%
+of pixels survive a 3×3 erosion — 1-px-wide compiled traces, not areas. Its weak
+topographic AUCs are therefore a real property of the inventory, not a data error.
+<code>evidence/catalogue_identity.json</code></div>
+<div class="card"><b>(A) Which range front?</b> Four operationalizations were compared on one
+criterion (carrying the two-inventory differential). Variant
+<code>A_h50_isoline_over_5km_local_min</code> was kept and is documented as a <b>proxy of limited
+geomorphic fidelity</b>, not a mapped front.
+<code>evidence/range_front_variants.json</code>
+<table><tr><th>variant</th><th>px</th><th>median dist</th><th>bias AUC</th><th>AUC vs I2</th></tr>
+<tr><td>A_h50_isoline_over_5km_local_min</td><td>160,275</td><td>28.60</td><td><b>0.6608</b></td><td>0.3561</td></tr><tr><td>B_toe_of_front</td><td>78,466</td><td>31.30</td><td><b>0.6144</b></td><td>0.4067</td></tr><tr><td>C_mid_slope_band</td><td>221,096</td><td>10.63</td><td><b>0.5543</b></td><td>0.5312</td></tr><tr><td>D_basin_edge</td><td>119,209</td><td>33.62</td><td><b>0.6397</b></td><td>0.3331</td></tr></table></div>
+</div>
+<div class="card"><b>Non-identifiability (formal).</b> Only the product <code>g·e</code> is
+identified; see §1 and <code>tests/test_anchor.py</code>. The propensity is therefore reported
+as a <b>sensitivity analysis</b> with an external anchor, exactly as the brief instructs.</div>
+<div class="card"><b>Uniqueness rule is not meetable as literally written.</b>
+The literal rule (≤70% of dots within 3 px of ANY registry raster) is unmeetable for sparse fields because dense lattice comparators cover almost the whole footprint. Reported both ways below; flagged, never silently waived.</div>
+
+<h2>5. Leakage canary <span class="tag">MEASURED</span></h2>
+<p>Each covariate alone against withheld truth, limit AUC ≤ 0.9.</p>
+<table><tr><th>covariate</th><th>AUC</th><th>flag</th></tr><tr><td><code>relief_local</code></td><td>0.5665</td><td>ok</td></tr><tr><td><code>slope</code></td><td>0.5636</td><td>ok</td></tr><tr><td><code>grav_basin_fill</code></td><td>0.4593</td><td>ok</td></tr><tr><td><code>lidar_cover</code></td><td>0.5329</td><td>ok</td></tr><tr><td><code>dist_range_front</code></td><td>0.5064</td><td>ok</td></tr><tr><td><code>dist_to_visible_catalogue</code></td><td>0.7548</td><td>ok</td></tr></table>
+<p class="mut">Worst = <code>dist_to_visible_catalogue</code>
+0.7548 — the legitimate proximity control signal, not a leak. No covariate
+is flagged.</p>
+
+<h2>6. Artefact, format and uniqueness</h2>
+<table>
+<tr><th>check</th><th>value</th></tr>
+<tr><td>local format preflight</td><td>ALL PASSED —
+single band 1, float32, EPSG:32611,
+transform [100.0, 0.0, 243350.0, 0.0, -100.0, 4508550.0], nodata None (none, matching the
+organizer reference solution), 0 NaN, 0 inf,
+range [0.0, 1.0]</td></tr>
+<tr><td>positive mass on mapped catalogue</td><td>0 px
+(must be 0 — known faults are masked out of scoring anyway)</td></tr>
+<tr><td>outside footprint</td><td>all zero
+(mode <code>zeros</code>: all-finite, no NaN anywhere — this is what prevents the portal's
+"Predicted values must be in range [0, 1]" rejection)</td></tr>
+<tr><td>emission geometry</td><td>38,000 dots · min distance to a mapped pixel
+3.0 px · median 22.67156809750927 px ·
+p95 81.40085990229062 px · within 300 m of a mapped pixel
+2.92&nbsp;%</td></tr>
+<tr><td>uniqueness vs registry</td><td>62 rasters checked ·
+worst Spearman ρ 0.0140 (limit
+0.9) vs <code>r11_greedy_mp</code> · worst 3-px dot overlap
+0.9972 (limit 0.7) vs
+<code>calib_r13lattice_00904</code> · byte-unique
+True · pixel-unique True</td></tr>
+<tr><td>like-for-like (dot-field comparators only)</td><td>
+— worst overlap ·
+— dot-field rasters ·
+— literal firings, all from
+—</td></tr>
+</table>
+
+<h2>7. Hypotheses, ranked before implementation</h2>
+<p>Full text with layers, mechanisms, mimics, sources and obtainability:
+<a href="research/hypotheses.html">research/hypotheses.html</a>. The top candidate (H65-1,
+two-inventory propensity) is what was implemented and gated here; it was validated on the
+spatially-blocked holdout <b>before</b> any submission slot was considered, and no slot was
+spent.</p>
+
+<h2>8. Why <code>h33-h33-2-b2</code> scored 0.2778, and what beats it</h2>
+<p>Full derivation: <a href="research/why-02778.html">research/why-02778.html</a>
+(owner-reported score; no organizer receipt ties it to exact bytes). In brief: with the dot
+algebra <code>DTI = T / (0.2(T+S−M) + 0.8|G|)</code> that raster puts 37,654 dots 0 px off
+the catalogue, keeps a minimum distance of 3.00 px, lands only 5.77&nbsp;% of dots within
+300 m of the hidden truth, and earns a mean credit of <b>0.135 per dot ≈ 2.4× the
+break-even 0.0556</b>. Mass-pruning is nearly spent (+0.003/+0.004 per rung). The only large
+remaining prize is <b>re-ranking the same mass</b>: raising credit/dot to 0.150 ≈ 0.30, to
+0.19 ≈ 0.36. A propensity-aware ranker is aimed exactly at that prize, because credit per
+dot is a statement about <i>where</i> unmapped faults are, and <code>(1 − e(x))</code> is a
+statement about where the catalogue is blind.</p>
+
+<h2>9. Limitations, and what access would remove them</h2>
+<ul>
+<li><b>No organizer confirmation of anything.</b> This sandbox cannot reach
+<code>drivendata.org</code>, <code>docs.nlr.gov</code> (the rules PDF), the five Dropbox data
+mirrors, <code>gdr.openei.org</code>, <code>usgs.gov</code> or
+<code>raw.githubusercontent.com</code> (all HTTP 000). Every official statement on this site
+is quoted from the family's line-by-line verification record
+(<code>60GEMSDOE/docs/research/verification-2026-10-04.md</code>) with links for manual
+review. Access needed: a machine with outbound HTTPS to those hosts, or a mirrored rules PDF.</li>
+<li><b>HOLDOUT-DTI is not the live metric's target.</b> I1 rewards proximity to visible
+traces (the withheld truth is contiguous with visible trace); the live board does not — the
+family's ladder measured that deleting dots 1–2 px from the catalogue <i>raised</i> the live
+score twice (+0.0108, +0.0070, owner-reported). Both instruments are reported; neither is a
+projection.</li>
+<li><b>The anchor assumes the reference inventory's propensity is constant in x.</b> State
+geologic maps are bedrock-exposure maps, so if they under-sample buried basin faults the
+anchor over-corrects toward exposed ground. This is the named non-fault process that could
+mimic the hypothesis (compiler-vintage and compiler-rule confounding).</li>
+<li><b>The range front is a proxy</b> (50 m isoline of height above a 5 km local minimum), not
+a mapped front; a real front needs raw 3DEP 10 m/1 m tiles, unreachable here.</li>
+<li><b>LiDAR layer provenance</b>: quantised scarp descriptors derived in a sibling repo from
+public 3DEP tiles — 10 failed tiles of 716, a 1–2 m datum offset, and they are terrain
+descriptors, not fault detections (roads, channels, terraces, shorelines, landslides and mines
+also make steps). Flagged <code>PUBLIC-REPOSITORY-DERIVATIVE</code>, not organizer-provided.</li>
+<li><b>Uniqueness inventory is incomplete</b>: 62 accessible
+rasters from sibling public repositories, not the organizer's registry.
+<code>complete_accessible_scan = False</code>.</li>
+</ul>
+
+<h2>10. Official sources for manual review</h2>
+<ul><li><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/">Competition page (metric, format, provided features)</a></li><li><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">Official public leaderboard</a></li><li><a href="https://community.drivendata.org/t/scoring-clarification-are-known-usgs-ingenious-faults-masked-when-scoring-and-are-they-in-the-final-round-label-set/11516">Scoring clarification: are known USGS/INGENIOUS faults masked? (staff answer: yes)</a></li><li><a href="https://github.com/drivendataorg/gems-prize-reference-solution">Organizer reference solution (all-finite raster, no nodata tag)</a></li><li><a href="https://gdr.openei.org/submissions/1391">INGENIOUS project (Geothermal Data Repository)</a></li><li><a href="https://www.usgs.gov/programs/earthquake-hazards/faults">USGS QFaults / fault database</a></li><li><a href="https://www.usgs.gov/3d-elevation-program">USGS 3DEP elevation (1 m / 10 m)</a></li><li><a href="https://mrdata.usgs.gov/gravity/isostatic/">USGS isostatic residual gravity</a></li><li><a href="https://www.usgs.gov/data/geodawn-airborne-magnetic-and-radiometric-surveys-northwestern-great-basin-nevada-and">GeoDAWN airborne magnetic & radiometric surveys (USGS data release)</a></li><li><a href="https://epsg.io/32611">EPSG:32611 — WGS 84 / UTM zone 11N</a></li><li><a href="https://en.wikipedia.org/wiki/Tversky_index">Tversky index (the metric's set-similarity family)</a></li></ul>
+<h3>Method references</h3>
+<ul><li><a href="https://proceedings.mlr.press/v94/bekker18a.html">Bekker & Davis 2018, 'Learning from positive and unlabeled data with a selection bias' (PMLR v94) — the SAR EM used here</a></li><li><a href="https://arxiv.org/abs/1809.03207">Bekker, Robberechts & Davis 2018, arXiv:1809.03207 — propensity-aware empirical risk minimization</a></li><li><a href="https://arxiv.org/abs/1703.00593">Kiryo et al. 2017, arXiv:1703.00593 — the non-negative PU (nnPU) baseline</a></li><li><a href="https://pangea.stanford.edu/researchgroups/geothermal/">Giddens & Faulds 2025, SGP-TR-229 — Great Basin structure and geothermal play fairways</a></li></ul>
+
+<h2>11. Reproduce</h2>
+<pre><code>python -m venv .venv &amp;&amp; .venv/bin/pip install -r requirements.txt
+.venv/bin/python scripts/build_covariates.py       # 5 px covariate cache (~3 min)
+.venv/bin/python -m pytest tests -q                # 21 tests, unit-verified risks
+.venv/bin/python scripts/run_lane.py bias          # two-inventory mapping bias
+.venv/bin/python scripts/run_lane.py canary        # leakage canary
+.venv/bin/python scripts/run_lane.py e1            # the gated experiment (PX5)
+.venv/bin/python scripts/diagnose_irregularities.py
+.venv/bin/python scripts/make_submission.py        # live fit, emit, write, validate, certify
+.venv/bin/python scripts/build_site.py             # this site
+</code></pre>
+<p class="mut">Artefacts copied to <code>docs/downloads/</code>: gemsdoe65-gems65-sar2inv-a2-38k-20261011T220214Z-296a58fcf2a6-zeros-runcard.json, gemsdoe65-gems65-sar2inv-a2-38k-20261011T220214Z-296a58fcf2a6-zeros.json, gemsdoe65-gems65-sar2inv-a2-38k-20261011T220214Z-296a58fcf2a6-zeros.tif, gemsdoe65-gems65-sar2inv-a2-38k-20261011T220214Z-296a58fcf2a6-zeros.zip, gemsdoe65-gems65-sar2inv-a2-38k-20261011T220214Z-296a58fcf2a6-zeros-runcard.json.
+Run card: <code>evidence/live_run_card.json</code>.</p>
+</main>
+<footer>Built 2026-10-11 22:11 UTC from committed evidence
+receipts by <code>scripts/build_site.py</code>. Every number carries an evidence class.
+HOLDOUT-DTI is a local blocked-holdout measurement, never a leaderboard score.
+Core values: <b>Maximize P(Win)</b> · <b>Own the Outcome</b>.</footer>
+</body></html>

@@ -221,7 +221,8 @@ def measure_pi(cov, sgmc_truth) -> dict:
 
 
 def fit_oof(tag: str, covariates: tuple[str, ...], *, folds, cov, grid, quad,
-            X: np.ndarray, arm: str, sgoff: np.ndarray, pi: float, c_ref: float = 1.0) -> dict:
+            X: np.ndarray, arm: str, sgoff: np.ndarray, pi: float, c_ref: float = 1.0,
+            choice_cache: dict | None = None) -> dict:
     """Fit one arm on every fold; return out-of-fold P(y=1|x) and e(x) grids.
 
     Out-of-fold means: pixels in quadrant k get the prediction of the model whose
@@ -248,10 +249,18 @@ def fit_oof(tag: str, covariates: tuple[str, ...], *, folds, cov, grid, quad,
         ref_idx = np.flatnonzero((sgoff & ~qk & cov["feat_ok"]).ravel())
         X_ref = X[ref_idx].astype(np.float64)
         t0 = time.time()
-        choice = lane.propensity_choice(sample, X_ref, mu=mu, sd=sd, c=c_ref,
-                                        covariate_names=covariates,
-                                        em_iters=EM_ITERS, em_pi_init=pi,
-                                        run_em=(arm in ("sar", "sar_em")))
+        # the propensity fit does not depend on the arm, so every arm in a fold
+        # shares one EM + one anchor fit (this is what makes a 3-arm experiment
+        # cost the same as a 1-arm one plus two MLP fits)
+        if choice_cache is not None and k in choice_cache:
+            choice = choice_cache[k]
+        else:
+            choice = lane.propensity_choice(sample, X_ref, mu=mu, sd=sd, c=c_ref,
+                                            covariate_names=covariates,
+                                            em_iters=EM_ITERS, em_pi_init=pi,
+                                            run_em=True)
+            if choice_cache is not None:
+                choice_cache[k] = choice
         if arm == "sar_em":
             # sensitivity arm: the propensity from the EM alone, as the brief names it
             e_lab = choice["em"].e_labelled
@@ -266,7 +275,8 @@ def fit_oof(tag: str, covariates: tuple[str, ...], *, folds, cov, grid, quad,
         else:
             e_lab = np.full(sample.X_lab.shape[0], choice["anchor"].e_on_catalogue_mean)
             e_fit, e_kind = choice["anchor"], choice["anchor"].basis_kind
-        fitres = lane.fit_arm(sample, arm=arm, hidden_units=HIDDEN, epochs=EPOCHS,
+        fitres = lane.fit_arm(sample, arm=("nnpu" if arm == "nnpu" else "sar"),
+                              hidden_units=HIDDEN, epochs=EPOCHS,
                               lr=LR, batch=BATCH, basis_kind="linear",
                               e_source=e_lab, pi_source=pi)
         p = lane.predict_grid(fitres["model"], X, fitres["mu"], fitres["sd"], grid.shape, idx)
@@ -280,6 +290,14 @@ def fit_oof(tag: str, covariates: tuple[str, ...], *, folds, cov, grid, quad,
         p_oof[qk] = p[qk]
         e_oof[qk] = e[qk]
         assigned |= qk
+        r = fitres["risk"]
+        extra = (f" w_max {r.get('w_max', float('nan')):.3f} "
+                 f"clip_w {r.get('frac_clipped_w', float('nan')):.4f}"
+                 if "w_max" in r else "")
+        print(f"  [{arm} fold {fold['name']}] "
+              f"e_source={'em' if arm == 'sar_em' else choice['chosen']} "
+              f"pi {fitres['pi']:.5f} ebar {fitres['ebar']:.4f} risk {r['risk']:.5f}{extra} "
+              f"{round(time.time() - t0, 1)} s", flush=True)
         rec = {"fold": fold["name"], "quadrant": k, "arm": arm,
                "pi": fitres["pi"], "rho": fitres["rho"], "u_weight": fitres["u_weight"],
                "ebar": fitres["ebar"], "risk": fitres["risk"],
@@ -322,9 +340,13 @@ def run_experiment(tag: str, covariates: tuple[str, ...], *, folds, cov, grid,
     sgoff = sgmc["truth"]
     pi_rec = measure_pi(cov, sgoff)
     pi = pi_rec["pi_lower_bound_union_of_two_inventories"]
-    fitted = {arm: fit_oof(tag, covariates, folds=folds, cov=cov, grid=grid, quad=quad,
-                           X=X, arm=arm, sgoff=sgoff, pi=pi, c_ref=1.0)
-              for arm in TRAINED_ARMS}
+    choice_cache: dict = {}
+    fitted = {}
+    for arm in TRAINED_ARMS:
+        print(f"[arm {arm}] fitting", flush=True)
+        fitted[arm] = fit_oof(tag, covariates, folds=folds, cov=cov, grid=grid, quad=quad,
+                              X=X, arm=arm, sgoff=sgoff, pi=pi, c_ref=1.0,
+                              choice_cache=choice_cache)
     p_sar, e_sar = fitted["sar"]["p"], fitted["sar"]["e"]
     p_nn = fitted["nnpu"]["p"]
     p_em, e_em = fitted["sar_em"]["p"], fitted["sar_em"]["e"]

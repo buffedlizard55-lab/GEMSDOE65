@@ -32,12 +32,18 @@ suspicious: faults are supposed to like relief.
 `trace_segments_utm11.csv` (84,268 of 84,331 segments inside the grid, 1,126 lines) onto the
 official grid and compares:
 
-* catalogue pixels covered by rasterised traces: **89.25 %**, median catalogue-to-trace distance
-  **0 px**, p90 **1 px**;
-* trace pixels inside the footprint: **189,939**, of which only **10.8 %** are in the catalogue —
+* catalogue pixels covered by rasterised traces: **96.54 %**; catalogue-to-trace distance
+  median **0 px**, mean 0.035 px, p90 0 px,
+  p99 1 px, **max 1 px** (Mann-Whitney p = 0
+  that catalogue pixels are closer to a trace than non-catalogue pixels);
+* all **84,331** segment rows of the mirrored file were rasterised
+  (`all_touched=True`), giving **82,871** trace pixels inside the
+  footprint, of which **71.05 %** are catalogue pixels —
   the catalogue is a *subset* of the trace network, i.e. the compiled traces that were accepted;
-* morphology: **3,199** 8-connected components, median **12 px**, max **360 px**, and only
-  **24 px** of 60,988 survive a 3×3 erosion — 1-pixel-wide lines, not areas.
+* morphology: **3,199** 8-connected components, median
+  **12 px**, max **360 px**, and only
+  **24 px** of 60,988 survive a 3×3 erosion
+  (0.0394 %) — 1-pixel-wide lines, not areas.
 
 **Resolution.** The catalogue is the USGS QFaults / INGENIOUS compilation, so its weak
 topographic AUCs are a real property of a geophysics-inferred inventory, not a data error. This
@@ -51,17 +57,23 @@ Four operationalizations were compared on one criterion: which carries the two-i
 differential best (AUC of negative distance-to-front separating catalogue pixels from
 state-map-only fault pixels).
 
-| variant | px | median distance | bias AUC |
-|---|---:|---:|---:|
-| A — 50 m isoline of height above a 5 km local minimum | 160,275 | 28.60 | **0.6609** |
-| B — toe of front (h 40–200 m, slope ≥ 0.06, local min < 30 m) | 87,865 | — | 0.5962 |
-| C — mid-slope band (h 30–250 m, slope ≥ 0.08) | 231,990 | — | 0.6178 |
-| D — basin edge (h < 30 m, slope ≥ 0.05, local max slope ≥ 0.10) | 64,060 | — | 0.6202 |
+| variant (1-px boundary isoline of the set) | set px | isoline px | median dist | bias AUC | AUC vs I2 | = stored covariate |
+|---|---:|---:|---:|---:|---:|---|
+| A_h50_isoline_over_5km_local_min | 3,616,040 | 160,275 | 28.60 | **0.6608** | 0.3561 | yes |
+| B_toe_of_front | 260,866 | 78,466 | 31.30 | **0.6144** | 0.4067 | no |
+| C_mid_slope_band | 2,572,243 | 221,096 | 10.63 | **0.5543** | 0.5312 | no |
+| D_basin_edge | 1,078,921 | 119,209 | 33.62 | **0.6397** | 0.3331 | no |
 
-Variant A was kept and is labelled a **proxy of limited geomorphic fidelity** everywhere it
+Variant A is byte-identical to the stored `range_front` covariate the model actually uses, and
+was kept; it is labelled a **proxy of limited geomorphic fidelity** everywhere it
 appears: its job is to carry the differential, not to be a mapped front. A real front needs raw
 3DEP 10 m/1 m tiles, which are unreachable from this sandbox (IR-65-ACCESS-01). Receipt:
 `evidence/range_front_variants.json`.
+
+*Superseded numbers.* An earlier ad-hoc diagnostic in this session rasterised merged polylines
+rather than per-segment lines and reported 89.25 % coverage and different variant pixel counts.
+The committed script is the authority; its values are the ones above, and the difference is
+recorded here rather than quietly overwritten.
 
 ## IR-65-IDENT-01 — the propensity is not identified from PU data alone (resolved)
 

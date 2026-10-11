@@ -23,6 +23,7 @@ import numpy as np
 import pandas as pd
 import rasterio
 from rasterio.features import rasterize
+from shapely.geometry import LineString
 from scipy import ndimage as ndi
 from scipy.stats import mannwhitneyu
 from sklearn.metrics import roc_auc_score
@@ -56,8 +57,13 @@ def catalogue_identity(grid, cov) -> dict:
     cat = cov["catalogue"]
     fp = cov["footprint"]
     df = pd.read_csv(TRACE_CSV)
-    geom_col = next(c for c in df.columns if c.lower() in ("geometry", "geom", "wkt", "shape"))
-    shapes = [(g, 1) for g in df[geom_col]]
+    need = {"x0", "y0", "x1", "y1"}
+    if not need <= set(df.columns):
+        raise SystemExit(f"{TRACE_CSV} lacks segment endpoint columns {sorted(need)}")
+    # the mirrored QFaults/INGENIOUS file is a segment-endpoint table in UTM 11N
+    # metres, already on the official CRS: each row is one 2-point LineString
+    shapes = [(LineString(((x0, y0), (x1, y1))), 1)
+              for x0, y0, x1, y1 in zip(df.x0, df.y0, df.x1, df.y1)]
     n_total = len(shapes)
     tr = rasterize(shapes, out_shape=grid.shape, transform=grid.transform, fill=0,
                    dtype="uint8", all_touched=True) > 0
@@ -73,8 +79,10 @@ def catalogue_identity(grid, cov) -> dict:
         "answer": "yes: rasterised QFaults/INGENIOUS traces cover most catalogue pixels "
                   "at zero distance",
         "trace_csv": str(TRACE_CSV), "trace_csv_sha256": _sha(TRACE_CSV),
-        "geometry_column": geom_col, "n_trace_segments": n_total,
-        "n_segments_inside_grid": int(df[geom_col].notna().sum()),
+        "geometry_encoding": "segment endpoints x0,y0,x1,y1 in EPSG:32611 metres",
+        "n_trace_segments": n_total,
+        "slip_rate_columns_present": [c for c in df.columns if c not in
+                                      ("record_id", "x0", "y0", "x1", "y1")],
         "trace_pixels_total": int(tr.sum()),
         "trace_pixels_inside_footprint": int(inside.sum()),
         "trace_pixels_inside_footprint_also_in_catalogue": int((inside & cat).sum()),
@@ -92,8 +100,9 @@ def catalogue_identity(grid, cov) -> dict:
             "pixels_surviving_3x3_erosion": int(eroded.sum()),
             "erosion_survival_fraction": float(eroded.sum() / cat.sum()),
             "interpretation": "1-pixel-wide thin lines, not areas: a compiled trace map"},
-        "mannwhitney_p_catalogue_vs_off_trace_distance": float(
-            mannwhitneyu(d_cat, dist[fp & ~cat][:200_000], alternative="less").pvalue),
+        "mannwhitney_p_catalogue_closer_than_off_catalogue": float(
+            mannwhitneyu(d_cat[:20_000], dist[fp & ~cat][:20_000],
+                         alternative="less").pvalue),
         "seconds": round(time.time() - t0, 1),
     }
     _json("catalogue_identity.json", out)
@@ -126,19 +135,34 @@ def range_front_variants(grid, cov) -> dict:
 
     # front candidates built from the official 100 m stack
     # ``height_above_base`` in the covariate cache is already
-    # h(x) = det_elev(x) - min over a 50 px (5 km) radius disk, so the 50 m
-    # isoline of h IS variant A as originally specified.
+    # h(x) = det_elev(x) - min over a 50 px (5 km) radius disk.  The stored
+    # ``dist_range_front`` covariate is the distance to the **1-px boundary
+    # isoline** of {h >= 50 m}, not to the upland area, so every candidate here
+    # is reduced to its 1-px inner boundary before distances are taken.  Ranking
+    # by distance-to-an-area would be flat (zero) inside the area and would not
+    # be comparable with the covariate the model actually uses.
     h = cov["height_above_base"].astype(np.float32)
     slope = cov["slope"].astype(np.float32)
+
+    def boundary(set_mask: np.ndarray) -> np.ndarray:
+        m = set_mask & fp
+        return m & ndi.binary_dilation(~m & fp, np.ones((3, 3), bool))
+
     variants = {}
     A = fp & (h >= 50.0)
     B = fp & (h >= 40.0) & (h <= 200.0) & (slope >= 0.06) & (h - ndi.minimum_filter(h, 51, mode="nearest") < 30.0)
     C = fp & (h >= 30.0) & (h <= 250.0) & (slope >= 0.08)
     D = fp & (h < 30.0) & (slope >= 0.05) & (ndi.maximum_filter(slope, 21) >= 0.10)
-    for name, mask in (("A_h50_isoline_over_5km_local_min", A),
-                       ("B_toe_of_front", B), ("C_mid_slope_band", C),
-                       ("D_basin_edge", D)):
-        variants[name] = {"pixels": int((mask & fp).sum()),
+    stored = cov["range_front"].astype(bool)
+    candidates = (("A_h50_isoline_over_5km_local_min", A),
+                  ("B_toe_of_front", B), ("C_mid_slope_band", C),
+                  ("D_basin_edge", D))
+    for name, set_mask in candidates:
+        mask = boundary(set_mask) if name != "A_h50_isoline_over_5km_local_min" else stored
+        variants[name] = {"set_pixels": int((set_mask & fp).sum()),
+                          "pixels": int(mask.sum()),
+                          "is_the_stored_covariate": name.startswith("A"),
+                          "identical_to_stored_range_front": bool(np.array_equal(mask, stored)),
                           "median_distance_px_inside_footprint": float(
                               np.median(ndi.distance_transform_edt(~mask)[fp])),
                           "bias_auc_catalogue_vs_sgmc_offcat": bias_auc(mask),

@@ -45,6 +45,7 @@ font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:760px){.grid2{grid-template-columns:1fr}}
 .kv{font-size:14px}.kv b{color:var(--mut);font-weight:600}
+.warnbox{border-left:3px solid var(--warn);background:rgba(245,165,36,.08);padding:10px 12px;border-radius:6px;margin:10px 0}
 ul.tight{margin:8px 0} ul.tight li{margin:4px 0}
 .feed{list-style:none;padding:0;margin:0}
 .feed li{border-left:3px solid var(--line);padding:6px 0 6px 12px;margin:8px 0;font-size:14px}
@@ -97,6 +98,14 @@ sit more than 300 m from any catalogue pixel, but USGS hosts are unreachable fro
 prior only, never validated.</li>
 <li><b>Nobody has confirmed this file on the portal.</b> Until a submission receipt exists, the
 only claim is local validation.</li>
+<li><b>The published site cannot host the download it advertises (<code>IR-65L-03</code>).</b>
+GitHub Pages serves the Git tree; the artifact is untracked because the root lineage's publication
+guard refuses tracked rasters once an arm is cleared for submission without an organizer receipt.
+So the button works in a working checkout and 404s on the published page. Publishing the file
+needs either an owner ruling extending that guard's allowlist to this subtree, or one
+<code>gh release create</code> from a machine that can reach <code>uploads.github.com</code> (this
+sandbox cannot). Both the conflict and the exact command are printed on the
+<a href="index.html">Executive Summary</a>.</li>
 </ul>
 
 <h2>Remaining work, in priority order</h2>
@@ -150,4 +159,4 @@ evaluator on a blocked hide-and-recover draw) or <span class="chip warn">ORGANIZ
 (the build is deterministic: the stamp below is the newest evidence timestamp, not the wall
 clock, so CI can assert that a rebuild is byte-identical). No number on this site is typed by
 hand.</p>
-<p>Newest evidence artifact: <code>2026-10-11T21:29:41+00:00</code>.</p></footer></div></body></html>
+<p>Newest evidence artifact: <code>2026-10-11T22:57:11+00:00</code>.</p></footer></div></body></html>

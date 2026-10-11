@@ -1,6 +1,6 @@
 {
  "site": "GEMSDOE65 \u2014 selection-bias-aware fault prediction",
- "built_utc": "2026-10-11T21:29:41+00:00",
+ "built_utc": "2026-10-11T22:57:11+00:00",
  "build_stamp_source": "newest generated_utc in evidence/; deterministic, so a rebuild from the same artifacts is byte-identical",
  "download_name": "gems65-sarprop-pu-v1",
  "download_file": "docs/downloads/gems65-sarprop-pu-v1.tif",

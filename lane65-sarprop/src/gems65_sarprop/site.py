@@ -146,6 +146,7 @@ font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:760px){.grid2{grid-template-columns:1fr}}
 .kv{font-size:14px}.kv b{color:var(--mut);font-weight:600}
+.warnbox{border-left:3px solid var(--warn);background:rgba(245,165,36,.08);padding:10px 12px;border-radius:6px;margin:10px 0}
 ul.tight{margin:8px 0} ul.tight li{margin:4px 0}
 .feed{list-style:none;padding:0;margin:0}
 .feed li{border-left:3px solid var(--line);padding:6px 0 6px 12px;margin:8px 0;font-size:14px}
@@ -267,12 +268,20 @@ def _download_card(rep: dict, dec: dict, root: str = "") -> str:
 <code>{esc(rep.get('transform'))}</code></p>
 </div>
 <div class="card">
-<h3>Where the file actually is</h3>
-<p>The model artifact is deliberately <b>not</b> tracked in Git. Two consequences, stated plainly
+<h3>Where the file actually is, and whether the button above works right now</h3>
+<p class="warnbox"><b>On this published page the button is dead — deliberately, not by accident.</b>
+GitHub Pages serves the Git tree, and the model artifact is <b>not</b> tracked in Git, so
+<code>{esc(tif_base)}</code> is absent from the published site and returns 404. Locally, where the
+file has been built, the same button downloads 192,492 bytes. This is <b>IR-65L-03</b>: the user's
+requirement is a one-click public download, and the repository root lineage's publication guard
+refuses to track a raster as soon as an arm is cleared for submission without an organizer
+receipt. Two policies meet here and neither is mine to overrule in code, so the conflict is
+flagged in <a href="{root}limitations.html">Limitations</a> for an owner ruling, and the two honest
+paths below are printed instead of a link that pretends to work.</p>
+<p>The model artifact is deliberately <b>not</b> tracked in Git. Consequences, stated plainly
 rather than discovered later:</p>
 <ul>
-<li>In a checkout where <code>docs/downloads/</code> is empty, the button above 404s. Rebuild the
-file byte-for-byte from the committed dot list instead — ten seconds, no network, no competition
+<li>Rebuild the file byte-for-byte from the committed dot list — ten seconds, no network, no competition
 data: <code>python scripts/reconstruct_submission.py --check</code> to verify, then without
 <code>--check</code> to write it. It refuses to publish a rebuild whose sha256 is not the one above.
 The <code>--direct</code> fallback works without the public bridge rasters and produces the
@@ -835,6 +844,14 @@ sit more than 300 m from any catalogue pixel, but USGS hosts are unreachable fro
 prior only, never validated.</li>
 <li><b>Nobody has confirmed this file on the portal.</b> Until a submission receipt exists, the
 only claim is local validation.</li>
+<li><b>The published site cannot host the download it advertises (<code>IR-65L-03</code>).</b>
+GitHub Pages serves the Git tree; the artifact is untracked because the root lineage's publication
+guard refuses tracked rasters once an arm is cleared for submission without an organizer receipt.
+So the button works in a working checkout and 404s on the published page. Publishing the file
+needs either an owner ruling extending that guard's allowlist to this subtree, or one
+<code>gh release create</code> from a machine that can reach <code>uploads.github.com</code> (this
+sandbox cannot). Both the conflict and the exact command are printed on the
+<a href="{root}index.html">Executive Summary</a>.</li>
 </ul>
 
 <h2>Remaining work, in priority order</h2>

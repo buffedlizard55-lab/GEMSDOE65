@@ -1,6 +1,6 @@
 {
  "lane": "GEMSDOE65 \u2014 selection-bias-aware PU learning",
- "generated_utc": "2026-10-11T21:29:41+00:00",
+ "generated_utc": "2026-10-11T22:57:11+00:00",
  "hypothesis": "Cataloguing is a biased sample of the fault population: a cell is catalogued if an interpreter found it convincing, which correlates with relief, slope, gravity signature, lidar coverage and distance to a range front. Modelling that sampling propensity e(x)=P(labeled|fault,x) and weighting the risk by 1/e recovers new faults that the cataloguing process under-samples, better than an unweighted nnPU model on the same folds.",
  "mechanism": "SAR-EM (Bekker & Davis, PMLR v94): a classifier is fit on the propensity-weighted empirical risk of Bekker, Robberechts & Davis (arXiv:1809.03207), weight-clipped at 10, alternating with a propensity model fit on the catalogued cells only over five predeclared covariates. Emission is a descending sweep of expected credit with non-maximum suppression at the metric's own 3 px kernel radius, a budget taken from a measured curve, and a final prune of dots inside 2 px of the mapped catalogue.",
  "named_non_fault_process_that_could_mimic_it": [
@@ -461,6 +461,19 @@
   "note_chars": 69,
   "note_limit": 140,
   "zip": "gems65-sarprop-pu-v1.zip"
+ },
+ "download_surface": {
+  "artifact_tracked_in_git": false,
+  "artifact_present_in_a_working_checkout": true,
+  "published_site_button_works": false,
+  "why": "GitHub Pages serves the Git tree; the artifact is untracked because the root lineage's publication guard refuses tracked rasters once an arm is cleared for submission without an organizer receipt",
+  "irregularity": "IR-65L-03",
+  "paths_for_a_real_download": [
+   "owner ruling extending the guard's allowlist to lane65-sarprop/, or",
+   "gh release create lane65-sarprop-pu-v1 <tif> <zip> from a machine that can reach uploads.github.com (this sandbox cannot), or",
+   "python lane65-sarprop/scripts/reconstruct_submission.py  (byte-identical, hash-checked, ~10 s)"
+  ],
+  "reconstruction_verified_this_run": true
  },
  "verdict": "promote-to-selector-only",
  "verdict_scope": "Local promotion only: gate met, format validated, duplicate audit clear. Organizer acceptance and any leaderboard score are unknown until a slot is spent.",

@@ -1,0 +1,89 @@
+{
+  "id": "GEMSDOE65-PREREG-1",
+  "written_utc": "2026-10-11T20:35:00Z",
+  "written_before_any_holdout_number_was_computed": true,
+  "lane": "selection-bias-aware (SAR) positive-unlabeled learning",
+  "statement": "The published USGS/INGENIOUS catalogue is a SAR-selected sample of the fault population: e(x) = P(labeled | fault, x) varies with the environment. A classifier trained with the propensity-aware risk of Bekker, Robberechts & Davis (arXiv:1809.03207) recovers P(fault | x) better than a SCAR nnPU baseline, and ranking emission by P(fault|x)*(1-e(x)) - the probability that x is an UNMAPPED fault - targets the competition's actual truth (new expert-mapped faults, with known-fault pixels masked out of scoring).",
+  "mechanism": "Inverse-propensity weighting of the labelled block (weights clipped at 10) removes the environment-dependent over/under-representation of the catalogue, so the fitted class-conditional is the fault population's, not the compiler's. Multiplying by (1-e(x)) then re-ranks toward environments the compiler under-sampled, which is where new faults must be.",
+  "named_non_fault_process_that_could_mimic_it": "Inventory-vintage confounding. The two fault inventories available here were compiled by different programs with different inclusion rules and different source data (QFaults/INGENIOUS: seismic-hazard + geothermal, geophysics-informed, many 'Inferred' basin faults; state geologic maps: bedrock-exposure mapping). A covariate differential between them can therefore be a difference in COMPILER RULES rather than in mapping propensity, and the (1-e) factor would then re-rank toward 'state-geologic-map-style' ground rather than toward unmapped faults. Measured here, not assumed: see evidence/mapping_bias_two_inventory.json.",
+  "instruments": {
+    "I1_hide_recover": "gems57.holdout.buffered_component_draw + gems57.evaluate_holdout (evaluator gems57-pooled-hide-v2): whole 8-connected catalogue components withheld, 3 px feature-context collar removed, all remaining catalogue pixels masked pixel-exactly from scoring, pooled DTI alpha=0.2 beta=0.8 R=300 m, 20 km spatial-block paired bootstrap CI",
+    "I2_sgmc_offcat": "truth = mirrored state-geologic-map fault pixels more than 3 px (300 m) from the competition catalogue, inside the footprint, catalogue masked; same official metric. Population-matched for 'mapped faults the catalogue does not contain'.",
+    "known_instrument_divergence": "I1 rewards proximity to visible traces (the withheld truth IS contiguous with visible trace); the live board does not (the family's ladder measured that deleting dots 1 px and 2 px from the catalogue RAISED the live score twice, +0.0108 and +0.0070, owner-reported). Both are reported; neither is a leaderboard projection."
+  },
+  "arms": {
+    "B_nnpu": "SCAR baseline: nnPU risk (Kiryo et al. 2017), rank by P(y=1|x)",
+    "A1_sar": "propensity-aware SAR risk, rank by P(y=1|x)",
+    "A2_sar_1me": "propensity-aware SAR risk, rank by P(y=1|x)*(1-e(x))"
+  },
+  "identical_across_arms": [
+    "folds (same buffered_component_draw seed and hide fraction)",
+    "covariate matrix and standardisation statistics",
+    "classifier architecture (1-hidden-layer MLP, 64 units) and seed",
+    "optimiser schedule (Adam, epochs, lr, batch)",
+    "unlabelled subsample size and draw seed",
+    "emission budget, 3.0 px NMS disk and 3 px catalogue peel"
+  ],
+  "gate": {
+    "primary": "A1_sar pooled HOLDOUT-DTI on I1 > B_nnpu pooled HOLDOUT-DTI on I1 (paired 20 km block bootstrap 95% CI on the difference)",
+    "secondary": "A1_sar >= B_nnpu DTI restricted to the highest-propensity tercile of scored pixels (same folds, same budget)",
+    "leakage_canary": "every single covariate alone must have AUC <= 0.90 against withheld truth on I1; above that is leakage until proven otherwise",
+    "uniqueness": "max |Spearman rho| against every accessible registry raster <= 0.90 on both the surface and the dots, AND <= 70% of emitted dots within 3 px of any one registry raster's dots",
+    "format": "float32, EPSG:32611, 3730x3292, transform (100,0,243350,0,-100,4508550), all values finite and in [0,1], zero outside the footprint, zero mass on catalogue pixels"
+  },
+  "ship_rule": {
+    "written_before_results": true,
+    "rule": "Ship A2_sar_1me if (i) the primary gate passes for A1_sar over B_nnpu, (ii) A2 does not lose to A1 on I1 by more than the width of its own 95% CI, and (iii) A2 beats A1 on I2. Otherwise ship A1_sar if the gate passes, and if the gate fails ship nothing: log the negative result and mark the artifact DO-NOT-SUBMIT."
+  },
+  "budget": {
+    "max_experiments": 3,
+    "max_hours": 2,
+    "submission_slots_used_by_this_session": 0,
+    "note": "promotion to a real weekly slot is a separate selector step; this session does not spend a slot"
+  },
+  "covariates_primary": [
+    "relief_local",
+    "slope",
+    "grav_basin_fill",
+    "lidar_cover",
+    "dist_range_front"
+  ],
+  "covariates_sensitivity_variant_PX7": [
+    "relief_local",
+    "slope",
+    "grav_basin_fill",
+    "lidar_cover",
+    "dist_range_front",
+    "depth_to_base_surf",
+    "iso_grav_anom_slope"
+  ],
+  "propensity_sensitivity": [
+    "pi_init grid",
+    "linear vs quadratic propensity basis",
+    "SCAR fallback e(x)=e0"
+  ],
+  "propensity_identifiability": "e(x) is NOT uniquely identified from PU data alone. No geolocated public quadrangle index of exhaustively mapped 1:24,000 sheets is reachable from this sandbox (drivendata.org, usgs.gov, gdr.openei.org all HTTP 000), so the propensity is reported as a sensitivity analysis across the sweeps above, as the brief instructs.",
+  "weight_clip": 10.0,
+  "amendments": [
+    {
+      "id": "GEMSDOE65-PREREG-1-A1",
+      "irregularity": "IR-65-PROP-01",
+      "timestamp_utc": "2026-10-11T21:05:00Z",
+      "what_changed": "The propensity-selection rule in lane.propensity_choice was 'use the Bekker & Davis EM when Spearman(e_EM, q_anchor) > 0 on the pooled two-inventory sample, else use the anchored propensity'. Experiment e1_px5 ran under that rule and the EM was selected in all four folds, but its propensity had collapsed to a near-constant field: e in [0.2808, 0.2961] across the whole footprint (p01-p99), mean 0.2881 on catalogue pixels vs 0.2889 off them. A sign test on the ordering cannot detect a variance collapse, so the rule silently switched the (1-e(x)) mechanism off: A2_sar_1me was then indistinguishable from A1_sar (paired delta +0.000120, CI [-0.000464, +0.000825]) and every arm scored AUC ~0.50 against the state-map-only instrument.",
+      "amended_rule": "The anchored two-inventory propensity is PRIMARY and the EM is reported as a sensitivity arm (A3_sar_em_1me). This is the brief's own instruction - 'anchor its scale with exhaustively mapped quadrangles if a public index exists ... the propensity is not uniquely identifiable from PU data alone, so otherwise report it as a sensitivity analysis' - and a public reference index does exist in this sandbox (the mirrored state geologic map fault inventory). tests/test_anchor.py proves the EM's direction is not identified from PU data alone (mirrored and correct branches within 2% observed log-likelihood).",
+      "arm_neutral": true,
+      "arm_neutral_justification": "The amendment changes which estimator supplies e(x); it does not change any arm's ranking rule, risk functional, folds, seed, budget, emission geometry or gate. All arms are refit under the same amendment, the EM-based arm is added rather than dropped, and the pre-amendment experiment (evidence/e1_px5.json) is retained and reported alongside the post-amendment one (evidence/e1b_px5.json).",
+      "what_it_cannot_do": "It cannot make the gate pass. The gate, the tercile condition, the ship rule and the budget are unchanged, and the verdict is still computed mechanically from the receipt by scripts/make_submission.py.",
+      "affected_files": [
+        "src/gems65/lane.py (propensity_choice rule=anchor_primary)",
+        "scripts/run_lane.py (stage e1b, arm A3_sar_em_1me, control C_distance_only)"
+      ],
+      "also_added": "C_distance_only control arm (score exp(-d/3 px) to visible mapped traces, no learning). Not part of the gate: added because the sibling repository measured this trivial control beating its own headline candidate on the same style of holdout (60GEMSDOE: distance_only 0.1907 [0.1820, 0.1996] vs H68-1 0.1719), and a lane that does not report it cannot be interpreted."
+    }
+  ],
+  "experiments": {
+    "e1_px5": "run under the original rule; retained as the evidence for IR-65-PROP-01",
+    "e1b_px5": "run under amendment A1; the gated experiment",
+    "e2_px7": "covariate-set sensitivity (PX7); run only if budget remains"
+  }
+}

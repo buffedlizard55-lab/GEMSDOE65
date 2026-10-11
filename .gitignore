@@ -1,0 +1,9 @@
+# Large inputs are fetched, never committed: 400 MB official feature stack,
+# 143 MB mirrored external layers, 46 MB registry raster corpus.
+.cache/
+data/external/*.tif
+*.part-[0-9][0-9][0-9]
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/

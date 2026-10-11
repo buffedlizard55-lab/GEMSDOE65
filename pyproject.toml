@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gems65"
+version = "1.0.0"
+description = "GEMSDOE65 - selection-bias-aware (SAR) positive-unlabeled learning for the DOE GEMS Prize Challenge"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.24",
+    "scipy>=1.10",
+    "scikit-learn>=1.2",
+    "rasterio>=1.3",
+    "pandas>=2.0",
+    "shapely>=2.0",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

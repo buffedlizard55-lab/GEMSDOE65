@@ -279,6 +279,7 @@ def executive_summary(ev: dict, dec: dict, root: str = "") -> str:
     arms = (gate.get("arms") or {})
     emit = ev.get("emit") or {}
     uniq = (ev.get("uniqueness") or {}).get("checks", {})
+    rev = ((ev.get("uniqueness_review") or {}).get("checks") or {}).get("dots") or {}
 
     def d(k):
         try:
@@ -320,6 +321,24 @@ selection per entity, and a Generative-AI usage disclosure in the narrative
 (<a href="https://www.nlr.gov/docs/fy26osti/96647.pdf">rules PDF</a>, sections 3.1–3.6).
 Do not spend a slot on this file until the banner above is green.</p>
 </div>
+
+<h2>Latest &mdash; {esc(evidence_timestamp(ev))}</h2>
+<ul class="feed">
+<li class="ok"><b>Duplicate audit cleared.</b> {esc(rev.get('rasters_checked'))} of 655 indexed
+rasters compared: worst rank correlation {fmt(rev.get('max_spearman'), 4)}, worst dot-set Jaccard
+{fmt(rev.get('max_jaccard'), 4)}. The literal 3 px rule fired
+{esc(rev.get('literal_rule_firings'))} times and every firing is at or below its own uniform null
+&mdash; an artifact of a rule that is not scale free, flagged as <b>IR-65-01</b>.</li>
+<li class="ok"><b>Gate is PROMOTE</b> on the blocked holdout: SAR propensity arm {fmt(d('sar'))}
+versus nnPU {fmt(d('nnpu'))}, and no loss in the highest-propensity tercile.</li>
+<li class="warn"><b>Hypotheses register published</b> ({esc(len((ev.get('hypotheses') or {}).get('hypotheses', [])))} candidates, ranked).
+Rank 1, the USGS Quaternary Fault and Fold Database transfer, cannot be validated from this sandbox
+because USGS hosts are unreachable; rank 2, the thermal-fluid pathway, was the top candidate whose
+data is local and it was <b>tested and rejected</b> on the blocked holdout &mdash; every blend weight
+above zero lowers the score, so no submission slot was spent on it.</li>
+<li class="warn"><b>No organizer receipt exists yet.</b> The banner above is a statement about local
+preconditions only. A score exists only after a slot is spent on the portal.</li>
+</ul>
 
 <h2>What this file is</h2>
 <div class="card">
@@ -775,8 +794,24 @@ holdout's scored area and the live scored area are within 0.3% of each other (5,
 5,114,183 cells), but a future lane on a different mask would need its own transfer argument.</li>
 <li><b>The truth set size used in the 0.2778 analysis is inferred</b> (~14,143) from the two
 receipts' arithmetic. An organizer confirmation would replace an inference with a fact.</li>
-<li><b>Uniqueness scope is the indexed public inventory.</b> 655 rasters, all present and
-hash-checked; private, unlinked or never-published files cannot be ruled out.</li>
+<li><b>Uniqueness scope is the indexed public inventory, and 2 of 655 could not be read.</b>
+653 rasters were compared, all hash-checked; the two failures are a CRS mismatch, not a match
+(<b>IR-65-02</b>), so the claim is "not a duplicate of anything checked", no more. Private,
+unlinked or never-published files cannot be ruled out.</li>
+<li><b>The parallel-run stop rule needed a density correction to be interpretable</b>
+(<b>IR-65-01</b>). As literally written it fired for 58 of 653 rasters and every firing is at or
+below its own uniform null; the published verdict rests on the rank correlation and the dot-set
+Jaccard instead. Until an owner rules, both readings are kept.</li>
+<li><b>Only one hypothesis has been tested, and only as an emission-level blend.</b> The
+thermal-fluid pathway was rejected, but the test varied the blend weight and nothing else: the
+kernel width, the geothermal temperature threshold and the alternative of a full feature refit were
+not explored, so the negative result is scoped to that one mechanism, not to the layer in
+general.</li>
+<li><b>The highest-expected-gain hypothesis could not be run here.</b> The USGS Quaternary Fault
+and Fold Database is the organizers' own scored-label source, and 44.7% of its in-footprint traces
+sit more than 300 m from any catalogue pixel, but USGS hosts are unreachable from this sandbox
+(egress is GitHub and PyPI only), so rank 1 of <a href="{root}hypotheses.html">the register</a> is
+prior only, never validated.</li>
 <li><b>Nobody has confirmed this file on the portal.</b> Until a submission receipt exists, the
 only claim is local validation.</li>
 </ul>
@@ -794,8 +829,12 @@ with a known propensity, already validated interactively at corr 0.98) and a tes
 emission rule's invariants: dots at least 3 px apart, zero mass on the catalogue, all-finite
 output.</li>
 <li><b>Push coverage, not budget.</b> The ceiling computation says the score is limited by
-distinct structures recovered. The next experiments should add information (a candidate
-hypothesis list is in the repo) rather than more dots.</li>
+distinct structures recovered. Work the ranked register on
+<a href="{root}hypotheses.html">Hypotheses</a> in order rather than adding dots.</li>
+<li><b>Run rank 1 of the register from a network-capable machine.</b> Fetch the USGS Quaternary
+Fault and Fold traces, rasterise to the 100 m grid, subtract the catalogue, and put the complement
+through the same gated arm test used here. The prior is already measured and the promotion rule is
+already fixed, so this is a bounded job, not an open question.</li>
 <li><b>Owner rulings still open:</b> IR-58-08 (two uniqueness regimes when a prior is itself
 sparse) and IR-S6-01 (whether soft priors may be diluted toward a "dot" convention). Both change
 what "duplicate" means for a future lane, neither blocks this file.</li>

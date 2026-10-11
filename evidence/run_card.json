@@ -1,6 +1,6 @@
 {
  "lane": "GEMSDOE65 \u2014 selection-bias-aware PU learning",
- "generated_utc": "2026-10-11T21:16:35+00:00",
+ "generated_utc": "2026-10-11T21:29:41+00:00",
  "hypothesis": "Cataloguing is a biased sample of the fault population: a cell is catalogued if an interpreter found it convincing, which correlates with relief, slope, gravity signature, lidar coverage and distance to a range front. Modelling that sampling propensity e(x)=P(labeled|fault,x) and weighting the risk by 1/e recovers new faults that the cataloguing process under-samples, better than an unweighted nnPU model on the same folds.",
  "mechanism": "SAR-EM (Bekker & Davis, PMLR v94): a classifier is fit on the propensity-weighted empirical risk of Bekker, Robberechts & Davis (arXiv:1809.03207), weight-clipped at 10, alternating with a propensity model fit on the catalogued cells only over five predeclared covariates. Emission is a descending sweep of expected credit with non-maximum suppression at the metric's own 3 px kernel radius, a budget taken from a measured curve, and a final prune of dots inside 2 px of the mapped catalogue.",
  "named_non_fault_process_that_could_mimic_it": [
@@ -70,10 +70,338 @@
   "threshold": 0.9,
   "clean": true
  },
+ "duplicate_review_density_corrected": {
+  "dots": {
+   "rasters_checked": 653,
+   "rasters_with_error": 2,
+   "error_details": [
+    {
+     "submission": "14GEMSDOE:docs/downloads/GEMS_r5-geom-horse-ensemble_20260929T154852Z_ccbe1de0_site_e96e942f.tif",
+     "error": "registry CRS/transform differs from reference"
+    },
+    {
+     "submission": "7GEMSDOE:external/qfaults/qfaults_prior_u8.tif",
+     "error": "registry grid or band-count mismatch"
+    }
+   ],
+   "literal_rule_firings": 58,
+   "firings_explained_by_density": 58,
+   "firings_not_explained": [],
+   "max_jaccard": 0.020670238852057033,
+   "max_jaccard_submission": "GEMSDOE41:docs/downloads/gems41-h41i-local-strike-20261006-f265e3bf9494.tif",
+   "max_jaccard_forward_overlap": 0.08321340667913008,
+   "max_spearman": 0.040051159734983625,
+   "max_spearman_submission": "17GEMSDOE:docs/downloads/17GEMSDOE_E-proba-multiscale_20260930T044527Z.tif",
+   "firers": [
+    {
+     "submission": "17GEMSDOE:docs/downloads/17GEMSDOE_E-proba-multiscale_20260930T044527Z.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.014388549075129665,
+     "spearman": 0.040051159734983625
+    },
+    {
+     "submission": "5GEMSDOE:data/derived/context_detector_prob_4fold_base.tif",
+     "their_dots": 5156176,
+     "support_fraction": 1.0097507336403346,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.0144182209168641,
+     "spearman": 0.03779803838124222
+    },
+    {
+     "submission": "5GEMSDOE:data/derived/context_detector_prob_u8.tif",
+     "their_dots": 5165997,
+     "support_fraction": 1.0116740120457035,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.014392381567391541,
+     "spearman": 0.03828383819044146
+    },
+    {
+     "submission": "5GEMSDOE:docs/downloads/gems-density-probe-20260925T184215Z-9cdae9b4.tif",
+     "their_dots": 5106385,
+     "support_fraction": 1.0,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.014560398403175632,
+     "spearman": 0.013204472270841441
+    },
+    {
+     "submission": "GEMSDOE2:data/evidence/runs/turbo-simple-20260925T041759Z/submission.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.014388549075129665,
+     "spearman": 0.020326956366064238
+    },
+    {
+     "submission": "GEMSDOE2:data/evidence/runs/turbo-simple-20260925T041907Z/submission.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.014388549075129665,
+     "spearman": 0.020326956366064238
+    },
+    {
+     "submission": "GEMSDOE2:data/evidence/runs/turbo-simple-20260925T042003Z/submission.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.014388549075129665,
+     "spearman": 0.020326956366064238
+    },
+    {
+     "submission": "GEMSDOE2:data/evidence/runs/turbo-simple-20260925T042118Z/submission.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.014388549075129665,
+     "spearman": 0.020326956366064238
+    },
+    {
+     "submission": "GEMSDOE2:data/evidence/runs/turbo-simple-20260925T043629Z/submission.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.014388549075129665,
+     "spearman": 0.020326956366064238
+    },
+    {
+     "submission": "GEMSDOE24:data/external/audit_sources/acquisition_block_id_100m.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.014388549075129665,
+     "spearman": -0.004725161437283247
+    },
+    {
+     "submission": "GEMSDOE4:data/evidence/newfault/proxy_only46/prob_raw.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.014388549075129665,
+     "spearman": -0.002325083074026715
+    },
+    {
+     "submission": "GEMSDOE4:data/evidence/newfault/seed42/prob_raw.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.014388549075129665,
+     "spearman": 0.008701443789555736
+    }
+   ],
+   "my_dots": 0,
+   "my_support_fraction": 0.0,
+   "jaccard_informative": false,
+   "informative_statistic": "rank correlation with every raster, plus Jaccard where both sides are sparse",
+   "verdict": "not-a-duplicate (dense pair: the informative statistic is the rank correlation)"
+  },
+  "surface": {
+   "rasters_checked": 653,
+   "rasters_with_error": 2,
+   "error_details": [
+    {
+     "submission": "14GEMSDOE:docs/downloads/GEMS_r5-geom-horse-ensemble_20260929T154852Z_ccbe1de0_site_e96e942f.tif",
+     "error": "registry CRS/transform differs from reference"
+    },
+    {
+     "submission": "7GEMSDOE:external/qfaults/qfaults_prior_u8.tif",
+     "error": "registry grid or band-count mismatch"
+    }
+   ],
+   "literal_rule_firings": 67,
+   "firings_explained_by_density": 67,
+   "firings_not_explained": [],
+   "max_jaccard": 0.9994053071067253,
+   "max_jaccard_submission": "17GEMSDOE:docs/downloads/17GEMSDOE_E-proba-multiscale_20260930T044527Z.tif",
+   "max_jaccard_forward_overlap": 1.0,
+   "max_spearman": 0.2670835797452553,
+   "max_spearman_submission": "5GEMSDOE:data/derived/context_detector_prob_4fold_base.tif",
+   "firers": [
+    {
+     "submission": "17GEMSDOE:docs/downloads/17GEMSDOE_E-proba-multiscale_20260930T044527Z.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.9994053071067253,
+     "spearman": 0.25418699272215844
+    },
+    {
+     "submission": "5GEMSDOE:docs/downloads/gems-density-probe-20260925T184215Z-9cdae9b4.tif",
+     "their_dots": 5106385,
+     "support_fraction": 1.0,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.9876389488549002,
+     "spearman": -0.026839372165461135
+    },
+    {
+     "submission": "GEMSDOE2:data/evidence/runs/turbo-simple-20260925T041759Z/submission.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.9994053071067253,
+     "spearman": 0.12356440343436567
+    },
+    {
+     "submission": "GEMSDOE2:data/evidence/runs/turbo-simple-20260925T041907Z/submission.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.9994053071067253,
+     "spearman": 0.12356440343436567
+    },
+    {
+     "submission": "GEMSDOE2:data/evidence/runs/turbo-simple-20260925T042003Z/submission.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.9994053071067253,
+     "spearman": 0.12356440343436567
+    },
+    {
+     "submission": "GEMSDOE2:data/evidence/runs/turbo-simple-20260925T042118Z/submission.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.9994053071067253,
+     "spearman": 0.12356440343436567
+    },
+    {
+     "submission": "GEMSDOE2:data/evidence/runs/turbo-simple-20260925T043629Z/submission.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.9994053071067253,
+     "spearman": 0.12356440343436567
+    },
+    {
+     "submission": "GEMSDOE24:data/external/audit_sources/acquisition_block_id_100m.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.9994053071067253,
+     "spearman": -0.08811041554689006
+    },
+    {
+     "submission": "GEMSDOE4:data/evidence/newfault/proxy_only46/prob_raw.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.9994053071067253,
+     "spearman": -0.04207012520470794
+    },
+    {
+     "submission": "GEMSDOE4:data/evidence/newfault/seed42/prob_raw.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.9994053071067253,
+     "spearman": 0.025245222578007712
+    },
+    {
+     "submission": "GEMSDOE4:data/evidence/newfault/seed43/prob_raw.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.9994053071067253,
+     "spearman": 0.04030518096619935
+    },
+    {
+     "submission": "GEMSDOE4:data/evidence/newfault/seed44/prob_raw.tif",
+     "their_dots": 5167373,
+     "support_fraction": 1.0119434786057064,
+     "observed_forward_overlap": 1.0,
+     "uniform_null": 1.0,
+     "jaccard": 0.9994053071067253,
+     "spearman": 0.028632236573691485
+    }
+   ],
+   "my_dots": 0,
+   "my_support_fraction": 0.0,
+   "jaccard_informative": false,
+   "informative_statistic": "rank correlation with every raster, plus Jaccard where both sides are sparse",
+   "verdict": "not-a-duplicate (dense pair: the informative statistic is the rank correlation)"
+  },
+  "irregularity": {
+   "id": "IR-65-01",
+   "statement": "The parallel-run stop rule as literally written (\"more than 70% of your dots within 3 px of one registry raster's dots\") fires for any candidate whose dots are well spread, because a prior field covering a few percent of the map covers all of it after a 3-px dilation. In this audit 58 of 653 rasters fired, 53 of them with support above 300,000 cells (mean 4.3M), and every one of the twelve worst is at or below its own uniform null. The rule is therefore not evidence of lane drift in this registry and needs an owner ruling on whether the density-corrected reading replaces it.",
+   "action_taken": "Reported, not silently overridden: the literal result is published alongside the density-corrected reading, the site shows the anomaly, and the run card records both."
+  },
+  "why_it_is_needed": "the literal 3 px overlap rule saturates at 1.0 for any candidate when a prior covers a few percent of the map, because the test dilates that prior by the kernel radius; the review reports the uniform null and the Jaccard index alongside it"
+ },
+ "candidate_hypotheses_ranked": [
+  {
+   "rank": 1,
+   "name": "QFaults-B transfer: the organisers' own second inventory as a new-fault prior",
+   "expected_dti_gain": "high (the only hypothesis that targets the scored inventory directly rather than a physical proxy for it)",
+   "implementation_cost": "medium: one fetch from a documented public service, polyline rasterisation, complement mask, distance transform, then the same gated arm comparison used here",
+   "validated_here": false,
+   "validation_note": "Not runnable in this sandbox (no route to the USGS service). Its prior was measured instead, from the clipped trace table already on disk."
+  },
+  {
+   "rank": 2,
+   "name": "Thermal-fluid pathway layer (hot springs, well temperatures, geothermometry)",
+   "expected_dti_gain": "medium in principle, but measured NEGATIVE below",
+   "implementation_cost": "low: local CSV, kernel density, one blended emission sweep",
+   "validated_here": true,
+   "validation_note": "REJECTED on the blocked holdout at the emission level: every blend weight above zero lowers HOLDOUT-DTI. See evidence/hypothesis_thermal_pathway.json."
+  },
+  {
+   "rank": 3,
+   "name": "Drainage response: chi (chi) transformation and knickpoint density on the provided detrended-elevation band",
+   "expected_dti_gain": "medium",
+   "implementation_cost": "high: flow routing over 12.3M cells plus network statistics; needs either pysheds/richdem from PyPI or a hand-rolled D8",
+   "validated_here": false,
+   "validation_note": "queued; not run in this session"
+  },
+  {
+   "rank": 4,
+   "name": "Radiometric alteration ratios (K, eTh, eU) over the GeoDAWN survey",
+   "expected_dti_gain": "medium",
+   "implementation_cost": "low-medium: the survey is already published as a GeoTIFF archive; the work is ratioing, resampling to 100 m and the standard gate",
+   "validated_here": false,
+   "validation_note": "queued; needs the radiometric bands"
+  },
+  {
+   "rank": 5,
+   "name": "Seismicity geometry: depth-banded hypocentre density and focal-mechanism strike",
+   "expected_dti_gain": "low-medium: the footprint's seismicity is sparse and clustered, so the field is noisy at 100 m",
+   "implementation_cost": "medium: API paging with a footprint envelope query, declustering (Gardner-Knopoff or Reasenberg), then the standard gate",
+   "validated_here": false,
+   "validation_note": "queued; not run in this session"
+  }
+ ],
  "registry_correlation_and_overlap": {
   "rasters_checked": null,
   "rasters_expected": null,
   "worst_spearman_full_footprint": null,
+  "max_jaccard_over_all_rasters": 0.020670238852057033,
+  "literal_overlap_firings": 58,
+  "firings_explained_by_density": 58,
+  "density_corrected_verdict": "not-a-duplicate (dense pair: the informative statistic is the rank correlation)",
   "worst_spearman_submission": null,
   "worst_forward_overlap": null,
   "worst_forward_overlap_dot_fields": null,

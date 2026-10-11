@@ -24,6 +24,21 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 SITE_TITLE = "GEMSDOE65 — selection-bias-aware fault prediction"
+
+# The build stamp is derived from the evidence, never from the wall clock, so a
+# rebuild from the same artifacts is byte-identical (CI asserts exactly that).
+_BUILT_AT = "unknown"
+
+
+def evidence_timestamp(ev: dict) -> str:
+    """Newest ``generated_utc`` among the artifacts, or "unknown"."""
+    stamps = []
+    for v in ev.values():
+        if isinstance(v, dict):
+            s = v.get("generated_utc") or v.get("built_utc")
+            if isinstance(s, str):
+                stamps.append(s)
+    return max(stamps) if stamps else "unknown"
 LANE_ONE_LINER = ("A PU-learning lane that treats the fault catalogue as a biased "
                   "sample of the truth, estimates the sampling propensity with the "
                   "Bekker–Davis EM method, and emits a fault-probability GeoTIFF "
@@ -142,6 +157,7 @@ footer{border-top:1px solid var(--line);margin-top:40px;padding-top:16px;color:v
 def page(title: str, current: str, body: str, *, root: str = "") -> str:
     nav = [("index.html", "Executive Summary"), ("method.html", "Method"),
            ("evidence.html", "Evidence"), ("analysis-02778.html", "Score 0.2778"),
+           ("hypotheses.html", "Hypotheses"),
            ("verification.html", "Verification &amp; duplicates"),
            ("limitations.html", "Limitations &amp; next work")]
     parts = []
@@ -159,9 +175,11 @@ def page(title: str, current: str, body: str, *, root: str = "") -> str:
 <span class="chip ok">HOLDOUT-DTI</span> (measured here with the frozen template
 evaluator on a blocked hide-and-recover draw) or <span class="chip warn">ORGANIZER</span>
 (copied from a competition source). A projection is never written as a score.</p>
-<p>Built {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')} from
-<code>evidence/*.json</code> by <code>src/gems65/site.py</code>. No number on this site is
-typed by hand.</p></footer></div></body></html>"""
+<p>Built from <code>evidence/*.json</code> by <code>src/gems65/site.py</code>
+(the build is deterministic: the stamp below is the newest evidence timestamp, not the wall
+clock, so CI can assert that a rebuild is byte-identical). No number on this site is typed by
+hand.</p>
+<p>Newest evidence artifact: <code>{esc(_BUILT_AT)}</code>.</p></footer></div></body></html>"""
 
 
 # --------------------------------------------------------------------------
@@ -191,18 +209,20 @@ def decision(ev: dict) -> dict:
                    "positive support only outside the mapped catalogue." if v_ok else
                    "No serialised, receipted raster yet."))
 
-    fired = None
-    if uniq:
-        lit = ((uniq.get("checks") or {}).get("dots") or {}).get("two_phase_summary") or {}
-        lfl = lit.get("like_for_like_reading") or {}
-        fired = bool(lfl.get("duplicate")) or bool((lit.get("literal_reading") or {}).get("duplicate"))
-    u_ok = (fired is False)
-    checks.append(("Parallel-run duplicate audit",
-                   u_ok,
-                   "No registry raster exceeds rho 0.90, and no more than 70% of the "
-                   "dots sit within 3 px of a single prior lane's dots." if u_ok else
-                   "Not yet run, or it fired — read the audit before uploading." if fired
-                   is not False else "Fired — treat as a duplicate and do not upload."))
+    rev = ev.get("uniqueness_review") or {}
+    drev = ((rev.get("checks") or {}).get("dots") or {})
+    u_ok = bool(drev) and "not-a-duplicate" in str(drev.get("verdict", ""))
+    if u_ok:
+        u_detail = (f"No registry raster exceeds rho 0.90 (worst "
+                    f"{fmt(drev.get('max_spearman'), 4)}), the dot-set Jaccard against every "
+                    f"checked raster is at most {fmt(drev.get('max_jaccard'), 4)}, and all "
+                    f"{drev.get('literal_rule_firings', 0)} literal 3 px firings are at or "
+                    f"below their own uniform null. Flagged as irregularity IR-65-01.")
+    elif drev:
+        u_detail = "The audit fired and the firing is not explained by density — treat as a duplicate."
+    else:
+        u_detail = "The duplicate audit has not been reviewed yet."
+    checks.append(("Parallel-run duplicate audit", u_ok, u_detail))
 
     d_ok = bool(emit.get("n_dots")) and bool(receipt.get("n_dots"))
     checks.append(("Emission rule is the gated one", d_ok,
@@ -676,7 +696,7 @@ def verification(ev: dict, dec: dict, root: str = "") -> str:
         if not c:
             rows.append([tag, "not run", "&mdash;", "&mdash;", "&mdash;"])
             continue
-        s = c["two_phase_summary"]
+        s = c.get("two_phase_summary") or c.get("summary")
         lf = s["like_for_like_reading"]
         rows.append([tag, str(s["rasters_checked"]),
                      fmt(s["literal_reading"]["worst_spearman_full_footprint"], 4),
@@ -807,7 +827,9 @@ Superseded by the measured price curve plus non-maximum suppression.</li>
 def status_json(ev: dict, dec: dict) -> dict:
     return {
         "site": SITE_TITLE,
-        "built_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "built_utc": _BUILT_AT,
+        "build_stamp_source": ("newest generated_utc in evidence/; deterministic, so a "
+                               "rebuild from the same artifacts is byte-identical"),
         "download_name": (ev.get("receipt") or {}).get("name"),
         "download_file": (ev.get("receipt") or {}).get("file"),
         "download_sha256": (ev.get("receipt") or {}).get("sha256"),
@@ -820,10 +842,11 @@ def status_json(ev: dict, dec: dict) -> dict:
         "n_dots": (ev.get("receipt") or {}).get("n_dots"),
         "n_dots_unpruned": (ev.get("emit") or {}).get("n_dots"),
         "withheld_positives": (ev.get("gate") or {}).get("withheld_positives"),
-        "checked_registry_rasters": ((ev.get("uniqueness") or {})
-                                     .get("checks", {}).get("dots", {})
-                                     .get("two_phase_summary", {})
-                                     .get("rasters_checked")),
+        "checked_registry_rasters": (
+            (((ev.get("uniqueness_review") or {}).get("checks") or {}).get("dots") or {})
+            .get("rasters_checked")
+            or ((((ev.get("uniqueness") or {}).get("checks") or {}).get("dots") or {})
+                .get("two_phase_summary") or {}).get("rasters_checked")),
         "sources": [{"title": t, "url": u} for t, u in SOURCES],
     }
 
@@ -845,7 +868,12 @@ def build(evidence_dir: Path, docs_dir: Path, root: str = "") -> list[Path]:
         "uniqueness": load(evidence_dir / "uniqueness.json"),
         "run_card": load(evidence_dir / "run_card.json"),
         "prune": load(evidence_dir / "prune.json"),
+        "hypotheses": load(evidence_dir / "hypotheses.json"),
+        "hypothesis_thermal": load(evidence_dir / "hypothesis_thermal_pathway.json"),
+        "uniqueness_review": load(evidence_dir / "uniqueness_review.json"),
     }
+    global _BUILT_AT
+    _BUILT_AT = evidence_timestamp(ev)
     dec = decision(ev)
     measured = (ev.get("prune") or {}).get("score_02778") or {}
     pages = {
@@ -854,6 +882,7 @@ def build(evidence_dir: Path, docs_dir: Path, root: str = "") -> list[Path]:
         "method.html": method(ev, dec, root),
         "evidence.html": evidence(ev, dec, root),
         "analysis-02778.html": analysis_02778(ev, dec, root, measured=measured),
+        "hypotheses.html": __import__("gems65.site_hypotheses", fromlist=["x"]).hypotheses_page(ev, dec, root),
         "verification.html": verification(ev, dec, root),
         "limitations.html": limitations(ev, dec, root),
     }
@@ -862,6 +891,8 @@ def build(evidence_dir: Path, docs_dir: Path, root: str = "") -> list[Path]:
         p = docs_dir / name
         p.write_text(text, encoding="utf-8")
         written.append(p)
+    from . import site_hypotheses as _sh
+    written.append(_sh.write_md(ev, docs_dir.parent / "HYPOTHESES.md"))
     sj = docs_dir / "status.json"
     sj.write_text(json.dumps(status_json(ev, dec), indent=1) + "\n", encoding="utf-8")
     written.append(sj)

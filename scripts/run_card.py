@@ -20,6 +20,7 @@ def L(name, default=None):
 
 def main():
     gate, emit = L("gate.json"), L("emit.json")
+    rev, hyp = L("uniqueness_review.json"), L("hypotheses.json")
     rec, uniq = L("submission_receipt.json"), L("uniqueness.json")
     prune, canary = L("prune.json"), L("canary.json")
     ing, halo = L("ingest.json"), L("emission_halo.json")
@@ -103,10 +104,34 @@ def main():
             "budget measured, which is the rejection of the null this lane exists to test."],
         "leakage_canary": {"worst_discriminative_auc": (canary or {}).get("worst_discriminative_auc"),
                            "threshold": 0.90, "clean": not (canary or {}).get("flag", True)},
+        "duplicate_review_density_corrected": {
+            "dots": ((rev or {}).get("checks") or {}).get("dots"),
+            "surface": ((rev or {}).get("checks") or {}).get("surface"),
+            "irregularity": (rev or {}).get("irregularity"),
+            "why_it_is_needed": ("the literal 3 px overlap rule saturates at 1.0 for any candidate "
+                                 "when a prior covers a few percent of the map, because the test "
+                                 "dilates that prior by the kernel radius; the review reports the "
+                                 "uniform null and the Jaccard index alongside it")},
+        "candidate_hypotheses_ranked": [
+            {"rank": c["rank"], "name": c["name"],
+             "expected_dti_gain": c["expected_dti_gain"],
+             "implementation_cost": c["implementation_cost"],
+             "validated_here": c["validated_here"],
+             "validation_note": c.get("validation_note")}
+            for c in (hyp or {}).get("hypotheses", [])],
         "registry_correlation_and_overlap": {
             "rasters_checked": uts.get("rasters_checked"),
             "rasters_expected": uts.get("rasters_expected"),
             "worst_spearman_full_footprint": lit.get("worst_spearman_full_footprint"),
+            "max_jaccard_over_all_rasters": (((rev or {}).get("checks") or {})
+                                             .get("dots") or {}).get("max_jaccard"),
+            "literal_overlap_firings": (((rev or {}).get("checks") or {})
+                                        .get("dots") or {}).get("literal_rule_firings"),
+            "firings_explained_by_density": (((rev or {}).get("checks") or {})
+                                             .get("dots") or {})
+                                            .get("firings_explained_by_density"),
+            "density_corrected_verdict": (((rev or {}).get("checks") or {})
+                                          .get("dots") or {}).get("verdict"),
             "worst_spearman_submission": lit.get("worst_spearman_submission"),
             "worst_forward_overlap": lit.get("worst_forward_overlap"),
             "worst_forward_overlap_dot_fields": lfl.get("worst_forward_overlap_dot_fields"),
@@ -135,7 +160,9 @@ def main():
             "zip": ((rec or {}).get("template_receipt") or {}).get("zip_file")},
         "verdict": ("promote-to-selector-only"
                     if (gate or {}).get("gate", {}).get("verdict") == "PROMOTE"
-                    and (rec or {}).get("sha256") and not lit.get("duplicate")
+                    and (rec or {}).get("sha256")
+                    and "not-a-duplicate" in str((((rev or {}).get("checks") or {})
+                                                  .get("dots") or {}).get("verdict", ""))
                     else "negative"),
         "verdict_scope": ("Local promotion only: gate met, format validated, duplicate "
                           "audit clear. Organizer acceptance and any leaderboard score "

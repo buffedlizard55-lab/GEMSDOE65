@@ -52,7 +52,7 @@ ul.tight{margin:8px 0} ul.tight li{margin:4px 0}
 footer{border-top:1px solid var(--line);margin-top:40px;padding-top:16px;color:var(--mut);font-size:13px}
 </style></head><body>
 <header class="top"><div class="wrap"><span class="brand">GEMSDOE65 — selection-bias-aware fault prediction</span>
-<nav><a href="index.html">Executive Summary</a> <a href="method.html">Method</a> <a href="evidence.html">Evidence</a> <a href="analysis-02778.html">Score 0.2778</a> <a href="verification.html" class="on">Verification &amp; duplicates</a> <a href="limitations.html">Limitations &amp; next work</a></nav></div></header>
+<nav><a href="index.html">Executive Summary</a> <a href="method.html">Method</a> <a href="evidence.html">Evidence</a> <a href="analysis-02778.html">Score 0.2778</a> <a href="hypotheses.html">Hypotheses</a> <a href="verification.html" class="on">Verification &amp; duplicates</a> <a href="limitations.html">Limitations &amp; next work</a></nav></div></header>
 <div class="wrap">
 <h1>Verification &amp; duplicate audit</h1>
 <p>Three independent gates stand between the emitted field and a submission slot. All three are
@@ -81,7 +81,7 @@ same dots is available on request but is not the published candidate.</p>
 if more than 70% of the dots fall within 3 px of a single registry raster's dots. Both readings
 come from the frozen template tool and are applied twice — once to the score surface before
 placement, once to the final dots.</p>
-<div class="tw"><table><thead><tr><th>Check</th><th>Rasters checked</th><th>Worst rho</th><th>Worst 3 px overlap (dot fields)</th><th>Verdict</th></tr></thead><tbody><tr><td>surface</td><td>not run</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr><tr><td>dots</td><td>not run</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr></tbody></table></div>
+<div class="tw"><table><thead><tr><th>Check</th><th>Rasters checked</th><th>Worst rho</th><th>Worst 3 px overlap (dot fields)</th><th>Verdict</th></tr></thead><tbody><tr><td>surface</td><td>653</td><td>0.2671</td><td>0.9990</td><td><span class="chip bad">FLAGGED</span></td></tr><tr><td>dots</td><td>653</td><td>0.0401</td><td>0.9998</td><td><span class="chip bad">FLAGGED</span></td></tr></tbody></table></div>
 <p class="mut">Scope: every hash-verified raster in the indexed public owner-repository
 inventory (655 unique grid rasters, all 655 present locally and sha256-checked against the
 manifest). Un-indexed, private or unlinked files are a stated limitation of the inventory, never
@@ -101,6 +101,8 @@ Promotion to a slot is a separate selector decision, within the weekly cap.</li>
 <span class="chip ok">HOLDOUT-DTI</span> (measured here with the frozen template
 evaluator on a blocked hide-and-recover draw) or <span class="chip warn">ORGANIZER</span>
 (copied from a competition source). A projection is never written as a score.</p>
-<p>Built 2026-10-11 21:16 UTC from
-<code>evidence/*.json</code> by <code>src/gems65/site.py</code>. No number on this site is
-typed by hand.</p></footer></div></body></html>
+<p>Built from <code>evidence/*.json</code> by <code>src/gems65/site.py</code>
+(the build is deterministic: the stamp below is the newest evidence timestamp, not the wall
+clock, so CI can assert that a rebuild is byte-identical). No number on this site is typed by
+hand.</p>
+<p>Newest evidence artifact: <code>2026-10-11T21:29:41+00:00</code>.</p></footer></div></body></html>

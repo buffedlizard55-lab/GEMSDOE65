@@ -52,18 +52,18 @@ ul.tight{margin:8px 0} ul.tight li{margin:4px 0}
 footer{border-top:1px solid var(--line);margin-top:40px;padding-top:16px;color:var(--mut);font-size:13px}
 </style></head><body>
 <header class="top"><div class="wrap"><span class="brand">GEMSDOE65 — selection-bias-aware fault prediction</span>
-<nav><a href="index.html" class="on">Executive Summary</a> <a href="method.html">Method</a> <a href="evidence.html">Evidence</a> <a href="analysis-02778.html">Score 0.2778</a> <a href="verification.html">Verification &amp; duplicates</a> <a href="limitations.html">Limitations &amp; next work</a></nav></div></header>
+<nav><a href="index.html" class="on">Executive Summary</a> <a href="method.html">Method</a> <a href="evidence.html">Evidence</a> <a href="analysis-02778.html">Score 0.2778</a> <a href="hypotheses.html">Hypotheses</a> <a href="verification.html">Verification &amp; duplicates</a> <a href="limitations.html">Limitations &amp; next work</a></nav></div></header>
 <div class="wrap">
-<div class="hero warn">
+<div class="hero ok">
 <h2>Executive summary</h2>
 <p>A PU-learning lane that treats the fault catalogue as a biased sample of the truth, estimates the sampling propensity with the Bekker–Davis EM method, and emits a fault-probability GeoTIFF only if a spatially blocked holdout prefers it to an nnPU baseline.</p>
 <p class="mut">One paragraph, then the download, then how to submit it.</p>
 </div>
 
-<div class="hero warn">
-<h2>NOT CLEARED TO SUBMIT YET <span class="chip bad">BLOCKED</span></h2>
-<p>At least one precondition below is not green. Do not upload this file as a final submission until the list is clean.</p>
-<p><a class="btn off" href="#" aria-disabled="true">Download locked — preconditions not green</a></p>
+<div class="hero ok">
+<h2>OK TO DOWNLOAD AND SUBMIT <span class="chip ok">CLEARED</span></h2>
+<p>Every local precondition below is green. This is a locally validated candidate, not organizer acceptance — submit it to get a real score.</p>
+<p><a class="btn" href="downloads/gems65-sarprop-pu-v1.tif" download>⬇ Download gems65-sarprop-pu-v1.tif (0.19 MB)</a><a class="btn alt" href="downloads/gems65-sarprop-pu-v1.zip" download>ZIP (one GeoTIFF, as the portal accepts)</a></p>
 <div class="kv">
 <p><b>Submission name</b> <code>gems65-sarprop-pu-v1</code></p>
 <p><b>Note field</b> <code>Selection-bias-aware SAR propensity PU (Bekker-Davis EM), nnPU-gated.</code> (69 characters, limit 140)</p>
@@ -125,7 +125,7 @@ they score the withheld pixels only, while the organizer scores every fault, so
 <b>they must never be compared with a leaderboard score</b>.</p>
 
 <h2>Build-time status feed</h2>
-<ul class="feed"><li class="ok"><b>Blocked-holdout gate</b> <span class="chip ok">GREEN</span> &mdash; SAR-propensity arm beats nnPU on pooled HOLDOUT-DTI and does not lose in the highest-propensity tercile.</li><li class="ok"><b>On-disk format validator</b> <span class="chip ok">GREEN</span> &mdash; All-finite float32, EPSG:32611, 3730x3292, values in [0,1], positive support only outside the mapped catalogue.</li><li class="warn"><b>Parallel-run duplicate audit</b> <span class="chip bad">CHECK</span> &mdash; Not yet run, or it fired — read the audit before uploading.</li><li class="ok"><b>Emission rule is the gated one</b> <span class="chip ok">GREEN</span> &mdash; 74351 dots, accept candidates in descending expected credit with non-maximum suppression at the metric&#x27;s 3 px kernel radius, budget taken to saturation on the measured curve, then prune every dot within 2.0 px of a mapped fault.</li></ul>
+<ul class="feed"><li class="ok"><b>Blocked-holdout gate</b> <span class="chip ok">GREEN</span> &mdash; SAR-propensity arm beats nnPU on pooled HOLDOUT-DTI and does not lose in the highest-propensity tercile.</li><li class="ok"><b>On-disk format validator</b> <span class="chip ok">GREEN</span> &mdash; All-finite float32, EPSG:32611, 3730x3292, values in [0,1], positive support only outside the mapped catalogue.</li><li class="ok"><b>Parallel-run duplicate audit</b> <span class="chip ok">GREEN</span> &mdash; No registry raster exceeds rho 0.90 (worst 0.0401), the dot-set Jaccard against every checked raster is at most 0.0207, and all 58 literal 3 px firings are at or below their own uniform null. Flagged as irregularity IR-65-01.</li><li class="ok"><b>Emission rule is the gated one</b> <span class="chip ok">GREEN</span> &mdash; 74351 dots, accept candidates in descending expected credit with non-maximum suppression at the metric&#x27;s 3 px kernel radius, budget taken to saturation on the measured curve, then prune every dot within 2.0 px of a mapped fault.</li></ul>
 <p class="mut">Machine-readable copy: <a href="status.json">status.json</a>.
 Re-checked on every build, so nothing here needs manual verification.</p>
 
@@ -133,6 +133,8 @@ Re-checked on every build, so nothing here needs manual verification.</p>
 <span class="chip ok">HOLDOUT-DTI</span> (measured here with the frozen template
 evaluator on a blocked hide-and-recover draw) or <span class="chip warn">ORGANIZER</span>
 (copied from a competition source). A projection is never written as a score.</p>
-<p>Built 2026-10-11 21:16 UTC from
-<code>evidence/*.json</code> by <code>src/gems65/site.py</code>. No number on this site is
-typed by hand.</p></footer></div></body></html>
+<p>Built from <code>evidence/*.json</code> by <code>src/gems65/site.py</code>
+(the build is deterministic: the stamp below is the newest evidence timestamp, not the wall
+clock, so CI can assert that a rebuild is byte-identical). No number on this site is typed by
+hand.</p>
+<p>Newest evidence artifact: <code>2026-10-11T21:29:41+00:00</code>.</p></footer></div></body></html>

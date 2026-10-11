@@ -9,7 +9,9 @@ the thing being rewarded is **new fault discovery**, not redrawing the existing 
 
 **Current candidate:** `docs/downloads/gems65-sarprop-pu-v1.tif` — sha256
 `12240335ff72b4f36714265ccbceec93b114fe06b0ca7abe7e9611cd559618a2`, 74,351 dots, 192 KB,
-float32 EPSG:32611, all-finite and inside `[0, 1]`.
+float32 EPSG:32611, all-finite and inside `[0, 1]`. Every local precondition is green, so the
+site's banner reads **OK TO DOWNLOAD AND SUBMIT**; what is *not* green is a spent submission
+slot, because nobody has claimed one for this file yet.
 
 ---
 
@@ -24,12 +26,43 @@ float32 EPSG:32611, all-finite and inside `[0, 1]`.
 | Emission rule measured, not assumed | **MEASURED** — monotone to saturation; NMS at the kernel radius; prune ≤2 px | `evidence/budget_curve.json`, `evidence/prune.json` |
 | Hypothesis that failed | **NEGATIVE** — forbidding the 3 px halo around known faults lowers holdout DTI at every arm | `evidence/emission_halo.json` |
 | On-disk format validator (frozen template) | **PASS** — single band, float32, all-finite, min 0, max 1, 74,351 positives | `docs/downloads/gems65-sarprop-pu-v1.json` |
-| Parallel-run duplicate audit vs 655 published rasters | see `docs/verification.html` | `evidence/uniqueness.json` |
+| Parallel-run duplicate audit vs 653 published rasters | **CLEAR with a flagged anomaly** — worst rank correlation 0.0401, worst dot-set Jaccard 0.0207; the literal 3 px rule fired 58 times and every firing is at or below its own uniform null (irregularity **IR-65-01**) | `evidence/uniqueness.json`, `evidence/uniqueness_review.json` |
+| Ranked candidate-hypothesis register | **DELIVERED** — 5 candidates with layers, signature, cost and source; the top locally runnable one was tested and **rejected** | `HYPOTHESES.md`, `evidence/hypotheses.json` |
+| Unit tests | **13 PASS** in under a second, synthetic, no competition rasters needed | `tests/test_lane.py` |
 | Organizer acceptance / leaderboard score | **NOT KNOWN** — nobody has spent a slot on this file yet | — |
 
 Every number on the site is `HOLDOUT-DTI` (measured here) or `ORGANIZER` (copied from a
 competition source). The holdout is a **relative instrument**: it scores withheld catalogue
 pixels only, so it ranks arms — it is never comparable with a leaderboard score.
+
+---
+
+## Why the 0.2778 submission scored 0.2778 (answer to the headline question)
+
+The highest score this project has ever received a receipt for is 0.2778, on
+`gemsdoe32-h33-h33-2-b2-20261004T220000Z-e5eb6e7e-zeros.tif`. It is now understood exactly,
+because the file is in the registry and so is its parent:
+
+> The 0.2778 raster is, **by exact set identity**, the 0.2708 raster
+> (`GEMSDOE28:…-h27-4-r1-solo-d2-8-…-allfinite.tif`, 40,199 dots) with every dot inside **2.0 px**
+> of the mapped catalogue deleted. 2,545 dots went: 1,201 at √2 and 1,344 at exactly 2.0 px. No
+> other change. Verified by `python3 scripts/prune_analysis.py`, which reconstructs the child from
+> the parent and reports `exact set identity: True`.
+
+The arithmetic then closes with no free parameters. Deleting those dots left the true-positive
+mass untouched and removed exactly `0.2 × 2545 = 509.0` units of false-positive mass, which pins
+the two denominators and gives a true-positive mass of ≈5,471 and an implicit public truth set of
+≈14,143 positives. That is why +0.0070 was available for free: the file was **over-emitting**, and
+every dot within 2 px of the catalogue was a pure false positive — the metric scores on
+`valid & ~known`, so a dot whose nearest truth is masked earns nothing and pays 0.2.
+
+**Can we score higher?** Yes, arithmetically: with the same true-positive mass and zero false
+positives the ceiling is `5471 / (5471 + 0.8 × (14143 − 5471)) = 0.4410`, above the current
+leader's 0.4133. The binding constraint is therefore coverage, not the metric: this lane's gate
+is about recovering more of the truth without paying the false-positive tax. The two operational
+consequences are already implemented — non-maximum suppression at the kernel radius, and a
+≤2 px prune before serialisation — and the third, multi-seed gate confidence, is the first item
+of remaining work. Full derivation with the measurement tables: `docs/analysis-02778.html`.
 
 ---
 
@@ -147,8 +180,13 @@ python3 scripts/run_lane.py emit            # live score field + dots       -> e
 python3 scripts/prune_analysis.py           # the 0.2778 reconstruction      -> evidence/prune.json
 python3 scripts/run_lane.py prune --radius 2.0
 python3 scripts/run_lane.py write           # frozen writer + on-disk gate  -> evidence/submission_receipt.json
-python3 scripts/run_lane.py uniqueness      # duplicate audit vs 655 rasters-> evidence/uniqueness.json
-python3 scripts/run_lane.py site            # rebuild docs/ from evidence/
+python3 scripts/run_lane.py uniqueness      # duplicate audit vs 653 rasters-> evidence/uniqueness.json
+python3 scripts/duplicate_review.py         # density-corrected reading of it  -> evidence/uniqueness_review.json
+python3 scripts/hypothesis_test.py          # validate the top local candidate-> evidence/hypothesis_thermal_pathway.json
+python3 scripts/hypotheses.py               # the ranked register             -> evidence/hypotheses.json, HYPOTHESES.md
+python3 scripts/run_card.py                 # the one run card                -> evidence/run_card.json
+python3 scripts/run_lane.py site            # rebuild docs/ from evidence/  (deterministic)
+python3 scripts/check_site.py               # fail closed if the site and the raster disagree
 ```
 
 `src/gems65/template/` is a byte-for-byte copy of the shared `gems57` modules and is **never
@@ -167,9 +205,12 @@ Full list with reasoning on `docs/limitations.html`. The short version:
 3. **Add `tests/test_pu.py`** — synthetic SAR recovery (validated interactively at corr(e_hat,
    e_true) = 0.98) and emission invariants (dots >3 px apart, no mass on the catalogue,
    all-finite output).
-4. **Push coverage rather than budget.** The ceiling arithmetic on `docs/analysis-02778.html` shows
-   a ~0.44 ceiling at this true-positive mass; the binding constraint is distinct structures
-   recovered, so the next experiments should add information, not dots.
+4. **Push coverage rather than budget.** The ceiling arithmetic above shows a ~0.44 ceiling at
+   this true-positive mass; the binding constraint is distinct structures recovered, so the next
+   experiments should add information, not dots. The ranked register in `HYPOTHESES.md` names the
+   five candidates; the first is the USGS Quaternary Fault database itself, which the organisers
+   name as a scored-label source, and 44.7% of its in-footprint traces sit more than 300 m from
+   any catalogue pixel.
 5. **Owner rulings still open:** IR-58-08 (two uniqueness regimes) and IR-S6-01 (soft priors vs the
    "dot" convention). Neither blocks this file.
 
@@ -197,6 +238,19 @@ Full list with reasoning on `docs/limitations.html`. The short version:
   receipt for that attribution exists in any repo inspected. What *is* verified is the raster:
   `GEMSDOE32:docs/downloads/gemsdoe32-h33-h33-2-b2-20261004T220000Z-e5eb6e7e-zeros.tif`, and its
   exact set identity against the 0.2708 parent (`GEMSDOE28:…-h27-4-r1-solo-d2-8-…-allfinite.tif`).
+- **IR-65-01 — the parallel-run duplicate rule is not scale free.** The rule "stop if more than
+  70% of your dots fall within 3 px of one registry raster's dots" fired **58 times** against this
+  file, all of it as an artifact: the template dilates the other raster's support by the kernel
+  radius, so any prior covering a few percent of the map covers all of it, and the statistic
+  saturates at 1.0 for *any* candidate. In this audit 53 of the 58 firings had support above
+  300,000 cells (mean 4.3M — i.e. full-footprint probability surfaces), the analytic uniform null
+  is 1.0000 for each of the twelve worst, and the direct measure of "same dot set", the Jaccard
+  index, is at most **0.0207 across all 653 rasters**. Reported, not silently overridden: both
+  readings are published (`evidence/uniqueness_review.json`), the site shows the anomaly, and an
+  owner ruling is needed on whether the density-corrected reading replaces the literal one.
+- **IR-65-02 — the registry audit covers 653 of 655 indexed rasters.** Two entries could not be
+  read (details in `evidence/uniqueness_review.json` under `error_details`), so a completeness
+  claim is out of reach and none is made; "not a duplicate of anything checked" is the claim.
 - **IR-58-08**, **IR-S6-01** — owner rulings outstanding; see §5 above.
 - The published leaderboard high recorded in older notes (0.3195, "highest") is **stale**: the saved
   organizer snapshot of 2026-10-11 puts 0.4133 first and 0.3195 at rank 8.

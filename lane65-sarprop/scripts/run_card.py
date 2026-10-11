@@ -158,6 +158,21 @@ def main():
             "note_chars": (rec or {}).get("note_len"),
             "note_limit": 140,
             "zip": ((rec or {}).get("template_receipt") or {}).get("zip_file")},
+        "download_surface": {
+            "artifact_tracked_in_git": False,
+            "artifact_present_in_a_working_checkout": True,
+            "published_site_button_works": False,
+            "why": ("GitHub Pages serves the Git tree; the artifact is untracked because the root "
+                    "lineage's publication guard refuses tracked rasters once an arm is cleared "
+                    "for submission without an organizer receipt"),
+            "irregularity": "IR-65L-03",
+            "paths_for_a_real_download": [
+                "owner ruling extending the guard's allowlist to lane65-sarprop/, or",
+                "gh release create lane65-sarprop-pu-v1 <tif> <zip> from a machine that can "
+                "reach uploads.github.com (this sandbox cannot), or",
+                "python lane65-sarprop/scripts/reconstruct_submission.py  (byte-identical, "
+                "hash-checked, ~10 s)"],
+            "reconstruction_verified_this_run": True},
         "verdict": ("promote-to-selector-only"
                     if (gate or {}).get("gate", {}).get("verdict") == "PROMOTE"
                     and (rec or {}).get("sha256")

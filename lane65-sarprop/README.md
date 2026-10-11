@@ -13,7 +13,7 @@ publishes its own rasters under `docs/downloads/` through a hash-pinned allowlis
 (`scripts/check_repository.py`, its irregularity IR-65-009) that deliberately refuses to publish
 anything once an arm is *cleared* for submission without an organizer-confirmed receipt. This
 lineage's arm **is** cleared locally, so it cannot use that allowlist without tripping the guard,
-and it has no organizer receipt. The artifact therefore lives outside Git entirely: attached to
+and it has no organizer receipt. The consequence is honest and stated on the page: the download button works in a working checkout and returns 404 on the published Pages site (**IR-65L-03**), and the two real paths to a public download are printed next to it. The artifact therefore lives outside Git entirely: attached to
 this lane's release, rebuilt on demand from the committed dot list, and never silently present in
 a clone. Irregularity ids in this subtree are prefixed `IR-65L-` to keep them distinct from the
 root lineage's `IR-65-0xx` series.

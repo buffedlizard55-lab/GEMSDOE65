@@ -53,3 +53,14 @@ class LaneReadinessTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def test_recognizes_current_restoration_and_pinned_template_layout(tmp_path):
+    for name in ['data/raw/training_features.tif','data/raw/existing_faults.tif',
+                 'data/raw/sample_submission.tif','registry/prior_rasters.json',
+                 'vendor/template58/gems57/evaluate_holdout.py',
+                 'vendor/template58/gems57/submission_writer.py']:
+        path=tmp_path/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(b'presence-only')
+    result=audit(tmp_path)
+    assert result['gate']=='prerequisites-present'
+    assert 'does not authorize a TIF' in result['action']

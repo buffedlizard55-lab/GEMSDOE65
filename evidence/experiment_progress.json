@@ -1,0 +1,529 @@
+{
+  "started_at": "2026-10-11T20:20:59.753939+00:00",
+  "lane": "selection-bias-aware SAR-PU",
+  "experiments_planned": 3,
+  "scenarios": [],
+  "canaries": [
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 0,
+      "feature": "local_relief",
+      "auc": 0.5442115856274826,
+      "max_direction_auc": 0.5442115856274826,
+      "withheld_positive_pixels": 29319,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 0,
+      "feature": "slope",
+      "auc": 0.5415311601797815,
+      "max_direction_auc": 0.5415311601797815,
+      "withheld_positive_pixels": 29319,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 0,
+      "feature": "gravity_basin_proxy",
+      "auc": 0.5426979984462188,
+      "max_direction_auc": 0.5426979984462188,
+      "withheld_positive_pixels": 29319,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 0,
+      "feature": "lidar_coverage",
+      "auc": 0.5025720204809054,
+      "max_direction_auc": 0.5025720204809054,
+      "withheld_positive_pixels": 29319,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 0,
+      "feature": "distance_to_terrain_front",
+      "auc": 0.3775209877643419,
+      "max_direction_auc": 0.622479012235658,
+      "withheld_positive_pixels": 29319,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 0,
+      "feature": "magnetic_horizontal_gradient",
+      "auc": 0.5271120558034775,
+      "max_direction_auc": 0.5271120558034775,
+      "withheld_positive_pixels": 29319,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 0,
+      "feature": "gravity_horizontal_gradient",
+      "auc": 0.46835056118602875,
+      "max_direction_auc": 0.5316494388139712,
+      "withheld_positive_pixels": 29319,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 0,
+      "feature": "gravity_vertical_gradient",
+      "auc": 0.5141605208029068,
+      "max_direction_auc": 0.5141605208029068,
+      "withheld_positive_pixels": 29319,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 0,
+      "feature": "detrended_elevation",
+      "auc": 0.4981199784589295,
+      "max_direction_auc": 0.5018800215410705,
+      "withheld_positive_pixels": 29319,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 0,
+      "feature": "detrended_slope",
+      "auc": 0.5479229534515863,
+      "max_direction_auc": 0.5479229534515863,
+      "withheld_positive_pixels": 29319,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 0,
+      "feature": "basement_surface",
+      "auc": 0.5152776047414462,
+      "max_direction_auc": 0.5152776047414462,
+      "withheld_positive_pixels": 29319,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 0,
+      "feature": "conductivity",
+      "auc": 0.504973129125825,
+      "max_direction_auc": 0.504973129125825,
+      "withheld_positive_pixels": 29319,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 1,
+      "feature": "local_relief",
+      "auc": 0.5593876743466369,
+      "max_direction_auc": 0.5593876743466369,
+      "withheld_positive_pixels": 12596,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 1,
+      "feature": "slope",
+      "auc": 0.5670007270186235,
+      "max_direction_auc": 0.5670007270186235,
+      "withheld_positive_pixels": 12596,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 1,
+      "feature": "gravity_basin_proxy",
+      "auc": 0.5181223160534391,
+      "max_direction_auc": 0.5181223160534391,
+      "withheld_positive_pixels": 12596,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 1,
+      "feature": "lidar_coverage",
+      "auc": 0.5205392031999314,
+      "max_direction_auc": 0.5205392031999314,
+      "withheld_positive_pixels": 12596,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 1,
+      "feature": "distance_to_terrain_front",
+      "auc": 0.32514524366400555,
+      "max_direction_auc": 0.6748547563359945,
+      "withheld_positive_pixels": 12596,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 1,
+      "feature": "magnetic_horizontal_gradient",
+      "auc": 0.48971173716679084,
+      "max_direction_auc": 0.5102882628332092,
+      "withheld_positive_pixels": 12596,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 1,
+      "feature": "gravity_horizontal_gradient",
+      "auc": 0.5702982630292696,
+      "max_direction_auc": 0.5702982630292696,
+      "withheld_positive_pixels": 12596,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 1,
+      "feature": "gravity_vertical_gradient",
+      "auc": 0.5305697849031554,
+      "max_direction_auc": 0.5305697849031554,
+      "withheld_positive_pixels": 12596,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 1,
+      "feature": "detrended_elevation",
+      "auc": 0.4516040542618002,
+      "max_direction_auc": 0.5483959457381997,
+      "withheld_positive_pixels": 12596,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 1,
+      "feature": "detrended_slope",
+      "auc": 0.5544998034076968,
+      "max_direction_auc": 0.5544998034076968,
+      "withheld_positive_pixels": 12596,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 1,
+      "feature": "basement_surface",
+      "auc": 0.5186558204708909,
+      "max_direction_auc": 0.5186558204708909,
+      "withheld_positive_pixels": 12596,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 1,
+      "feature": "conductivity",
+      "auc": 0.46801025990077516,
+      "max_direction_auc": 0.5319897400992248,
+      "withheld_positive_pixels": 12596,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 2,
+      "feature": "local_relief",
+      "auc": 0.5977933853917787,
+      "max_direction_auc": 0.5977933853917787,
+      "withheld_positive_pixels": 9473,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 2,
+      "feature": "slope",
+      "auc": 0.6043892363943594,
+      "max_direction_auc": 0.6043892363943594,
+      "withheld_positive_pixels": 9473,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 2,
+      "feature": "gravity_basin_proxy",
+      "auc": 0.5524064803327825,
+      "max_direction_auc": 0.5524064803327825,
+      "withheld_positive_pixels": 9473,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 2,
+      "feature": "lidar_coverage",
+      "auc": 0.5181201508583255,
+      "max_direction_auc": 0.5181201508583255,
+      "withheld_positive_pixels": 9473,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 2,
+      "feature": "distance_to_terrain_front",
+      "auc": 0.3092878953975001,
+      "max_direction_auc": 0.6907121046024999,
+      "withheld_positive_pixels": 9473,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 2,
+      "feature": "magnetic_horizontal_gradient",
+      "auc": 0.5341247012121828,
+      "max_direction_auc": 0.5341247012121828,
+      "withheld_positive_pixels": 9473,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 2,
+      "feature": "gravity_horizontal_gradient",
+      "auc": 0.48666198029706076,
+      "max_direction_auc": 0.5133380197029392,
+      "withheld_positive_pixels": 9473,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 2,
+      "feature": "gravity_vertical_gradient",
+      "auc": 0.5259651718937164,
+      "max_direction_auc": 0.5259651718937164,
+      "withheld_positive_pixels": 9473,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 2,
+      "feature": "detrended_elevation",
+      "auc": 0.5295941494675207,
+      "max_direction_auc": 0.5295941494675207,
+      "withheld_positive_pixels": 9473,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 2,
+      "feature": "detrended_slope",
+      "auc": 0.5912931584960892,
+      "max_direction_auc": 0.5912931584960892,
+      "withheld_positive_pixels": 9473,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 2,
+      "feature": "basement_surface",
+      "auc": 0.4657652977303736,
+      "max_direction_auc": 0.5342347022696263,
+      "withheld_positive_pixels": 9473,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 2,
+      "feature": "conductivity",
+      "auc": 0.45528621023032656,
+      "max_direction_auc": 0.5447137897696734,
+      "withheld_positive_pixels": 9473,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 3,
+      "feature": "local_relief",
+      "auc": 0.5720587407331494,
+      "max_direction_auc": 0.5720587407331494,
+      "withheld_positive_pixels": 9600,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 3,
+      "feature": "slope",
+      "auc": 0.5797649606869646,
+      "max_direction_auc": 0.5797649606869646,
+      "withheld_positive_pixels": 9600,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 3,
+      "feature": "gravity_basin_proxy",
+      "auc": 0.5158750829529571,
+      "max_direction_auc": 0.5158750829529571,
+      "withheld_positive_pixels": 9600,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 3,
+      "feature": "lidar_coverage",
+      "auc": 0.5040398242061253,
+      "max_direction_auc": 0.5040398242061253,
+      "withheld_positive_pixels": 9600,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 3,
+      "feature": "distance_to_terrain_front",
+      "auc": 0.34652527223348073,
+      "max_direction_auc": 0.6534747277665193,
+      "withheld_positive_pixels": 9600,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 3,
+      "feature": "magnetic_horizontal_gradient",
+      "auc": 0.4992213849644747,
+      "max_direction_auc": 0.5007786150355253,
+      "withheld_positive_pixels": 9600,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 3,
+      "feature": "gravity_horizontal_gradient",
+      "auc": 0.5088098009568088,
+      "max_direction_auc": 0.5088098009568088,
+      "withheld_positive_pixels": 9600,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 3,
+      "feature": "gravity_vertical_gradient",
+      "auc": 0.5666639031297935,
+      "max_direction_auc": 0.5666639031297935,
+      "withheld_positive_pixels": 9600,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 3,
+      "feature": "detrended_elevation",
+      "auc": 0.47396444805187854,
+      "max_direction_auc": 0.5260355519481215,
+      "withheld_positive_pixels": 9600,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 3,
+      "feature": "detrended_slope",
+      "auc": 0.5693704132917918,
+      "max_direction_auc": 0.5693704132917918,
+      "withheld_positive_pixels": 9600,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 3,
+      "feature": "basement_surface",
+      "auc": 0.5266660579389393,
+      "max_direction_auc": 0.5266660579389393,
+      "withheld_positive_pixels": 9600,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    },
+    {
+      "evidence_class": "LEAKAGE-CANARY-NOT-DTI",
+      "fold": 3,
+      "feature": "conductivity",
+      "auc": 0.5430414852999381,
+      "max_direction_auc": 0.5430414852999381,
+      "withheld_positive_pixels": 9600,
+      "negatives": "catalogue-zero proxies, not verified absence"
+    }
+  ],
+  "folds": [
+    {
+      "fold": 0,
+      "split_version": "label-blind-quadrants-v2",
+      "evaluation_region_label_blind": true,
+      "truth_px": 29319,
+      "evaluation_px": 2449030,
+      "training_domain_px": 2508386,
+      "held_components": 1830,
+      "shared_train_truth_components": 0,
+      "buffer_px": 80,
+      "nearest_training_to_region_px": 80.00624975587844,
+      "held_pixels_without_feature_support": 0,
+      "held_positive_pixels_outside_this_evaluation_region": 244,
+      "sampling": {
+        "n_positive_population": 29746,
+        "n_unlabeled_population": 2478640,
+        "n_positive_sample": 6000,
+        "n_unlabeled_sample": 30000,
+        "sample_indices_sha256": "6bea7e143db4c820e7fa5351ed08272475c5074fd662c722e18b61c73abf836c"
+      }
+    },
+    {
+      "fold": 1,
+      "split_version": "label-blind-quadrants-v2",
+      "evaluation_region_label_blind": true,
+      "truth_px": 12596,
+      "evaluation_px": 1366431,
+      "training_domain_px": 3636842,
+      "held_components": 687,
+      "shared_train_truth_components": 0,
+      "buffer_px": 80,
+      "nearest_training_to_region_px": 80.00624975587844,
+      "held_pixels_without_feature_support": 0,
+      "held_positive_pixels_outside_this_evaluation_region": 82,
+      "sampling": {
+        "n_positive_population": 45956,
+        "n_unlabeled_population": 3590886,
+        "n_positive_sample": 6000,
+        "n_unlabeled_sample": 30000,
+        "sample_indices_sha256": "ffc8e5122ba31680c697be98452c222c697d3f53d81d65f75efd76be8f3d3b23"
+      }
+    },
+    {
+      "fold": 2,
+      "split_version": "label-blind-quadrants-v2",
+      "evaluation_region_label_blind": true,
+      "truth_px": 9473,
+      "evaluation_px": 564135,
+      "training_domain_px": 4383314,
+      "held_components": 382,
+      "shared_train_truth_components": 0,
+      "buffer_px": 80,
+      "nearest_training_to_region_px": 80.00624975587844,
+      "held_pixels_without_feature_support": 0,
+      "held_positive_pixels_outside_this_evaluation_region": 483,
+      "sampling": {
+        "n_positive_population": 47909,
+        "n_unlabeled_population": 4335405,
+        "n_positive_sample": 6000,
+        "n_unlabeled_sample": 30000,
+        "sample_indices_sha256": "48a66dc16166147ee38308827a26f2bee3a0325279cf1a1b5e611d7d5df23ab7"
+      }
+    },
+    {
+      "fold": 3,
+      "split_version": "label-blind-quadrants-v2",
+      "evaluation_region_label_blind": true,
+      "truth_px": 9600,
+      "evaluation_px": 787777,
+      "training_domain_px": 4263431,
+      "held_components": 329,
+      "shared_train_truth_components": 0,
+      "buffer_px": 80,
+      "nearest_training_to_region_px": 80.00624975587844,
+      "held_pixels_without_feature_support": 0,
+      "held_positive_pixels_outside_this_evaluation_region": 368,
+      "sampling": {
+        "n_positive_population": 48857,
+        "n_unlabeled_population": 4214574,
+        "n_positive_sample": 6000,
+        "n_unlabeled_sample": 30000,
+        "sample_indices_sha256": "2c22d9dfd2933188e715c3e2ce8d233025e2cd71e41e382d2d5c8187618d6ed1"
+      }
+    }
+  ],
+  "target": "mapped-fault hide-and-recover, NOT geothermal vents or organizer hidden faults",
+  "placement_performed": false,
+  "submission_slots_used": 0
+}

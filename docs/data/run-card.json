@@ -1,56 +1,256 @@
 {
-  "hypothesis": "Catalogue inclusion is Selected At Random conditional on a small set of observables; correcting this visibility/mapping propensity with SAR-EM and propensity-aware risk could improve recovery of withheld fault segments versus nnPU.",
-  "mechanism": "Relief, slope, verified DEM-source coverage (1 m GeoDAWN lidar versus coarser 3DEP where locally confirmed), a gravity-derived basin-fill proxy, and distance to an independently mapped range front may alter the probability that an actual fault is mapped and enters the catalogue. Estimate e(x) with SAR-EM; use the Bekker–Robberechts–Davis propensity-aware empirical risk with inverse-propensity weights clipped at 10; compare to nnPU on identical buffered spatial folds.",
-  "named_non_fault_process_that_could_mimic_it": "Landslide scarps and erosional drainage breaks can produce steep local relief and slope gradients that resemble fault scarps; lithologic contacts can also create linear topographic or gravity contrasts.",
-  "holdout_dti": {
-    "evidence_label": "HOLDOUT-DTI",
-    "status": "NOT COMPUTED — required shared evaluator, training data, labels, and segment-fold artifacts are absent from this checkout.",
-    "evaluator_version": null,
-    "withheld_positive_count": null,
-    "score": null,
-    "ci95": {
-      "status": "NOT COMPUTED",
-      "lower": null,
-      "upper": null
+  "schema": "gems65.run-card.v1",
+  "created_at": "2026-10-11T20:54:58.663630+00:00",
+  "hypothesis": "Mapping selection underrepresents low-relief covered basin-margin faults; five-covariate SAR correction may outperform SCAR nnPU.",
+  "mechanism": "Scale-constrained SAR-EM followed by propensity-aware logistic empirical risk; inverse weights capped at 10. Matched nnPU control.",
+  "non_fault_mimic": "Unfaulted alluvial basin margins and volcanic/lithologic contacts.",
+  "evidence_class": "HOLDOUT-DTI",
+  "evaluator_version": "gems57-pooled-hide-v2",
+  "holdout": {
+    "sar": {
+      "evidence_class": "HOLDOUT-DTI",
+      "evaluator_version": "gems57-pooled-hide-v2",
+      "dti": 0.023649919638269894,
+      "ci95": [
+        0.022120628974432843,
+        0.025161801437358494
+      ],
+      "withheld_positive_pixels": 60988,
+      "tpw": 1667.6104956379409,
+      "fpw": 106941.9459798949,
+      "fnw": 59320.38950436206
+    },
+    "nnpu": {
+      "evidence_class": "HOLDOUT-DTI",
+      "evaluator_version": "gems57-pooled-hide-v2",
+      "dti": 0.027917057248294953,
+      "ci95": [
+        0.02569469471495426,
+        0.03041947777136797
+      ],
+      "withheld_positive_pixels": 60988,
+      "tpw": 1974.1609996248349,
+      "fpw": 107649.96668220805,
+      "fnw": 59013.839000375156
+    },
+    "paired_difference": {
+      "evidence_class": "HOLDOUT-DTI",
+      "evaluator_version": "gems57-pooled-hide-v2",
+      "delta": -0.004267137610025059,
+      "ci95": [
+        -0.005370672890448329,
+        -0.0033703241484398442
+      ],
+      "withheld_positive_pixels": 60988
+    },
+    "high_propensity_tercile": {
+      "evidence_class": "HOLDOUT-DTI",
+      "evaluator_version": "gems57-pooled-hide-v2",
+      "alpha": 0.2,
+      "beta": 0.8,
+      "triangular_radius_m": 300.0,
+      "pooled": true,
+      "scores": {
+        "sar": {
+          "evidence_class": "HOLDOUT-DTI",
+          "evaluator_version": "gems57-pooled-hide-v2",
+          "dti": 0.028454039008399892,
+          "ci95": [
+            0.02664559020910307,
+            0.030417612633479182
+          ],
+          "withheld_positive_pixels": 34174,
+          "tpw": 1040.8094059752623,
+          "fpw": 45156.27752414493,
+          "fnw": 33133.19059402473
+        },
+        "nnpu": {
+          "evidence_class": "HOLDOUT-DTI",
+          "evaluator_version": "gems57-pooled-hide-v2",
+          "dti": 0.0368479222627961,
+          "ci95": [
+            0.03407836179733787,
+            0.04016711322614503
+          ],
+          "withheld_positive_pixels": 34174,
+          "tpw": 1450.007954438034,
+          "fpw": 58609.720102181585,
+          "fnw": 32723.992045561972
+        }
+      },
+      "best_comparable_control": "nnpu",
+      "paired_differences": {
+        "nnpu": {
+          "evidence_class": "HOLDOUT-DTI",
+          "evaluator_version": "gems57-pooled-hide-v2",
+          "delta": -0.00839388325439621,
+          "ci95": [
+            -0.00984749278567746,
+            -0.0072534947664437315
+          ],
+          "withheld_positive_pixels": 34174
+        }
+      },
+      "bootstrap": {
+        "method": "paired physical spatial-cluster percentile",
+        "clusters": 161,
+        "draws": 1000,
+        "seed": 651011,
+        "confidence": 0.95,
+        "caveat": "Conditional on fitted folds, catalogue labels and fixed budgets; not a leaderboard interval."
+      },
+      "implementation_sha256": {
+        "evaluate_holdout.py": "ad86640b46f3c5fc6b1aceec4c4bfc82d03e35008b37ab2a8ad6076e6810ff3a",
+        "holdout.py": "5434549bee01086ce224360707fd96df228c2b4c441a9f0e2761ad311752e167",
+        "metric.py": "4afe10cbaa229948520c75194b1ebc32676e72544f05582f0725092b097b4d7f",
+        "spatial.py": "fad7b09db9efc512247b9a176a7e7ce8631e287592b4e07902d0b9c38bed00f8"
+      }
+    },
+    "caveat": "Finite-iteration, unanchored sensitivity experiment on mapped faults. Not an organizer score or proof about hidden faults."
+  },
+  "sensitivity": [
+    {
+      "assumed_reference_propensity": 0.5,
+      "sar": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "dti": 0.023649919638269894,
+        "ci95": [
+          0.022120628974432843,
+          0.025161801437358494
+        ],
+        "withheld_positive_pixels": 60988,
+        "tpw": 1667.6104956379409,
+        "fpw": 106941.9459798949,
+        "fnw": 59320.38950436206
+      },
+      "nnpu": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "dti": 0.027917057248294953,
+        "ci95": [
+          0.02569469471495426,
+          0.03041947777136797
+        ],
+        "withheld_positive_pixels": 60988,
+        "tpw": 1974.1609996248349,
+        "fpw": 107649.96668220805,
+        "fnw": 59013.839000375156
+      }
+    },
+    {
+      "assumed_reference_propensity": 0.25,
+      "sar": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "dti": 0.0340225498621792,
+        "ci95": [
+          0.031795010422342014,
+          0.036149068512006804
+        ],
+        "withheld_positive_pixels": 60988,
+        "tpw": 3092.0157717425195,
+        "fpw": 207362.80915288272,
+        "fnw": 57895.98422825748
+      },
+      "nnpu": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "dti": 0.042106012320606054,
+        "ci95": [
+          0.03861534729888602,
+          0.045888313702752266
+        ],
+        "withheld_positive_pixels": 60988,
+        "tpw": 3833.594846489562,
+        "fpw": 207445.6934193738,
+        "fnw": 57154.405153510445
+      }
+    },
+    {
+      "assumed_reference_propensity": 0.75,
+      "sar": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "dti": 0.019571706300459346,
+        "ci95": [
+          0.018281880457905905,
+          0.020944899821803573
+        ],
+        "withheld_positive_pixels": 60988,
+        "tpw": 1262.1573659942812,
+        "fpw": 77230.22909116879,
+        "fnw": 59725.84263400571
+      },
+      "nnpu": {
+        "evidence_class": "HOLDOUT-DTI",
+        "evaluator_version": "gems57-pooled-hide-v2",
+        "dti": 0.02191934055057222,
+        "ci95": [
+          0.020250651788871782,
+          0.023838381677482316
+        ],
+        "withheld_positive_pixels": 60988,
+        "tpw": 1416.4512030643716,
+        "fpw": 77736.89035507716,
+        "fnw": 59571.54879693562
+      }
     }
+  ],
+  "canary": {
+    "passed": true,
+    "max_bidirectional_auc": 0.6907121046024999,
+    "feature_fold_checks": 48,
+    "expanded_basis_checks": 144,
+    "expanded_audit_after_fitting": true,
+    "evidence_class": "LEAKAGE-CANARY-NOT-DTI"
   },
-  "model_comparison": {
-    "status": "NOT RUN",
-    "candidate": "SAR-EM propensity-aware empirical risk",
-    "baseline": "nnPU",
-    "current_holdout_best": "NOT ESTABLISHED",
-    "same_folds": null,
-    "overall_gate": "NOT TESTED — promotion requires beating both the current holdout best and matched nnPU",
-    "highest_propensity_tercile_gate": "NOT TESTED",
-    "single_feature_leakage_canaries": "NOT RUN"
+  "em_converged": false,
+  "independent_propensity_anchor": null,
+  "propensity_identifiable": false,
+  "registry": {
+    "stage": "surface_before_placement",
+    "raster_count_checked": 3,
+    "indexed_blobs": 751,
+    "complete": false,
+    "max_rank_correlation": 0.38157547272186876,
+    "max_forward_overlap_3px": 1.0,
+    "byte_unique_among_checked": true,
+    "pixel_unique_among_checked": true,
+    "literal_gate_passed": false,
+    "final_dots_check": "not_run_mandatory_stop"
   },
-  "correlation_overlap_vs_registry": {
-    "status": "NOT COMPUTED — no candidate surface/dots or prior-raster registry is present.",
-    "rank_correlation": null,
-    "fraction_of_dots_within_3_pixels": null,
-    "checked_before_placement": false,
-    "checked_on_final_dots": false
+  "raster_sha256": "356b85a8f08e9b37ac990b1eeffaf5b8de92c424d4ed6f18d04f92011290e9a9",
+  "raster_kind": "new research-only OOF continuous GeoTIFF, quarantined; NOT a promoted submission",
+  "validator": {
+    "status": "PASS",
+    "no_nan_inside_footprint": true,
+    "values_in_0_1": true,
+    "crs_shape_transform_match": true,
+    "outside_footprint_nan": true,
+    "report": "validator_output.json",
+    "organizer_acceptance": false
   },
-  "raster_sha256": null,
-  "validator_output": {
-    "status": "NOT RUN — no candidate TIFF exists.",
-    "no_nan_inside_footprint": null,
-    "values_in_0_1": null,
-    "crs_shape_transform_match": null,
-    "single_band_float32": null
-  },
-  "submission": {
-    "name": null,
-    "note": "No file: holdout, uniqueness, and format gates are not met; do not submit."
-  },
+  "submission_name": "gems65-sar-em-c050-oof-20261011-a40eda4bc662-RESEARCH-ONLY",
+  "note": "SAR-EM c=0.50; five mapping covariates; weights capped at 10; OOF continuous. NEGATIVE: DO NOT SUBMIT.",
+  "note_characters": 102,
   "verdict": "negative",
-  "negative_reason": "At session start, the starter checkout contained only the README. The integrated work adds documentation, a static research site, a presence-only readiness audit, and tests; it does not add the required competition data/cache, shared segment hide-and-recover evaluator/writer, or prior-raster registry. A previously merged scheduled leaderboard fetch and mirrored rows were removed after review of DrivenData's Terms of Use; the site now links to the official page without storing rows. No model was trained, no HOLDOUT-DTI was computed, no prior raster was copied, no submission was generated, and no weekly slot was spent. Session 2 (2026-10-11): re-checked the environment. The DrivenData data tab and Dropbox links return only login/landing pages; no competition file, grid template, shared evaluator/writer, or registry is present. The official metric/format text, the reference-notebook grid (3292 x 3730, EPSG:32611, 100 m), and the arXiv authorship were verified from public sources. No TIF was generated and no holdout was run; the verdict remains negative.",
-  "sources": [
-    "https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/",
-    "https://proceedings.mlr.press/v94/bekker18a.html",
-    "https://arxiv.org/abs/1809.03207",
-    "https://pangea.stanford.edu/ERE/pdf/IGAstandard/SGW/2025/Giddens.pdf",
-    "https://www.drivendata.org/termsofuse/",
-    "https://github.com/drivendataorg/gems-prize-reference-solution/blob/main/unet-mc-cv-reference-solution.ipynb"
+  "eligible_for_download": false,
+  "approved_for_weekly_slot": false,
+  "submission_slots_used": 0,
+  "experiments_completed": 3,
+  "reasons": [
+    "overall_improvement_not_established",
+    "highest_propensity_tercile_improvement_not_established",
+    "registry_uniqueness_not_cleared",
+    "comparable_incumbent_not_cleared",
+    "complete_registry_not_cleared",
+    "optimization_not_cleared"
+  ],
+  "next_session": [
+    "Independent completeness evidence or a wider identified sensitivity study.",
+    "Pre-register convergence criteria/iteration budget before a fresh holdout; do not treat this finite-iteration negative as a theorem about SAR.",
+    "Owner/selector must explicitly resolve dense-prior support semantics; no silent uniqueness exemption.",
+    "Obtain organizer score receipts, comparable incumbent folds and the current weekly cap."
   ]
 }

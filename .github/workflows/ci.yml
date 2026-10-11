@@ -1,0 +1,49 @@
+name: ci
+
+on:
+  push:
+    branches: [main, "arena/**"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Unit tests (metric, dupcheck)
+        run: |
+          python - <<'PY'
+          import sys, traceback
+          sys.path[:0] = ["src", "scripts", "tests"]
+          import test_metric, test_dupcheck
+          fails = 0
+          for mod in (test_metric, test_dupcheck):
+              for name in sorted(dir(mod)):
+                  if not name.startswith("test_"):
+                      continue
+                  fn = getattr(mod, name)
+                  if not callable(fn):
+                      continue
+                  try:
+                      fn()
+                      print(f"PASS {mod.__name__}.{name}")
+                  except Exception:
+                      fails += 1
+                      print(f"FAIL {mod.__name__}.{name}")
+                      traceback.print_exc()
+          print(f"\n{fails} failures")
+          raise SystemExit(1 if fails else 0)
+          PY
+      - name: Site builds from evidence (no hand-typed numbers)
+        run: python scripts/build_site.py
+      - name: Run card builds
+        run: python scripts/06_run_card.py

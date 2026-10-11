@@ -1,0 +1,124 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>Limitations · GEMSDOE65</title>
+<link rel="stylesheet" href="assets/site.css"></head><body><div class="wrap">
+<header class="site"><h1>Limitations and what is needed next</h1><div class="sub">generated 2026-10-11T21:23:29Z</div><nav class="toc"><a href="index.html">Home</a><a href="executive-summary.html">Executive summary / how to submit</a><a href="research.html">Method &amp; hypotheses</a><a href="sources.html">Verified sources</a><a href="irregularities.html">Irregularities</a><a href="limitations.html">Limitations</a><a href="run-card.html">Run card</a></nav></header>
+<div class="panel"><pre># Limitations, and what would remove each one
+
+Generated 2026-10-11 by the GEMSDOE65 lane (selection-bias-aware PU learning).
+This file is rendered on the site at `docs/limitations.html`. Every claim below is either a
+measurement recorded in `evidence/*.json` or a verified source in `registry/sources.json`.
+
+## 1. The headline result is a NEGATIVE result, and the gate that produced it is itself suspect
+
+* **Measured:** pooled HOLDOUT-DTI 0.06195 (SAR propensity-aware ERM) vs 0.06753 (nnPU SCAR
+  baseline), Δ = −0.00558, 95 % CI [−0.01216, −0.00063], SAR wins 2 of 8 cells. Highest-propensity
+  tercile: 0.06398 vs 0.07703, Δ = −0.01305. Leakage canary max single-feature AUC 0.5738 over 28
+  features — no leakage suspect, so the comparison is clean. **Gate NOT passed.**
+* **But also measured:** the blocked-holdout instrument is *anti*-correlated with the only live
+  evidence available. Spearman(holdout-DTI, owner-reported live score) = **−0.436** over the 10
+  registry rasters that carry a live score
+  (`evidence/holdout_calibration.json`), and Spearman(dot count, live) = **−0.791**.
+* **Why:** known USGS/INGENIOUS fault pixels are masked out of live scoring (DrivenData staff,
+  forum thread 11516). A raster whose dots hug the catalogue therefore scores well on a
+  catalogue-hidden holdout and poorly live; a raster that deliberately avoids the catalogue — which
+  is what both this lane and the registry&#x27;s best artifacts do — scores poorly on the holdout and
+  well live. The two instruments disagree by construction.
+* **Consequence, stated plainly:** the gate is pre-registered and is respected (no promotion), but it
+  is *not evidence that the SAR mechanism fails on the live metric*. It is evidence that this proxy
+  cannot see the mechanism. This is `IR-65-006` and it is the single most important caveat in the
+  repo.
+* **What would remove it:** one ORGANIZER-CONFIRMED receipt. Submit one SAR-armed file into a weekly
+  slot and read back the score. Nothing inside this sandbox can substitute for that, and the brief
+  explicitly separates submission selection from candidate generation.
+
+## 2. The propensity scale is unidentified, and the anchor could not be verified
+
+* arXiv:1809.03207 §2/§5.1: the propensity scale is not recoverable from PU data alone.
+* The brief&#x27;s prescribed anchor — an index of exhaustively mapped quadrangles — was **not reachable**
+  from this sandbox (`nbmg.unr.edu`, `usgs.gov`, `gbcge.org`, `epsg.io`, `drivendata.org` are all off
+  the egress allowlist; measured, not assumed).
+* Lidar coverage was *not* used as a proxy for map completeness, and correctly so: measured lidar
+  coverage of the footprint is **0.7537** while Faulds 2026 states detailed maps cover **&lt;25 %** of
+  the region (`IR-65-001`).
+* Mitigation in place: sensitivity sweep over ā ∈ {0.15, 0.25, 0.32, 0.50}. Pooled SAR DTI
+  0.06419 / 0.06183 / 0.06116 / 0.05574 respectively — monotone, and **no anchor passes the gate**,
+  so the negative verdict is robust to this nuisance parameter.
+* **What would remove it:** the free official NBMG map-scale inventory
+  (&lt;https://nbmg.unr.edu/library/mapinfo.html&gt;) or the USGS NGMDB map index
+  (&lt;https://ngmdb.usgs.gov/maps/&gt;), rasterised onto the competition grid, then
+  `python scripts/02_run_holdout.py --a-bar &lt;measured&gt;`.
+
+## 3. The EM for (f, e) did not converge, and one logged diagnostic was mislabelled
+
+* Measured over 8 iterations: the logged log-likelihood trace ran −0.6521 → −0.6659 (monotonically
+  *worse*, decrements shrinking to ~0.0012), mean `f` on unlabeled pixels stuck at ≈0.45 against a
+  Horvitz–Thompson prevalence of π = 0.0517, `em_converged = false`.
+* Root cause identified: the quantity logged as `ll` was only the **f-part** of the expected
+  complete-data log-likelihood. Monotonicity of that partial quantity is not an EM guarantee, so the
+  trace is not a valid convergence test either way. `src/gems65/pu.py` now records both
+  `ll_observed` (the true SAR observed-data likelihood, which EM must not decrease) and
+  `ll_f_surrogate` (`IR-65-008`).
+* The earlier init bug (`IR-65-004`, nnPU-with-π=0.5 init instead of the paper&#x27;s balanced
+  unlabeled-as-negative logistic) is fixed, but the degenerate-looking `f` persists, so
+  **IR-65-004 stays OPEN**, not closed.
+* **Blast radius, bounded:** the SAR arm&#x27;s Definition-2 risk weights come from the *anchored*
+  propensity `e`, whose fit is well behaved and geologically sensible (range [0.0111, 0.4521];
+  coefficients: relief +0.63, slope +0.24, basin-fill +0.27, distance-to-range-front −0.196,
+  i.e. higher selection probability on steep, high-relief, basin-margin terrain — the documented
+  bias direction; 2.2 % of weights clipped at 10). The gate comparison therefore does **not** depend
+  on `f`&#x27;s EM convergence. The **`em` arm does**, and is labelled reference-only for that reason.
+* **What would remove it:** run the EM with the anchor imposed inside the loop (re-scale `e` each
+  M-step to mean ā on labelled positives), and assert `ll_observed` is non-decreasing. Cost: ~15 min
+  of compute plus a full re-run of stages 02 and 03.
+
+## 4. Nothing in this repo is ORGANIZER-CONFIRMED
+
+All 15 registry rasters carry **OWNER-REPORT** scores only; `drivendata.org` is unreachable from the
+sandbox so no receipt could be read. Every number on the site is labelled with its evidence class
+(HOLDOUT-DTI, MIRROR-DTI, OWNER-REPORT). Zero numbers carry ORGANIZER-CONFIRMED.
+
+The user-reported &quot;highest leaderboard score&quot; is also unresolved: the brief says 0.3774 in one place
+and 0.3195 in another; the last readable official snapshot (2026-10-04) shows #1 0.3262, #2 0.3222,
+#3 0.3195. Both user values are recorded and neither is used as a target (`IR-65-005`).
+
+## 5. The data are a hash-pinned mirror, not an organizer download
+
+`training_features.tif`, `labels.tif` and `sample_submission.tif` were restored from owner-supplied
+GitHub blob mirrors and verified against sha256 pins by `scripts/00_restore_data.py`
+(`registry/data_manifest.json`). The pins are self-consistent across three sibling repos and the
+grid geometry re-derived from them matches the official spec exactly (EPSG:32611, 3730 × 3292,
+transform (100, 0, 243350, 0, −100, 4508550), footprint 5,167,373 px, catalogue 60,988 px), but the
+bytes are **not organizer-authenticated** (`IR-65-007`).
+
+## 6. Scope deliberately not attempted
+
+* **No external data were added.** All five candidate hypotheses in `docs/research/hypotheses.md` are
+  computable from the restored stack; the only genuinely missing dataset (the map-scale index) is
+  named with a free official source and marked unreachable from here.
+* **No submission slot was spent**, and no promotion decision was made — protocol rule 6 keeps
+  candidate generation and slot selection separate.
+* **Budget:** the brief&#x27;s stop rule is 3 experiments or 2 hours. Three experiments were run
+  (stage-02 gate, stage-03 three-arm build, stage-05 instrument calibration) plus the mirror
+  instrument; wall-clock exceeded 2 hours because of two silent shared-tool bugs
+  (`IR-65-002`, `IR-65-003`) that had to be found, fixed, regression-tested and re-run. That overrun
+  is recorded rather than hidden.
+* **Compute:** 2 CPU / ~2.8 GB RAM forced subsampling — 80,000 unlabeled rows for the holdout gate
+  and 400,000 for the build, against 5.17 M footprint pixels. Belief fields are therefore fit on a
+  subsample and inferred in chunks; a full-data fit could shift the emitted dot set (though not the
+  gate ordering, which held across both sample sizes).
+
+## 7. Known failure modes that this repo&#x27;s guard-rails prevent
+
+* &quot;Predicted values must be in range [0, 1]&quot; — both mechanisms (float32 sentinel −3.4e38 inside the
+  footprint: 3,061–3,073 band-pixels per band; footprint mask 1,521 px too small → NaN in scored
+  pixels) are engineered out and re-verified by an independent 14-point re-read in
+  `scripts/validate_submission.py`. All six written files pass.
+* Silent NaN design matrices from unfilled sentinel pixels inside the footprint → DTI exactly 0.0
+  with no exception. Median-fill is enforced inside the footprint.
+* Emitter disagreement with its own belief field: the known-defective artifact
+  `gems32-h19-5-smoothmaxcov-44090.tif` placed 25,485 / 44,090 dots (57.8 %) off its own field and
+  scored 0.01632. Every emitter here asserts `dots_on_catalogue == 0` and full agreement.
+* False lane-drift from positional tie-breaking Spearman (`IR-65-003`): fixed with
+  `scipy.stats.rankdata(method=&quot;average&quot;)` and locked by `tests/test_dupcheck.py`.
+</pre></div>
+</div></body></html>

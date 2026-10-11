@@ -1,0 +1,9 @@
+# Data is restored from the hash-pinned mirror by scripts/00_restore_data.py and NEVER committed.
+data/
+.cache/
+*.tif.part-*
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+*.egg-info/

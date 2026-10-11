@@ -1,0 +1,6 @@
+# Verified working set for this pipeline (Python 3.11, 2 CPU / 3 GB RAM).
+numpy>=1.26
+scipy>=1.11
+scikit-learn>=1.4
+pandas>=2.0
+rasterio>=1.3

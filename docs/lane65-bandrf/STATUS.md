@@ -9,13 +9,13 @@ the same run card by `scripts/build_site_bandrf.py` and cannot be edited by hand
 
 | | |
 |---|---|
-| File | `docs/downloads/gems65-h65-1-sarpu-bandrf-22726dots-64c0fa71-nan.tif` |
-| Encoding | canonical template convention: finite [0, 1] inside the footprint, NaN outside it, NaN nodata tag |
+| File | `docs/downloads/gems65-h65-1-sarpu-bandrf-22726dots-64c0fa71-zeros.tif` |
+| Encoding | **all-finite**: every cell finite and in [0, 1] (zeros outside the footprint, `nodata=None`). Recommended on the recorded portal evidence — an earlier upload was rejected with *"Predicted values must be in range [0, 1]"*, which a plain range comparison over an array containing NaN can produce. |
 | Dots | 22 726 |
 | Gate | pooled blocked-hold-out **0.01646 [0.01201, 0.02113]** vs matched `nnpu` **0.00614 [0.00121, 0.01164]**; high-propensity tercile 0.0266 vs 0.0034 (no loss) |
-| On-disk validator | every canonical check passes (`single_band`, `dtype_float32`, `dimensions_3730x3292`, `crs_epsg_32611`, transform, `in_footprint_all_finite`, `in_footprint_range_0_1`, `outside_footprint_nan`, `nodata_nan`, `zero_dots_on_mapped_catalogue`) |
+| On-disk validator | the recommended file passes every portal-relevant check (`single_band`, `dtype_float32`, `dimensions_3730x3292`, `crs_epsg_32611`, transform, `no_inf_anywhere`, `no_sentinel_values`, `in_footprint_all_finite`, `in_footprint_range_0_1`, `zero_dots_on_mapped_catalogue`); zero NaN inside the footprint; zero positives on the mapped catalogue. The NaN encoding passes the two additional outside-footprint checks the all-finite encoding does not. |
 | Uniqueness | 62 hash-verified staged priors compared; worst ρ 0.0440, worst Jaccard 0.0046, byte- and pixel-unique |
-| Also published | `…-zeros.tif` (diagnostics encoding; fails the canonical outside-footprint check **by design**) and `…-nan.zip` + receipt (single-member ZIP of the same TIFF) |
+| Also published | `…-nan.tif` — the pinned template's and the published sample's convention (NaN outside, NaN nodata tag), byte-identical inside the footprint; it passes every canonical validator check. Plus `…-nan.zip` and the JSON receipt written by the fail-closed shared writer. |
 
 The full machine-readable decision, including the degenerate-rule demonstration, is
 `docs/lane65-bandrf/data/run-card.json`.

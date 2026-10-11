@@ -117,9 +117,9 @@ def canary_block(canary) -> str:
 
 
 PORTAL_CHECKS = ("single_band", "dtype_float32", "dimensions_3730x3292", "crs_epsg_32611",
-                "transform_matches_sample_submission", "min_ge_0", "max_le_1",
-                "in_footprint_all_finite", "in_footprint_range_0_1", "outside_footprint_nan",
-                "nodata_nan", "zero_dots_on_mapped_catalogue")
+                "transform_matches_sample_submission", "no_inf_anywhere", "no_sentinel_values",
+                "in_footprint_all_finite", "in_footprint_range_0_1",
+                "zero_dots_on_mapped_catalogue")
 
 
 def download_block(card) -> str:
@@ -135,8 +135,13 @@ def download_block(card) -> str:
     # The recommended upload is the canonical representation -- finite [0,1] inside the
     # footprint and NaN outside it, the convention the pinned template and the published
     # sample use.  A file is only recommended if its own on-disk validator passes.
-    recommended = next((n for n, r in files.items()
-                        if n.endswith("-nan.tif") and passes_all(r)), None)
+    # The card names the recommended upload; the site only renders that decision, and only
+    # after re-checking that the named file passes the portal-relevant checks.
+    named = (card.get("recommended_upload") or {}).get("file")
+    recommended = named if (named in files and passes_all(files[named])) else None
+    if recommended is None:
+        recommended = next((n for n, r in files.items()
+                            if n.endswith("-zeros.tif") and passes_all(r)), None)
     if recommended is None:
         recommended = next((n for n, r in files.items()
                             if n.endswith(".tif") and passes_all(r)), None)
@@ -149,8 +154,10 @@ def download_block(card) -> str:
             badge = "RECOMMENDED UPLOAD"
         elif name.endswith((".zip", ".json")):
             badge = "recorded evidence — not the submission file"
+        elif name.endswith("-nan.tif"):
+            badge = "sample-convention alternative — identical inside the footprint, NaN outside"
         else:
-            badge = "diagnostics encoding — same prediction, NOT portal-format compliant"
+            badge = "diagnostics encoding — same prediction, different outside-footprint convention"
         items.append(
             f'<li><b>{html.escape(badge)}</b><br>'
             f'<a download href="../downloads/{html.escape(name)}"><b>{html.escape(name)}</b></a>'
@@ -164,11 +171,15 @@ def download_block(card) -> str:
                else 'No check failed.') + '</li>')
     return ("<ol>" + "".join(items) + "</ol>" +
             "<p class='small'>All published files encode <b>one identical prediction array</b>; only "
-            "the outside-footprint convention differs. The recommended file follows the pinned "
-            "template's convention — finite [0, 1] inside the footprint, NaN outside with a NaN "
-            "nodata tag — and it is the only one whose validator passes every canonical check. "
-            "If the portal rejects it, its rejection message is the evidence to record — do not "
-            "clip or repair a file and re-upload it without re-running this pipeline.</p>")
+            "the outside-footprint convention differs. The recommended file is <b>all-finite</b> "
+            "(every cell finite and in [0, 1]) because that is what the recorded portal evidence in "
+            "this repository points to: an earlier upload was rejected with <i>Predicted values must "
+            "be in range [0, 1]</i>, which a plain range comparison over an array containing NaN can "
+            "produce. The pinned template and the published sample instead prefer NaN outside the "
+            "footprint, so that encoding is published beside it, byte-identical inside the footprint; "
+            "its extra outside-footprint checks are reported above, not hidden. If the portal rejects "
+            "the recommended file, that rejection message is the evidence to record — do not clip or "
+            "repair a file and re-upload it without re-running this pipeline.</p>")
 
 
 def uniqueness_block(card) -> str:

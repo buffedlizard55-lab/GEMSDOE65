@@ -51,8 +51,11 @@ jobs:
         run: python -m pip install -r requirements.txt
       - name: Unit tests (synthetic fixtures; no competition rasters required)
         run: python -m pytest tests/ -q
-      - name: Rebuild the submission artifact from the committed dot list
-        run: python scripts/reconstruct_submission.py --direct --force
+      - name: Verify the artifact's pixels against the committed dot list
+        # The artifact is untracked by design, so this proves the documented
+        # information content (74,351 distinct positive pixels) without writing a
+        # rebuild into docs/ and without needing the public bridge rasters.
+        run: python scripts/reconstruct_submission.py --direct --check
       - name: The published site must agree with the published raster
         run: python scripts/check_site.py
       - name: Rebuild the site and require it to be byte-identical

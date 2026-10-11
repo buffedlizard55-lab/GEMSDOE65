@@ -27,5 +27,5 @@ verification and its `Access-Control-Allow-Origin: *` response recorded in
 `evidence/browser_transport.json`. For sandbox UI-only QA,
 `QA_SANDBOX_PROXY=1` sets Playwright `ignoreHTTPSErrors`; the receipt explicitly
 records this limitation. Production site JavaScript never disables certificate
-validation or sends credentials. `node tests/browser/feed-unit.cjs` covers eight
+validation or sends credentials. `node tests/browser/feed-unit.cjs` covers nine
 remote/fallback/cache/scope cases without networking.

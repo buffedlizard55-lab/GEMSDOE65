@@ -49,7 +49,7 @@ if (feed) {
     const stamp = new Date(data.checked_at);
     const age = Date.now() - stamp.getTime();
     const state = age > 48 * 3600 * 1000 ? 'STALE SNAPSHOT' : age < -300000 ? 'TIMESTAMP REQUIRES REVIEW' : remote ? 'GITHUB METADATA SNAPSHOT' : 'LOCAL FALLBACK SNAPSHOT';
-    feed.dataset.state = age > 48 * 3600 * 1000 || !remote || data.unavailable ? 'caution' : 'current';
+    feed.dataset.state = age > 48 * 3600 * 1000 || age < -300000 || !remote || data.unavailable ? 'caution' : 'current';
     feed.textContent = `${state} · ${stamp.toISOString().replace('T', ' ').slice(0, 19)} UTC · ${data.checked} repositories checked · ${data.changed} changed since scientific review · ${data.unavailable} unavailable. No leaderboard or score verification.${remote ? '' : ' Remote freshness could not be checked.'}`;
   }).catch(() => {
     feed.textContent = 'Feed could not be loaded. The dated scientific review remains available below; do not assume it is current.';

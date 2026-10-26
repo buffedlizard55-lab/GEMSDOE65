@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-10-25T12:38:55.166520+00:00",
+  "checked_at": "2026-10-26T14:25:23.433083+00:00",
   "scope": "GitHub commit metadata only; no live site, leaderboard, score or cap verification",
   "organizer_verified": false,
   "training_rerun": false,
@@ -8,12 +8,12 @@
     {
       "repository": "buffedlizard55-lab/GEMSDOE",
       "status": "metadata_checked",
-      "latest_commit": "bb2e070a3659f4f5c16ac927e62606f1f7f495a6",
-      "tree_sha": "5a79fa75df38059e480c7e20502a47373653c92e",
-      "commit_time": "2026-10-19T13:25:46Z",
+      "latest_commit": "f60b65557b6c55f313efa0143e471100fb5bc1ad",
+      "tree_sha": "6133df37265411a31b048725350d8004a0b5f717",
+      "commit_time": "2026-10-26T13:09:29Z",
       "changed_since_review": true,
       "reviewed_revision": "dcbbb192e56b2b32c0a131eba791dc363305d4a3",
-      "url": "https://github.com/buffedlizard55-lab/GEMSDOE/commit/bb2e070a3659f4f5c16ac927e62606f1f7f495a6"
+      "url": "https://github.com/buffedlizard55-lab/GEMSDOE/commit/f60b65557b6c55f313efa0143e471100fb5bc1ad"
     },
     {
       "repository": "buffedlizard55-lab/6GEMSDOE",
@@ -38,32 +38,32 @@
     {
       "repository": "buffedlizard55-lab/GEMSDOE2",
       "status": "metadata_checked",
-      "latest_commit": "138a15c98213e70669fb2651f6680e6f66503a15",
-      "tree_sha": "7f96335d681c780674eda5dedeb4cccd96403736",
-      "commit_time": "2026-10-19T13:15:01Z",
+      "latest_commit": "13ccff851f1aca8324116de46dd7d0b14612ea3f",
+      "tree_sha": "a6845ddb5f64cf503e51310c23ade8ed08a47310",
+      "commit_time": "2026-10-26T13:00:28Z",
       "changed_since_review": true,
       "reviewed_revision": "d11f1117d8cb1192e7e69687947efdcb2f9ed9e6",
-      "url": "https://github.com/buffedlizard55-lab/GEMSDOE2/commit/138a15c98213e70669fb2651f6680e6f66503a15"
+      "url": "https://github.com/buffedlizard55-lab/GEMSDOE2/commit/13ccff851f1aca8324116de46dd7d0b14612ea3f"
     },
     {
       "repository": "buffedlizard55-lab/GEMSDOE4",
       "status": "metadata_checked",
-      "latest_commit": "88e69d4c738d5fbcc33f5282bb28fb5fd39c32c1",
-      "tree_sha": "4e119dd496035c7b630b4d647bfbe32ab541277b",
-      "commit_time": "2026-10-19T13:26:56Z",
+      "latest_commit": "15ccb4d53918c1642eeef3f7e06f429e7dceabc9",
+      "tree_sha": "c132bbccdf16035867b584ffb9dbff04f91b6eb5",
+      "commit_time": "2026-10-26T13:10:50Z",
       "changed_since_review": true,
       "reviewed_revision": "5dc28f67a096c511b0aafbf06c235146c5dcf50e",
-      "url": "https://github.com/buffedlizard55-lab/GEMSDOE4/commit/88e69d4c738d5fbcc33f5282bb28fb5fd39c32c1"
+      "url": "https://github.com/buffedlizard55-lab/GEMSDOE4/commit/15ccb4d53918c1642eeef3f7e06f429e7dceabc9"
     },
     {
       "repository": "buffedlizard55-lab/5GEMSDOE",
       "status": "metadata_checked",
-      "latest_commit": "61068cbdf9e89bdc7e76a7c2f8040d6fbdbdbc24",
-      "tree_sha": "eb30ffad280f93e12727e58281939b8e99d5f7d5",
-      "commit_time": "2026-10-19T13:30:05Z",
+      "latest_commit": "dfb74076a3d44b45691c2bcfb82e350b9390457b",
+      "tree_sha": "17e9d013f879aaa3270683b7177061d9d74c2c87",
+      "commit_time": "2026-10-26T13:13:21Z",
       "changed_since_review": true,
       "reviewed_revision": "f0dd3472d5307c296ee875d826412c49a153f74d",
-      "url": "https://github.com/buffedlizard55-lab/5GEMSDOE/commit/61068cbdf9e89bdc7e76a7c2f8040d6fbdbdbc24"
+      "url": "https://github.com/buffedlizard55-lab/5GEMSDOE/commit/dfb74076a3d44b45691c2bcfb82e350b9390457b"
     },
     {
       "repository": "buffedlizard55-lab/7GEMSDOE",
@@ -108,12 +108,12 @@
     {
       "repository": "buffedlizard55-lab/12GEMSDOE",
       "status": "metadata_checked",
-      "latest_commit": "f79f383a3a05d8e6801784dbc9c348892ba73f8e",
-      "tree_sha": "4f7a44ee3ec97c60c1f065ef05e6dd4ec2d833e7",
-      "commit_time": "2026-10-25T09:47:46Z",
+      "latest_commit": "e1ed398dfdad26bb013f0ef9bb808363f1fce0f8",
+      "tree_sha": "3049fd7c6ece6448445d86683960dc0abc836f2f",
+      "commit_time": "2026-10-26T11:05:43Z",
       "changed_since_review": true,
       "reviewed_revision": "33e756015afdaadb29b38d8ac7f6d544dc032f0f",
-      "url": "https://github.com/buffedlizard55-lab/12GEMSDOE/commit/f79f383a3a05d8e6801784dbc9c348892ba73f8e"
+      "url": "https://github.com/buffedlizard55-lab/12GEMSDOE/commit/e1ed398dfdad26bb013f0ef9bb808363f1fce0f8"
     },
     {
       "repository": "buffedlizard55-lab/15GEMSDOE",
@@ -188,12 +188,12 @@
     {
       "repository": "buffedlizard55-lab/16GEMSDOE",
       "status": "metadata_checked",
-      "latest_commit": "206e92a619e504a2ae4378904fdbc840ad8429b8",
-      "tree_sha": "6ff0f3fb6e6b9b09700be02a77da1238407f7de2",
-      "commit_time": "2026-10-19T13:08:22Z",
+      "latest_commit": "932915670eab5606619037bc6b0eb284371a2783",
+      "tree_sha": "257c54315c504d1473cb3d0bbd6968d5aa48455b",
+      "commit_time": "2026-10-26T12:56:26Z",
       "changed_since_review": true,
       "reviewed_revision": "2565805c0731a870335e54a64dce6fba01377e63",
-      "url": "https://github.com/buffedlizard55-lab/16GEMSDOE/commit/206e92a619e504a2ae4378904fdbc840ad8429b8"
+      "url": "https://github.com/buffedlizard55-lab/16GEMSDOE/commit/932915670eab5606619037bc6b0eb284371a2783"
     },
     {
       "repository": "buffedlizard55-lab/GEMSDOE21",
@@ -228,32 +228,32 @@
     {
       "repository": "buffedlizard55-lab/GEMSDOE23",
       "status": "metadata_checked",
-      "latest_commit": "2ec48d7674f6f856bbddfd83f43825e91b2da853",
-      "tree_sha": "9362ebd861128d3bcb25e43fce9bb5aa59d549d8",
-      "commit_time": "2026-10-24T14:57:13Z",
+      "latest_commit": "9b3dc197a1a7d8f1cdae0e211722ba05d3d43d7d",
+      "tree_sha": "29a8859a6dc221756a07e7d9fbad01cc0cb8417c",
+      "commit_time": "2026-10-25T15:10:30Z",
       "changed_since_review": true,
       "reviewed_revision": "a5bcbbcfa8e4dec8df29c1574cd0a32bc05afcfb",
-      "url": "https://github.com/buffedlizard55-lab/GEMSDOE23/commit/2ec48d7674f6f856bbddfd83f43825e91b2da853"
+      "url": "https://github.com/buffedlizard55-lab/GEMSDOE23/commit/9b3dc197a1a7d8f1cdae0e211722ba05d3d43d7d"
     },
     {
       "repository": "buffedlizard55-lab/GEMSDOE24",
       "status": "metadata_checked",
-      "latest_commit": "07345ea0604953d7efb858d9cfbc21e20c7aca0b",
-      "tree_sha": "aed8b78f84ae29b0de9a5476921a6ae181c38eb0",
-      "commit_time": "2026-10-02T17:46:35Z",
-      "changed_since_review": false,
+      "latest_commit": "fb9e230bc09c55b96e142c69691f0cf403d69006",
+      "tree_sha": "cc704bfeadc1eb9762d4845f0fbbb6eacc6ee982",
+      "commit_time": "2026-10-26T07:53:25Z",
+      "changed_since_review": true,
       "reviewed_revision": "07345ea0604953d7efb858d9cfbc21e20c7aca0b",
-      "url": "https://github.com/buffedlizard55-lab/GEMSDOE24/commit/07345ea0604953d7efb858d9cfbc21e20c7aca0b"
+      "url": "https://github.com/buffedlizard55-lab/GEMSDOE24/commit/fb9e230bc09c55b96e142c69691f0cf403d69006"
     },
     {
       "repository": "buffedlizard55-lab/GEMSDOE25",
       "status": "metadata_checked",
-      "latest_commit": "8cb34dc2f0f4ccf9fa1a0deda2ae7bfe5737cbb1",
-      "tree_sha": "e3061963523f6c7b3bb2be06a3854095f535de02",
-      "commit_time": "2026-10-25T11:42:25Z",
+      "latest_commit": "fac6dbe5852baa0f0125d00ecc5cb1c16872741a",
+      "tree_sha": "1c0c24345201f75daa220ed4f0d7ef1f0693b7e0",
+      "commit_time": "2026-10-26T13:15:08Z",
       "changed_since_review": true,
       "reviewed_revision": "a6b32aeaeb6c3f36f63f8111b11ea7f653632228",
-      "url": "https://github.com/buffedlizard55-lab/GEMSDOE25/commit/8cb34dc2f0f4ccf9fa1a0deda2ae7bfe5737cbb1"
+      "url": "https://github.com/buffedlizard55-lab/GEMSDOE25/commit/fac6dbe5852baa0f0125d00ecc5cb1c16872741a"
     },
     {
       "repository": "buffedlizard55-lab/GEMSDOE26",
@@ -268,22 +268,22 @@
     {
       "repository": "buffedlizard55-lab/GEMSDOE27",
       "status": "metadata_checked",
-      "latest_commit": "b8dd298e10884afffa05436673ac73aeaf850b8c",
-      "tree_sha": "d118af52f2e3ab18bc0509401c4d4c39049f4d25",
-      "commit_time": "2026-10-25T11:21:54Z",
+      "latest_commit": "cf8b4c201f2cc2ef649b6ca7cd32f235c2f6743a",
+      "tree_sha": "37df2d5cd4b4bf7a94eab424c0285acb0721018d",
+      "commit_time": "2026-10-26T13:36:03Z",
       "changed_since_review": true,
       "reviewed_revision": "b92b1e87629a124be69214951ee6af20e74565b3",
-      "url": "https://github.com/buffedlizard55-lab/GEMSDOE27/commit/b8dd298e10884afffa05436673ac73aeaf850b8c"
+      "url": "https://github.com/buffedlizard55-lab/GEMSDOE27/commit/cf8b4c201f2cc2ef649b6ca7cd32f235c2f6743a"
     },
     {
       "repository": "buffedlizard55-lab/GEMSDOE28",
       "status": "metadata_checked",
-      "latest_commit": "78e724f95337a6528b1248be5c113c6d6d502891",
-      "tree_sha": "db8370e85930a502447a06d4ffdfda62212d5472",
-      "commit_time": "2026-10-25T11:29:46Z",
+      "latest_commit": "12ec4fea4c97a7887a7ca8a06f9bd94c7609ea07",
+      "tree_sha": "df37d6e58db42e81c753530456cc02bc5f4c559f",
+      "commit_time": "2026-10-26T13:03:17Z",
       "changed_since_review": true,
       "reviewed_revision": "0075e226be920326d482340322c318e6a0c265a6",
-      "url": "https://github.com/buffedlizard55-lab/GEMSDOE28/commit/78e724f95337a6528b1248be5c113c6d6d502891"
+      "url": "https://github.com/buffedlizard55-lab/GEMSDOE28/commit/12ec4fea4c97a7887a7ca8a06f9bd94c7609ea07"
     },
     {
       "repository": "buffedlizard55-lab/GEMSDOE29",
@@ -298,42 +298,42 @@
     {
       "repository": "buffedlizard55-lab/GEMSDOE30",
       "status": "metadata_checked",
-      "latest_commit": "3d5bec2af5f29291617f97c9e2dfe443be6f55c3",
-      "tree_sha": "517f49d8400fd1417a0c280057b41aa2eb7cd902",
-      "commit_time": "2026-10-19T19:23:08Z",
+      "latest_commit": "73db382d3c990d0aa0b5126997a67213cc56dee4",
+      "tree_sha": "7e10683bacf3cd086d2288ab7b3080c6a3ce3532",
+      "commit_time": "2026-10-26T01:25:10Z",
       "changed_since_review": true,
       "reviewed_revision": "1f9ac110d5f1a4fac7957fe814267a0be964dd20",
-      "url": "https://github.com/buffedlizard55-lab/GEMSDOE30/commit/3d5bec2af5f29291617f97c9e2dfe443be6f55c3"
+      "url": "https://github.com/buffedlizard55-lab/GEMSDOE30/commit/73db382d3c990d0aa0b5126997a67213cc56dee4"
     },
     {
       "repository": "buffedlizard55-lab/GEMSDOE31",
       "status": "metadata_checked",
-      "latest_commit": "cf13282fcd86290f1539f0a86446c8ba7205a79b",
-      "tree_sha": "f4c7c83d4444f491ab645e88ce2435a0813d5c64",
-      "commit_time": "2026-10-04T13:46:28Z",
-      "changed_since_review": false,
+      "latest_commit": "e6e85b357914068b3ba57ace0f899dde13f110a6",
+      "tree_sha": "4b48cee1fbae90a35a2054f078a8e3939aa04ed4",
+      "commit_time": "2026-10-26T03:03:48Z",
+      "changed_since_review": true,
       "reviewed_revision": "cf13282fcd86290f1539f0a86446c8ba7205a79b",
-      "url": "https://github.com/buffedlizard55-lab/GEMSDOE31/commit/cf13282fcd86290f1539f0a86446c8ba7205a79b"
+      "url": "https://github.com/buffedlizard55-lab/GEMSDOE31/commit/e6e85b357914068b3ba57ace0f899dde13f110a6"
     },
     {
       "repository": "buffedlizard55-lab/GEMSDOE32",
       "status": "metadata_checked",
-      "latest_commit": "012e17b2a115c3c0d5e7885bea625bf9657c99fc",
-      "tree_sha": "11b82d99424ffa8f8202337d8155b62fbe5761ef",
-      "commit_time": "2026-10-25T09:56:58Z",
+      "latest_commit": "8b00ee91b9d6d7ef0e3762eb7bc0c92bee0928d1",
+      "tree_sha": "b7609fb0f478eff12904d7e55e876423279557ce",
+      "commit_time": "2026-10-26T11:19:16Z",
       "changed_since_review": true,
       "reviewed_revision": "b39e16ee85f83e3291951f56b615d657a071bb2b",
-      "url": "https://github.com/buffedlizard55-lab/GEMSDOE32/commit/012e17b2a115c3c0d5e7885bea625bf9657c99fc"
+      "url": "https://github.com/buffedlizard55-lab/GEMSDOE32/commit/8b00ee91b9d6d7ef0e3762eb7bc0c92bee0928d1"
     },
     {
       "repository": "buffedlizard55-lab/GEMSDOE33",
       "status": "metadata_checked",
-      "latest_commit": "f52533110fe62cd03e77f1228e9e5ecac412c463",
-      "tree_sha": "b2094bf8d80971861ca4cbe3bee750f1d0b74b96",
-      "commit_time": "2026-10-04T19:05:13Z",
-      "changed_since_review": false,
+      "latest_commit": "565d663a9c6b5a68f405277d684a12be8dd8ae26",
+      "tree_sha": "f38af8ae6b5cb601b96cce3d26a6f3988619f6ec",
+      "commit_time": "2026-10-26T05:15:02Z",
+      "changed_since_review": true,
       "reviewed_revision": "f52533110fe62cd03e77f1228e9e5ecac412c463",
-      "url": "https://github.com/buffedlizard55-lab/GEMSDOE33/commit/f52533110fe62cd03e77f1228e9e5ecac412c463"
+      "url": "https://github.com/buffedlizard55-lab/GEMSDOE33/commit/565d663a9c6b5a68f405277d684a12be8dd8ae26"
     },
     {
       "repository": "buffedlizard55-lab/GEMSDOE34",
@@ -358,12 +358,12 @@
     {
       "repository": "buffedlizard55-lab/GEMSDOE36",
       "status": "metadata_checked",
-      "latest_commit": "c9ad59ec6f969ed931d089a03044c1567a633e84",
-      "tree_sha": "e3201c8be7fbfc3c3ff9dff13897916fc2cfa019",
-      "commit_time": "2026-10-04T21:17:21Z",
-      "changed_since_review": false,
+      "latest_commit": "4aa901be69307ea69c2a6fa0872135d6697e1d7a",
+      "tree_sha": "59ba4586167e68405e3904aef3c5cef124cee623",
+      "commit_time": "2026-10-26T05:10:40Z",
+      "changed_since_review": true,
       "reviewed_revision": "c9ad59ec6f969ed931d089a03044c1567a633e84",
-      "url": "https://github.com/buffedlizard55-lab/GEMSDOE36/commit/c9ad59ec6f969ed931d089a03044c1567a633e84"
+      "url": "https://github.com/buffedlizard55-lab/GEMSDOE36/commit/4aa901be69307ea69c2a6fa0872135d6697e1d7a"
     },
     {
       "repository": "buffedlizard55-lab/GEMSDOE37",
@@ -518,12 +518,12 @@
     {
       "repository": "buffedlizard55-lab/GEMSDOE52",
       "status": "metadata_checked",
-      "latest_commit": "e8b2df55f1c1f5dcea2cfcd184ece6747cdc1edf",
-      "tree_sha": "0ce2c631ba85b85cf2c6216a6cdaf53a1e83d025",
-      "commit_time": "2026-10-25T11:25:41Z",
+      "latest_commit": "9c40222412a153c72fad90e391b7a870fcfaa547",
+      "tree_sha": "d4cb7e075b60a2b307964f11ed18ee4f6966ce5d",
+      "commit_time": "2026-10-26T12:59:38Z",
       "changed_since_review": true,
       "reviewed_revision": "58cce45dab1359550a4f308a0af7bf89525c97ca",
-      "url": "https://github.com/buffedlizard55-lab/GEMSDOE52/commit/e8b2df55f1c1f5dcea2cfcd184ece6747cdc1edf"
+      "url": "https://github.com/buffedlizard55-lab/GEMSDOE52/commit/9c40222412a153c72fad90e391b7a870fcfaa547"
     },
     {
       "repository": "buffedlizard55-lab/GEMSDOE53",
@@ -598,12 +598,12 @@
     {
       "repository": "buffedlizard55-lab/60GEMSDOE",
       "status": "metadata_checked",
-      "latest_commit": "420366b20dac4870119368b53bbe777a7e1f2f19",
-      "tree_sha": "883887f29f849e449b6650ebd1a8c523e2ea966c",
-      "commit_time": "2026-10-25T09:55:04Z",
+      "latest_commit": "866f7e9316352d6c6071d6537cf0c338c2c6b45d",
+      "tree_sha": "5643179261639a2e188d3c9297dd7f5e625e7041",
+      "commit_time": "2026-10-26T11:16:16Z",
       "changed_since_review": true,
       "reviewed_revision": "6334f26a878feafb7cbdff9ad0aa8847969a2749",
-      "url": "https://github.com/buffedlizard55-lab/60GEMSDOE/commit/420366b20dac4870119368b53bbe777a7e1f2f19"
+      "url": "https://github.com/buffedlizard55-lab/60GEMSDOE/commit/866f7e9316352d6c6071d6537cf0c338c2c6b45d"
     },
     {
       "repository": "buffedlizard55-lab/61GEMSDOE",
@@ -628,5 +628,5 @@
   ],
   "checked": 62,
   "unavailable": 0,
-  "changed": 16
+  "changed": 20
 }
